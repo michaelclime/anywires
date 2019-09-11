@@ -23,7 +23,7 @@ app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'html');
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({extended: true}));
-mongoose.connect(url, { useNewUrlParser: true });
+mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true });
 app.use(flash());
 
 //Passport config
