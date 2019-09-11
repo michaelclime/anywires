@@ -33,7 +33,18 @@
         </div>
     </header>
 
-   <h1>  <%= message %> </h1>
+   <!-- Modal Action Window -->
+   <% if(message.length !==0) {%>
+    <div class="modal-actions">
+        <div class="popup-dialog">
+            <div class="popup-content">
+                <button class="popup-close">&times;</button>
+                <img src="img/logocompany.png" alt="Anywires logo" class="logo">
+                <h1>  <%= message %> </h1>
+            </div>
+        </div>
+    </div>
+    <% }%>
 
     <!-- CONTENT -->
     <main>
@@ -284,11 +295,6 @@
                 </div>
             </div>
         </div>
-    </div>
-    <!-- Modal Window for Actions -->
-    <div id="modal-actions" class="slide-top">
-       
-        <button id="saveUser-btn">Create</button>
     </div>
 
     <script src="js/modalWindow.js"></script>

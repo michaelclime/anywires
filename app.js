@@ -24,7 +24,7 @@ app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'html');
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({extended: true}));
-mongoose.connect(url, { useNewUrlParser: true });
+mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true });
 app.use(flash());
 
 //Passport config
@@ -297,7 +297,7 @@ app.post('/sigup', function(req, res) {
         // send mail with defined transport object
         let info = await transporter.sendMail({
             from: '"AnyWires" <AnyWires@gmail.com>', 
-            to: 'bogdan.melnik@brokers.expert', 
+            to: 'm.clime@brokers.expert', 
             subject: 'A New Client AnyWires', 
             text: newMessage
         });
