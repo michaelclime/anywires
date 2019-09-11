@@ -1,378 +1,548 @@
 *{
-margin:0;
-padding:0;
-border:0;
-}
-
-/* width */
-::-webkit-scrollbar {
-width: 10px;
-}
-/* Track */
-::-webkit-scrollbar-track {
-background: #f1f1f1;
-}
-/* Handle */
-::-webkit-scrollbar-thumb {
-background: #888;
-}
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-background: #555;
-}
-
-body {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: #F1F4F6;
-    font-family: 'Frank Ruhl Libre', serif;
-}
-
-body button {
-    cursor: pointer;
-    background-color: rgb(77, 77, 77);
-    border: none;
-    text-align: center;
-    color: rgb(255, 255, 255);
-    line-height: 1;
-    border-radius: 3px;
-    outline: none;
-    transition: .35s;
-    font-family: 'Frank Ruhl Libre', serif;
-}
-body button:hover {
-    background-color: rgb(143, 143, 143);
-}
-body button:active {
-    background-color: rgb(231, 66, 44);
-}
-
-
-#burgerMenu {
-    display: flex;
-    width: 100%;
-    background-color: rgb(255, 255, 255);
-
-}
-
-
-/* Wrapper */
-#wrapper {
-    width: 100%;
-}
-
-.opacityWrapper {
-    opacity: .2;
-}
-
-/* Header */
-header {
-    display: flex;
-    width: 100%;
-    align-items: center;
-    background-color: rgb(255, 255, 255);
-    padding: 30px 0 30px 70px;
-    margin-top: 2px;
-}
-header img {
-    margin-right: 15px;
-}
-
-
-/* Main */
-main {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    min-height: 800px;
-    background-color: rgb(255, 255, 255);
-    padding: 30px 0 30px 30px;
-    margin-top: 2px;
-}
-
-/* Create User and Search area */
-#createUser-block {
-    width: 80%;
-    display: flex;
-    justify-content: flex-end;
-}
-
-#search-input {
-    width: 250px;
-    height: 45px;
-    background-color: #4D4D4D;
-    border-radius: 3px 0 0 3px;
-    font-size: 16px;
-    padding: 5px 15px;
-    transition: .3s;
-    outline: none;
-    border: none;
-    color: #FFF;
-    font-family: 'Frank Ruhl Libre', serif;
-}
-
-#search-input::placeholder{
-    color: rgb(224, 224, 224);
-}
-
-#search-input:focus {
-    box-shadow: 0px 0px 6px 0px rgba(68, 68, 68, 0.75);
-    background-color: rgb(110, 110, 110);
-}
-
-.search-block {
-    display: flex;
-    align-items: center;
-}
-
-#search-button {
-    width: 45px;
-    height: 45px;
-    padding: 15px;
-    background-color: rgb(54, 54, 54);
-    cursor: pointer;
-    border-radius: 0px 3px 3px 0px;
-}
-#search-button:hover {
-    background-color: rgb(0, 0, 0);
-}
-#search-button:active {
-    background-color: rgb(139, 139, 139);
-}
-
-/* Table, list of Users */
-#tableUser-block {
-    width: 80%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    padding: 70px 0;
-}
-
-.tableUser-header {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 5px 0;
-}
-
-.table-arrows img {
-    margin-left: 20px;
-    cursor: pointer;
-}
-.table-arrows img:hover{
-    filter: invert(75%);
-}
-.table-arrows img:active{
-    filter: invert(95%);
-}
-
-.tableUser-header h2 {
-    font-size: 20px;
-}
-
-.table-line {
-    margin: 10px 0;
-    width: 100%;
-    height: 2px;
-    background-color: rgb(102, 102, 102);
-}
-
-
-/* Modal Window Create User */
-#modal-createUser {
-    display: none;
-    justify-content: space-between;
-    position: fixed;
-    top: 250px;
-    align-self: center;
-    width: 600px;
-    height: auto;
-    background-color: #FFF;
-    padding: 20px;
-    box-shadow: 0px 0px 2px 2px rgba(201, 200, 200, 0.75);
-    font-family: 'Frank Ruhl Libre', serif;
-}
-
-#modal-createUser div {
-    display: flex;
-    flex-direction: column;
-    margin-right: 20px;
-}
-
-#modal-createUser input {
-    border: 1px solid rgb(189, 189, 189);
-    background-color: rgb(255, 255, 255);
-    box-sizing: border-box;
-    height: 30px;
-    width: 200px;
-    border-radius: 3px;
-    font-size: 14px;
-    color: rgb(85, 85, 85);
-    padding: 0px 4px;
-    box-shadow: none;
-    margin-bottom: 10px;
-    font-family: 'Frank Ruhl Libre', serif;
-    margin-bottom: 20px;
-    margin-top: 5px;
-}
-
-#saveUser-btn {
-    height: 50px;
-    width: 100px;
-    margin-top: 80px;
-    background-color: green;
-}
-
-#saveUser-btn:hover {
-    background-color: rgb(143, 143, 143);
-}
-#saveUser-btn:active {
-    background-color: rgb(231, 66, 44);
-}
-
-
-/* Animations */
-@keyframes slideInTop{
-    0%{
-        transform: translateY(-100%);
+    margin:0;
+    padding:0;
+    border:0;
     }
-    100%{
-        transform: translateY(0, 0);
+    
+    /* width */
+    ::-webkit-scrollbar {
+    width: 10px;
     }
-}
-.slide-top{
-    animation: .5s slideInTop ease-in-out 1;
-}
-
-
-@media screen and (max-width: 640px) {
-    #modal-createUser {
-        top:50px;
+    /* Track */
+    ::-webkit-scrollbar-track {
+    background: #f1f1f1;
     }
-    header h1 {
-        font-size: 22px;
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+    background: #888;
+    }
+    /* Handle on hover */
+    ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+    }
+    
+    body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background-color: #F1F4F6;
+        font-family: 'Frank Ruhl Libre', serif;
+    }
+    
+    body button {
+        cursor: pointer;
+        background-color: rgb(77, 77, 77);
+        border: none;
+        text-align: center;
+        color: rgb(255, 255, 255);
+        line-height: 1;
+        border-radius: 3px;
+        outline: none;
+        transition: .35s;
+        font-family: 'Frank Ruhl Libre', serif;
+    }
+    body button:hover {
+        background-color: rgb(143, 143, 143);
+    }
+    body button:active {
+        background-color: #12C7B2;
+    }
+    
+    
+    #burgerMenu {
+        display: flex;
+        width: 100%;
+        background-color: rgb(255, 255, 255);
+    
+    }
+    
+    
+    /* Animations */
+    @keyframes slideInTop{
+        0%{
+            transform: translateY(-100%);
+        }
+        100%{
+            transform: translateY(0, 0);
+        }
+    }
+    .slide-top{
+        animation: .3s slideInTop ease-in-out 1;
+    }
+    
+    
+    
+    /* Wrapper */
+    #wrapper {
+        width: 100%;
+    }
+    
+    .opacityWrapper {
+        opacity: .2;
+    }
+    
+    /* Header */
+    header {
+        display: flex;
+        width: 100%;
+        align-items: center;
+        background-color: rgb(255, 255, 255);
+        padding: 30px 0 30px 70px;
+        margin-top: 2px;
     }
     header img {
-        width: 35px;
-        height: 35px;
+        margin-right: 15px;
     }
-
-    #search-input {
+    
+    
+    /* Main */
+    main {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        min-height: 800px;
+        background-color: rgb(255, 255, 255);
+        padding: 30px 0 30px 30px;
+        margin-top: 2px;
+    }
+    
+    /* MinMax-block */
+    .minMax-block {
+        width: 90%;
+        margin: 20px 0; 
+        display: flex;
+        align-items: flex-end;
+    }
+    
+    .filterMin-block, .filterMax-block {
         width: 200px;
-        height: 40px;
-        font-size: 14px;
+        margin-right: 20px;
     }
+    
+    .filterEnable-block {
+        width: 95px;
+    }
+    
+    .filterSepa-block {
+        width: 95px;
+        margin-right: 10px;
+    }
+    
+    
+    /* Filter Block First START*/
+    
+    #filterMin, #filterMax, #filterSepa, #filterEnable, #filterSolution, #filterCurrency, #filterCountry {
+        width: 100%;
+        height: 40px;
+        border: 1px solid rgb(189, 189, 189);
+        cursor: pointer;
+        border-radius: 3px;
+        font-size: 15px;
+        font-family: 'Frank Ruhl Libre', serif;
+        background-color: #F5F5F5;
+        margin-top: 5px;
+        text-indent: 15px;
+    }
+    
+    option {
+        font-size: 16px;
+        background-color: rgb(255, 255, 255);
+    }
+    
+    label {
+        font-weight: bold;
+    }
+    
+    .filterBlock-first {
+        width: 80%;
+        display: flex;
+        align-items: flex-end;
+    }
+    
+    .filterSolution-block {
+        width: 200px;
+        margin-right: 20px;
+    }
+    
+    .filterCurrency-block {
+        width: 200px;
+        margin-right: 20px;
+    }
+    
+    .filterCountry-block {
+        width: 200px;
+    }
+    /* Filter Block First END*/
+    
+    /* Create User and Search area */
+    .containerBlock {
+        width: 90%;
+        display: flex;
+        margin-bottom: 20px;
+        justify-content: space-between;
+    }
+    
+    #createUser-block {
+        width: 90%;
+        display: flex;
+        justify-content: space-between;
+    }
+    
+    #createBank-button {
+        width: 140px;
+        height: 40px;  
+    }
+    
+    #clearFilterBtn, #showBtn {
+        width: 115px;
+        height: 40px;
+    }
+    
+    #search-input {
+        width: 100%;
+        height: 40px;
+        background-color: #4D4D4D;
+        border-radius: 3px 0 0 3px;
+        font-size: 16px;
+        padding: 5px 15px;
+        transition: .3s;
+        outline: none;
+        border: none;
+        color: #FFF;
+        font-family: 'Frank Ruhl Libre', serif;
+    }
+    
+    #search-input::placeholder{
+        color: rgb(224, 224, 224);
+    }
+    
+    #search-input:focus {
+        box-shadow: 0px 0px 6px 0px rgba(68, 68, 68, 0.75);
+        background-color: rgb(110, 110, 110);
+    }
+    
+    .search-block {
+        display: flex;
+        justify-content: flex-end;
+        align-items: flex-end;
+        width: 250px;
+    }
+    
     #search-button {
         width: 40px;
         height: 40px;
-        padding: 14px;
-    } 
-    .tableUser-header h2 {
-        font-size: 17px;
+        padding: 12px;
+        background-color: rgb(54, 54, 54);
+        cursor: pointer;
+        border-radius: 0px 3px 3px 0px;
     }
-
-    /* Modal Create User */
-    #modal-createUser {
-       flex-direction: column;
-       width: auto;
+    #search-button:hover {
+        background-color: rgb(0, 0, 0);
     }
-    #saveUser-btn {
-        margin-top: 10px;
-        height: 35px;
-        width: 80px;
+    #search-button:active {
+        background-color: rgb(139, 139, 139);
     }
-}
-
-
-@media screen and (max-width: 490px) {
-    header {
-        padding: 20px 0 20px 20px;
-    }
-
-    header h1 {
-        font-size: 20px;
-    }
-
-    header img {
-        width: 30px;
-        height: 30px;
-    }
-
-    #createUser-block {
-        width: 95%;
-    }
-
+    
+    /* Table, list of Users */
     #tableUser-block {
-        width: 95%;
+        width: 90%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        padding: 40px 0;
     }
-
-    #search-input {
-        width: 150px;
-        height: 30px;
-        font-size: 12px;
+    
+    .tableUser-header {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 5px 0;
     }
-
-    #search-button {
-        width: 30px;
-        height: 30px;
-        padding: 10px;
-    }
-
-    .tableUser-header h2 {
-        font-size: 15px;
-    }
-
+    
     .table-arrows img {
-        width: 10px;
-        height: 10px;
+        margin-left: 20px;
+        cursor: pointer;
     }
-
-    main {
-        padding: 30px 0 30px 0px;
+    .table-arrows img:hover{
+        filter: invert(75%);
+    }
+    .table-arrows img:active{
+        filter: invert(95%);
+    }
+    
+    .tableUser-header h2 {
+        font-size: 20px;
     }
     
     .table-line {
-        margin: 0;
+        margin: 10px 0;
+        width: 100%;
+        height: 2px;
+        background-color: rgb(102, 102, 102);
     }
-    #tableUser-block {
-        padding: 40px 0;
+    
+    
+    
+    /* Modal Block */
+    .filter {
+        display: none;
+        justify-content: center;
+        align-items: center;
+        background-color: rgba(0, 0, 0, 0.6);
+        position: fixed;
+        top: 0; bottom: 0; left: 0; right: 0;
+        z-index: 100;
     }
-}
-
-@media screen and (max-width: 370px) {
-    header h1 {
-        font-size: 18px;
+    
+    .modal-Addbank {
+        background: rgb(255, 255, 255);
+        width: 1000px;
+        height: 700px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        padding: 20px;
+        position: fixed;
+        border-radius: 3px;
+        z-index: 120;
     }
-
-    header img {
-        width: 28px;
-        height: 28px;
+    
+    .containerModal {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
     }
-
-    #search-input {
-        width: 130px;
-        height: 30px;
-        font-size: 11px;
-        padding: 4px;
+    
+    #createBankModal-btn {
+        width: 140px;
+        height: 45px;
     }
-
-    #search-button {
-        width: 30px;
-        height: 30px;
-        padding: 10px;
+    
+    .firstModal-block {
+        width: 45%;
     }
-
-    .tableUser-header h2 {
-        font-size: 14px;
+    
+    .secondModal-block {
+        width: 45%;
     }
-}
-
-input {
-    -webkit-appearance: none;
-}
-
-
+    
+    .bankName-block, .beneficiaryName-block, .solutionName-block, .bankCountry-block, .bankCurrency-block, .benefAdress-block, 
+    .maxWire-block, .minWire-block, .SWIFT-block, .companySite-block, .bankAdress-block, .stopLimit-block {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 15px;
+    }
+    
+    .sepaAvailable-block {
+        width: 100%;
+        display: flex;
+        margin-bottom: 15px;
+    }
+    
+    .B2B-block {
+        width: 100%;
+        display: flex;
+        margin-bottom: 15px;
+    }
+    
+    .IBAN-block {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+    }
+    
+    .description-block {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 15px;
+    }
+    
+    .uploadBank-block {
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+    } 
+    
+    #uploadLogo-btn {
+        width: 240px;
+        height: 40px;
+    }
+    
+    .description-block textarea {
+        border: 1px solid rgb(122, 122, 122);
+        width: 240px;
+        height: 95px;
+        padding: 5px;
+        border-radius: 3px;
+        font-family: 'Frank Ruhl Libre', serif;
+    }
+    
+    .firstModal-block input {
+        border: 1px solid rgb(122, 122, 122);
+        width: 240px;
+        height: 40px;
+        border-radius: 3px;
+        padding: 5px;
+        font-family: 'Frank Ruhl Libre', serif;
+    }
+    
+    .secondModal-input {
+        border: 1px solid rgb(122, 122, 122);
+        width: 240px;
+        height: 40px;
+        border-radius: 3px;
+        padding: 5px;
+        font-family: 'Frank Ruhl Libre', serif;
+    }
+    
+    .bankCurrency-block select {
+        border: 1px solid rgb(122, 122, 122);
+        width: 240px;
+        height: 40px;
+        border-radius: 3px;
+    }
+    
+    .sepaCheckbox {
+        width: 190px;
+        height: 20px;
+    }
+    
+    .b2bcheckbox {
+        width: 337px;
+        height: 20px;
+    }
+    
+    
+    
+    /* Animations */
+    @keyframes slideInTop{
+        0%{
+            transform: translateY(-100%);
+        }
+        100%{
+            transform: translateY(0, 0);
+        }
+    }
+    .slide-top{
+        animation: .5s slideInTop ease-in-out 1;
+    }
+    
+    
+    /* Media */
+    @media screen and (max-width: 1015px) {
+        header {
+            padding: 20px 0 20px 30px;
+        }
+        header img {
+            width: 30px;
+            height: 30px;
+        }
+        header h1 {
+            font-size: 28px;
+        }
+        main {
+            padding: 30px 0 30px 0px;
+        }
+    
+        .filterMin-block, .filterMax-block, .filterSolution-block, .filterCurrency-block {
+            margin-right: 15px;
+        }
+    
+        .filterMin-block, .filterMax-block, .filterSolution-block, .filterCurrency-block, .filterCountry-block {
+            width: 170px;
+        }
+    
+        .filterEnable-block, .filterSepa-block {
+            width:80px;
+        }
+    
+        .minMax-block, .containerBlock, #createUser-block, #tableUser-block {
+            width: 95%;
+        }
+    
+        .search-block {
+            width: 220px;
+        }
+    
+        #createBank-button {
+            width: 120px;
+        } 
+    
+        #showBtn, #clearFilterBtn {
+            width: 100px;
+        }
+    }
+    
+    
+    @media screen and (max-width: 795px) {
+        .containerBlock {
+            flex-direction: column;
+            margin-bottom: 15px;
+        }
+    
+        .minMax-block {
+            margin: 15px 0;
+            margin-top: 0;
+        }
+    
+        .filterBlock-first {
+            width: 100%;
+        }
+    
+        .search-block {
+            margin-top: 15px;
+            width: 220px;
+            margin-left: auto;
+        }
+    }
+    
+    @media screen and (max-width: 565px) {
+        .filterMin-block, .filterMax-block, .filterSolution-block, .filterCurrency-block, .filterCountry-block {
+            width: 130px;
+        }
+    
+        .filterEnable-block, .filterSepa-block {
+            width:60px;
+        }
+    
+        .search-block {
+            width: 200px;
+        }
+    
+        select {
+            height: 35px;
+        }
+    
+        label {
+            font-size: 14px;
+        }
+    
+        #search-input {
+            height: 35px;
+        }
+    
+        #search-button {
+            width: 35px;
+            height: 35px;
+            padding: 10px;
+        }
+    
+        #createBank-button {
+            width: 110px;
+            height: 35px;
+        } 
+    
+        #showBtn, #clearFilterBtn {
+            height: 35px;
+            width: 90px;
+        }
+    }
+    
+    .hide {
+        display: none;
+    }

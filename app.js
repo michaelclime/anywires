@@ -12,10 +12,11 @@ let express = require("express"),
     fs = require('fs'),
     flash = require('connect-flash'),
     jsonParser = express.json();
+    objectId = require("mongodb").ObjectID;
 
 
-const url = 'mongodb://18.216.223.81:27017/anywires';
-//const url = 'mongodb://localhost:27017/invoicesTest';
+// const url = 'mongodb://18.216.223.81:27017/anywires';
+const url = 'mongodb://localhost:27017/anywires';
 
 // View Engine Setup
 app.set('views', path.join(__dirname, 'views'));
@@ -174,6 +175,43 @@ app.post("/postMerchant",jsonParser, (req, res) => {
             db.close();
             res.send(req.body);
         });
+    });
+});
+
+// Banks generation process
+
+app.get("/getBank", (req, res) => {
+    mongo.connect(url, (err, db) =>{
+        db.collection("banks").find({}).toArray(function(err, merchants){
+            if(err) return console.log("Error with upload Merchants!", err);
+            db.close();
+            res.send(merchants);
+        })
+    });
+});
+
+app.post("/postBank",jsonParser, (req, res) => {
+    mongo.connect(url, (err, db) => {
+        db.collection("banks").insertOne(req.body, function(err, result) {
+            if(err) return console.log("Bad POST request!", err);
+            db.close();
+            res.send(req.body);
+        });
+    });
+});
+
+app.put("/putBank", jsonParser, (req, res) => {
+    mongo.connect(url, (err, db) => {
+        const id = new objectId(req.body.id);
+        let newStatus = {};
+        req.body.active == null ? "" : newStatus.active = req.body.active;
+
+        db.collection("banks").findOneAndUpdate({_id: id}, {$set: newStatus},
+            {returnOriginal: false },function(err, result){
+           if(err) return console.log(err);     
+           const bank = result.value;
+           res.send(bank);
+       });
     });
 });
 

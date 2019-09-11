@@ -92,7 +92,8 @@ class UsersList {
         if (checkEmpty === true) {
             alert("Please fill put all required fields!");
         } else {
-            fetch("http://18.216.223.81:3000/postMerchant", {
+            // fetch("http://18.216.223.81:3000/postMerchant", {
+            fetch("http://localhost:3000/postMerchant", {
                 method: "POST",
                 body: JSON.stringify(this.newMerchant),
                 headers:{'Content-Type': 'application/json'}
@@ -196,7 +197,8 @@ class UsersList {
     }
 
     getMerchants = async () => {
-        return  await fetch("http://18.216.223.81:3000/getMerchants")
+        // return  await fetch("http://18.216.223.81:3000/getMerchants")
+        return  await fetch("http://localhost:3000/getMerchants")
         .then(res => {
             return res.json();
         }) 
