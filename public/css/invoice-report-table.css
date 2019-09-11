@@ -1,0 +1,289 @@
+
+table {
+  border-spacing: 1;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 3px;
+  overflow: hidden;
+  width: 100%;
+}
+
+table td, table th {
+  padding-left: 8px;
+}
+table thead tr {
+  height: 60px;
+  background: #20a5f7;
+}
+table tbody tr {
+  height: 50px;
+}
+table tbody tr:last-child {
+  border: 0;
+}
+table td, table th {
+  text-align: left;
+}
+table td.l, table th.l {
+  text-align: right;
+}
+table td.c, table th.c {
+  text-align: center;
+}
+table td.r, table th.r {
+  text-align: center;
+}
+
+
+.table-head th{
+  font-size: 18px;
+  color: #fff;
+  line-height: 1.2;
+  font-weight: unset;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #f5f5f5;
+}
+
+tbody tr {
+  font-size: 15px;
+  color: #686767;
+  line-height: 1.2;
+  font-weight: unset;
+}
+
+#viewReport-btn {
+  width: 100px;
+  height: 45px;
+  background-color: #12C7B2;
+  color: white;
+  font-size: 15px;
+}
+
+#viewReport-btn:hover {
+  background-color: rgb(143, 143, 143);
+}
+#viewReport-btn:active {
+  background-color: rgb(21, 73, 15);;
+}
+
+.green {
+  color: rgb(13, 202, 3);
+}
+.red {
+  color: red;
+}
+.yellow {
+  color: #FFBB33;
+}
+
+.column1 {
+  width: 160px;
+  padding-left: 20px;
+}
+
+.column2 {
+  width: 260px;
+}
+
+.column3 {
+  width: 125px;
+}
+
+.column4 {
+  width: 120px;
+  text-align: right;
+}
+
+.column5 {
+  width: 180px;
+  text-align: center;
+  padding: 0 20px;
+}
+
+.column6 {
+  width: 140px;
+}
+
+.column7 {
+  width: 140px;
+  text-align: center;
+}
+
+.column8 {
+  width: 140px;
+}
+
+.column9 {
+  width: 140px;
+  text-align: center;
+}
+
+.column10 {
+  width: 140px;
+  text-align: center;
+}
+
+.column11 {
+  width: 180px;
+  text-align: center;
+}
+
+.column12 {
+  width: 140px;
+  text-align: center;
+}
+
+.column13 {
+  width: 160px;
+  text-align: center;
+}
+
+.column14 {
+  width: 140px;
+  padding-left: 15px;
+  text-align: right;
+}
+
+.state {
+  padding-right: 40px;
+}
+
+.last-th{
+  padding-right: 25px;
+}
+
+table tbody, table thead {
+    display: block;
+}
+
+table tbody {
+   overflow: auto;
+   max-height: 600px;
+}
+
+th {
+    width: 2000px;
+}
+
+@media screen and (max-width: 1055px) {
+  table tbody {
+    max-height: 655px;
+  }
+
+  table  *{
+    position: relative;
+  }
+  table {
+    display: block;
+  }
+  table > *, table tr, table td, table th {
+    display: block;
+  }
+  table thead {
+    display: none;
+  }
+  table tbody tr {
+    height: auto;
+    padding: 37px 0;
+  }
+  table tbody tr td {
+    padding-left: 45% !important;
+    margin-bottom: 24px;
+  }
+  table tbody tr td:last-child {
+    margin-bottom: 0;
+  }
+  table tbody tr td:before {
+    
+    color: #999999;
+    line-height: 1.2;
+    font-weight: unset;
+    position: absolute;
+    width: 40%;
+    left: 30px;
+    top: 0;
+  }
+
+  table tbody tr td:nth-child(1):before {
+    content: "Updated";
+  }
+  table tbody tr td:nth-child(2):before {
+    content: "Sol Name";
+  }
+  table tbody tr td:nth-child(3):before {
+    content: "Merchant";
+  }
+  table tbody tr td:nth-child(4):before {
+    content: "Sent";
+  }
+  table tbody tr td:nth-child(5):before {
+    content: "Bank Comm";
+  }
+  table tbody tr td:nth-child(6):before {
+    content: "Received";
+  }
+  table tbody tr td:nth-child(7):before {
+    content: "AW Comm";
+  }
+  table tbody tr td:nth-child(8):before {
+    content: "Approved";
+  }
+  table tbody tr td:nth-child(9):before {
+    content: "Sol Comm";
+  }
+  table tbody tr td:nth-child(10):before {
+    content: "AW Amnt";
+  }
+  table tbody tr td:nth-child(11):before {
+    content: "AW Settle Comm";
+  }
+  table tbody tr td:nth-child(12):before {
+    content: "AW Profit";
+  }
+  table tbody tr td:nth-child(13):before {
+    content: "State";
+  }
+ 
+  .column12,
+  .column11,
+  .column10,
+  .column9,
+  .column7,
+  .column5,
+  .column4,
+  .column14,
+  .column13 {
+    text-align: left;
+  }
+
+  .column14,
+  .column13,
+  .column12,
+  .column11,
+  .column10,
+  .column9,
+  .column8,
+  .column7,
+  .column6,
+  .column4,
+  .column5,
+  .column1,
+  .column2,
+  .column3 {
+    width: 100%;
+  }
+
+  tbody tr {
+    font-size: 13px;
+  }
+}
+
+@media screen and (max-width: 550px) {
+  #viewReport-btn {
+    width: 85px;
+    height: 35px;
+  }
+}
+

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="description" content="Anywires" />
+    <meta name="keywords" content="Anywires" />
+    <meta name="author" content="Anywires" />
+    <title>Affiliate reports</title>
+    <link rel="shortcut icon" href="img/AnyWiresFavicon.png" type="image/png">
+    <link rel="stylesheet" href="css/affiliateReport.css">
+    <link rel="stylesheet" href="css/authorizationMenu.css">
+    <script src="https://kit.fontawesome.com/5355902e87.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/menu.css" />
+    <link rel="stylesheet" type="text/css" href="css/menu-comp.css" />
+    <script src="js/modernizr.custom.js"></script>
+    <!-- Chart script -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" integrity="sha256-Uv9BNBucvCPipKQ2NS9wYpJmi8DTOEfTA/nH2aoJALw=" crossorigin="anonymous"></script>
+    <!-- Calendar scripts -->
+    <link href="css/datepicker.min.css" rel="stylesheet" type="text/css">
+    <script src="js/datepicker.min.js"></script>
+    <script src="js/datepicker.en.js"></script>
+</head>
+
+<body>
+     <!-- MENU -->
+    <header>
+        <div class="menu">
+                <ul id="gn-menu" class="gn-menu-main">
+                    <li class="gn-trigger">
+                        <a class="gn-icon gn-icon-menu"><span>Menu</span></a>
+                        <nav class="gn-menu-wrapper">
+                            <div class="gn-scroller">
+                                <ul class="gn-menu">
+                                        <li><a href='personal-area.html'><img class="icon" src="fonts/icons/personal-area.png">Personal Area</a></li>
+                                        <li><a href='dashBoardMainPage.html'><img class="icon" src="fonts/icons/dashboard.png">Dashboard</a></li>
+                                        <li><a href='InvoiceGeneration.html'><img class="icon" src="fonts/icons/invoice.png">Invoice generation</a></li>
+                                        <li><a ><img class="icon" src="fonts/icons/invoice-list.png">Invoice list</a></li>
+                                        <li><a href="invoice-report.html"><img class="icon" src="fonts/icons/invoice-report.png">Invoice Report</a></li>
+                                        <li><a href="wallets.html"><img class="icon" src="fonts/icons/wallet.png">Wallets</a></li>
+                                        <li><a href="settlements.html"><img class="icon" src="fonts/icons/settlement.png">Settlements</a></li>
+                                        <li><a href="merchants.html"><img class="icon" src="fonts/icons/merchant.png">Merchants</a></li>
+                                        <li><a  href='users.html'><img class="icon" src="fonts/icons/users.png">Users</a></li>
+                                        <li><a href='banks.html'><img class="icon" src="fonts/icons/bank.png">Banks</a></li>
+                                        <li><a><img class="icon" src="fonts/icons/aff-report.png">Affiliate report</a></li>
+                                        <li><a href='Dashboard-how-it-works.html'><img class="icon" src="fonts/icons/info.png">How it works</a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                        </nav>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="authorizationMenu">
+                    <span> 
+                        <span class="userName"> <%= currentUser.fullname %></span>
+                        <span class="userLogo"><i class="far fa-user-circle"></i></span>
+                    </span>
+                    <ul class="dropMenu">
+                        <li class="profile">
+                            <span class="liLogo"><i class="fas fa-user-alt"></i></span>
+                            <a href="#">Profile</a>
+                        </li>
+                        <li class="merchant">
+                            <span class="liLogo"><i class="fab fa-chromecast"></i></span>
+                            <a href="#">Merchant</a>
+                        </li>
+                        <li class="logOut">
+                            <span class="liLogo"><i class="fas fa-sign-out-alt"></i></span>
+                            <a href="/logout">LogOut</a>
+                        </li>
+                    </ul>
+                </div>
+    </header>
+    <!-- CONTENT -->
+    <main>
+        <div class="headerBlock">
+            <h1 class="mainTitle"><span class="affiliateReportlogo"><i class="fas fa-chart-line"></i></span>Affiliate reports</h1> 
+        </div>
+        <div class="choosePeriod">
+            <div class="leftBlockChoosePeriod">
+                <h2 class="secondTitle">You kindly brought to us this merchants:</h2>
+                <span>Popcorn</span>
+                <p>Turnover: <span class="amountTurnover number">€46 700</span></p>
+            </div>
+           
+           <div class="rightBlockChoosePeriod">
+                <h3 class="affiliateName">AW_Technical</h3>
+               <span>Please, select a period:</span>
+               <div class="inputPeriod">
+                    <input type="text"
+                    value="02/21/2019 - 07/06/2019"
+                    data-range="true"
+                    data-multiple-dates-separator=" - "
+                    data-language="en"
+                    class="datepicker-here"/>
+               </div>
+           </div>
+        </div>
+
+        <div class="report">
+            <div class="turnoverReport">
+                <h2 class="secondTitle">Turnover report:</h2>
+                <div class="affiliateNameChoose">
+                    <span class="affiliateNameReport">Popcorn</span>
+                    <button class="affiliateNameLeftBtn"><</button>
+                    <button class="affiliateNameRightBtn">></button>
+                </div>
+                <p>Turnover: <span class="amountTurnover number">€46 700</span></p>
+                <p>Transactions: <span class="amountTransactions number">8</span></p>
+                <p>Transactions per day: <span class="TransactionsPerDay number">0</span></p>
+                <p>Avg. transaction: <span class="amountAvgTransaction number">€5 838</span></p>
+                <button class="turnOverChartBtn">All Turnover Chart</button>
+            </div>
+
+            <div class="chartBox">
+                <div class="chartContainer">
+                    <h2 class="secondTitle">Report from 8/01/19 to 8/06/19</h2>
+                    <canvas id="affiliateReportChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/classie.js"></script>
+    <script src="js/gnmenu.js"></script>
+    <script>
+        new gnMenu( document.getElementById( 'gn-menu' ) );
+    </script>
+    <script type="text/javascript" src="js/affiliateReportChart.js"></script>
+    <script type="text/javascript" src="js/authorizationMenu.js"></script>
+</body>
+</html>

@@ -1,0 +1,424 @@
+/*Body*/
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #EEF3FA;
+    font-family: 'Frank Ruhl Libre', serif;
+}
+
+
+/*Wrapper*/
+#wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    background-color: #EEF3FA;
+}
+
+
+/*Header*/
+header {
+    width: 100%;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    margin-top: 62px;
+    margin-bottom: 2px;
+}
+
+header h1 {
+    margin-left: 65px;
+}
+
+
+/*Block_Logo*/
+#block-logo {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 10px;
+    background-color: #fff;
+    margin-bottom: 4px;
+}
+
+.main-logo {
+    width: 150px;
+    height: 150px;
+}
+
+.necessary-action {
+    color: red;
+}
+
+
+/*Main Block*/
+main {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    padding: 50px 10px;
+    background-color: #fff;
+    margin-bottom: 4px;
+}
+
+.main-content-blocks {
+    width: 100%;
+}
+
+.info-blocks {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 25px;
+    flex-grow: 1;
+}
+
+.profile_line {
+    width: 240px;
+    height: 2px;
+    background-color: rgb(83, 83, 83);
+}
+
+.description-info {
+    color: rgb(88, 88, 88);
+    font-size: 14px;
+}
+
+.person-info {
+    font-weight: bold;
+}
+
+.preson-info-merchants {
+    margin-top: 60px;
+}
+
+/*Footer Block*/
+footer {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 10px;
+    background-color: #fff;
+    margin-bottom: 10px;
+}
+
+.button-reset {
+    margin: 10px 0; 
+    width: 200px;
+    height: 60px;
+    cursor: pointer;
+    background-color: rgb(77, 77, 77);
+    border: none;
+    text-align: center;
+    color: rgb(255, 255, 255);
+    line-height: 1;
+    border-radius: 3px;
+    outline: none;
+    font-size: 18px;
+    transition: .35s;
+    font-family: 'Frank Ruhl Libre', serif;
+}
+
+.button-reset:hover {
+    background-color: rgb(143, 143, 143);
+}
+.button-reset:active {
+    background-color: #12C7B2;
+}
+
+
+/* Modal Windows */
+.modal-reset {
+    display: none;
+    margin-top: 150px;
+    position: fixed;
+    flex-direction: column;
+    align-items: center;
+    width: 420px;
+    background-color: #FFF;
+    padding: 20px;
+    box-shadow: 0px 0px 2px 2px rgba(201, 200, 200, 0.75);
+    font-family: 'Frank Ruhl Libre', serif;
+}
+
+#input_oldPassword, #input_newPassword {
+    border: 1px solid rgb(189, 189, 189);
+    background-color: rgb(255, 255, 255);
+    box-sizing: border-box;
+    height: 45px;
+    width: 250px;
+    border-radius: 3px;
+    font-size: 14px;
+    color: rgb(85, 85, 85);
+    padding: 0px 4px;
+    box-shadow: none;
+    margin-bottom: 10px;
+    font-family: 'Frank Ruhl Libre', serif;
+}
+
+.modal-reset p {
+    line-height: 1.6;
+    margin-bottom: 30px;
+}
+
+.change-password-btn, .send-link-btn {
+    width: 120px;
+    height: 45px;
+    cursor: pointer;
+    background-color: rgb(77, 77, 77);
+    border: none;
+    text-align: center;
+    color: rgb(255, 255, 255);
+    line-height: 1;
+    border-radius: 3px;
+    outline: none;
+    font-size: 14px;
+    transition: .35s;
+    font-family: 'Frank Ruhl Libre', serif;
+}
+.change-password-btn {
+    margin-right: 10px;
+}
+
+.change-password-btn:hover, .send-link-btn:hover {
+    background-color: rgb(143, 143, 143);
+}
+.send-link-btn:hover:active, .change-password-btn:active {
+    background-color: #12C7B2;
+}
+ 
+.buttons-reset-block {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 0;
+}
+
+.show_password {
+    width: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-bottom: 10px;
+}
+
+#showPass {
+    display: flex;
+    align-items: center;
+}
+
+#showPass span {
+    font-size: 14px;
+}
+#showPass span:hover{
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.shadow {
+    opacity: .2;
+}
+
+
+/* Final Modal Window */
+#container {
+    display: none;
+    margin-top: 250px;
+    position: fixed;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 550px;
+    background-color: #FFF;
+    padding: 20px;
+    box-shadow: 0px 0px 2px 2px rgba(201, 200, 200, 0.75);
+}
+
+
+/* Animations */
+@keyframes slideInTop{
+    0%{
+        transform: translateY(-100%);
+    }
+    100%{
+        transform: translateY(0, 0);
+    }
+}
+.slide-top{
+    animation: .5s slideInTop ease-in-out 1;
+}
+
+
+/* Burger Menu */
+
+#burgerMenu {
+    position: fixed;
+    width: 100%;
+    display: flex;
+    background-color: #FFF;
+}
+
+/* SCROLL STYLE */
+
+ /* width */
+ ::-webkit-scrollbar {
+    width: 10px;
+   }
+   /* Track */
+   ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+   }
+   /* Handle */
+   ::-webkit-scrollbar-thumb {
+    background: #888;
+   }
+   /* Handle on hover */
+   ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+   }
+
+
+
+/* Media */
+@media screen and (max-width: 780px) {
+    header h1 {
+        font-size: 25px;
+    }
+
+    #block-logo {
+        padding: 20px 10px;
+    }
+
+    main {
+        flex-direction: column;
+    }
+        
+    .main-logo {
+        width: 125px;
+        height: 125px;
+    }
+
+    .main-content-blocks {
+        margin-bottom: 60px;
+    }
+
+    .profile_line {
+        width: 70%;
+    }
+
+    .preson-info-merchants {
+        margin-top: 30px;
+    }
+
+    footer {
+        padding: 20px 10px;
+    }
+
+    .button-reset {
+        width: 150px;
+        height: 50px;
+        font-size: 16px;
+    }
+
+    .last-item {
+        margin-bottom: 0px;
+    }
+}
+
+@media screen and (max-width: 500px) {
+    header h1 {
+        font-size: 20px;
+        margin-left: 45px;
+    }
+
+    .main-logo {
+        width: 100px;
+        height: 100px;
+    }
+
+    .necessary-action {
+        font-size: 13px;
+        width: 250px;
+        text-align: center;
+        line-height: 18px;
+    }
+
+    main {
+        padding-bottom:10px;
+    }
+
+    .main-content-blocks {
+        margin-bottom: 40px;
+    }
+
+    .profile_line {
+        width: 75%;
+    }
+
+    .personal-name {
+        font-size: 13px;
+    }
+
+    .description-info {
+        font-size: 12px;
+    }
+
+    .person-info {
+        font-size: 14px;
+    }
+
+    .button-reset {
+        width: 120px;
+        height: 40px;
+        font-size: 14px;
+    }
+    
+    /* Modal Wondows */
+    .modal-reset {
+        width: 300px;
+        padding: 10px;
+        margin-top: 50px;
+    }
+
+    .modal-reset p {
+        line-height: 1.5;
+        font-size: 13px;
+        margin-bottom: 25px;
+    }
+
+    #input_oldPassword, #input_newPassword {
+        width: 200px;
+        height: 40px;
+        font-size: 12px;
+    }
+
+    .show_password {
+        width: 200px;
+    }
+    #showPass span {
+        font-size: 12px;
+        margin-left: 5px;
+    }
+
+    .buttons-reset-block button {
+        width: 95px;
+        height: 35px;
+        font-size: 12px;
+    }
+
+    #container {
+        font-size: 12px;
+        width: 250px;
+        padding: 10px;
+        text-align: center;
+    }
+
+    .last-item {
+        margin-bottom: 0px;
+    }
+}

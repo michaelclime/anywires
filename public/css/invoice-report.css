@@ -1,0 +1,288 @@
+*{
+margin:0;
+padding:0;
+border:0;
+}
+
+
+/* Scroll Bar */
+/* width */
+::-webkit-scrollbar {
+width: 10px;
+}
+/* Track */
+::-webkit-scrollbar-track {
+background: #f1f1f1;
+}
+/* Handle */
+::-webkit-scrollbar-thumb {
+background: #888;
+}
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+background: #555;
+}
+
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #F1F4F6;
+    font-family: 'Frank Ruhl Libre', serif;
+}
+
+body button {
+    cursor: pointer;
+    border: none;
+    text-align: center;
+    line-height: 1;
+    border-radius: 3px;
+    outline: none;
+    transition: .35s;
+    font-family: 'Frank Ruhl Libre', serif;
+}
+
+#burgerMenu {
+    display: flex;
+    width: 100%;
+    background-color: rgb(255, 255, 255);
+
+}
+
+
+/* Wrapper */
+#wrapper {
+    width: 100%;
+}
+
+.opacityWrapper {
+    opacity: .2;
+}
+
+
+/* Header */
+header {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    background-color: rgb(255, 255, 255);
+    padding: 30px 0 30px 0px;
+    padding-left: 2.5%;
+    margin-top: 2px;
+}
+header img {
+    margin-right: 15px;
+    width: 45px;
+    height: 45px;
+}
+
+
+/* Main */
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    min-height: 800px;
+    background-color: rgb(255, 255, 255);
+    padding-top: 30px;
+    margin-top: 2px;
+}
+
+/* From - Till Block */
+.fromTill-block {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.blockRestore {
+    display: flex;
+    align-items: flex-end;
+}
+
+.restoreBtn {
+    width: 130px;
+    height: 45px;
+    background-color: #4D4D4D;
+    color: white;
+    font-size: 15px;
+}
+
+.blockFrom {
+    display: flex;
+    flex-direction: column;
+    margin-left: 15px;
+    font-weight: bold;
+    font-size: 22px;
+}
+
+.gray {
+    color: rgb(141, 140, 140);
+}
+
+.fromDate {
+    border: 1px solid rgb(189, 189, 189);
+    height: 45px;
+    width: 280px;
+    cursor: pointer;
+    border-radius: 3px;
+    font-size: 15px;
+    font-family: 'Frank Ruhl Libre', serif;
+    margin-top: 10px;
+    text-align: center;
+}
+
+.selector-block {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.selectorState, .selectorMerchant {
+    border: 1px solid rgb(189, 189, 189);
+    height: 45px;
+    width: 130px;
+    cursor: pointer;
+    border-radius: 3px;
+    font-size: 15px;
+    font-family: 'Frank Ruhl Libre', serif;
+    margin-top: 10px;
+    padding-left: 10px;
+    background-color: #F5F5F5;
+}
+
+.block-generateBtn {
+    display: flex;
+    align-items: flex-end;
+}
+
+#generate-btn {
+    width: 130px;
+    height: 45px;
+    background-color: #4D4D4D;
+    color: white;
+    margin-left: 15px;
+    font-size: 15px;
+}
+
+#generate-btn:hover, .restoreBtn:hover {
+    background-color: rgb(143, 143, 143);
+}
+#generate-btn:active, .restoreBtn:active {
+background-color: rgb(21, 73, 15);
+}
+
+
+
+/* Table, list of Users */
+#table-block {
+    width: 95%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding: 10px 0;
+    padding-bottom: 100px;
+}
+
+.table-line {
+    margin: 10px 0;
+    width: 100%;
+    height: 2px;
+    background-color: rgb(102, 102, 102);
+}
+
+
+/* Modal Window Create User */
+
+
+/* Animations */
+@keyframes slideInTop{
+    0%{
+        transform: translateY(-100%);
+    }
+    100%{
+        transform: translateY(0, 0);
+    }
+}
+.slide-top{
+    animation: .5s slideInTop ease-in-out 1;
+}
+
+
+/* Media */
+@media screen and (max-width: 700px) {
+    header {
+        padding: 10px 0 10px 20px;
+    }
+
+    header img {
+        width: 30px;
+        height: 30px;
+    }
+
+    header h1 {
+        font-size: 26px;
+    }
+
+    .blockFrom label {
+        font-size: 20px;
+    }
+
+    .fromDate {
+        height: 40px;
+        width: 250px;
+    }
+    
+    .selectorState, .selectorMerchant {
+        height: 40px;
+        width: 110px;
+    }
+
+    #generate-btn, .restoreBtn {
+        width: 110px;
+        height: 40px;
+    }
+}
+
+
+@media screen and (max-width: 550px) {
+    .fromTill-block {
+        flex-flow: column;
+    }
+
+    .blockRestore {
+        align-items: center;
+        justify-content: center;
+        order: 2;
+    }
+
+    .blockFrom {
+        justify-content: center;
+        align-items: center;
+        margin: 10px 0;
+    }
+
+    .block-generateBtn {
+        justify-content: center;
+        align-items: center;
+    }
+
+    .selector-block {
+        width: 250px;
+    }
+
+    .selectorState, .selectorMerchant {
+        height: 35px;
+        width: 100px;
+    }
+
+    #generate-btn, .restoreBtn {
+        margin: 5px 0 0 0;
+        width: 100px;
+        height: 35px;
+    }
+}
+

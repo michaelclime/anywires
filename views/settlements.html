@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="description" content="Anywires" />
+    <meta name="keywords" content="Anywires" />
+    <meta name="author" content="Anywires" />
+    <title>Settlements</title>
+    <link rel="shortcut icon" href="img/AnyWiresFavicon.png" type="image/png">
+    <link rel="stylesheet" href="css/settlements.css">
+    <link rel="stylesheet" href="css/authorizationMenu.css">
+    <script src="https://kit.fontawesome.com/5355902e87.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/menu.css" />
+    <link rel="stylesheet" type="text/css" href="css/menu-comp.css" />
+    <script src="js/modernizr.custom.js"></script>
+    <!-- For Calendar Inputs -->
+		<link rel="stylesheet" href="./css/datepicker.min.css">
+		<script src="./js/datepicker.min.js"></script>
+		<script src="./js/datepicker.en.js"></script>
+</head>
+
+<body>
+     <!-- MENU -->
+    <header>
+        <div class="menu">
+                <ul id="gn-menu" class="gn-menu-main">
+                    <li class="gn-trigger">
+                        <a class="gn-icon gn-icon-menu"><span>Menu</span></a>
+                        <nav class="gn-menu-wrapper">
+                            <div class="gn-scroller">
+                                <ul class="gn-menu">
+                                        <li><a href='personal-area.html'><img class="icon" src="fonts/icons/personal-area.png">Personal Area</a></li>
+                                        <li><a href='dashBoardMainPage.html'><img class="icon" src="fonts/icons/dashboard.png">Dashboard</a></li>
+                                        <li><a href='InvoiceGeneration.html'><img class="icon" src="fonts/icons/invoice.png">Invoice generation</a></li>
+                                        <li><a href="invoice-list.html"><img class="icon" src="fonts/icons/invoice-list.png">Invoice list</a></li>
+                                        <li><a href="invoice-report.html"><img class="icon" src="fonts/icons/invoice-report.png">Invoice Report</a></li>
+                                        <li><a href="wallets.html"><img class="icon" src="fonts/icons/wallet.png">Wallets</a></li>
+                                        <li><a><img class="icon" src="fonts/icons/settlement.png">Settlements</a></li>
+                                        <li><a href="merchants.html"><img class="icon" src="fonts/icons/merchant.png">Merchants</a></li>
+                                        <li><a href='users.html'><img class="icon" src="fonts/icons/users.png">Users</a></li>
+                                        <li><a href='banks.html'><img class="icon" src="fonts/icons/bank.png">Banks</a></li>
+                                        <li><a href='affiliateReport.html'><img class="icon" src="fonts/icons/aff-report.png">Affiliate report</a></li>
+                                        <li><a href='Dashboard-how-it-works.html'><img class="icon" src="fonts/icons/info.png">How it works</a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                        </nav>
+                    </li>
+                </ul>
+            </div>
+        <div class="authorizationMenu">
+            <span> 
+                <span class="userName"><%= currentUser.fullname %></span>
+                <span class="userLogo"><i class="far fa-user-circle"></i></span>
+            </span>
+            <ul class="dropMenu">
+                <li class="profile">
+                    <span class="liLogo"><i class="fas fa-user-alt"></i></span>
+                    <a href="#">Profile</a>
+                </li>
+                <li class="merchant">
+                    <span class="liLogo"><i class="fab fa-chromecast"></i></span>
+                    <a href="#">Merchant</a>
+                </li>
+                <li class="logOut">
+                    <span class="liLogo"><i class="fas fa-sign-out-alt"></i></span>
+                    <a href="#">LogOut</a>
+                </li>
+            </ul>
+        </div>
+    </header>
+    <!-- CONTENT -->
+    <main>
+        <div class="headerBlock">
+            <h1 class="mainTitle"><span class="affiliateReportlogo"></span><i class="fas fa-coins"></i></span>Settlements</h1> 
+        </div>
+
+        <div class="header-menu">
+            <div class="filterBlock-first">
+                <div class="byCreation-block" >
+                    <label for="byCreation-block">Date</label>
+                    <input class="dateForm datepicker-here" data-multiple-dates-separator="—" 
+                                                            data-range="true"
+                                                            data-language="en"
+                                                            type="text" 
+                                                            placeholder="Jul 01, 2019 — Aug 01, 2019">
+                </div>
+                
+                <div class="filterStatus-block">
+                    <label for="filterStatus-block">Status</label>
+                    <select name="status" class="status" id="filterStatus">
+                        <option value="" ></option>
+                        <option value="Requested">Requested</option>
+                        <option value="Sent">Sent</option>
+                        <option value="Received">Received</option>
+                        <option value="Declined">Declined</option>
+                    </select>
+                </div>
+
+                <div class="filterBank-block">
+                    <div class="filterMerchant-block">
+                        <label for="filterMerchant-block">Merchant</label>
+                        <select class="merchantList"  id="filterMerchant">
+                            <option value=""></option>
+                            <option value="CK">CK</option>
+                            <option value="CMP24">CMP24</option>
+                            <option value="GigaFX">GigaFX</option>
+                            <option value="Omer">Omer</option>
+                            <option value="CFM Solutions">CFM Solutions</option>
+                            <option value="Lions">Lions</option>
+                            <option value="English">English</option>
+                            <option value="TurboF">TurboF</option>
+                            <option value="BU">BU</option>
+                            <option value="ESP">ESP</option>
+                            <option value="ScaleApps">ScaleApps</option>
+                            <option value="MarketsCFD">MarketsCFD</option>
+                            <option value="TradeFXHub">TradeFXHub</option>
+                            <option value="QTeck">QTeck</option>
+                            <option value="60op">60op</option>
+                            <option value="GlobalFin">GlobalFin</option>
+                            <option value="Click2Sell">Click2Sell</option>
+                            <option value="BitSale">BitSale</option>
+                            <option value="XTrade">XTrade</option>
+                            <option value="Aro Trade">Aro Trade</option>
+                            <option value="Get Bits">Get Bits</option>
+                            <option value="Popcorn">Popcorn</option>
+                            <option value="GreatFXpro">GreatFXpro</option>
+                            <option value="Los Diablos">Los Diablos</option>
+                            <option value="TiRex">TiRex</option>
+                            <option value="AspenHolding">AspenHolding</option>
+                            <option value="MaxiPartners">MaxiPartners</option>
+                            <option value="SWGMarkets">SWGMarkets</option>
+                            <option value="Dax-300">Dax-300</option>
+                            <option value="Stox-50">Stox-50</option>
+                            <option value="MTC Brokers">MTC Brokers</option>
+                            <option value="FinixCapital">FinixCapital</option>
+                            <option value="CertusFinance">CertusFinance</option>
+                            <option value="DiamondGroup">DiamondGroup</option>
+                            <option value="F15">F15</option>
+                            <option value="TradeWell.io">TradeWell.io</option>
+                            <option value="Boxinvesting">Boxinvesting</option>
+                            <option value="Imperial">Imperial</option>
+                            <option value="Test">Test</option>
+                            <option value="Ainvestments">Ainvestments</option>
+                            <option value="DiamondGroup">IB Albania</option>
+                        </select>
+                    </div>
+                </div>
+                
+            </div>
+
+            <div class="showClear-block">
+                <div class="buttonsBlock">
+                    <button class="btn filterBtn">Show</button>
+                    <button class="btn showAllBtn">Clear</button>
+                    <button class="btn merchPayBtn">Merch Pay</button>
+                    <button class="btn payFromAwWalletBtn">Pay from AW Wallet</button>
+                    <button class="btn settleTransfBtn">Settle Transfers</button>
+                </div>
+                <div class="searchBlock">
+                    <input class="input-search" type="search" placeholder="Search..."/>
+                    <img class="search-btn" src="./img/magnifying-glass.png" alt="Image Search">
+                </div>
+            </div>
+        </div>
+        
+        <div id="table-block">
+            <div class="table-header">
+                <h2>Settlements List</h2>
+            </div>
+
+            <div class="table-line "></div>
+
+            <div class="test">
+                <table id="main-table">
+                    <thead>
+                        <tr class="table-head">
+                            <th class="column0">Created By</th>
+                            <th class="column1">Date</th>
+                            <th class="column2">Amount Sent</th>
+                            <th class="column3">Type</th>
+                            <th class="column4">Wallet</th>
+                            <th class="column5">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="tableList"></tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal windows -->
+
+    <!-- Merchant Pay Window -->
+    <div class="MerchantPayWindow">
+            <div class="MerchantPayWindow-content">
+                <button class="MerchantPayWindow-close">&times;</button>
+                <h1 class="MerchantPayWindow-header">Payment from your AW Wallet</h1>
+                <div class="main-form MerchantPayWindow-form">
+                    <h3>Your AW Balance is:</h3>
+                    <form  action="#" class="MerchantPayWindow-form">
+                        <input type="number" class="amountPayment" placeholder="0">
+                        <select name="wallet" class="wallet">
+                            <option value="">Choose your wallet</option>
+                        </select>
+                        <input type="text" class="paymentPurpose" placeholder="Payment Purpose">
+                    <input type="submit" class="paymentBtn  popup-btn" value="Make a payment request">
+                    <button class="createWalletBtn popup-btn">Create new Wallet</button>
+                    </form>
+                </div>
+            </div>
+    </div>
+    <!-- Create Wallet Window -->
+    <div class="createWalletWindow">
+            <div class="createWalletWindow-content">
+                <button class="createWalletWindow-close">&times;</button>
+                <h1 class="createWalletWindow-header">Create new wallet for payments</h1>
+                <div class="main-form createWalletWindow-form">
+                    <form  action="#" class="createWalletWindow-form">
+                        <input type="text" class="inpt walletName" placeholder="Wallet Name">
+                        <input type="text" class="inpt beneficiaryName" placeholder="Beneficiary name">
+                        <input type="text" class="inpt beneficiaryAddress" placeholder="Beneficiary address">
+                        <input type="text" class="inpt bankName" placeholder="Bank name">
+                        <input type="text" class="inpt bankAddress" placeholder="Bank Address">
+                        <input type="text" class="inpt IBAN" placeholder="IBAN">
+                        <input type="text" class="inpt BICSWIFT" placeholder="BIC/SWIFT">
+                        <select name="walletType" class="walletType">
+                            <option value="">Choose Wallet Type</option>
+                            <option value="Wire">Wire</option>
+                            <option value="BTC">BTC</option>
+                            <option value="ATMWithdrawal">ATM Withdrawal</option>
+                        </select>
+                        <input type="submit" class="creatingWalletBtn  popup-btn" value="Create">
+                    </form>
+                </div>
+            </div>
+    </div>
+     <!-- Settlement Details Window -->
+     <div class="settlementDetails">
+            <div class="settlementDetails-content">
+                <button class="settlementDetails-close">&times;</button>
+                <div class="setDetBlock1">
+                    <h1 class="settlementDetails-header">Settlement details</h1>
+                </div>
+                <hr class="settleHr">
+                <div class="setDetBlock2">
+                    <h1 class="settlementDetails-header">Documents</h1>
+                    <table class="SetDetTable">
+                        <thead>
+                            <tr class="SetDetTableHead">
+                                <th class="col0">Type</th>
+                                <th class="col1">Uploaded</th>
+                                <th class="col2"></th>
+                            </tr>
+                        </thead>
+                        <tbody class="SetDetTableList">
+                            <tr>
+                                <th class="col0">Additional</th>
+                                <th class="col1">Apr 19, 2019</th>
+                                <th class="col2"><a href="#">View</a></th>
+                            </tr>
+                            <tr>
+                                <th class="col0">Additional</th>
+                                <th class="col1">Apr 25, 2019</th>
+                                <th class="col2"><a href="#">View</a></th>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <button class="prevSettleBtn settlePrevBtn">Preview settlement</button>
+                </div>
+                <hr class="settleHr">
+                <div class="main-form commnetsMenu">
+                    <h1 class="settlementDetails-header commentTitile">Comments and Updates</h1>
+                    <div class="comment">
+                            <span>AW_Finance</span>
+                            <p>Included fee for B2C transfer to client Camillo Pasquini, proof is attached in Additional documents</p>
+                    </div>
+                    <div class="comment">
+                            <span>AW_Finance</span>
+                            <p>Settlement was made with 2 parts to MrTango account.
+                                    Today we've got confirmation that settlement payment have been received by merchant.
+                                    Settlement will be marked as Received.</p>
+                    </div>
+                    <div class="firstRowCommentBlock RowCommentBlock">
+                        <form action="#">
+                            <input type="text" class="commissionType" placeholder="Commission type">
+                            <input type="number" class="commissionAmount" placeholder="Amount">
+                            <input type="submit" class="addCommissionBtn settlePrevBtn" value="Add Commission">
+                        </form>
+                    </div>
+                    <div class="secondRowCommentBlock RowCommentBlock">
+                        <form action="#">
+                            <select name="docType" class="docType">
+                                <option value="">Document Type</option>
+                                <option value="Payment proof">Payment proof</option>
+                                <option value="Contract">Contract</option>
+                                <option value="Additional">Additional</option>
+                            </select>
+                            <input id='buttonid' type="file" name="file" accept="file/*">
+                            <input type="submit" class="addDocBtn settlePrevBtn" value="Upload">
+                        </form>
+                    </div>
+                    <div class="thirdRowCommentBlock RowCommentBlock">
+                        <input type="text" class="commentField" placeholder='Type here...'>
+                        <input type="submit" class="addCommentBtn settlePrevBtn" value="Add Comment">
+                    </div>
+                    <div class="fourthRowCommentBlock RowCommentBlock">
+                        <div class="comment">
+                            <span>AW_Finance</span>
+                            <p>B2C Transfer 2000 EUR for client Camillo Pasquini</p>
+                            <span>€2 000</span>
+                        </div>
+                        <div class="comment">
+                            <span>AW_Finance</span>
+                            <p>Commission for B2C Transfer 2000 EUR for client Camillo Pasquini (5% + 100 EUR)</p>
+                            <span>€200</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+    <script src="js/classie.js"></script>
+    <script src="js/gnmenu.js"></script>
+    <script>
+        new gnMenu( document.getElementById( 'gn-menu' ) );
+    </script>
+    <script src="js/settlements.js"></script>
+    <script type="text/javascript" src="js/authorizationMenu.js"></script>
+</body>
+</html>

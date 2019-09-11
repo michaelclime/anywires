@@ -1,0 +1,174 @@
+@import url('https://fonts.googleapis.com/css?family=Frank+Ruhl+Libre&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Frank Ruhl Libre', serif;
+}
+
+/* SCROLL STYLE */
+
+ /* width */
+ ::-webkit-scrollbar {
+    width: 10px;
+   }
+   /* Track */
+   ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+   }
+   /* Handle */
+   ::-webkit-scrollbar-thumb {
+    background: #888;
+   }
+   /* Handle on hover */
+   ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+   }
+
+
+/* CONTENT */
+
+body {
+    background:  #EEF3FA;
+}
+
+main {
+    margin-top: 3px;
+}
+
+.headerBlock {
+    padding: 30px 0;
+    padding-left: 70px;
+    background: #FFF;
+}
+
+.mainTitle {
+    font-size: 36px;
+}
+
+.fa-wallet {
+    padding: 0 20px;
+}
+
+
+.tableWallets {
+    text-align: center;
+    min-height: 800px;
+    padding: 50px 90px;
+    margin-top: 3px;
+    background-color: rgb(255, 255, 255);
+}
+
+.table {
+    width: 100%;
+}
+
+.tableWalletsHead {
+    width: 15%;
+    background-color:  #20a5f7;
+    font-size: 20px;
+    color: #FFF;
+    
+}
+
+th {
+    font-weight: normal;
+}
+
+.tableList {
+    text-align: center;
+    width: 15%;
+    font-size: 16px;
+    font-weight: 700;
+    color: rgb(119, 114, 114)
+}
+
+.column1, .column2, .column3, .column4, .column5, .column6 {
+    padding: 20px;
+}
+.receivedBtn {
+    padding: 10px 15px;
+    font-size: 16px;
+    font-weight: 700;
+    background: rgb(0, 200, 81);
+    color: #FFF;
+    border: none;
+    border-radius: 5px;
+    outline: none;
+}
+
+.receivedBtn:hover {
+    background: rgb(51, 51, 51);
+}
+
+@media (max-width: 910px) {
+    .mainTitle {
+        font-size: 30px;
+    }
+
+    .tableWallets {
+        padding: 50px;
+    }
+    
+    .tableWalletsHead {
+        width: 15%;
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 810px) {
+    .mainTitle {
+        font-size: 28px;
+    }
+
+    .tableWallets {
+        padding: 20px;
+    }
+    
+    .tableWalletsHead {
+        width: 15%;
+        font-size: 14px;
+    }
+    
+    .tableList {
+        width: 15%;
+        font-size: 12px;
+    }
+    
+    .column1, .column2, .column3, .column4, .column5, .column6 {
+        padding: 10px;
+    }
+    .receivedBtn {
+        padding: 5px 10px;
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 520px) {
+    .mainTitle {
+        font-size: 18px;
+    }
+
+    .tableWallets {
+        padding: 5px;
+    }
+    
+    .tableWalletsHead {
+        width: 15%;
+        font-size: 8px;
+    }
+    
+    .tableList {
+        width: 15%;
+        font-size: 8px;
+    }
+    
+    .column1, .column2, .column3, .column4, .column5, .column6 {
+        padding: 10px 0;
+    }
+    .receivedBtn {
+        padding: 3px 6px;
+        font-size: 8px;
+    }
+}

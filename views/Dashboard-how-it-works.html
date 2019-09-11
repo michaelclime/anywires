@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+        <title>How it works</title>
+        <link rel="shortcut icon" href="img/AnyWiresFavicon.png" type="image/png">
+		<meta name="description" content="Anywires" />
+		<meta name="keywords" content="Anywires" />
+		<meta name="author" content="Anywires" />
+		<link rel="stylesheet" type="text/css" href="css/menu.css" />
+        <link rel="stylesheet" type="text/css" href="css/menu-comp.css" />
+        <link rel="stylesheet" type="text/css" href="css/Dashboard-how-it-works.css" />
+        <script src="js/modernizr.custom.js"></script>
+        <script src="https://kit.fontawesome.com/5355902e87.js"></script>
+</head>
+<body>
+    <header>
+            <div class="menu">
+                    <ul id="gn-menu" class="gn-menu-main">
+                        <li class="gn-trigger">
+                            <a class="gn-icon gn-icon-menu"><span>Menu</span></a>
+                            <nav class="gn-menu-wrapper">
+                                <div class="gn-scroller">
+                                    <ul class="gn-menu">
+                                            <li><a href='personal-area.html'><img class="icon" src="fonts/icons/personal-area.png">Personal Area</a></li>
+                                            <li><a href="dashBoardMainPage.html"><img class="icon" src="fonts/icons/dashboard.png">Dashboard</a></li>
+                                            <li><a href='InvoiceGeneration.html'><img class="icon" src="fonts/icons/invoice.png">Invoice generation</a></li>
+                                            <li><a href="invoice-list.html"><img class="icon" src="fonts/icons/invoice-list.png">Invoice list</a></li>
+                                            <li><a href="invoice-report.html"><img class="icon" src="fonts/icons/invoice-report.png">Invoice Report</a></li>
+                                            <li><a href="wallets.html"><img class="icon" src="fonts/icons/wallet.png">Wallets</a></li>
+                                            <li><a href="settlements.html"><img class="icon" src="fonts/icons/settlement.png">Settlements</a></li>
+                                            <li><a href="merchants.html"><img class="icon" src="fonts/icons/merchant.png">Merchants</a></li>
+                                            <li><a  href='users.html'><img class="icon" src="fonts/icons/users.png">Users</a></li>
+                                            <li><a href='banks.html'><img class="icon" src="fonts/icons/bank.png">Banks</a></li>
+                                            <li><a href='affiliateReport.html'><img class="icon" src="fonts/icons/aff-report.png">Affiliate report</a></li>
+                                            <li><a><img class="icon" src="fonts/icons/info.png">How it works</a></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </nav>
+                        </li>
+                    </ul>
+                </div>       
+    </header>
+        <div class ="pageTitle">
+            <img src="img/information.png">
+            <h1>How it works</h1>
+        </div>
+        <div class="faqButtons">
+            <a href="#" class ="faqbtn" id="1">TRANSFER STATUSES</a>
+            <a href="#" class ="faqbtn" id="2">DOCUMENTS</a>
+            <a href="#" class ="faqbtn" id="3">IBAN</a>
+            <a href="#" class ="faqbtn" id="4">SEPA</a>
+        </div>
+        <div class="faqContent">
+            <div class="statusContent">
+                <div class="statusText">
+                    <h3>Transfer statuses:</h3></br>
+                    <ul class="statuses">
+                        <li><p><b><span style="color: black">Requested</span></b> - Invoice for Transfer was requested in a system.</p></li>
+                        <li><p><b><span style="color: rgb(255, 139, 6)">Sent</span></b> - Payment proof for Transfer was uploaded to the system and checked by AnyWires accountant.</p></li>
+                        <li><p><b><span style="color: blue">Received</span></b> - Transfer have been received to the bank.</p></li>
+                        <li><p><b><span style="color: green">Approved</span></b> - merchant uploaded all the documents (Proof + client's KYC) to transfer and it was reviewed and Approved by AnyWires compliance.</p></li>
+                        <li><p><b><span style="color: rgb(1, 226, 1)">Available</span></b> - after settlement delay period Transfer become available for settlement (now merchant can see this transfer when requesting Settlement</p></li>
+                        <li><p><b><span style="color: rgb(29, 32, 29)">Settled</span></b>- Transfer was settled to Merchant by settlement request.</p></li>
+                        <li><p><b><span style="color: red">Declined</span></b> - Transfer was declined by any reason.</p></li>
+                        <li><p><b><span style="color: rgb(0, 201, 200  )">Frozen</span></b> - Set upon freezing any of bank accounts, setting manually based on the frozen amount.</p></li>
+                        <li><p><b><span style="color: rgb(82, 91, 91 )">Recall</span></b> - Set upon getting notice from the bank that client issued a recall.</p></li>
+                    </ul></br>
+                </div>
+                <div class="statusImage">
+                    <h3>Wire Transfers workflow:</h3>
+                    <img src="img/Statuses workflow.png">
+                </div>
+            </div>
+            <div class="documentContent">
+                <h3>Documents uploading and Verification</h3>
+                <p><i>All the documents connected to Wire Transfer should be uploaded in Invoice popUp in Invoice List page.</i></p>
+                <p><b>Proof of Payment</b></p>
+                <p>To find wire transfer in a bank system AnyWires accountant need to have ones payment proof (to see clients legal name, senders details and so on).</p>
+                <p>So to make WireTransfer <b><span style="color: blue">Received</span></b> Merchant need to upload Proof of Payment  which contains:</p>
+                <ul class="statuses">
+                    <li><p>• Payer's name</p></li>
+                    <li><p>• Payer's Bank's name and Beneficiary IBAN</p></li>
+                    <li><p>• Date payment was (will be) made</p></li>
+                    <li><p>• Amount and currency of payment.</p></li>
+                 </ul>
+                <p><b>KYC of a Client:</b></p>
+                <p>To make Transfer <b><span style="color: green">Approved</span></b> after it was received AnyWires compliance need to check payer's KYC.
+                        Merchant need to upload client's ID and Utility Bill, and after it would be reviewed and approved - Transfer would be marked as Approved and get a V sign.</p>
+                <ul class="statuses">
+                    <li><p>• ID should be clear contains full client's details.</p></li>
+                    <li><p>• Utility Bill should contain payer's address and name, and to be not older than 3 month.</p></li> 
+                </ul>
+                   <a href="/how-it-works-dok" target="_blank" id="link">Declaration template</a>
+            </div>
+            <div class="ibanContent">
+                <div class ="ibanText">
+                        <h3>IBAN</h3> 
+                        <a href ="https://www.iban.com/" target="blank">IBAN checker</a>
+                        <p>SORT Code - first 6 digits after letters ( In this case it is - 6601613)</p>
+                </div>
+                <div class ="ibanImagge">
+                    <img src="img/IBAN.jpg">
+                </div>
+            </div>
+            <div class="sepaContent">
+                    <h3>SEPA</h3>
+                    <p>Please mind that you can make SEPA wires only between SEPA countries.</p>
+                    <p>You cannot make SEPA wire from Africa or Wakanda, because they are not in the SEPA zone.</p>
+                    <p>There are 28 EU member states and a number of additional SEPA zone territories.</p>
+                    <p><em><strong>The 28 EU States:</strong></em></p>
+                    <p>Austria, Belgium, Bulgaria, Croatia, Cyprus, Czech Republic, Denmark, Estonia, Finland, France, Germany, Greece, Hungary, Ireland, Italy, Latvia, Lithuania, Luxembourg, Malta, Netherlands, Poland, Portugal, Romania, Slovak Republic, Slovenia, Spain, Sweden, and United Kingdom.</p>
+            </div>
+        </div>
+        <script src="js/classie.js"></script>
+		<script src="js/gnmenu.js"></script>
+		<script>
+			new gnMenu( document.getElementById( 'gn-menu' ) );
+        </script>
+        <script src="js/how-it-works.js"></script>
+       
+       
+</body>
+</html>

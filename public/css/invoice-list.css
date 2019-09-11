@@ -1,0 +1,423 @@
+*{
+margin:0;
+padding:0;
+border:0;
+}
+
+
+/* Scroll Bar */
+/* width */
+::-webkit-scrollbar {
+width: 10px;
+}
+/* Track */
+::-webkit-scrollbar-track {
+background: #f1f1f1;
+}
+/* Handle */
+::-webkit-scrollbar-thumb {
+background: #888;
+}
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+background: #555;
+}
+
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #F1F4F6;
+    font-family: 'Frank Ruhl Libre', serif;
+}
+
+body button {
+    cursor: pointer;
+    border: none;
+    text-align: center;
+    line-height: 1;
+    border-radius: 3px;
+    outline: none;
+    transition: .35s;
+    font-family: 'Frank Ruhl Libre', serif;
+}
+
+#burgerMenu {
+    display: flex;
+    width: 100%;
+    background-color: rgb(255, 255, 255);
+
+}
+
+
+/* Wrapper */
+#wrapper {
+    width: 100%;
+}
+
+.opacityWrapper {
+    opacity: .2;
+}
+
+
+/* Header */
+header {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    background-color: rgb(255, 255, 255);
+    padding: 30px 0 30px 0px;
+    padding-left: 65px;
+    margin-top: 2px;
+}
+header img {
+    margin-right: 15px;
+    width: 45px;
+    height: 45px;
+}
+
+
+/* Main */
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    min-height: 800px;
+    background-color: rgb(255, 255, 255);
+    padding-top: 30px;
+    margin-top: 2px;
+}
+
+
+/* Table, list of Users */
+#table-block {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    padding: 10px 0;
+    padding-bottom: 100px;
+}
+
+.table-line {
+    margin: 10px 0;
+    width: 90%;
+    height: 2px;
+    background-color: rgb(102, 102, 102);
+}
+
+.invoiceTable {
+    width: 90%;
+}
+
+
+/* Filter Block First START*/
+.dateForm {
+    width: 100%;
+    height: 40px;
+    border: 1px solid rgb(189, 189, 189);
+    cursor: pointer;
+    border-radius: 3px;
+    font-size: 15px;
+    font-family: 'Frank Ruhl Libre', serif;
+    text-align: center;
+    margin-top: 5px;
+}
+
+select{
+    width: 100%;
+    height: 40px;
+    border: 1px solid rgb(189, 189, 189);
+    cursor: pointer;
+    border-radius: 3px;
+    font-size: 15px;
+    font-family: 'Frank Ruhl Libre', serif;
+    background-color: #F5F5F5;
+    margin-top: 5px;
+    text-indent: 15px;
+}
+
+option {
+    font-size: 16px;
+    background-color: rgb(255, 255, 255);
+}
+
+label {
+    font-weight: bold;
+}
+
+.filterBlock-first {
+    width: 90%;
+    display: flex;
+    align-items: flex-end;
+}
+
+.byCreation-block {
+    display: flex;
+    flex-direction: column;
+    width: 240px;
+    margin-right: 20px;
+}
+
+.filterStatus-block {
+    width: 240px;
+    margin-right: 20px;
+}
+
+.filterBank-block {
+    width: 240px;
+}
+/* Filter Block First END*/
+
+
+/* Filter Block Second START */
+.filterBlock-second {
+    width: 90%;
+    display: flex;
+    align-items: flex-end;
+    margin: 20px 0;
+}
+
+.byReceive-block {
+    width: 240px;
+    margin-right: 20px;
+}
+
+.filterMerchant-block {
+    width: 240px;
+    margin-right: 20px;
+}
+
+.filterDocuments-block {
+    width: 240px;
+}
+/* Filter Block Second END */
+
+
+/* Search Block START*/
+.input-search {
+    width: 220px;
+    height: 40px;
+    background-color: #4D4D4D;
+    border-radius: 3px 0 0 3px;
+    font-size: 16px;
+    padding: 5px 15px;
+    transition: .3s;
+    outline: none;
+    border: none;
+    color: #FFF;
+    font-family: 'Frank Ruhl Libre', serif;
+}
+
+.input-search::placeholder {
+    color: rgb(224, 224, 224);
+}
+
+.input-search:focus {
+    box-shadow: 0px 0px 6px 0px rgba(68, 68, 68, 0.75);
+    background-color: rgb(110, 110, 110);
+}
+
+.search-btn {
+    width: 40px;
+    height: 40px;
+    padding: 12px;
+    background-color: rgb(54, 54, 54);
+    cursor: pointer;
+    border-radius: 0px 3px 3px 0px;
+    transition: .3s;
+}
+
+.search-btn:hover {
+    background-color: rgb(0, 0, 0);
+}
+.search-btn:active {
+    background-color: rgb(139, 139, 139);
+}
+
+
+.showClear-block {
+    width: 90%;
+    margin: 10px 0; 
+    display: flex;
+    justify-content: space-between;
+}
+
+.showClear-block button {
+    width: 115px;
+    height: 40px;
+    background-color: rgb(77, 77, 77);
+    color: white;
+    margin-right: 6px;
+}
+
+#showBtn:hover, #clearFilterBtn:hover {
+    background-color: #888;
+}
+
+#showBtn:active, #clearFilterBtn:active {
+    background-color: #12C7B2;
+}
+
+.searchBlock {
+    display: flex;
+}
+
+.downloadXls-block {
+    width: 90%;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+
+#dowloadXls {
+    cursor: pointer;
+}
+#dowloadXls:hover{
+    filter: invert(75%);
+}
+#dowloadXls:active{
+    filter: invert(95%);
+}
+/* Search Block  END*/
+
+
+
+/* Animations */
+@keyframes slideInTop{
+    0%{
+        transform: translateY(-100%);
+    }
+    100%{
+        transform: translateY(0, 0);
+    }
+}
+.slide-top{
+    animation: .5s slideInTop ease-in-out 1;
+}
+
+
+/* Media */
+@media screen and (max-width: 1125px) {
+    header {
+        padding: 20px 0 20px 60px;
+    }
+
+    header h1 {
+        font-size: 28px;
+    }
+
+    .byCreation-block, .filterStatus-block, .filterBank-block, .byReceive-block, .filterMerchant-block, .filterDocuments-block {
+        width: 160px;
+    }
+
+    select {
+        height: 35px;
+    }
+
+    .dateForm {
+        font-size: 12px;
+        padding: 2px;
+        height: 35px;
+    }
+
+    .input-search {
+        width: 180px;
+        height: 35px;
+    }
+
+    .search-btn {
+        height: 35px;
+        width: 35px;
+        padding: 10px;
+    }
+
+    #clearFilterBtn, #showBtn {
+        width: 100px;
+        height: 35px;
+    }
+}
+
+
+@media screen and (max-width: 578px) {
+    header {
+        padding: 20px 0 20px 30px;
+    }
+
+    header h1 {
+        font-size: 25px;
+    }
+
+    header img {
+        width: 30px;
+        height: 30px;
+    }
+
+    .filterBlock-first, .filterBlock-second {
+        justify-content: space-between;
+    }
+
+    .byCreation-block, .filterStatus-block, .filterBank-block, .byReceive-block, .filterMerchant-block, .filterDocuments-block {
+        width: 140px;
+        margin-right: 0;
+    }
+
+    select, .dateForm {
+        height: 32px;
+        font-size: 14px;
+    }
+
+    .input-search {
+        width: 140px;
+        height: 32px;
+        font-size: 14px;
+    }
+
+    .search-btn {
+        height: 32px;
+        width: 32px;
+        padding: 9px;
+    }
+
+    #clearFilterBtn, #showBtn {
+        width: 90px;
+        height: 32px;
+        font-size: 14px;
+    }
+
+    label {
+        font-size: 14px;
+    }
+}
+
+@media screen and (max-width: 490px) {
+    .filterBlock-first, .filterBlock-second {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .byCreation-block, .filterStatus-block, .filterBank-block, .byReceive-block, .filterMerchant-block, .filterDocuments-block {
+        width: 210px;
+        margin-right: 0;
+    }
+
+    .showClear-block {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .searchBlock {
+        margin-top: 10px;
+    }
+
+    .input-search {
+        width: 158px;
+    }
+
+    #clearFilterBtn {
+        margin-right: 0;
+    }
+}

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Anywires</title>
+    <link rel="shortcut icon" href="img/AnyWiresFavicon.png" type="image/png">
+    <link rel="stylesheet" href="css/registerForm.css">
+    <script src="https://kit.fontawesome.com/5355902e87.js"></script>
+</head>
+<body>
+
+    <div class="popup">
+        <div class="popup-dialog">
+            <div class="popup-content">
+                <img src="img/logocompany.png" alt="Anywires logo" class="logo">
+                
+                <div class="main-form popup-form">
+                    <form  action="/register" class="popup-form" method="POST">
+                        <div class="inputSection">
+                            <label for="username">Email</label>
+                            <input type="text" name="username" id="username" placeholder="Type here...">
+                        </div>
+                        <div class="inputSection">
+                            <label for="fullname">Full Name</label>
+                            <input type="text" name="fullname" id="fullname" placeholder="Type here...">
+                        </div>
+                        <div class="inputSection">
+                            <label for="password">Password</label>
+                            <input type="text" name="password" id="password" placeholder="Type here...">
+                        </div>
+                        <div class="inputSection">
+                            <label for="typeClass">Type</label>
+                            <select id="typeClass"  name="typeClass">
+                                <option value=""></option>
+                                <option value="admin">Admin</option>
+                                <option value="client">Client</option>
+                            </select>
+                        </div>
+                        <div class="inputSection">
+                            <label for="role">Role</label>
+                            <select id="role"  name="role">
+                                    <option value=""></option>
+                                    <option value="CrmFinanceManager">CRM finance manager</option>
+                                    <option value="CrmInvoiceManager">CRM invoice manager</option>
+                                    <option value="CrmAdmin">CRM admin</option>
+                                    <option value="merchantManager">Merchant manager</option>
+                                    <option value="invoiceManager">Invoice manager</option>
+                                    <option value="affiliate">Affiliate</option>
+                                    <option value="solutionManager">Solution manager</option>
+                                </select>
+                        </div>
+                        <div class="inputSection">
+                            <label for="merchant">Merchant</label>
+                            <select id="merchant"  name="merchant">
+                                <option value=""></option>
+                            </select>
+                        </div>
+
+                        <input type="submit" class="creatUserBtn" value="Creat A New User">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

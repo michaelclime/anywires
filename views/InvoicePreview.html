@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://fonts.googleapis.com/css?family=Frank+Ruhl+Libre&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/invoice-preview.css">
+    <title>Invoice Preview</title>
+</head>
+<body>
+    <div id="wrapper">
+        <header>
+            <div class="block-logo">
+                <div class="bank-logo-block">
+                    <img class="bank-logo" src="./img/CMP.png" alt="bank-logo">
+                </div>
+                <div class="invoice-info">
+                    <h1>Invoice</h1>
+                    <p>Invoice date: Aug 0, 0000</p>
+                    <p>Invoice num: 0000 / 0000</p>
+                </div>
+            </div>
+
+            <div class="invoice-fromFor-block">
+                <div class="invoice-from-block">
+                    <p><b>Invoice from:</b></p>
+                    <p>Beneficiary name: Some Kind Beneficiar</p>
+                    <p>Beneficiary address: Ul. Shevchenka, 00, 000-00, World</p>
+                    <p>Bank name: CMP24 Bank</p>
+                    <p>Bank address: ul. Shevchenka 00/00, 00-000 World</p>
+                    <p>IBAN EUR: 0000 0000 0000 0000 0000 0000 0000</p>
+                    <p>SWIFT: SWIFT</p>
+                </div>
+                <div class="invoice-for-block">
+                    <p><b>Invoice for:</b></p>
+                    <p>Client: Petro Petrovsky</p>
+                    <p>Email: petro@inbox.com</p>
+                    <p>Phone: +0(00)000-00-000</p>
+                </div>
+            </div>
+        </header>
+        <main>
+
+            <table>
+                <thead>
+                  <tr>
+                    <th scope="col" class="col1">Item description</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col" class="col2">Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td data-label="Item description" class="col1">Payment according to contract #  0000 / 00002</td>
+                    <td data-label="Quantity">1</td>
+                    <td data-label="Total" class="table-total col2">15 000 EUR</td>
+                  </tr>
+                  <tr>
+                    <td scope="row" data-label="Item description" class="col1">VAT</td>
+                    <td data-label="Quantity">1</td>
+                    <td data-label="Total" class="table-total col2">0 EU</td>
+                  </tr>
+                </tbody>
+              </table>
+
+            <div class="line-under-table"></div>
+
+            <div class="final-sum">
+                <h2>15 000 EUR</h2>
+            </div>
+
+            <div class="line-under-sum"></div>
+
+            <div class="notes">
+                <p><b>Please don't hesitate to contact us with any questions about</b></p>
+                <p><b>your transfers at wire@anywires.com or abuse@anywires.com</b></p>
+            </div>
+
+            <div class="notes">
+                <p><b>Notes:</b></p>
+                <p>Payment should be done within 96 hour after</p>
+                <p>invoice received.</p>
+                <p>If not, Invoice should be re-generated.</p>
+            </div>
+
+        </main>
+    </div>
+    
+</body>
+</html>

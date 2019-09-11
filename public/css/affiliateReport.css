@@ -1,0 +1,272 @@
+@import url('https://fonts.googleapis.com/css?family=Frank+Ruhl+Libre&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Frank Ruhl Libre', serif;
+}
+
+/* CONTENT */
+
+body {
+    background:  #EEF3FA;
+}
+
+main {
+    margin-top: 3px;
+}
+
+p, span {
+    padding: 10px 0;
+    font-size: 22px;
+}
+
+.number {
+    color: rgb(51, 181, 229);
+    font-weight: 700;
+}
+
+.headerBlock {
+    padding: 30px 0;
+    padding-left: 70px;
+    background: #FFF;
+}
+
+.mainTitle {
+    font-size: 36px;
+}
+
+.affiliateReportlogo {
+    font-size: 36px;
+    padding: 0 20px;
+}
+
+.choosePeriod {
+    display: flex;
+    justify-content: space-between;
+    margin: 3px 0;
+    background: #FFF;
+    font-size: 18px;
+    padding: 30px 70px; 
+    padding-right: 50px;
+    color: rgb(51, 51, 51);
+}
+
+.leftBlockChoosePeriod {
+   font-size: 1.2rem; 
+}
+
+.rightBlockChoosePeriod {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    margin-right: 50px;
+}
+
+.affiliateName, .secondTitle {
+    padding-bottom: 10px;
+    font-size: 30px;
+}
+
+.datepicker-here {
+    font-size: 1.1rem;
+    color: rgb(51, 51, 51);
+    padding: 5px;
+}
+
+.report {
+    display: flex;
+    justify-content: space-between;
+    margin: 3px 0;
+    padding: 30px 70px; 
+    background: #FFF;
+    color: rgb(51, 51, 51);
+}
+
+.affiliateNameLeftBtn, .affiliateNameRightBtn {
+    background:  #FFF;
+    color:rgb(51, 51, 51);
+    padding: 5 px;
+    border: none;
+    font-size: 24px;
+    outline: none;
+}
+
+.affiliateNameLeftBtn:hover, .affiliateNameRightBtn:hover {
+    background:  rgb(51, 51, 51);
+    color: #FFF;
+} 
+
+.turnOverChartBtn {
+    margin: 20px 0;
+    background: rgb(117, 117, 117);
+    color: #FFF;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    font-size: 24px;
+    outline: none;
+}
+
+.turnOverChartBtn:hover {
+    background: rgb(51, 181, 229);
+}
+/* CHART */
+
+.chartBox {
+    text-align: center;
+    width: 45%;
+}
+
+/* SCROLL STYLE */
+
+ /* width */
+ ::-webkit-scrollbar {
+    width: 10px;
+   }
+   /* Track */
+   ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+   }
+   /* Handle */
+   ::-webkit-scrollbar-thumb {
+    background: #888;
+   }
+   /* Handle on hover */
+   ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+   }
+
+
+@media (max-width: 990px) {
+    p, span, .inputPeriod label {
+        padding: 10px 0;
+        font-size: 18px;
+    }
+
+    .affiliateName, .secondTitle {
+        padding-bottom: 10px;
+        font-size: 24px;
+    }
+
+    .datepicker-here {
+        font-size: 18px;
+    }
+
+    .affiliateNameLeftBtn, .affiliateNameRightBtn, .turnOverChartBtn {
+        font-size: 16px;
+    }
+
+    .chartBox {
+        width: 60%;
+    }
+}
+
+@media (max-width: 770px) {
+    .mainTitle {
+        font-size: 28px;
+    }
+
+    p, span, .inputPeriod label {
+        padding: 10px 0;
+        font-size: 16px;
+    }
+
+    .affiliateName, .secondTitle {
+        padding-bottom: 10px;
+        font-size: 22px;
+    }
+
+    .datepicker-here {
+        font-size: 14px;
+    }
+
+    .affiliateNameLeftBtn, .affiliateNameRightBtn, .turnOverChartBtn {
+        font-size: 16px;
+    }
+
+    .chartBox {
+        width: 60%;
+    }
+}
+
+@media (max-width: 700px) {
+    .choosePeriod, .report {
+        padding: 30px
+    }
+
+    .mainTitle {
+        font-size: 24px;
+    }
+
+    p, span, .inputPeriod label {
+        padding: 10px 0;
+        font-size: 18px;
+    }
+
+    .affiliateName, .secondTitle {
+        padding-bottom: 10px;
+        font-size: 18px;
+    }
+
+    .dateFrom, .dateTo {
+        margin: 5px;
+        padding-left: 2%;
+        font-size: 10px;
+    }
+
+    .affiliateNameLeftBtn, .affiliateNameRightBtn, .turnOverChartBtn {
+        font-size: 18px;
+    }
+
+    .report {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .chartBox {
+        width: 100%;
+        height: 100%;
+    }
+}
+
+@media (max-width: 566px) {
+    .choosePeriod, .report {
+        padding: 10px
+    }
+
+    .mainTitle {
+        font-size: 18px;
+    }
+
+    p, span, .inputPeriod label {
+        padding: 5px 0;
+        font-size: 12px;
+    }
+
+    .affiliateName, .secondTitle {
+        padding-bottom: 10px;
+        font-size: 14px;
+    }
+
+    .datepicker-here {
+        font-size: 10px;
+    }
+
+    .affiliateNameLeftBtn, .affiliateNameRightBtn, .turnOverChartBtn {
+        font-size: 12px;
+    }
+
+    .report {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .chartBox {
+        width: 100%;
+        height: 100%;
+    }
+}

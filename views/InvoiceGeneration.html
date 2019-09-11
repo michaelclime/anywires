@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="description" content="Anywires" />
+    <meta name="keywords" content="Anywires" />
+    <meta name="author" content="Anywires" />
+    <title>Invoice Generation</title>
+    <link rel="shortcut icon" href="img/AnyWiresFavicon.png" type="image/png">
+    <link rel="stylesheet" href="css/invoiceGeneration.css">
+    <script src="https://kit.fontawesome.com/5355902e87.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+</head>
+<body>
+    <a class="backToMain" href='/dashBoardMainPage.html'><span>
+        <i class="fas fa-arrow-left"></i>Back</span></a>
+    <div class="invoiceGenerationPage">
+        <div class="logo">
+            <img src="img/logocompany.png" alt="Client Logo">
+        </div>
+        <h1 class="fillTitle">Fill to make an Invoice</h1>
+        <hr>
+        <div class="invoiceInfoBlock">
+            <form  action="/invoices" class="invoice-form" method="POST">
+                <input type="text" name="name" placeholder="Client's full name">
+                <input type="text" name="address" placeholder="Client's address">
+                <input type="text" name="country" placeholder="Client's country">
+                <input type="text" name="phone" placeholder="Client's phone">
+                <input type="text" name="email" placeholder="Client's email">
+                <div class="amountCurrency">
+                    <input class="currencyInput" type="text"  name="amount" placeholder="Amount to Transfer">
+                    <select name="currency" class="currency">
+                        <option value="EUR">EUR</option>
+                        <option value="USD">USD</option>
+                    </select>
+                </div>
+                <div class="SEPA">
+                    <input type="checkbox" name="sepa">
+                    <span>SEPA</span>
+                </div>
+                <div class="merchChoose">
+                    <label for="merchList">Merch</label>
+                    <select id="merchList"  name="merch">
+                        <option value="CK">CK</option>
+                        <option value="CMP24">CMP24</option>
+                        <option value="GigaFX">GigaFX</option>
+                        <option value="Omer">Omer</option>
+                        <option value="CFM Solutions">CFM Solutions</option>
+                        <option value="Lions">Lions</option>
+                        <option value="English">English</option>
+                        <option value="TurboF">TurboF</option>
+                        <option value="BU">BU</option>
+                        <option value="ESP">ESP</option>
+                        <option value="ScaleApps">ScaleApps</option>
+                        <option value="MarketsCFD">MarketsCFD</option>
+                        <option value="TradeFXHub">TradeFXHub</option>
+                        <option value="QTeck">QTeck</option>
+                        <option value="60op">60op</option>
+                        <option value="GlobalFin">GlobalFin</option>
+                        <option value="Click2Sell">Click2Sell</option>
+                        <option value="BitSale">BitSale</option>
+                        <option value="XTrade">XTrade</option>
+                        <option value="Aro Trade">Aro Trade</option>
+                        <option value="Get Bits">Get Bits</option>
+                        <option value="Popcorn">Popcorn</option>
+                        <option value="GreatFXpro">GreatFXpro</option>
+                        <option value="Los Diablos">Los Diablos</option>
+                        <option value="TiRex">TiRex</option>
+                        <option value="AspenHolding">AspenHolding</option>
+                        <option value="MaxiPartners">MaxiPartners</option>
+                        <option value="SWGMarkets">SWGMarkets</option>
+                        <option value="Dax-300">Dax-300</option>
+                        <option value="Stox-50">Stox-50</option>
+                        <option value="MTC Brokers">MTC Brokers</option>
+                        <option value="FinixCapital">FinixCapital</option>
+                        <option value="CertusFinance">CertusFinance</option>
+                        <option value="DiamondGroup">DiamondGroup</option>
+                        <option value="F15">F15</option>
+                        <option value="TradeWell.io">TradeWell.io</option>
+                        <option value="Boxinvesting">Boxinvesting</option>
+                        <option value="Imperial">Imperial</option>
+                        <option value="Test">Test</option>
+                        <option value="Ainvestments">Ainvestments</option>
+                        <option value="DiamondGroup">IB Albania</option>
+                    </select>
+                </div>
+                <div class="bankChoose">
+                    <label for="bankList">Bank</label>
+                    <select id="bankList"  name="bank">
+                        <option value="AnyWires Bank">AnyWires Bank</option>
+                        <option value="Serbia (EUR) VTK">Serbia (EUR) VTK</option>
+                        <option value="Serbia (EUR) VTK">Serbia (EUR) VTK</option>
+                        <option value="Serbia (USD) VTK">Serbia (USD) VTK</option>
+                        <option value="Serbia (USD) VTK">Serbia (USD) VTK</option>
+                        <option value="DIXIPAY LTD">DIXIPAY LTD</option>
+                    </select>
+                </div>
+                <input class='invoiceBtn' type="submit" value='Make an Invoice' >
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>

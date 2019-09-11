@@ -1,0 +1,1348 @@
+@import url('https://fonts.googleapis.com/css?family=Frank+Ruhl+Libre&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Frank Ruhl Libre', serif;
+}
+
+/* SCROLL STYLE */
+
+ /* width */
+::-webkit-scrollbar {
+width: 10px;
+}
+/* Track */
+::-webkit-scrollbar-track {
+background: #f1f1f1;
+}
+/* Handle */
+::-webkit-scrollbar-thumb {
+background: #888;
+}
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+background: #555;
+}
+
+
+/* CONTENT */
+
+body {
+    background:  #EEF3FA;
+}
+
+main {
+    margin-top: 3px;
+    
+}
+
+.headerBlock {
+    padding: 30px 0;
+    padding-left: 70px;
+    background: #FFF;
+}
+
+.mainTitle {
+    font-size: 36px;
+}
+
+.fa-coins {
+    padding: 0 20px;
+}
+
+/* BUTTONS MENU */
+
+.btn {
+    margin: 0 10px;
+    padding: 15px 30px;
+    font-size: 14px;
+    font-weight: 500;
+    background: rgb(77, 77, 77);
+    color: #FFF;
+    border: none;
+    border-radius: 5px;
+    outline: none;
+}
+
+.btn:first-child {
+    margin: 0;
+}
+
+.btn:hover {
+    background-color: #888;
+}
+
+/* TABLE */
+
+#table-block {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    margin-top: 3px;
+    padding: 50px 70px;
+    background: #FFF;
+}
+
+#dowloadPdf:hover{
+    filter: invert(75%);
+}
+#dowloadPdf:active{
+    filter: invert(95%);
+}
+
+.table-header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 0;
+}
+
+.table-arrows img {
+    margin-left: 20px;
+    cursor: pointer;
+}
+.table-arrows img:hover{
+    filter: invert(75%);
+}
+.table-arrows img:active{
+    filter: invert(95%);
+}
+
+.table-header h2 {
+    font-size: 20px;
+}
+
+.table-line {
+    margin: 10px 0;
+    width: 100%;
+    height: 2px;
+    background-color: rgb(102, 102, 102);
+}
+
+.tableList tr:hover {
+    background: rgb(230, 230, 230);
+    cursor: pointer;
+}
+
+table {
+    border-spacing: 1;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 3px;
+    overflow: hidden;
+    width: 100%;
+  }
+  
+  table td, table th {
+    padding-left: 8px;
+  }
+  table thead tr {
+    height: 60px;
+    background: #20a5f7;
+  }
+  table tbody tr {
+    height: 50px;
+  }
+  table tbody tr:last-child {
+    border: 0;
+  }
+  table td, table th {
+    text-align: center;
+  }
+  table td.l, table th.l {
+    text-align: center;
+  }
+  table td.c, table th.c {
+    text-align: center;
+  }
+  table td.r, table th.r {
+    text-align: center;
+  }
+  
+  
+  .table-head th{
+    font-size: 18px;
+    color: #fff;
+    line-height: 1.2;
+    font-weight: unset;
+  }
+  
+  tbody tr:nth-child(even) {
+    background-color: #f5f5f5;
+  }
+  
+  tbody tr {
+    font-size: 15px;
+    color: #808080;
+    line-height: 1.2;
+    font-weight: unset;
+  }
+  
+  .column0 {
+    padding-left: 20px;
+  }
+
+  .column5 {
+    padding-right: 20px;
+  }
+
+
+/* Modal windows */
+
+/* Merchant Login Window  */
+
+.MerchantPayWindow, .createWalletWindow {
+	display: none;
+	position: fixed;
+	top: 0;
+	right: 0;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 9;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+.MerchantPayWindow-content {
+	position: fixed;
+	text-align: center;
+	left: 50%;
+	top: 10%;
+	transform: translateX(-50%);
+	background-color: #fff;
+	padding: 40px 60px;
+}
+
+.MerchantPayWindow-form {
+    width: 100%;
+	margin-top: 30px;
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+}
+
+.amountPayment, .wallet, .paymentPurpose {
+    margin: 10px;
+    height: 30px;
+    width: 100%;
+    border-style: ridge;
+    border-radius: 5px;
+    padding-left: 10px;
+    outline: none;
+}
+
+.MerchantPayWindow-close, .createWalletWindow-close, .settlementDetails-close {
+	position: absolute;
+	top: -15px;
+	right: -40px;
+	width: 50px;
+	border: none;
+	background-color: transparent;
+	text-align: center;
+	font-size: 30px;
+	color: #fff;
+	text-decoration: none;
+    outline: none;
+}
+
+.MerchantPayWindow-close:hover, .createWalletWindow-close:hover, .settlementDetails-close:hover {
+    transform: scale(1.5);
+}
+
+.popup-btn {
+    width: 100%;
+    margin: 10px;
+    padding: 10px 20px;
+    font-size: 18px;
+    font-weight: 500;
+    background: rgb(77, 77, 77);
+    color: #FFF;
+    border: none;
+    border-radius: 5px;
+    outline: none;
+}
+
+.popup-btn:hover {
+    background: #20a5f7;
+}
+
+/* CREAT NEW WALLET WINDOW */
+
+.createWalletWindow-content {
+	position: fixed;
+	text-align: center;
+	left: 50%;
+	top: 10%;
+	transform: translateX(-50%);
+	background-color: #fff;
+    padding: 30px;
+}
+
+.createWalletWindow-header {
+    font-size: 28px;
+}
+
+.createWalletWindow-form {
+    padding: 0;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.inpt, .walletType {
+    margin: 10px;
+    height: 30px;
+    width: 100%;
+    border-style: ridge;
+    border-radius: 5px;
+    padding-left: 10px;
+    outline: none;
+}
+
+.creatWalletBtn {
+    width: 100%;
+}
+
+/* Settlement Details Window */
+
+.settlementDetails {
+	display: none;
+	position: absolute;
+	top: 0;
+	right: 0;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	height: 200%;
+	z-index: 9;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.settlementDetails-content {
+	position: absolute;
+    text-align: center;
+	left: 50%;
+    top: 5%;
+	transform: translateX(-50%);
+	background-color: #fff;
+    padding: 30px;
+}
+
+.settlementDetails-header {
+    margin: 20px;
+    text-align: center;
+    font-size: 28px;
+    padding: 10px;
+}
+
+.settleHr {
+    height: 4px;
+    background: #035f97;
+}
+
+.setDetBlock1 {
+    text-align: left;
+    padding: 20px 0;
+    font-size: 20px;
+}
+
+.setDetBlock2 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.SetDetTable {
+    width: 100%;
+}
+
+.SetDetTableHead {
+    background-color:  #20a5f7;
+    font-size: 20px;
+    color: #FFF; 
+}
+
+.col0, .col1, .col2 {
+    padding: 10px;
+}
+
+.SetDetTableList {
+    text-align: center;
+    font-size: 16px;
+    font-weight: 700;
+    color: rgb(119, 114, 114);
+}
+
+.settlePrevBtn {
+    margin: 10px;
+    padding: 10px 20px;
+    font-size: 18px;
+    font-weight: 500;
+    background: rgb(77, 77, 77);
+    color: #FFF;
+    border: none;
+    border-radius: 5px;
+    outline: none;
+}
+
+.settlePrevBtn:hover {
+    background: #20a5f7;
+}
+
+.main-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.comment {
+    display: flex;
+    justify-content: space-around;
+    border: 1px dashed rgb(77, 77, 77);
+    width: 100%;
+}
+
+.comment span {
+    padding: 20px;
+}
+
+.comment p {
+    padding: 20px;
+}
+.settlementDetails-form {
+    padding: 0;
+    margin-top: 10px;
+}
+
+.RowCommentBlock {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 10px;;
+}
+
+.RowCommentBlock form {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.RowCommentBlock input, .docType {
+    margin: 20px;
+    height: 40px;
+    border-style: ridge;
+    border-radius: 5px;
+    padding-left: 10px;
+    outline: none;
+    font-size: 20px;
+    text-indent: 0;
+}
+
+.fourthRowCommentBlock {
+    display: flex;
+    flex-direction: column;
+}
+
+.docType {
+    height: 40px;
+    padding: 5px;
+}
+
+#buttonid {
+    height: 50%;
+    margin: 10px;
+    padding: 5px;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.commentField {
+    width: 75%;
+}
+
+.RowCommentBlock .settlePrevBtn {
+    height: 80%;
+    margin: 10px;
+    padding: 10px 20px;
+    font-size: 18px;
+    font-weight: 500;
+    background: rgb(77, 77, 77);
+    color: #FFF;
+    border: none;
+    border-radius: 5px;
+    outline: none;
+}
+
+.RowCommentBlock .settlePrevBtn:hover {
+    background: #20a5f7;
+}
+
+/* --------------------------------------------- */
+
+.header-menu {
+    margin-top: 3px;
+    padding: 50px 70px;
+    background: #FFF;
+}
+
+
+/* Filter Block First START*/
+.dateForm {
+    width: 100%;
+    height: 40px;
+    border: 1px solid rgb(189, 189, 189);
+    cursor: pointer;
+    border-radius: 3px;
+    font-size: 15px;
+    font-family: 'Frank Ruhl Libre', serif;
+    text-align: center;
+    margin-top: 5px;
+}
+
+select{
+    width: 100%;
+    height: 40px;
+    border: 1px solid rgb(189, 189, 189);
+    cursor: pointer;
+    border-radius: 3px;
+    font-size: 15px;
+    font-family: 'Frank Ruhl Libre', serif;
+    background-color: #F5F5F5;
+    margin-top: 5px;
+    text-indent: 15px;
+}
+
+option {
+    font-size: 16px;
+    background-color: rgb(255, 255, 255);
+}
+
+label {
+    font-weight: bold;
+}
+
+.filterBlock-first {
+    width: 90%;
+    display: flex;
+    align-items: flex-end;
+}
+
+.byCreation-block {
+    display: flex;
+    flex-direction: column;
+    width: 240px;
+    margin-right: 20px;
+}
+
+.filterStatus-block {
+    width: 240px;
+    margin-right: 20px;
+}
+
+.filterBank-block {
+    width: 240px;
+}
+/* Filter Block First END*/
+
+
+/* Filter Block Second START */
+.filterBlock-second {
+    width: 90%;
+    display: flex;
+    align-items: flex-end;
+    margin: 20px 0;
+}
+
+.byReceive-block {
+    width: 240px;
+    margin-right: 20px;
+}
+
+.filterMerchant-block {
+    width: 240px;
+    margin-right: 20px;
+}
+
+.filterDocuments-block {
+    width: 240px;
+}
+/* Filter Block Second END */
+
+
+/* Search Block START*/
+.input-search {
+    width: 220px;
+    height: 40px;
+    background-color: #4D4D4D;
+    border-radius: 3px 0 0 3px;
+    font-size: 16px;
+    padding: 5px 15px;
+    transition: .3s;
+    outline: none;
+    border: none;
+    color: #FFF;
+    font-family: 'Frank Ruhl Libre', serif;
+}
+
+.input-search::placeholder {
+    color: rgb(224, 224, 224);
+}
+
+.input-search:focus {
+    box-shadow: 0px 0px 6px 0px rgba(68, 68, 68, 0.75);
+    background-color: rgb(110, 110, 110);
+}
+
+.search-btn {
+    width: 40px;
+    height: 40px;
+    padding: 12px;
+    background-color: rgb(54, 54, 54);
+    cursor: pointer;
+    border-radius: 0px 3px 3px 0px;
+    transition: .3s;
+}
+
+.search-btn:hover {
+    background-color: rgb(0, 0, 0);
+}
+.search-btn:active {
+    background-color: rgb(139, 139, 139);
+}
+
+
+.showClear-block {
+    width: 100%;
+   margin-top: 30px; 
+    display: flex;
+    justify-content: space-between;
+}
+
+.searchBlock {
+    display: flex;
+}
+/* Search Block  END*/
+
+
+@media (max-width: 1200px) {
+    /* BUTTONS MENU */
+
+    .optionsMenu {
+        padding: 50px;
+    }
+
+    .status, .merchantList {
+        font-size: 14px;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        font-size: 16px;
+    }
+
+    .showClear-block {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .searchBlock {
+        margin-top: 30px;
+    }
+
+}
+
+@media (max-width: 999px) {
+
+    .mainTitle {
+        font-size: 24px;
+    }
+
+    /* BUTTONS MENU */
+
+    .header-menu {
+        padding: 40px;
+    }
+
+    /* Settlement Details Window */
+
+    .settlementDetails-header {
+        margin: 20px;
+        font-size: 24px;
+        padding: 10px;
+    }
+
+    .setDetBlock1 {
+        padding: 20px 0;
+        font-size: 18px;
+    }
+
+    .SetDetTableHead {
+        font-size: 18px;
+    }
+
+    .col0, .col1, .col2 {
+        padding: 10px;
+    }
+
+    .SetDetTableList {
+        font-size: 14px;
+    }
+
+    .settlePrevBtn {
+        margin: 10px;
+        padding: 10px 15px;
+        font-size: 16px;
+    }
+
+    .comment span, .comment1 p {
+        padding: 20px;
+    }
+
+    .settlementDetails-form {
+        padding: 0;
+        margin-top: 10px;
+    }
+
+    .RowCommentBlock input, .docType {
+        margin: 15px;
+        height: 40px;
+        padding-left: 10px;
+        font-size: 16px;
+    }
+
+    .docType {
+        height: 30px;
+        padding: 5px;
+    }
+
+    #buttonid {
+        height: 50%;
+        margin: 10px;
+        padding: 5px;
+        font-size: 16px;
+    }
+
+    .RowCommentBlock .settlePrevBtn {
+        height: 80%;
+        margin: 10px;
+        padding: 10px 15px;
+        font-size: 16px; 
+    }
+
+}
+
+@media (max-width: 825px) {
+
+    .mainTitle {
+        font-size: 20px;
+    }
+
+    /* BUTTONS MENU */
+
+    .byCreation-block, .filterStatus-block, .filterBank-block, .byReceive-block, .filterMerchant-block, .filterDocuments-block {
+        width: 140px;
+        margin-right: 0;
+    }
+
+    .filterBlock-first, .filterBlock-second {
+        justify-content: space-between;
+    }
+
+    .status, .dateForm, .merchantList {
+        width: 120%;
+        height: 32px;
+        font-size: 12px;
+    }
+
+    .input-search {
+        width: 140px;
+        height: 32px;
+        font-size: 14px;
+    }
+
+    .search-btn {
+        height: 32px;
+        width: 32px;
+        padding: 9px;
+    }
+
+    .btn {
+        margin: 0 5px;
+        font-size: 14px;
+    }
+
+    /* TABLE */
+    .table-header h2 {
+        font-size: 17px;
+    }
+
+    
+    /* Settlement Details Window */
+
+    .settlementDetails-content {
+        padding: 10px;
+    }
+
+    .settlementDetails-header {
+        margin: 10px;
+        font-size: 18px;
+        padding: 10px;
+    }
+
+    .setDetBlock1 {
+        padding: 20px 0;
+        font-size: 14px;
+    }
+
+    .SetDetTableHead {
+        font-size: 14px;
+    }
+
+    .col0, .col1, .col2 {
+        padding: 10px;
+    }
+
+    .SetDetTableList {
+        font-size: 12px;
+    }
+
+    .settlePrevBtn{
+        margin: 10px;
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .comment span {
+        padding: 10px;
+    }
+
+    .comment p {
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .settlementDetails-form {
+        padding: 0;
+        margin-top: 10px;
+    }
+
+    .RowCommentBlock input, .docType {
+        margin: 10px;
+        height: 30px;
+        padding-left: 10px;
+        font-size: 14px;
+    }
+
+    .docType {
+        height: 30px;
+        padding: 5px;
+    }
+
+    #buttonid {
+        height: 50%;
+        margin: 10px;
+        padding: 5px;
+        font-size: 11px;
+    }
+
+    .commentField {
+        width: 75%;
+    }
+
+    .RowCommentBlock .settlePrevBtn {
+        height: 80%;
+        margin: 10px;
+        padding: 10px;
+        font-size: 11px;
+        
+    }
+
+    /* Merchant Login Window  */
+
+    .MerchantPayWindow-content {
+        padding: 40px 60px;
+    }
+
+    .MerchantPayWindow-header {
+        font-size: 24px;
+    }
+
+    .MerchantPayWindow-form {
+        margin-top: 30px;
+        padding: 0 20px;
+    }
+
+    .amountPayment, .wallet, .paymentPurpose {
+        margin: 10px;
+        height: 30px;
+        padding-left: 10px;
+    }
+
+    .popup-btn {
+        margin: 10px;
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+
+    /* CREAT NEW WALLET WINDOW */
+
+    .createWalletWindow-header {
+        font-size: 20px;
+    }
+
+    .inpt, .walletType {
+        margin: 10px;
+        height: 30px;
+    }
+
+}
+
+@media (max-width: 689px) {
+
+    .mainTitle {
+        font-size: 18px;
+    }
+
+    /* BUTTONS MENU */
+
+    .filterBlock-first {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .buttonsBlock {
+        display: grid;
+        grid-template-columns: 1fr 1fr ;
+        grid-template-rows: 1fr 1fr 1fr;
+        grid-gap: 20px 20px;
+    }
+
+    .searchBlock {
+        display: flex;
+       justify-content: flex-end;
+    }
+
+    .status, .dateForm, .merchantList {
+        margin: 10px 0;;
+        width: 150%;
+        height: 32px;
+        font-size: 14px;
+    }
+
+    .input-search {
+        height: 32px;
+        font-size: 14px;
+    }
+
+    .search-btn {
+        height: 32px;
+        width: 32px;
+        padding: 9px;
+    }
+
+    .btn:first-child {
+        margin: 10px 5px;
+    }
+
+    .btn {
+       
+        margin: 10px 5px;
+        font-size: 14px;
+    }
+
+    /* TABLE */
+    
+
+    /* Settlement Details Window */
+
+    .settlementDetails-content {
+        padding: 10px;
+    }
+
+    .settlementDetails-header {
+        margin: 10px;
+        font-size: 12px;
+        padding: 10px;
+    }
+
+    .setDetBlock1 {
+        padding: 10px 0;
+        font-size: 10px;
+    }
+
+    .SetDetTableHead {
+        font-size: 10px;
+    }
+
+    .col0, .col1, .col2 {
+        padding: 5px;
+    }
+
+    .SetDetTableList {
+        font-size: 10px;
+    }
+
+    .settlePrevBtn{
+        margin: 5px;
+        padding: 5px;
+        font-size: 10px;
+    }
+
+    .comment span, .comment p {
+        padding: 5px;
+        font-size: 10px;
+    }
+
+    .settlementDetails-form {
+        padding: 0;
+        margin-top: 10px;
+    }
+
+    .RowCommentBlock input, .docType {
+        margin: 10px;
+        height: 20px;
+        padding-left: 10px;
+        font-size: 10px;
+    }
+
+    .docType {
+        height: 20px;
+        padding: 0;
+        font-size: 8px;
+    }
+
+    #buttonid {
+        height: 40%;
+        margin: 10px;
+        padding: 5px;
+        font-size: 10px;
+    }
+
+    .commentField {
+        width: 75%;
+    }
+
+    .RowCommentBlock .settlePrevBtn {
+        height: 80%;
+        margin: 10px;
+        padding: 5px;
+        font-size: 10px;
+    }
+
+    /* Merchant Login Window  */
+
+    .MerchantPayWindow-content {
+        padding: 40px;
+    }
+
+    .MerchantPayWindow-content h3 {
+        font-size: 16px;
+    }
+
+    .MerchantPayWindow-header {
+        font-size: 20px;
+    }
+
+    .MerchantPayWindow-form {
+        margin-top: 30px;
+        padding: 0 20px;
+    }
+
+    .amountPayment, .wallet, .paymentPurpose {
+        margin: 10px;
+        height: 30px;
+        padding-left: 10px;
+    }
+
+    .popup-btn {
+        margin: 10px;
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+
+    /* CREAT NEW WALLET WINDOW */
+
+    .createWalletWindow-header {
+        font-size: 18px;
+    }
+
+    .inpt, .walletType {
+        margin: 10px;
+        height: 20px;
+    }
+
+}
+
+@media (max-width: 500px) {
+
+    .mainTitle {
+        font-size: 16px;
+    }
+
+    /* BUTTONS MENU */
+    .filterBlock-first, .buttonsBlock {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .searchBlock {
+       justify-content: center;
+    }
+    
+    .status, .dateForm, .merchantList {
+        margin: 10px 0;;
+        width: 150%;
+        height: 32px;
+        font-size: 14px;
+    }
+
+    .input-search {
+        width: 140px;
+        height: 32px;
+        font-size: 14px;
+    }
+
+    .search-btn {
+        height: 32px;
+        width: 32px;
+        padding: 9px;
+    }
+
+    .btn {
+        width: 50%;
+        margin: 10px 5px;
+        font-size: 14px;
+    }
+
+
+    /* TABLE */
+
+    
+
+    /* Settlement Details Window */
+
+    .settlementDetails-content {
+        padding: 5px;
+    }
+
+    .settlementDetails-header {
+        margin: 10px;
+        font-size: 10px;
+        padding: 10px;
+    }
+
+    .setDetBlock1 {
+        padding: 10px 0;
+        font-size: 7px;
+    }
+
+    .SetDetTableHead {
+        font-size: 7px;
+    }
+
+    .col0, .col1, .col2 {
+        padding: 5px;
+    }
+
+    .SetDetTableList {
+        font-size: 7px;
+    }
+
+    .settlePrevBtn {
+        margin: 5px;
+        padding: 5px;
+        font-size: 7px;
+    }
+
+    .comment span, .comment p {
+        padding: 5px;
+        font-size: 7px;
+    }
+
+    .settlementDetails-form {
+        padding: 0;
+        margin-top: 10px;
+    }
+
+    .RowCommentBlock input, .docType {
+        margin: 5px;
+        height: 15px;
+        padding-left: 5px;
+        font-size: 7px;
+    }
+
+    .docType {
+        height: 15px;
+        padding: 0;
+        font-size: 7px;
+    }
+
+    #buttonid {
+        height: 40%;
+        margin: 5px;
+        padding: 5px;
+        font-size: 7px;
+    }
+
+    .commentField {
+        width: 75%;
+    }
+
+    .RowCommentBlock .settlePrevBtn {
+        height: 60%;
+        margin: 5px;
+        padding: 5px;
+        font-size: 7px;
+        
+    }
+
+    /* Merchant Login Window  */
+
+    .MerchantPayWindow-content {
+        padding: 20px;
+    }
+
+    .MerchantPayWindow-content h3 {
+        font-size: 14px;
+    }
+
+    .MerchantPayWindow-header {
+        font-size: 18px;
+    }
+
+    .MerchantPayWindow-form {
+        margin-top: 20px;
+        padding: 0 10px;
+    }
+
+    .amountPayment, .wallet, .paymentPurpose {
+        margin: 10px;
+        height: 20px;
+        padding-left: 5px;
+    }
+
+    .popup-btn {
+        margin: 10px;
+        padding: 10px;
+        font-size: 12px;
+    }
+
+    /* CREAT NEW WALLET WINDOW */
+
+    .createWalletWindow-header {
+        font-size: 14px;
+    }
+
+    .inpt, .walletType {
+        margin: 5px;
+        height: 15px;
+        font-size: 12px;
+    }
+}
+
+@media screen and (max-width: 800px) {
+    table  *{
+      position: relative;
+    }
+    table {
+      display: block;
+    }
+    table > *, table tr, table td, table th {
+      display: block;
+    }
+    table thead {
+      display: none;
+    }
+    table tbody tr {
+      height: auto;
+      padding: 37px 0;
+    }
+    table tbody tr td {
+      padding-left: 45% !important;
+      margin-bottom: 24px;
+    }
+    table tbody tr td:last-child {
+      margin-bottom: 0;
+    }
+    table tbody tr td:before {
+      
+      color: #999999;
+      line-height: 1.2;
+      font-weight: unset;
+      position: absolute;
+      width: 40%;
+      left: 30px;
+      top: 0;
+    }
+  
+    table tbody tr td:nth-child(1):before {
+      content: "Created By";
+    }
+    table tbody tr td:nth-child(2):before {
+      content: "Date";
+    }
+    table tbody tr td:nth-child(3):before {
+      content: "Amount Sent";
+    }
+    table tbody tr td:nth-child(4):before {
+      content: "Type";
+    }
+    table tbody tr td:nth-child(5):before {
+      content: "Wallet";
+    }
+    table tbody tr td:nth-child(6):before {
+      content: "Status";
+    }
+
+    .column4,
+    .column5,
+    .column1,
+    .column2,
+    .column3,
+    .column6 {
+      width: 100%;
+    }
+    
+  
+    tbody tr {
+      font-size: 13px;
+    }
+  
+    #merchantButtons {
+      padding-right: 5px;
+    }
+  }
+
+  @media screen and (max-width: 490px) {
+    
+    .table-header h2 {
+        font-size: 16px;
+    }
+    .table-arrows img {
+        width: 10px;
+        height: 10px;
+    }
+    
+    .table-line {
+        margin: 0;
+    }
+    #table-block {
+        padding: 40px 0;
+    }
+}
+
+@media screen and (max-width: 370px) {
+    .table-header h2 {
+        font-size: 14px;
+    }
+}
+

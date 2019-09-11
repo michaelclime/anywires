@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Anywires</title>
+    <link rel="shortcut icon" href="img/AnyWiresFavicon.png" type="image/png">
+    <link rel="stylesheet" href="css/index.css">
+    <script src="https://kit.fontawesome.com/5355902e87.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+</head>
+<body>
+    <!-- HEADER -->
+    <header>
+        <div class="block_logo">
+            <div>
+                <a href="index.html"><img src="img/logocompany.png" alt="logo"></a>
+            </div>
+            <div>
+                <a href="#Solutions" class="navLink">Solutions</a>
+                <a href="#onBoard" class="navLink">OnBoard</a>
+                <a href="howItWorks.html" class="navLink">How it works</a>
+            </div>
+        </div>
+        <div class="block_contacts">
+            <div class="block_contactsType">
+                <span><img src="img/phone-receiver.png" alt="phone">+44 748 002 2455</span>
+                <span><img src="img/contact.png" alt="email">m@anywires.com</span>
+            </div>
+            <button  class="login loginWindow-btn">Merchant Login</button>
+        </div>
+    </header>
+    <!-- CONTENT -->
+    <main>
+        <div class="howItWorksPage">
+            <img src="img/clientSide.jpg" alt="clientSide">
+            <img src="img/merchantSide.jpg" alt="clientSide">
+            <h1 class="secondBlockBigTitile">Invoice preview page </h1>
+            <img src="img/invoice.jpg" alt="invoice">
+        </div>
+    </main>
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-container">
+            <img src="img/logocompany.png" alt="Anywires logo" class="logo">
+            <span class="contactDetails">SIA VNV GROUP, Latvia, Riga, Malienas iela 74 - 1 LV-1064
+                Reg #: 40103916489</span>
+            <section class="contactDetails">
+                <span class="mobileNumber"><i class="fas fa-mobile-alt"></i>+44 748 002 2455</span>
+                <span class="mailAddress"><i class="fas fa-envelope"></i>m@anywires.com</span>
+            </section>
+        </div>
+        <div class="developer">
+            <span class="rights">Copyright © 2018 AnyWires. All rights reserved</span>
+            <span class="creator"><a href="https://fintech-dev.com/">created with Finology</a></span>
+        </div>
+    </footer>
+
+    <!-- Modal windows -->
+
+    <!-- Merchant Login Window -->
+    <div class="loginWindow">
+        <div class="loginWindow-dialog">
+            <div class="loginWindow-content">
+                <button class="loginWindow-close">&times;</button>
+                <h1 class="loginWindow-header">Log in to CRM</h1>
+                <div class="main-form loginWindow-form">
+                    <form  action="#" class="loginWindow-form">
+                        <input type="text" class="mailLogin" placeholder="Email"><br>
+                        <input type="text" class="passwordLogin" placeholder="Password">
+                    </div checkboxlas>
+                    <div class="logintSection">
+                        <div><input type="checkbox" name="remember"> Remember me</div>
+                        <span class="forgotBtn">Forgot password?</span>
+                    </div>
+                    <button type="button" class="loginBtn">Log In</button>
+                    <hr>
+                    <div class="logintSection">
+                        <span>Don't have an account?</span>
+                        <button class="signUp popup-btn">Sign Up</button>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Forgot Password Window -->
+    <div class="forgotPassword">
+        <div class="forgotPassword-dialog">
+            <div class="forgotPassword-content">
+                <button class="forgotPassword-close">&times;</button>
+                <h1 class="forgotPassword-header">Reset Password</h1>
+                <div class="main-form forgotPassword-form">
+                    <form  action="#" class="forgotPassword-form">
+                        <p class="forgotPasswordHint">Enter the email address associated
+                                with your account, and we'll email you a link to reset
+                                    your password.</p>
+                        <input type="text" class="mailLogin" placeholder="Email"><br>
+                        <button type="button" class="sendResetLink">Send Reset Link</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Let's Start Window -->
+    <div class="popup">
+        <div class="popup-dialog">
+            <div class="popup-content">
+                <button class="popup-close">&times;</button>
+                <img src="img/logocompany.png" alt="Anywires logo" class="logo">
+                
+                <div class="main-form popup-form">
+                    <form  action="#" class="popup-form">
+                        <div class="inputSection">
+                            <label for="name">Name*</label>
+                            <input type="text" id="name" placeholder="Type here...">
+                        </div>
+                        <div class="inputSection">
+                            <label for="brand">Your Brand name*</label>
+                            <input type="text" id="brand" placeholder="Type here...">
+                        </div>
+                        <div class="inputSection">
+                            <label for="siteURL">Your Site URL</label>
+                            <input type="text" id="siteURL" placeholder="Type here...">
+                        </div>
+                        <div class="inputSection">
+                            <label for="mailPopup">Email*</label>
+                            <input type="text" id="mailPopup" placeholder="Type here...">
+                        </div>
+                        <div class="inputSection">
+                            <label for="phoneNumber">Finance phone*</label>
+                            <input type="text" id="phoneNumber" placeholder="Type here...">
+                        </div>
+                        <button type="button" class="sendInvoice">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/modalWindow.js"></script>
+    <script>
+        window.fcWidget.init({
+            token: "3c9c57a6-554b-43e5-b492-8b53bc8e9ed0",
+            host: "https://wchat.freshchat.com"
+        });
+    </script>
+    
+</body>
+</html>

@@ -1,0 +1,255 @@
+@import url('https://fonts.googleapis.com/css?family=Frank+Ruhl+Libre&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: 'Frank Ruhl Libre', serif;
+}
+
+.backToMain {
+    display: inline-block;
+    margin-top: 50px;
+    margin-left: 90%;
+    background: #12C7B2;
+    color: #FFF;
+    padding: 15px 20px;
+    border: none;
+    border-radius: 3px;
+    font-size: 20px;
+    outline: none;
+    text-decoration: none;
+    transition: .35s;
+}
+
+.backToMain:hover {
+    background: rgb(143, 143, 143);
+}
+
+.fas {
+    padding-right: 10px;
+}
+
+.invoiceGenerationPage, .invoiceInfoBlock, .invoice-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+input {
+    margin: 10px 0;
+    width: 90%;
+    padding: 10px 10px;
+    font-size: 24px; 
+}
+
+.fillTitle {
+    margin: 30px 0;
+}
+
+hr {
+    margin-bottom: 20px;
+    width: 40%;
+    height: 3px;
+    background: #000;
+}
+
+.amountCurrency {
+    display: flex;
+    justify-content:space-around;
+    align-items: center;
+    width: 100%;
+}
+
+.amountCurrency input{
+    width: 60%;
+}
+
+.currency {
+    height: 50px;
+    width: 100px;
+    font-size: 26px;
+    font-weight: 100; 
+}
+
+.SEPA {
+    display: inline-block;
+    text-align: center;
+    width: 100%;
+}
+
+.SEPA input {
+    width: 15px;
+    height: 15px;
+}
+
+.SEPA span {
+    margin-left: 10px;
+    font-size: 26px;
+    font-weight: 500; 
+}
+.merchChoose, .bankChoose {
+    display: flex;
+    justify-content: space-between;
+    margin: 15px 0;
+    font-size: 27px;
+    font-weight: 700; 
+    width: 100%;
+}
+
+.merchChoose select, .bankChoose select {
+    width: 70%;
+    height: 35px;
+    font-size: 18px;
+    font-weight: 100; 
+}
+
+.invoiceBtn {
+    margin: 50px 0;
+    background:rgb(51, 181, 229);
+    color: #FFF;
+    padding: 15px 20px;
+    border: none;
+    border-radius: 3px;
+    font-size: 24px;
+    outline: none;
+    cursor: pointer;
+    transition: .35s;
+}
+
+.invoiceBtn:hover {
+    background:rgb(143, 143, 143);
+}
+
+/* SCROLL STYLE */
+
+ /* width */
+ ::-webkit-scrollbar {
+    width: 10px;
+   }
+   /* Track */
+   ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+   }
+   /* Handle */
+   ::-webkit-scrollbar-thumb {
+    background: #888;
+   }
+   /* Handle on hover */
+   ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+   }
+
+
+@media (max-width: 1100px){
+    .backToMain {
+        margin-top: 50px;
+        margin-left: 85%;
+        padding: 15px 20px;
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 800px){
+    .backToMain {
+        margin-top: 50px;
+        margin-bottom: 50px;
+        margin-left: 85%;
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+
+    .logo {
+        text-align: center;
+    }
+    
+    .logo img {
+        width: 80%;
+    }
+
+    .invoice-form input {
+        margin: 9px 0;
+        width: 80%;
+        padding: 9px 9px;
+        font-size: 20px; 
+    }
+}
+
+@media (max-width: 550px){
+    body {
+        margin: 0 20px;
+    }
+    .backToMain {
+        width: 50px;
+        margin-top: 40px;
+        margin-bottom: 40px;
+        margin-left: 85%;
+        padding: 5px 10px;
+        font-size: 10px;
+    }
+    .logo {
+        text-align: center;
+    }
+
+    .logo img {
+        width: 60%;
+    }
+
+    .fillTitle {
+        margin: 15px 0;
+        font-size: 24px;
+    }
+
+    .invoice-form input {
+        margin: 7px 0;
+        padding: 7px;
+        font-size: 18px; 
+    }
+
+    .SEPA input {
+        width: 15px;
+        margin: 0;
+    }
+
+    select {
+        font-size: 18px; 
+    }
+
+    .currency {
+        height: 44px;
+        width: 70px;
+        font-size: 20px;
+        font-weight: 100; 
+    }
+}
+
+@media (max-width: 400px){
+    body {
+        margin-bottom: 30px;
+    }
+    .backToMain {
+        margin-top: 30px;
+        margin-bottom: 30px;
+        margin-left: 80%;
+    }
+
+    .fillTitle {
+        font-size: 20px;
+    }
+
+    .invoice-form input {
+        margin: 7px 0;
+        padding: 7px;
+        font-size: 14px; 
+    }
+
+    .currency {
+        height: 37px;
+        width: 60px;
+        font-size: 18px;
+    }
+
+    label {
+        font-size: 22px;
+    }
+}

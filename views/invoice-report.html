@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Invoice Report</title>
+		<meta name="description" content="Anywires" />
+		<meta name="keywords" content="Anywires" />
+		<meta name="author" content="Anywires" />
+		<link rel="shortcut icon" href="img/AnyWiresFavicon.png" type="image/x-icon">
+		<link rel="stylesheet" type="text/css" href="css/invoice-report.css" />
+		<link rel="stylesheet" type="text/css" href="css/menu.css" />
+		<link rel="stylesheet" type="text/css" href="css/menu-comp.css" />
+		<link rel="stylesheet" type="text/css" href="css/invoice-report-table.css">
+		<script src="js/modernizr.custom.js"></script>
+		<link href="https://fonts.googleapis.com/css?family=Frank+Ruhl+Libre&display=swap" rel="stylesheet">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+		<!-- For Calendar Inputs -->
+		<link rel="stylesheet" href="./css/datepicker.min.css">
+		<script src="./js/datepicker.min.js"></script>
+		<script src="./js/datepicker.en.js"></script>
+		
+	</head>
+	<body>
+		<div id="burgerMenu">
+			<div class="menu">
+				<ul id="gn-menu" class="gn-menu-main">
+					<li class="gn-trigger">
+						<a class="gn-icon gn-icon-menu"><span>Menu</span></a>
+						<nav class="gn-menu-wrapper">
+							<div class="gn-scroller">
+								<ul class="gn-menu">
+									<li><a href='personal-area.html'><img class="icon" src="fonts/icons/personal-area.png">Personal Area</a></li>
+									<li><a href='dashBoardMainPage.html'><img class="icon" src="fonts/icons/dashboard.png">Dashboard</a></li>
+									<li><a href='InvoiceGeneration.html'><img class="icon" src="fonts/icons/invoice.png">Invoice generation</a></li>
+									<li><a href="invoice-list.html"><img class="icon" src="fonts/icons/invoice-list.png">Invoice list</a></li>
+									<li><a><img class="icon" src="fonts/icons/invoice-report.png">Invoice Report</a></li>
+									<li><a href="wallets.html"><img class="icon" src="fonts/icons/wallet.png">Wallets</a></li>
+                                    <li><a href="settlements.html"><img class="icon" src="fonts/icons/settlement.png">Settlements</a></li>
+                                    <li><a href="merchants.html"><img class="icon" src="fonts/icons/merchant.png">Merchants</a></li>
+                                    <li><a href='users.html'><img class="icon" src="fonts/icons/users.png">Users</a></li>
+                                    <li><a href='banks.html'><img class="icon" src="fonts/icons/bank.png">Banks</a></li>
+                                    <li><a href='affiliateReport.html'><img class="icon" src="fonts/icons/aff-report.png">Affiliate report</a></li>
+                                    <li><a href='Dashboard-how-it-works.html'><img class="icon" src="fonts/icons/info.png">How it works</a></li>
+										</ul>
+									</li>
+								</ul>
+							</div><!-- /gn-scroller -->
+						</nav>
+					</li>
+				</ul>
+		</div><!-- /container -->
+
+		<div id="wrapper">
+
+			<!--Header Page-->
+			<header> 
+				<img src="./img/bill.png" alt="icon page"/>
+				<h1>Invoices Report</h1>
+			</header>
+			
+			<!--Main Page-->
+			<main>
+
+				<div id="table-block">
+
+					<div class="fromTill-block">
+						<div class="blockRestore">
+							<button class="restoreBtn">Restore</button>
+						</div>
+
+						<div class="blockFrom">
+							<label align="center">From - Till</label>
+							<input class="fromDate datepicker-here" data-multiple-dates-separator="&emsp; — &emsp;"
+																	data-range="true" 
+																	data-language="en"
+																	type="text" 
+																	placeholder="Jul 01, 2019&emsp;—&emsp;Aug 01, 2019"/>
+
+							<div class="selector-block">
+								<select class="selectorState" type="text">
+										<option class="status" value="Status" selected>Status</option>
+										<option value="Approved">Approved</option>
+										<option value="Requested">Requested</option>
+										<option value="Settled">Settled</option>
+										<option value="Sent">Sent</option>
+										<option value="Received">Received</option>
+										<option value="Declined">Declined</option>
+								</select>
+								<select class="selectorMerchant" type="text">
+										<option value="Merchant" selected>Merchant</option>
+										<option value="CMP24">CMP24</option>
+										<option value="CK">CK</option>
+										<option value="GigaFX">GigaFX</option>
+										<option value="Omer">Omer</option>
+										<option value="Lions">Lions</option>
+								</select>
+							</div>
+						</div>
+
+						<div class="block-generateBtn">
+							<button id="generate-btn">Generate</button>
+						</div>
+					</div>
+
+					<div class="table-line "></div>
+
+					<div class="test">
+						<table id="table-user">
+							<thead>
+								<tr class="table-head">
+									<th class="column1">Updated</th>
+									<th class="column2">Sol Name</th>
+									<th class="column3">Merchant</th>
+									<th class="column4">Sent</th>
+									<th class="column5">Bank Comm</th>
+									<th class="column6">Received</th>
+									<th class="column7">AW Comm</th>
+									<th class="column8">Approved</th>
+									<th class="column9">Sol Comm</th>
+									<th class="column10">AW Amnt</th>
+									<th class="column11">AW Settle Comm</th>
+									<th class="column12">AW Profit</th>
+									<th class="column13 state">State</th>
+									<th class="column14 last-th">Export</th>
+								</tr>
+							</thead>
+							<tbody id="table-list"></tbody>
+						</table>
+					</div>
+				</div>
+			</main>
+		</div>
+
+		<script src="./js/invoice-report.js"></script>
+		<script src="js/classie.js"></script>
+		<script src="js/gnmenu.js"></script>
+		<script>
+			new gnMenu( document.getElementById( 'gn-menu' ) );
+		</script>
+	</body>
+</html>

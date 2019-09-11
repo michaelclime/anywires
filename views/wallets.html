@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="description" content="Anywires" />
+    <meta name="keywords" content="Anywires" />
+    <meta name="author" content="Anywires" />
+    <title>Wallets</title>
+    <link rel="shortcut icon" href="img/AnyWiresFavicon.png" type="image/png">
+    <link rel="stylesheet" href="css/wallets.css">
+    <link rel="stylesheet" href="css/authorizationMenu.css">
+    <script src="https://kit.fontawesome.com/5355902e87.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/menu.css" />
+    <link rel="stylesheet" type="text/css" href="css/menu-comp.css" />
+    <script src="js/modernizr.custom.js"></script>
+</head>
+
+<body>
+     <!-- MENU -->
+    <header>
+        <div class="menu">
+                <ul id="gn-menu" class="gn-menu-main">
+                    <li class="gn-trigger">
+                        <a class="gn-icon gn-icon-menu"><span>Menu</span></a>
+                        <nav class="gn-menu-wrapper">
+                            <div class="gn-scroller">
+                                <ul class="gn-menu">
+                                        <li><a href='personal-area.html'><img class="icon" src="fonts/icons/personal-area.png">Personal Area</a></li>
+                                        <li><a href='dashBoardMainPage.html'><img class="icon" src="fonts/icons/dashboard.png">Dashboard</a></li>
+                                        <li><a href='InvoiceGeneration.html'><img class="icon" src="fonts/icons/invoice.png">Invoice generation</a></li>
+                                        <li><a href="invoice-list.html"><img class="icon" src="fonts/icons/invoice-list.png">Invoice list</a></li>
+                                        <li><a href="invoice-report.html"><img class="icon" src="fonts/icons/invoice-report.png">Invoice Report</a></li>
+                                        <li><a><img class="icon" src="fonts/icons/wallet.png">Wallets</a></li>
+                                        <li><a href="settlements.html"><img class="icon" src="fonts/icons/settlement.png">Settlements</a></li>
+                                        <li><a href="merchants.html"><img class="icon" src="fonts/icons/merchant.png">Merchants</a></li>
+                                        <li><a href='users.html'><img class="icon" src="fonts/icons/users.png">Users</a></li>
+                                        <li><a href='banks.html'><img class="icon" src="fonts/icons/bank.png">Banks</a></li>
+                                        <li><a href='affiliateReport.html'><img class="icon" src="fonts/icons/aff-report.png">Affiliate report</a></li>
+                                        <li><a href='Dashboard-how-it-works.html'><img class="icon" src="fonts/icons/info.png">How it works</a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                        </nav>
+                    </li>
+                </ul>
+            </div>
+        <div class="authorizationMenu">
+            <span> 
+                <span class="userName"><%= currentUser.fullname %></span>
+                <span class="userLogo"><i class="far fa-user-circle"></i></span>
+            </span>
+            <ul class="dropMenu">
+                <li class="profile">
+                    <span class="liLogo"><i class="fas fa-user-alt"></i></span>
+                    <a href="#">Profile</a>
+                </li>
+                <li class="merchant">
+                    <span class="liLogo"><i class="fab fa-chromecast"></i></span>
+                    <a href="#">Merchant</a>
+                </li>
+                <li class="logOut">
+                    <span class="liLogo"><i class="fas fa-sign-out-alt"></i></span>
+                    <a href="#">LogOut</a>
+                </li>
+            </ul>
+        </div>
+    </header>
+    <!-- CONTENT -->
+    <main>
+        <div class="headerBlock">
+            <h1 class="mainTitle"><span class="affiliateReportlogo"></span><i class="fas fa-wallet"></i></span>Wallets</h1> 
+        </div>
+
+        <div class="wrapper">
+            <div class="tableWallets">
+                <table class="table">
+                    <thead>
+                        <tr class="tableWalletsHead">
+                            <th class="column1">Date Sent</th>
+                            <th class="column2">Amount</th>
+                            <th class="column3">From</th>
+                            <th class="column4">To</th>
+                            <th class="column5">State</th>
+                            <th class="column6">Change state</th>
+                        </tr>
+                    </thead>
+                    <tbody class="tableList"></tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+    <script src="js/classie.js"></script>
+    <script src="js/gnmenu.js"></script>
+    <script>
+        new gnMenu( document.getElementById( 'gn-menu' ) );
+    </script>
+    <script src="js/wallets.js"></script>
+    <script type="text/javascript" src="js/authorizationMenu.js"></script>
+</body>
+</html>

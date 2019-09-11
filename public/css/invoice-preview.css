@@ -1,0 +1,332 @@
+
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: 'Frank Ruhl Libre', serif;
+}
+
+#wrapper {
+    width: 65%;
+    display: flex;
+    flex-direction: column;
+}
+
+header {
+    padding: 50px;
+}
+
+header p {
+    margin: 0;
+    line-height: 22px;
+}
+
+.block-logo {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.bank-logo {
+    width: 220px;
+    height: 75px;
+}
+
+.bank-logo-block {
+    width: 65%;
+}
+
+.invoice-info {
+    width: 35%;
+    padding-left: 80px;
+}
+
+.invoice-info h1 {
+    font-size: 35px;
+}
+
+.invoice-fromFor-block {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.invoice-from-block {
+    width: 65%;
+}
+
+.invoice-for-block {
+    width: 35%;
+    padding-left: 80px;
+}
+
+
+/* Main */
+main {
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+/* Table Start*/
+table {
+    border: none;
+    border-collapse: unset;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    table-layout: fixed;
+    border-spacing: 0px;
+  }
+  
+  table tr {
+    background-color: #ffffff;
+    padding: 5px;
+  }
+  
+  table th,
+  table td {
+    padding: 10px;
+    text-align: center;
+  }
+  
+  table th {
+    font-weight: normal;
+    font-size: 18px;
+    background-color: #DAA520;
+    color: white;
+}
+
+.table-total {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.col1 {
+    text-align: left;
+    padding-left: 20px;
+}
+
+.col2 {
+    text-align: right;
+    padding-right: 20px;
+}
+
+/* Table End */
+
+.line-under-table {
+    width: 98%;
+    height: 1px;
+    background-color: black;
+    margin: 10px 0;
+}
+
+.final-sum {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 20px;
+}
+
+.final-sum h2 {
+    font-size: 30px;
+    margin: 0;
+}
+
+.line-under-sum {
+    width: 98%;
+    height: 1px;
+    background-color: black;
+    margin: 80px 0 0 0;
+}
+
+
+/* Notes */
+.notes {
+    width: 100%;
+    padding-left: 40px;
+    margin-top: 20px;
+    font-size: 15px;
+}
+
+.notes p {
+    margin: 0;
+    line-height: 1.4;
+}
+
+
+/* Media */
+@media screen and (max-width: 1210px) {
+    #wrapper {
+        width: 95%;
+    }
+}
+
+@media screen and (max-width: 750px) {
+    #wrapper {
+        width: 100%;
+    }
+
+    header {
+        padding: 20px;
+    }
+
+    main {
+        padding: 20px;
+    }
+
+    .bank-logo {
+        width: 180px;
+        height: 65px;
+    }
+
+    .invoice-fromFor-block {
+        flex-direction: column;
+    }
+
+    .block-logo {
+        flex-direction: column;
+    }
+
+    .bank-logo-block {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+
+    .invoice-for-block {
+        width: 100%;
+        margin-top: 15px;
+        padding-left: 0px;
+    }
+
+    .invoice-from-block {
+        width: 100%;
+    }
+
+    .invoice-info {
+        width: 100%;
+        padding-left: 0px;
+    }
+
+    .invoice-info h1 {
+        font-size: 28px;
+    }
+
+    .final-sum h2 {
+        font-size: 25px;
+    }
+
+
+
+    /* Table */
+    table {
+        border: 0;
+    }
+    table thead {
+        border: none;
+        clip: rect(0 0 0 0);
+        height: 1px;
+        margin: -1px;
+        overflow: hidden;
+        padding: 0;
+        position: absolute;
+        width: 1px;
+    }
+    
+    table tr {
+        border-bottom: 1px solid #ddd;
+        display: block;
+        margin-bottom: 15px;
+        background-color: #DAA520;
+        color: white;
+    }
+    
+    table td {
+        border-bottom: 1px solid #ddd;
+        display: block;
+        font-size: 14px;
+        text-align: right;
+    }
+    
+    table td::before {
+        content: attr(data-label);
+        float: left;
+        font-size: 16px;
+        font-weight: bold;
+        color: rgb(255, 255, 255);
+        padding-right: 8px;
+    }
+    
+    table td:last-child {
+        border-bottom: 0;
+    }
+
+    table tr {
+    }
+
+    .col1 {
+        text-align: right;
+        padding-left: 10px;
+    }
+
+    .col2 {
+        padding-right: 10px;
+    }
+
+    .table-total {
+        font-weight: normal;
+        font-size: 14px;
+    }
+}
+
+@media screen and (max-width: 500px) {
+    header {
+        padding: 5px 5px 20px 5px;
+    }
+
+    main {
+        padding: 5px;
+    }
+
+    .bank-logo {
+        width: 175px;
+        height: 60px;
+    }
+
+    .invoice-fromFor-block p{
+        text-align: justify;
+    }
+
+    .invoice-info h1 {
+        font-size: 26px;
+    }
+
+    .final-sum h2 {
+        font-size: 22px;
+    }
+
+    .line-under-table {
+        margin-top: 0;
+    }
+
+    .line-under-sum {
+        margin-top: 30px;
+    }
+    
+    .notes {
+        width: 100%;
+        padding-left: 5px;
+        margin-top: 10px;
+        font-size: 14px;
+    }
+
+    .notes p {
+        text-align: justify;
+    }
+}

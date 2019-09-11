@@ -1,0 +1,509 @@
+@import url('https://fonts.googleapis.com/css?family=Frank+Ruhl+Libre&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Frank Ruhl Libre', serif;
+}
+
+
+/* SCROLL STYLE */
+
+ /* width */
+ ::-webkit-scrollbar {
+    width: 10px;
+   }
+   /* Track */
+   ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+   }
+   /* Handle */
+   ::-webkit-scrollbar-thumb {
+    background: #888;
+   }
+   /* Handle on hover */
+   ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+   }
+
+body {
+    background:  #EEF3FA;
+}
+
+main {
+    margin-top: 3px;
+} 
+
+.mainTitle {
+    padding: 30px 0;
+    padding-left: 70px;
+    background: #FFF;
+}
+
+.dashboardLogo {
+    padding: 0 20px;
+}
+
+.choosePeriod {
+    display: flex;
+    justify-content: space-between;
+    margin: 3px 0;
+    font-size: 18px;
+    padding: 15px 0; 
+    padding-right: 50px;
+    background: #FFF;
+}
+
+.rightSideBoard {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    padding: 20px 0;
+    width: 200px;
+}
+
+.merchantName {
+    padding-bottom: 10px;
+    color: rgb(51, 51, 51);
+    font-size: 28px;
+}
+
+#period {
+    width: 100%;
+    padding: 5px 5px;
+    height: 40px;
+    cursor: pointer;
+    font-size: 16px;
+    font-family: 'Frank Ruhl Libre', serif;
+    margin-top: 5px;
+    text-indent: 15px;
+    border-color: #12C7B2;
+}
+
+.headerBlock {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-column-gap: 20px;
+    margin: 3px 0;
+    padding: 50px 50px;
+    background: #FFF;
+}
+
+.sentBox, .receivedBox, .approvedBox, .settledBox {
+    display: flex;
+    flex-direction: column;
+}
+
+.titleBlock {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.contentBox{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.boxTitle {
+    padding: 20px;
+    color: #FFF;
+    font-size: 30px;
+}
+
+.contentBoxImg {
+    padding: 20px;
+    font-size: 30px; 
+    color: #FFF;
+}
+
+.amounts {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.dollarAmount, .euroAmount, .poundAmount {
+    margin: 5px 0;
+    font-size: 24px; 
+    color: #FFF;
+}
+
+.dollarAmount i, .euroAmount i, .poundAmount i {
+    margin-right: 5px;
+} 
+
+.sentBox {
+    background: #e6515a;
+}
+
+.receivedBox {
+    background: #3d96d2;
+}
+
+.approvedBox {
+    background: #00935d;
+}
+
+.settledBox {
+    background: #f48120;
+}
+
+/* BOX INFO */
+
+.boxInfo {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-column-gap: 20px;
+    margin: 3px 0;
+    background: #FFF;
+    padding: 50px 50px;
+}
+
+.invoiceInfo, .walletBalance {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    padding: 20px;
+    font-size: 29px;
+    color: rgb(51, 51, 51);
+    background:  #EEF3FA;
+    border: 2px solid rgba(51, 51, 51, 0.5);
+}
+
+.infoTitle {
+    margin-bottom: 20px;
+}
+.invoiceImg, .walletImg {
+    font-size: 100px; 
+    color: rgb(51, 51, 51);
+    margin: 0 40px;
+}
+
+.transactionInfo, .walletInfo {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+    border-left: 2px solid rgba(51, 51, 51, 0.5);  
+    margin-left: 30px;
+    padding-left: 30px;
+}
+
+.invoiceInfo span, .walletBalance span {
+    padding: 10px;
+}
+
+/* CHART */
+
+.chartBox {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 3px 0;
+    padding: 50px 0;
+    background: #FFF;
+}
+
+.chartContainer {
+    padding: 10px;
+    width: 60%;
+    background:  #EEF3FA;
+    border: 2px solid rgba(51, 51, 51, 0.3);
+}
+
+.chartBoxBtn {
+    margin: 30px 10px;
+    padding: 15px 20px;
+    color: #FFF;
+    border: none;
+    border-radius: 3px;
+    font-size: 14px;
+    font-weight: 700;
+    outline: none;
+}
+
+.chartBoxBtn:hover {
+    background: rgba(51, 51, 51);
+}
+
+.sentChartBtn {
+    background: #e6515a;
+}
+
+.receivedChartBtn {
+    background: #3d96d2;
+}
+
+.approvedChartBtn {
+    background: #00935d;
+}
+
+.settledChartBtn {
+    background: #f48120;
+}
+
+.horizontalLine {
+    margin-bottom: 30px;
+    height: 3px;
+    background: rgba(51, 51, 51, 0.3);
+}
+
+@media (max-width: 1400px){
+    .invoiceInfo, .walletBalance {
+        padding: 20px;
+        font-size: 24px;
+    }
+ 
+    .invoiceImg, .walletImg {
+        font-size: 80px; 
+        margin: 0 20px;
+    }    
+}
+
+@media (max-width: 1170px){
+    .invoiceInfo, .walletBalance {
+        padding: 20px;
+        font-size: 18px;
+    }
+    
+    .invoiceImg, .walletImg {
+        font-size: 65px; 
+        margin: 0 15px;
+    }    
+}
+
+@media (max-width: 1035px){
+
+    .boxTitle {
+        padding: 15px;
+        font-size: 28px;
+    }
+    
+    .contentBoxImg {
+        padding: 15px;
+        font-size: 30px; 
+    }
+
+    .dollarAmount, .euroAmount, .poundAmount {
+        margin: 5px 0;
+        font-size: 24px;
+    }
+
+    .invoiceInfo, .walletBalance {
+        padding: 15px;
+        font-size: 16px;
+    }
+    
+    .invoiceImg, .walletImg {
+        font-size: 60px; 
+        margin: 0 10px;
+    }
+    
+    .chartBoxBtn {
+        margin: 20px 8px;
+        padding: 10px 15px;
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 900px){
+    .boxTitle {
+        padding: 10px;
+        font-size: 24px;
+    }
+    
+    .contentBoxImg {
+        padding: 10px;
+        font-size: 20px; 
+    }
+
+    .dollarAmount, .euroAmount, .poundAmount {
+        margin: 5px 0;
+        font-size: 18px;
+    }
+
+    .invoiceInfo, .walletBalance {
+        padding: 5px;
+        font-size: 12px;
+    }
+    
+    .transactionInfo, .walletInfo {
+        margin-left: 20px;
+        padding-left: 20px;
+    }
+
+    .invoiceImg, .walletImg {
+        font-size: 40px; 
+        margin: 0 5px;
+    }
+    
+    .chartContainer {   
+        width: 80%;
+    }
+}
+
+@media (max-width: 700px){
+
+    .headerBlock {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
+        grid-gap: 20px 20px;
+        margin: 3px 0;
+        padding: 50px 50px;
+    }
+
+    .mainTitle {
+        padding-left: 40px;
+        font-size: 28px;
+    }
+
+    .choosePeriod {
+        font-size: 16px;
+    }
+    
+    .rightSideBoard {
+        padding: 20px 0;
+    }
+    
+    .merchantName {
+        font-size: 20px;
+    }
+
+    .boxTitle {
+        padding: 10px;
+        font-size: 24px;
+    }
+    
+    .contentBoxImg {
+        padding: 10px;
+        font-size: 20px; 
+    }
+
+    .dollarAmount, .euroAmount, .poundAmount {
+        margin: 5px 0;
+        font-size: 18px;
+    }
+
+    .boxInfo {
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr;
+        grid-gap: 20px 20px;
+    }
+
+    .invoiceInfo, .walletBalance {
+        padding: 15px;
+        font-size: 18px;
+    }
+    
+    .transactionInfo, .walletInfo {
+        margin-left: 20px;
+        padding-left: 20px;
+    }
+
+    .invoiceImg, .walletImg {
+        font-size: 40px; 
+        margin: 0 15px;
+    }
+    
+    .chartContainer {   
+        width: 81%;
+    }
+
+    .chartBoxBtn {
+        margin: 20px 5px;
+        padding: 5px 10px;
+        font-size: 10px;
+    }
+}
+
+@media (max-width: 500px){
+    .headerBlock {
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr 1fr 1fr;
+        grid-gap: 20px 20px;
+        margin: 3px 0;
+        padding: 50px 50px;
+    }
+
+    .mainTitle {
+       padding: 30px 0;
+        font-size: 18px;
+    }
+
+    .dashboardLogo {
+        padding: 0 10px;
+    }
+
+    .choosePeriod {
+        padding: 15px 30px;
+        font-size: 14px;
+    }
+
+    #period {
+        font-size: 12px;
+    }
+    
+    .rightSideBoard {
+        padding: 10px 0;
+    }
+    
+    .merchantName {
+        font-size: 14px;
+    }
+
+    .boxTitle {
+        padding: 10px;
+        font-size: 24px;
+    }
+    
+    .contentBoxImg {
+        padding: 10px;
+        font-size: 20px; 
+    }
+
+    .dollarAmount, .euroAmount, .poundAmount {
+        margin: 5px 0;
+        font-size: 18px;
+    }
+
+    .boxInfo {
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr;
+        grid-gap: 20px 20px;
+    }
+
+    .invoiceInfo, .walletBalance {
+        padding: 5px;
+        font-size: 9px;
+    }
+    
+    .transactionInfo, .walletInfo {
+        margin-left: 10px;
+        padding-left: 10px;
+    }
+
+    .invoiceImg, .walletImg {
+        font-size: 20px; 
+        margin: 0 5px;
+    }
+    
+    .chartContainer {   
+        width: 95%;
+    }
+
+    .chartBoxBtn {
+        margin: 10px 2px;
+        padding: 3px 8px;
+        font-size: 7px;
+    }
+}
