@@ -259,7 +259,7 @@ app.post('/sigup', function(req, res) {
         // send mail with defined transport object
         let info = await transporter.sendMail({
             from: '"AnyWires" <AnyWires@gmail.com>', 
-            to: 'bogdan.melnik@brokers.expert', 
+            to: 'm.clime@brokers.expert', 
             subject: 'A New Client AnyWires', 
             text: newMessage
         });
