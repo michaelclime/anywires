@@ -182,7 +182,7 @@ app.post("/postMerchant",jsonParser, (req, res) => {
 
 // Banks generation process
 
-app.get("/getBank", (req, res) => {
+app.get("/getBanks", (req, res) => {
     mongo.connect(url, (err, db) =>{
         db.collection("banks").find({}).toArray(function(err, merchants){
             if(err) return console.log("Error with upload Merchants!", err);

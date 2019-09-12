@@ -177,7 +177,7 @@ class UsersList {
 
     methodPutEnable = (id, status) => {
         // fetch("http://localhost:3000/putBank", {
-        fetch("http://18.216.223.81:3000/postBank", {
+        fetch("http://18.216.223.81:3000/putBank", {
                     method: "PUT",
                     body: JSON.stringify({
                         id: id, //Must be id!
@@ -251,7 +251,7 @@ class UsersList {
 
     getUsers = async () => {
         // return  await fetch("http://localhost:3000/getBank")
-        return  await fetch("http://18.216.223.81:3000/postBanks")
+        return  await fetch("http://18.216.223.81:3000/getBanks")
         .then(res => {
             return res.json();
         }) 

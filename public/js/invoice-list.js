@@ -91,7 +91,7 @@ class invoiceList {
     }
 
     getInvoices = async () => {
-        return  await fetch("http://18.216.223.81:3000/getMerchants")
+        return  await fetch("http://18.216.223.81:3000/getInvoices")
         // return  await fetch("http://localhost:3000/getInvoices")
         .then(res => {
             return res.json();
