@@ -281,3 +281,8 @@ class invoiceList {
 
 const userList = new invoiceList();
 
+// Alert modal window
+const alertWindow = document.querySelector('.alert');
+alertWindow.addEventListener("click", (event) => {
+    event.target === alertWindow ? alertWindow.style.display = "none" : "";
+});

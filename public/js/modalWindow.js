@@ -167,12 +167,8 @@ $(document).ready(function(){
   });
 });
 
-// // // alert
-// // let fetchPromise  = fetch('http://localhost:3000/');
-// // fetchPromise.then(response => {
-// //     return response.json();
-// //   }).then(alertM => {
-// //       if (alertM) 
-// //       Swal('Thank you for your trust! We\'ll contact you soon!');
-// //   });
-
+// Alert modal window
+const alertWindow = document.querySelector('.alert');
+alertWindow.addEventListener("click", (event) => {
+    event.target === alertWindow ? alertWindow.style.display = "none" : "";
+});
