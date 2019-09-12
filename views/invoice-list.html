@@ -27,6 +27,13 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
 	</head>
 	<body>
+		<% if(success && success.length > 0) {%>
+			<div class="alert" role="alert">
+				<div class="alertContent">
+					<h3>  <%= success %> </h3>
+				</div>
+			</div>
+		<% } %>
 		<div id="burgerMenu">
 			<div class="menu">
 				<ul id="gn-menu" class="gn-menu-main">

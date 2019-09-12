@@ -251,3 +251,8 @@ const userList = new invoiceList();
 //          "created_by" : "Jack Wilson", 
 //          "commissions" : - 
 //   }
+// Alert modal window
+const alertWindow = document.querySelector('.alert');
+alertWindow.addEventListener("click", (event) => {
+    event.target === alertWindow ? alertWindow.style.display = "none" : "";
+});

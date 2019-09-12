@@ -32,20 +32,21 @@
             <button  class="login loginWindow-btn">Merchant Login</button>
         </div>
     </header>
-
    <!-- Modal Action Window -->
-   <% if(message.length !==0) {%>
-    <div class="modal-actions">
-        <div class="popup-dialog">
-            <div class="popup-content">
-                <button class="popup-close">&times;</button>
-                <img src="img/logocompany.png" alt="Anywires logo" class="logo">
-                <h1>  <%= message %> </h1>
-            </div>
+   <% if(error && error.length > 0) {%>
+    <div class="alert" role="alert">
+        <div class="alertContent">
+            <h3>  <%= error %> </h3>
         </div>
     </div>
-    <% }%>
-
+    <% } %>
+    <% if(success && success.length > 0) {%>
+        <div class="alert" role="alert">
+            <div class="alertContent">
+                <h3>  <%= success %> </h3>
+            </div>
+        </div>
+    <% } %>
     <!-- CONTENT -->
     <main>
         <div class="firstBlock">
@@ -296,7 +297,6 @@
             </div>
         </div>
     </div>
-
     <script src="js/modalWindow.js"></script>
     <script>
         window.fcWidget.init({

@@ -40,7 +40,8 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 app.use(function(req, res, next) {
     res.locals.currentUser = req.user;
-    res.locals.message = req.flash('error');
+    res.locals.error = req.flash('error');
+    res.locals.success = req.flash('success');
     next();
 });
 
@@ -153,6 +154,7 @@ app.post("/invoices", function(req, res, next) {
             db.close();
         });
     });
+    req.flash('success', 'Invoice successfully created!');
     res.redirect("/invoice-list.html");
 });
 
@@ -298,7 +300,7 @@ app.post('/login', passport.authenticate("local",
 // LogOut process
 app.get('/logout', function(req, res) {
     req.logOut();
-    req.flash('error', 'Logged you out!');
+    req.flash('success', 'Logged you out!');
     res.redirect('/');
 });
 
@@ -306,7 +308,7 @@ function isLoggedIn(req, res, next) {
     if(req.isAuthenticated()) {
         return next()
     }
-    req.flash('error', 'Please LogIn First!');
+    req.flash('error', 'You need to be logged in to do that');
     res.redirect('/');
 }
 
@@ -345,7 +347,8 @@ app.post('/sigup', function(req, res) {
         // Preview only available when sending through an Ethereal account
         console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
         // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
-        
+        req.flash('success', 'Your request successfully created! \n \n We\'ll contact you ASAP!');
+        res.redirect('/');
     }
     
     main().catch(console.error);
