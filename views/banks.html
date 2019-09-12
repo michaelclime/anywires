@@ -10,16 +10,15 @@
 		<meta name="author" content="Anywires" />
 		<link rel="shortcut icon" href="./img/AnyWiresFavicon.png" type="image/x-icon">
 		<link rel="stylesheet" type="text/css" href="css/banks.css" />
-		<link rel="stylesheet" href="css/authorizationMenu.css">
 		<link rel="stylesheet" type="text/css" href="css/menu.css" />
 		<link rel="stylesheet" type="text/css" href="css/menu-comp.css" />
 		<link rel="stylesheet" type="text/css" href="css/banks-table.css">
 		<link href="https://fonts.googleapis.com/css?family=Frank+Ruhl+Libre&display=swap" rel="stylesheet">
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-		<script src="https://unpkg.com/jspdf@1.5.3/dist/jspdf.min.js"></script>
-		<script src="https://unpkg.com/jspdf-autotable@3.1.4/dist/jspdf.plugin.autotable.js"></script>
 		<script src="js/modernizr.custom.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.15.1/xlsx.full.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
 	</head>
 	<body>
 		<div id="burgerMenu">
@@ -62,12 +61,95 @@
 			
 			<!--Main Page-->
 			<main>
-				<div id="createUser-block">
-					<div class="search-block">
-						<input id="search-input" type="search" placeholder="Search..."/>
-						<img id="search-button" src="./img/magnifying-glass.png" alt="search button"/>
+					<div class="minMax-block">
+						<div class="filterMin-block">
+							<label for="filterMin-block">Min Wire</label>
+							<select id="filterMin" type="text">
+									<option value="" selected></option>
+									<option value="1000">1000</option>
+									<option value="500">500</option>
+									<option value="250">250</option>
+									<option value="100">100</option>
+							</select>
+						</div>
+
+						<div class="filterMax-block">
+							<label for="filterMax-block">Max Wire</label>
+							<select id="filterMax" type="text">
+									<option value="" selected></option>
+									<option value="10000">10000</option>
+									<option value="25000">25000</option>
+									<option value="50000">50000</option>
+									<option value="100000">100000</option>
+							</select>
+						</div>
+
+						<div class="filterSepa-block">
+							<label for="filterSepa-block">Sepa</label>
+							<select id="filterSepa" type="text">
+									<option value="" selected></option>
+									<option value="yes">yes</option>
+									<option value="no">no</option>
+							</select>
+						</div>
+
+						<div class="filterEnable-block">
+							<label for="filterEnable-block">Enable</label>
+							<select id="filterEnable" type="text">
+									<option value="" selected></option>
+									<option value="yes">yes</option>
+									<option value="no">no</option>
+							</select>
+						</div>
 					</div>
-				</div>
+
+					<div class="containerBlock">
+						<div class="filterBlock-first">
+
+								<div class="filterSolution-block">
+									<label for="filterSolution-block">Solution</label>
+									<select id="filterSolution" type="text">
+											<option value="" selected></option>
+											<option value="VTK">VTK</option>
+											<option value="ITS">ITS</option>
+											<option value="CKS">CKS</option>
+											<option value="MTI">MTI</option>
+									</select>
+								</div>
+		
+								<div class="filterCurrency-block">
+									<label for="filterCurrency-block">Currency</label>
+									<select id="filterCurrency" type="text">
+											<option value="" selected></option>
+											<option value="EUR" >EUR</option>
+											<option value="USD" >USD</option>
+									</select>
+								</div>
+
+								<div class="filterCountry-block">
+										<label for="filterCountry-block">Country</label>
+										<select id="filterCountry" type="text">
+												<option value="" selected></option>
+												<option value="United Kingdom" >United Kingdom</option>
+												<option value="Sweden" >Sweden</option>
+												<option value="Poland">Poland</option>
+										</select>
+									</div>
+							</div>
+					
+							<div class="search-block">
+								<input id="search-input" type="search" placeholder="Search..."/>
+								<img id="search-button" src="./img/magnifying-glass.png" alt="search button"/>
+							</div>
+					</div>
+
+					<div id="createUser-block">
+						<div>
+							<button id="showBtn">Show</button>
+							<button id="clearFilterBtn">Clear Filter</button>
+						</div>
+						<button id="createBank-button">Create Bank</button>
+					</div>
 
 				<div id="tableUser-block">
 					<div class="tableUser-header">
@@ -80,7 +162,7 @@
 					<div class="table-line "></div>
 
 					<div class="test">
-						<table id="table-user">
+						<table id="table-banks">
 							<thead>
 								<tr class="table-head">
 									<th class="column1">Name</th>
@@ -95,6 +177,7 @@
 									<th class="column10">Max Wire</th>
 									<th class="column11">Sepa</th>
 									<th class="column12">Enabled</th>
+									<th class="column13"></th>
 								</tr>
 							</thead>
 							<tbody id="table-list"></tbody>
@@ -104,18 +187,111 @@
 			</main>
 		</div>
 		<!-- Modal Window "Create User" -->
-		<div id="modal-createUser" class="slide-top">
-			<div>
-				Name: <input class="modal-InputName" type="text" placeholder="Enter your name"/>
-				Email: <input class="modal-InputEmail" type="text" placeholder="Enter your Email"/>
+	<div class="filter">
+		<div class="modal-Addbank slide-top">
+			<h2>Create new Bank</h2>
+			<div class="containerModal">
+
+				<div class="firstModal-block">
+					<div class="bankName-block">
+						<label for="bankName-block">Bank name:</label>
+						<input value="Bank name" class="allData" type="text" placeholder="Bank name">
+					</div>
+
+					<div class="beneficiaryName-block">
+						<label for="beneficiaryName-block">Beneficiary name:</label>
+						<input value="Beneficiary name" class="allData" type="text" placeholder="Beneficiary name">
+					</div>
+
+					<div class="solutionName-block">
+						<label for="solutionName-block">Solution name:</label>
+						<input value="Solution name" class="allData" type="text" placeholder="Solution name">
+					</div>
+
+					<div class="bankCountry-block">
+						<label for="bankCountry-block">Bank country:</label>
+						<input value="Bank country" class="allData" type="text" placeholder="Bank country:">
+					</div>
+
+					<div class="bankCurrency-block">
+						<label for="bankCurrency-block">Currency:</label>
+						<select  class="allData" name="Bank Currency">
+							<option value="" selected></option>
+							<option value="USD">USD</option>
+							<option value="EUR">EUR</option>
+						</select>
+					</div>
+
+					<div class="benefAdress-block">
+						<label for="benefAdress-block">Beneficiary address:</label>
+						<input value="Beneficiary address" class="allData" type="text" placeholder="Beneficiary address">
+					</div>
+
+					<div class="maxWire-block">
+						<label for="maxWire-block">Maximum wire:</label>
+						<input value="50000" class="allData" type="number" placeholder="Maximum wire">
+					</div>
+
+					<div class="minWire-block">
+						<label for="minWire-block">Minimum wire:</label>
+						<input value="100" class="allData" type="number" placeholder="Minimum wire">
+					</div>
+
+					<div class="IBAN-block">
+						<label for="IBAN-block">IBAN number:</label>
+						<input value="IBAN" class="allData" type="text" placeholder="IBAN number">
+					</div>
+
+					
+				</div>
+
+				<!-- Second-modal block  -->
+				<div class="secondModal-block">
+					<div class="SWIFT-block">
+						<label for="SWIFT-block">SWIFT/BIC:</label>
+						<input value="SWIFT" class="secondModal-input allData" type="text" placeholder="SWIFT/BIC">
+					</div>
+
+					<div class="bankAdress-block">
+						<label for="bankAdress-block">Bank address:</label>
+						<input value="Bank address" class="secondModal-input allData" type="text" placeholder="Bank address">
+					</div>
+
+					<div class="companySite-block">
+						<label for="companySite-block allData">Bank company site:</label>
+						<input value="Bank company site" class="secondModal-input allData" type="text" placeholder="Bank company site">
+					</div>
+
+					<div class="stopLimit-block">
+						<label for="stopLimit-block allData">Stop Limit:</label>
+						<input value="100" class="secondModal-input allData" type="number" placeholder="Stop Limit">
+					</div>
+
+					<div class="description-block">
+						<label for="description-block">Description:</label>
+						<textarea class="allData" name="Description" placeholder="Description"></textarea>
+					</div>
+
+					<div class="sepaAvailable-block">
+						<label for="sepaAvailable-block">SEPA available:</label>
+						<input type="checkbox" class="sepaCheckbox allData">
+					</div>
+
+					<div class="B2B-block">
+						<label for="B2B-block">B2B:</label>
+						<input type="checkbox" class="b2bcheckbox allData">
+					</div>
+
+					<div class="uploadBank-block">
+						<button id="uploadLogo-btn">Upload Bank Logo</button>
+					</div>
+				</div>
+
 			</div>
-			<div>
-				Merchant: <input class="modal-InputMer" type="text" placeholder="Merchant"/>
-				Role: <input class="modal-InputRole" type="text" placeholder="Role"/>
-			</div>
-			<button id="saveUser-btn">Create</button>
+			<button id="createBankModal-btn">Create bank</button>
 		</div>
-		<script type="text/javascript" src="js/authorizationMenu.js"></script>
+	</div>
+		
 		<script src="./js/banks.js"></script>
 		<script src="js/classie.js"></script>
 		<script src="js/gnmenu.js"></script>
