@@ -293,7 +293,8 @@ app.post('/register', function(req, res){
 app.post('/login', passport.authenticate("local",
     {
         successRedirect: '/dashBoardMainPage.html',
-        failureRedirect: '/'
+        failureRedirect: '/',
+        failureFlash: true 
     }), function(req, res) {
 });
 
@@ -311,6 +312,17 @@ function isLoggedIn(req, res, next) {
     req.flash('error', 'You need to be logged in to do that');
     res.redirect('/');
 }
+
+// Reset Password
+
+app.get('/resetPassword', function(req, res) {
+    res.render("resetPassword.html");
+});
+
+app.post('/forgotPassword', function(req, res) {
+    res.render("resetPassword.html");
+});
+
 
 // Sign up menu and sending email
 
