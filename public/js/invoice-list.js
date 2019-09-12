@@ -1,132 +1,6 @@
-const LIST = [{
-    Created: "Jul 31, 2019",
-    invoice_number: "#3451",
-    Merchant: "GreatFxpro",
-    Name: "Margita Winther",
-    Sent: "€5000", 
-    Sent_date:"Aug 18, 2019",
-    Bank_fee: "€0",
-    Received: "€5000",
-    Received_date: "Aug 19, 2019",
-    Bank: "BNP Poland (EUR) VTK",
-    Available: "€500",
-    Payment_status: "Available",
-    ID: "true",
-    Utility_Bill: "false",
-    Payment_proof: "true",
-    Declaration: "undefined"
-},{
-    Created: "Jul 31, 2019",
-    invoice_number: "#3452",
-    Merchant: "BU",
-    Name: "Jette Odderskov",
-    Sent: "€5000", 
-    Sent_date:"Aug 9, 2019",
-    Bank_fee: "€0",
-    Received: "€5000",
-    Received_date: "Aug 10, 2019",
-    Bank: "DE Transferwise FinEdu EUR",
-    Available: "€500",
-    Payment_status: "Declined",
-    ID: "",
-    Utility_Bill: "",
-    Payment_proof: "",
-    Declaration: "",
-    Document: "Without documents"
-},{
-    Created: "Jul 31, 2019",
-    invoice_number: "#3453",
-    Merchant: "CPM24",
-    Name: "Mariella Bonnier",
-    Sent: "€5000", 
-    Sent_date:"Jul 8, 2019",
-    Bank_fee: "€0",
-    Received: "€5000",
-    Received_date: "Aug 9, 2019",
-    Bank: "BNP Poland (EUR) VTK",
-    Available: "€500",
-    Payment_status: "Received",
-    ID: "false",
-    Utility_Bill: "",
-    Payment_proof: "false",
-    Declaration: "false",
-    Document: "Pending verification"
-},{
-    Created: "Jul 31, 2019",
-    invoice_number: "#3454",
-    Merchant: "FinixCapital",
-    Name: "JJette Odderskov",
-    Sent: "€5000", 
-    Sent_date:"Jul 16, 2019",
-    Bank_fee: "€100",
-    Received: "€5000",
-    Received_date: "Aug 17, 2019",
-    Bank: "BNP Poland (EUR) VTK",
-    Available: "€500",
-    Payment_status: "Requested",
-    ID: "true",
-    Utility_Bill: "true",
-    Payment_proof: "true",
-    Declaration: "true",
-    Document: "All verified"
-},{
-    Created: "Jul 31, 2019",
-    invoice_number: "#3251",
-    Merchant: "CMP",
-    Name: "Yastrebtsova Natalia",
-    Sent: "€5000", 
-    Sent_date:"Jul 11, 2019",
-    Bank_fee: "€0",
-    Received: "€5000",
-    Received_date: "Jul 12, 2019",
-    Bank: "DE Transferwise FinEdu EUR",
-    Available: "€500",
-    Payment_status: "Declined",
-    ID: "",
-    Utility_Bill: "",
-    Payment_proof: "",
-    Declaration: "",
-    Document: "Without documents"
-},{
-    Created: "Jul 31, 2019",
-    invoice_number: "#1241",
-    Merchant: "CMP",
-    Name: "Jack Wilson",
-    Sent: "€5000", 
-    Sent_date:"Jul 18, 2019",
-    Bank_fee: "€0",
-    Received: "€5000",
-    Received_date: "Jul 19, 2019",
-    Bank: "BNP Poland (EUR) VTK",
-    Available: "€500",
-    Payment_status: "Received",
-    ID: "false",
-    Utility_Bill: "",
-    Payment_proof: "false",
-    Declaration: "false",
-    Document: "Pending verification"
-},{
-    Created: "Jul 31, 2019",
-    invoice_number: "#5478",
-    Merchant: "CK",
-    Name: "Rudi Laukas",
-    Sent: "€5000", 
-    Sent_date:"Jul 1, 2019",
-    Bank_fee: "€100",
-    Received: "€5000",
-    Received_date: "Jul 2, 2019",
-    Bank: "BNP Poland (EUR) VTK",
-    Available: "€500",
-    Payment_status: "Requested",
-    ID: "true",
-    Utility_Bill: "true",
-    Payment_proof: "true",
-    Declaration: "true",
-    Document: "All verified"
-}];
-
 class invoiceList {
     constructor(){
+        this.ArrayLIst = [];
         this.btnExel = document.querySelector("#dowloadXls");
         this.clearFilterBtn = document.querySelector("#clearFilterBtn");
         this.showFilterBtn = document.querySelector("#showBtn");
@@ -168,7 +42,7 @@ class invoiceList {
         this.selets.forEach(item => item.value = "");
         this.container = document.getElementById("table-list");
         this.container.innerHTML = "";
-        this.loadUsers(LIST);
+        this.loadMerchants(LIST);
     }
 
     filterList = () => {
@@ -207,9 +81,65 @@ class invoiceList {
         }
     }
 
-    loadUsers(arr){
+    saveLocalInvoices = async (array) => {
+        array = await this.getInvoices();
+        array.forEach((item) => {
+            this.ArrayLIst.push(item);
+        });
+        console.log(this.ArrayLIst);
+        this.loadInvoices(this.ArrayLIst);
+    }
+
+    getInvoices = async () => {
+        return  await fetch("http://18.216.223.81:3000/getMerchants")
+        // return  await fetch("http://localhost:3000/getInvoices")
+        .then(res => {
+            return res.json();
+        }) 
+        .catch(err => {
+            console.log(err);
+        });
+    }
+
+    getInvoiceMerch = async (id) => {
+        // return await fetch("http://localhost:3000/getInvoiceMerchant", {
+            return await fetch("http://18.216.223.81:3000/getInvoiceMerchant", {
+                        method: "POST",
+                        body: JSON.stringify({
+                            "id": id
+                        }),
+                        headers:{'Content-Type': 'application/json'}
+                        })
+                        .then(res => {
+                            return res.json();
+                        })
+                        .catch(err => {
+                            console.log(err);
+                        });
+    }
+
+    getInvoiceBank = async (bank) => {
+        // return await fetch("http://localhost:3000/getInvoiceBanks", {
+            return await fetch("http://18.216.223.81:3000/getInvoiceBanks", {
+                        method: "POST",
+                        body: JSON.stringify({
+                            "id": bank
+                        }),
+                        headers:{'Content-Type': 'application/json'}
+                        })
+                        .then(res => {
+                            return res.json();
+                        })
+                        .catch(err => {
+                            console.log(err);
+                        });
+    }
+
+    loadInvoices = (arr) => {
         this.container = document.getElementById("table-list");
-        arr.forEach((item) => {
+        arr.forEach( async (item) => {
+            var merchantId = await this.getInvoiceMerch(item.merchant);
+            var bankId = await this.getInvoiceBank(item.bank);
             var color = "";
             item.Payment_status === "Available" ? color = "green" : "";
             item.Payment_status === "Declined" ? color = "red" : "";
@@ -219,32 +149,34 @@ class invoiceList {
             this.userList.innerHTML =  `
                     <td class="column1">
                         <div class="createdTd">
-                            <p class="green"><b>${item.invoice_number}</b></p>
-                            <p class="smallBoldText">${item.Created}</p>
-                            <p>2:47 pm</p>
+                            <p class="green"><b>#${item.number}</b></p>
+                            <p class="smallBoldText">${moment(item.dates.creation_date).format('ll')}</p>
+                            <p>${moment(item.dates.creation_date).format("h:mm a")}</p>
                         </div>
                     </td> 
-                    <td class="column2">${item.Merchant}</td> 
-                    <td class="column3">${item.Name}</td> 
+                    <td class="column2">
+                        ${merchantId[0].name}
+                    </td> 
+                    <td class="column3">${item.client_details.full_name}</td> 
                     <td class="column4">
                         <div class="sentTd">
-                            <p>${item.Sent}</p>
-                            <p class="yellow smallBoldText">${item.Sent_date}</p>
+                            <p>${item.amount.amount_sent}</p>
+                            <p class="yellow smallBoldText">${moment(item.dates.sent_date).format('ll')}</p>
                         </div>
                     </td> 
-                    <td class="column5">${item.Bank_fee}</td>
+                    <td class="column5">${item.commissions}</td>
                     <td class="column6">
                         <div>
-                            <p>${item.Received}</p>
-                            <p class="blue smallBoldText">${item.Received_date}</p>
+                            <p>${item.amount.amount_received}</p>
+                            <p class="blue smallBoldText">${moment(item.dates.received_date).format('ll')}</p>
                         </div>
                     </td>
-                    <td class="column7">${item.Bank}</td>
+                    <td class="column7">${bankId[0].name}</td>
                     <td class="column8">
-                        <p>${item.Available}</p>
-                        <p class="fiolet smallBoldText">Aug 19, 2019</p>
+                        <p>${0}</p>
+                        <p class="fiolet smallBoldText">${moment(item.dates.available_date).format('ll')}</p>
                     </td>
-                    <td class="column9 ${color}">${item.Payment_status}</td>
+                    <td class="column9 ${color}">${item.status}</td>
 
                     <td class="column10">
                         <div class="documentsIcon">
@@ -272,7 +204,7 @@ class invoiceList {
     }
 
     render(){
-        this.loadUsers(LIST);
+        this.saveLocalInvoices();
         this.showFilterBtn.addEventListener("click", this.filterList);
         this.clearFilterBtn.addEventListener("click", this.clearFilter);
         this.btnExel.addEventListener("click", this.saveXls);
@@ -281,3 +213,41 @@ class invoiceList {
 
 const userList = new invoiceList();
 
+
+// const obj = { 
+//     "number" : 1, 
+//     "client_details" : { 
+//         "full_name" : "Jack Wilson", 
+//         "email" : "wilson@gmail.com", 
+//         "phone" : "+4412345678", 
+//         "address" : "Poland, general street 88A", 
+//         "country" : "Poland", 
+//         "id_number" : "AA2021948" 
+//     },  
+//     "type" : "c2b", 
+//     "status" : "Requested", 
+//     "merchant" : ObjectId("5d78ae0b55570e0b708a8b42"), 
+//     "documents" : { 
+//         "id" : [ ObjectId("5d78aea255570e0b708a8b43"), ObjectId("5d78aea955570e0b708a8b44") ], 
+//         "payment_proof" : [ ObjectId("5d78aec455570e0b708a8b45"), ObjectId("5d78aec955570e0b708a8b46") ], 
+//         "utility_bill" : [ ObjectId("5d78aef255570e0b708a8b47"), ObjectId("5d78aef655570e0b708a8b48") ], 
+//         "declaration" : ObjectId("5d78b2e155570e0b708a8b49") 
+//     },  
+//      "dates" : { 
+//         "creation_date" : ISODate("1999-12-31T22:00:00Z"), 
+//         "sent_date" : ISODate("0000-01-01T00:00:00Z"), 
+//         "received_date" : ISODate("0000-01-01T00:00:00Z"), 
+//         "approved_date" : ISODate("1999-12-31T22:00:00Z"), 
+//         "available_date" : ISODate("0000-01-01T00:00:00Z"), 
+//         "declined_date" : ISODate("1999-12-31T22:00:00Z") 
+//     }, 
+//         "currency" : "EUR", 
+//         "bank" : ObjectId("5d78b54955570e0b708a8b4a"), 
+//         "amount" : { 
+//             "amount_received" : 1000, 
+//             "amount_sent" : 1000, 
+//             "amount_approved" : 900 
+//          }, 
+//          "created_by" : "Jack Wilson", 
+//          "commissions" : - 
+//   }

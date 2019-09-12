@@ -15,8 +15,8 @@ let express = require("express"),
     objectId = require("mongodb").ObjectID;
 
 
-// const url = 'mongodb://18.216.223.81:27017/anywires';
-const url = 'mongodb://localhost:27017/anywires';
+const url = 'mongodb://18.216.223.81:27017/anywires';
+// const url = 'mongodb://localhost:27017/anywires';
 
 // View Engine Setup
 app.set('views', path.join(__dirname, 'views'));
@@ -212,6 +212,43 @@ app.put("/putBank", jsonParser, (req, res) => {
            const bank = result.value;
            res.send(bank);
        });
+    });
+});
+
+
+// Invoice list generation process
+
+app.get("/getInvoices", (req, res) => {
+    mongo.connect(url, (err, db) =>{
+        db.collection("invoices").find({}).toArray(function(err, invoices){
+            if(err) return console.log("Error with upload Merchants!", err);
+            db.close();
+            res.send(invoices);
+        })
+    });
+});
+
+app.post("/getInvoiceMerchant", jsonParser, (req, res) => {
+    mongo.connect(url, (err, db) =>{
+        const id = new objectId(req.body.id);
+
+        db.collection("merchants").find({_id: id}).toArray(function(err, merchant){
+            if(err) return console.log("Error with upload Invoice Merchant!", err);
+            db.close();
+            res.send(merchant);
+        });
+    });
+});
+
+app.post("/getInvoiceBanks", jsonParser, (req, res) => {
+    mongo.connect(url, (err, db) =>{
+        const id = new objectId(req.body.id);
+
+        db.collection("banks").find({_id: id}).toArray(function(err, bank){
+            if(err) return console.log("Error with upload Invoice Merchant!", err);
+            db.close();
+            res.send(bank);
+        });
     });
 });
 
