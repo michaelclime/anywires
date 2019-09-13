@@ -1,3 +1,10 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Frank Ruhl Libre', serif;
+}
+
 /*Body*/
 body {
     display: flex;
@@ -26,7 +33,7 @@ header {
     display: flex;
     flex-direction: column;
     padding: 10px;
-    margin-top: 62px;
+    margin-top: 3px;
     margin-bottom: 2px;
 }
 
@@ -69,6 +76,7 @@ header h1 {
 #burgerMenu {
     display: flex;
     justify-content: space-between;
+    width: 100%;
     background:  #FFF;
 }
 
@@ -159,6 +167,10 @@ header h1 {
     height: 150px;
 }
 
+.personal-name {
+    margin: 16px 0;
+}
+
 .necessary-action {
     color: red;
 }
@@ -193,11 +205,13 @@ main {
 }
 
 .description-info {
+    margin: 14px 0;
     color: rgb(88, 88, 88);
     font-size: 14px;
 }
 
 .person-info {
+    margin: 16px 0;
     font-weight: bold;
 }
 
@@ -240,114 +254,6 @@ footer {
     background-color: #12C7B2;
 }
 
-
-/* Modal Windows */
-.modal-reset {
-    display: none;
-    margin-top: 150px;
-    position: fixed;
-    flex-direction: column;
-    align-items: center;
-    width: 420px;
-    background-color: #FFF;
-    padding: 20px;
-    box-shadow: 0px 0px 2px 2px rgba(201, 200, 200, 0.75);
-    font-family: 'Frank Ruhl Libre', serif;
-}
-
-#input_oldPassword, #input_newPassword {
-    border: 1px solid rgb(189, 189, 189);
-    background-color: rgb(255, 255, 255);
-    box-sizing: border-box;
-    height: 45px;
-    width: 250px;
-    border-radius: 3px;
-    font-size: 14px;
-    color: rgb(85, 85, 85);
-    padding: 0px 4px;
-    box-shadow: none;
-    margin-bottom: 10px;
-    font-family: 'Frank Ruhl Libre', serif;
-}
-
-.modal-reset p {
-    line-height: 1.6;
-    margin-bottom: 30px;
-}
-
-.change-password-btn, .send-link-btn {
-    width: 120px;
-    height: 45px;
-    cursor: pointer;
-    background-color: rgb(77, 77, 77);
-    border: none;
-    text-align: center;
-    color: rgb(255, 255, 255);
-    line-height: 1;
-    border-radius: 3px;
-    outline: none;
-    font-size: 14px;
-    transition: .35s;
-    font-family: 'Frank Ruhl Libre', serif;
-}
-.change-password-btn {
-    margin-right: 10px;
-}
-
-.change-password-btn:hover, .send-link-btn:hover {
-    background-color: rgb(143, 143, 143);
-}
-.send-link-btn:hover:active, .change-password-btn:active {
-    background-color: #12C7B2;
-}
- 
-.buttons-reset-block {
-    display: flex;
-    justify-content: space-between;
-    margin: 20px 0;
-}
-
-.show_password {
-    width: 250px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    margin-bottom: 10px;
-}
-
-#showPass {
-    display: flex;
-    align-items: center;
-}
-
-#showPass span {
-    font-size: 14px;
-}
-#showPass span:hover{
-    text-decoration: underline;
-    cursor: pointer;
-}
-
-.shadow {
-    opacity: .2;
-}
-
-
-/* Final Modal Window */
-#container {
-    display: none;
-    margin-top: 250px;
-    position: fixed;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 550px;
-    background-color: #FFF;
-    padding: 20px;
-    box-shadow: 0px 0px 2px 2px rgba(201, 200, 200, 0.75);
-}
-
-
 /* Animations */
 @keyframes slideInTop{
     0%{
@@ -361,15 +267,6 @@ footer {
     animation: .5s slideInTop ease-in-out 1;
 }
 
-
-/* Burger Menu */
-
-#burgerMenu {
-    position: fixed;
-    width: 100%;
-    display: flex;
-    background-color: #FFF;
-}
 
 /* SCROLL STYLE */
 
@@ -484,49 +381,5 @@ footer {
         width: 120px;
         height: 40px;
         font-size: 14px;
-    }
-    
-    /* Modal Wondows */
-    .modal-reset {
-        width: 300px;
-        padding: 10px;
-        margin-top: 50px;
-    }
-
-    .modal-reset p {
-        line-height: 1.5;
-        font-size: 13px;
-        margin-bottom: 25px;
-    }
-
-    #input_oldPassword, #input_newPassword {
-        width: 200px;
-        height: 40px;
-        font-size: 12px;
-    }
-
-    .show_password {
-        width: 200px;
-    }
-    #showPass span {
-        font-size: 12px;
-        margin-left: 5px;
-    }
-
-    .buttons-reset-block button {
-        width: 95px;
-        height: 35px;
-        font-size: 12px;
-    }
-
-    #container {
-        font-size: 12px;
-        width: 250px;
-        padding: 10px;
-        text-align: center;
-    }
-
-    .last-item {
-        margin-bottom: 0px;
     }
 }

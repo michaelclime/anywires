@@ -93,8 +93,7 @@
 			<!--Block Logo-->
 			<div id="block-logo">
 				<img class="main-logo" src="img/seo-1.svg" alt="Personal Area Logo"/>
-				<p class="personal-name">AW_Technical</p>
-				<p class="necessary-action">Please reset your Temporary password before start using system.</p>
+				<p class="personal-name"><%= currentUser.fullname %></p>
 			</div>
 	
 			<!--Main Block-->
@@ -103,13 +102,13 @@
 	
 					<div class="info-blocks">
 						<p class="description-info">Profile name:</p>
-						<p class="person-info" class="description-info">AW_Technical</p>
+						<p class="person-info" class="description-info"><%= currentUser.fullname %></p>
 						<div class="profile_line"></div>
 					</div>
 	
 					<div class="info-blocks">
 							<p class="description-info">Email:</p>
-							<p class="person-info">m.clime@brokers.expert</p>
+							<p class="person-info"><%= currentUser.email %></p>
 							<div class="profile_line"></div>
 					</div>
 					
@@ -120,13 +119,15 @@
 	
 					<div class="info-blocks">
 						<p class="description-info">Role is:</p>
-						<p class="person-info">New</p>
+						<p class="person-info"><%= currentUser.role %></p>
 						<div class="profile_line"></div>
 					</div>
 	
 					<div class="info-blocks">
 							<p class="description-info">Registered on:</p>
-							<p class="person-info">Mar 26, 2019 7:10 pm</p>
+							<p class="person-info">
+								<%= currentUser.date.getDate() + '/' + (currentUser.date.getMonth()+ 1) + '/' +  currentUser.date.getFullYear() %>
+							</p>
 							<div class="profile_line"></div>
 					</div>
 	
@@ -137,9 +138,9 @@
 					<div class="info-blocks">
 						<p class="person-info preson-info-merchants">You're working with Merchants:</p>
 						<div class="profile_line"></div>
-						<p  class="description-info">Merchant 1</p>
-						<p  class="description-info">Merchant 2</p>
-						<p  class="description-info">Merchant 3</p>
+						<p  class="description-info">
+								<%= currentUser.merchant %>
+						</p>
 					</div>
 	
 				</div>
@@ -152,26 +153,7 @@
 			</footer>
 	
 		</div>
-	
-		<!--Modal Windows-->
-		<div class="modal-reset">
-			<p align="center">To change your password please type old password here and then your new password.</p>
-				<input id="input_oldPassword" placeholder="Old Password" type="password" minlength="8" maxlength="16" size="8" pattern="[0-9a-fA-F]?=.{8,}"/> 
-				<input id="input_newPassword" placeholder="New Password" type="password" minlength="8" maxlength="16" size="8" pattern="[0-9a-fA-F]?=.{8,}"/> 
-				<div class="show_password">
-					<span id="showPass"><input id="showPassInput" type="checkbox"><span id="checkerInput">Show password</span></span>
-				</div>
-	
-			<div class="buttons-reset-block">
-				<button class="change-password-btn">Change password</button>
-				<button class="send-link-btn">Send reset link</button>
-			</div>
-		</div>
 
-		<!--Final Modal Windows-->
-		<div id="container">
-			<p>Your password successfully has been changed!</p>
-		</div>
 		<script src="js/authorizationMenu.js"></script>
 		<script src="js/presonal-area_main.js"></script>	
 		<script src="js/classie.js"></script>
