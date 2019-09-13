@@ -226,7 +226,7 @@
     }
     
     
-    /* Animations */
+    /* Animations  Top - center*/
     @keyframes slideInTop{
         0%{
             transform: translateY(-100%);
@@ -238,6 +238,33 @@
     .slide-top{
         animation: .5s slideInTop ease-in-out 1;
     }
+    
+
+/* Animations  Top - center*/
+@keyframes slideInRight{
+    0%{
+        transform: translateX(100%);
+    }
+    100%{
+        transform: translateX(0, 0);
+    }
+}
+.slide-right{
+    animation: .5s slideInRight ease-in-out 1;
+}
+
+/* Animations  Top - center*/
+@keyframes slideInLeft{
+    0%{
+        transform: translateX(-100%);
+    }
+    100%{
+        transform: translateX(0, 0);
+    }
+}
+.slide-left{
+    animation: .5s slideInLeft ease-in-out 1;
+}
     
     /* Modal Window Create Merchant */
     .filter {
@@ -302,12 +329,24 @@
     #uploadLogo-btn {
         width: 240px;
         height: 40px;
+        background-color: #12C7B2;
     }
     
     #modalCreate-btn {
         width: 140px;
         height: 45px;
-        margin-top: 25px
+        margin-top: 25px;
+        margin-left: auto;
+    }
+
+    #nextModal {
+        width: 140px;
+        height: 45px;
+        margin-top: 25px;
+        background-color: inherit;
+        color: black;
+        font-weight: bolder;
+        font-size: 16px;
     }
     
     .modal-inputStyle{
@@ -332,4 +371,68 @@
     
     .B2Bfirst-block, .B2Bsecond-block {
         width: 45%;
+    }
+
+
+
+
+    /* Modal fees */
+    .filterFess {
+        display: none;
+        justify-content: center;
+        align-items: center;
+        background-color: rgba(0, 0, 0, 0.6);
+        position: fixed;
+        top: 0; bottom: 0; left: 0; right: 0;
+        z-index: 100;
+    }
+
+    .filterFess label {
+        font-weight: bold;
+    }
+
+    .containerFees {
+        position: relative;
+        width: 1000px;
+        background-color: rgb(255, 255, 255);
+        padding: 25px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 120;
+    }
+
+    .containerFees h2 {
+        margin-bottom: 40px;
+    }
+
+    .feesArea {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    .feesBlock-first, .feesBlock-second {
+        width: 45%;
+    }
+
+    .fees-block {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    #modalBack {
+        position: absolute;
+        background-color: inherit;
+        color: black;
+        font-weight: bolder;
+        left: 45%;
+        bottom: 20px;
+        width: 85px;
+        height: 40px;
+        font-size: 16px;
     }

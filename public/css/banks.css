@@ -330,7 +330,7 @@
     }
     
     .bankName-block, .beneficiaryName-block, .solutionName-block, .bankCountry-block, .bankCurrency-block, .benefAdress-block, 
-    .maxWire-block, .minWire-block, .SWIFT-block, .companySite-block, .bankAdress-block, .stopLimit-block {
+    .maxWire-block, .minWire-block, .SWIFT-block, .companySite-block, .bankAdress-block, .stopLimit-block, .registrationNo-block {
         width: 100%;
         display: flex;
         justify-content: space-between;
@@ -371,6 +371,7 @@
     #uploadLogo-btn {
         width: 240px;
         height: 40px;
+        background-color: #12C7B2;
     }
     
     .description-block textarea {

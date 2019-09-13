@@ -1,10 +1,32 @@
 class invoiceList {
     constructor(){
         this.ArrayLIst = [];
+        this.ArratMerch = [];
+        this.ArrayBank = [];
         this.btnExel = document.querySelector("#dowloadXls");
         this.clearFilterBtn = document.querySelector("#clearFilterBtn");
         this.showFilterBtn = document.querySelector("#showBtn");
+        this.btn_search = document.querySelector(".search-btn");
         this.render();
+    }
+
+    searchFunction = () =>{
+        var phrase = document.querySelector('.input-search');
+        var table = document.getElementById('table-invoices');
+        var regPhrase = new RegExp(phrase.value, 'i');
+        var flag = false;
+        for (var i = 1; i < table.rows.length; i++) {
+            flag = false;
+            for (var j = table.rows[i].cells.length - 1; j >= 0; j--) {
+                flag = regPhrase.test(table.rows[i].cells[j].innerHTML);
+                if (flag) break;
+            }
+            if (flag) {
+                table.rows[i].style.display = "";
+            } else {
+                table.rows[i].style.display = "none";
+            }
+        }
     }
 
     saveXls = () => {
@@ -21,7 +43,7 @@ class invoiceList {
         },10);
         // For hide not useless element XLS
 
-        var tbl = document.getElementById('table-user');
+        var tbl = document.getElementById('table-invoices');
         var wb = XLSX.utils.table_to_book(tbl, {
             sheet: "Invoice list table",
             display: true
@@ -38,11 +60,13 @@ class invoiceList {
     }
 
     clearFilter = () => {
+        this.searchInput = document.querySelector('.input-search').value = "";
         this.selets = document.querySelectorAll("select");
         this.selets.forEach(item => item.value = "");
         this.container = document.getElementById("table-list");
         this.container.innerHTML = "";
-        this.loadMerchants(LIST);
+        this.ArrayLIst = [];
+        this.saveLocalInvoices();
     }
 
     filterList = () => {
@@ -53,12 +77,12 @@ class invoiceList {
         
         this.newArray = {};
 
-        this.bank === "" ?  "" : this.newArray.Bank = this.bank;
-        this.merchant === "" ?  "" : this.newArray.Merchant = this.merchant;
-        this.status === "" ?  "" : this.newArray.Payment_status = this.status;
+        this.bank === "" ?  "" : this.newArray.bank_search = this.bank;
+        this.merchant === "" ?  "" : this.newArray.merchant_search = this.merchant;
+        this.status === "" ?  "" : this.newArray.status = this.status;
         this.documents === "" ? "" : this.newArray.Document = this.documents;
 
-        this.result = LIST.filter(item => 
+        this.result = this.ArrayLIst.filter(item => 
             Object.keys(this.newArray).every(key => 
                 item[key] === this.newArray[key])
         );
@@ -66,7 +90,7 @@ class invoiceList {
         this.container = document.getElementById("table-list");
         this.container.innerHTML = "";
 
-        this.loadUsers(this.result);
+        this.loadInvoices(this.result);
     }
 
     checkDocuments = (doc) => {
@@ -86,13 +110,12 @@ class invoiceList {
         array.forEach((item) => {
             this.ArrayLIst.push(item);
         });
-        console.log(this.ArrayLIst);
         this.loadInvoices(this.ArrayLIst);
     }
 
     getInvoices = async () => {
-        return  await fetch("http://18.216.223.81:3000/getInvoices")
-        // return  await fetch("http://localhost:3000/getInvoices")
+        // return  await fetch("http://18.216.223.81:3000/getInvoices")
+        return  await fetch("http://localhost:3000/getInvoices")
         .then(res => {
             return res.json();
         }) 
@@ -102,8 +125,8 @@ class invoiceList {
     }
 
     getInvoiceMerch = async (id) => {
-        // return await fetch("http://localhost:3000/getInvoiceMerchant", {
-            return await fetch("http://18.216.223.81:3000/getInvoiceMerchant", {
+        return await fetch("http://localhost:3000/getInvoiceMerchant", {
+            // return await fetch("http://18.216.223.81:3000/getInvoiceMerchant", {
                         method: "POST",
                         body: JSON.stringify({
                             "id": id
@@ -119,8 +142,8 @@ class invoiceList {
     }
 
     getInvoiceBank = async (bank) => {
-        // return await fetch("http://localhost:3000/getInvoiceBanks", {
-            return await fetch("http://18.216.223.81:3000/getInvoiceBanks", {
+        return await fetch("http://localhost:3000/getInvoiceBanks", {
+            // return await fetch("http://18.216.223.81:3000/getInvoiceBanks", {
                         method: "POST",
                         body: JSON.stringify({
                             "id": bank
@@ -137,13 +160,21 @@ class invoiceList {
 
     loadInvoices = (arr) => {
         this.container = document.getElementById("table-list");
-        arr.forEach( async (item) => {
+        arr.forEach( async (item, index) => {
+            var currency = "";
+            item.currency === "EUR" ? currency = "€" : currency = "$";
+            
             var merchantId = await this.getInvoiceMerch(item.merchant);
+            this.ArrayLIst[index].merchant_search = (merchantId[0].name);
+
             var bankId = await this.getInvoiceBank(item.bank);
+            this.ArrayLIst[index].bank_search = (bankId[0].name);
+
             var color = "";
-            item.Payment_status === "Available" ? color = "green" : "";
-            item.Payment_status === "Declined" ? color = "red" : "";
-            item.Payment_status === "Received" ? color = "blue" : "";
+            item.status === "Available" ? color = "green" : "";
+            item.status === "Declined" ? color = "red" : "";
+            item.status === "Received" ? color = "blue" : "";
+            item.status === "Sent" ? color = "yellow" : "";
 
             this.userList = document.createElement("tr");
             this.userList.innerHTML =  `
@@ -155,28 +186,28 @@ class invoiceList {
                         </div>
                     </td> 
                     <td class="column2">
-                        ${merchantId[0].name}
+                        ${item.merchant_search}
                     </td> 
                     <td class="column3">${item.client_details.full_name}</td> 
                     <td class="column4">
                         <div class="sentTd">
-                            <p>${item.amount.amount_sent}</p>
+                            <p>${currency}${item.amount.amount_sent}</p>
                             <p class="yellow smallBoldText">${moment(item.dates.sent_date).format('ll')}</p>
                         </div>
                     </td> 
                     <td class="column5">${item.commissions}</td>
                     <td class="column6">
                         <div>
-                            <p>${item.amount.amount_received}</p>
+                            <p>${currency}${item.amount.amount_received}</p>
                             <p class="blue smallBoldText">${moment(item.dates.received_date).format('ll')}</p>
                         </div>
                     </td>
-                    <td class="column7">${bankId[0].name}</td>
+                    <td class="column7">${item.bank_search}</td>
                     <td class="column8">
-                        <p>${0}</p>
+                        <p>${currency}${0}</p>
                         <p class="fiolet smallBoldText">${moment(item.dates.available_date).format('ll')}</p>
                     </td>
-                    <td class="column9 ${color}">${item.status}</td>
+                    <td class="column9 ${color}"><strong>${item.status}</strong></td>
 
                     <td class="column10">
                         <div class="documentsIcon">
@@ -200,14 +231,20 @@ class invoiceList {
                     </td>
             `;
         this.container.appendChild(this.userList);
-        })
+        });
+    }
+
+    saveMerchantName = () => {
+        
     }
 
     render(){
         this.saveLocalInvoices();
+        this.saveMerchantName();
         this.showFilterBtn.addEventListener("click", this.filterList);
         this.clearFilterBtn.addEventListener("click", this.clearFilter);
         this.btnExel.addEventListener("click", this.saveXls);
+        this.btn_search.addEventListener("click", this.searchFunction);
     }
 };
 
@@ -252,7 +289,7 @@ const userList = new invoiceList();
 //          "commissions" : - 
 //   }
 // Alert modal window
-const alertWindow = document.querySelector('.alert');
-alertWindow.addEventListener("click", (event) => {
-    event.target === alertWindow ? alertWindow.style.display = "none" : "";
-});
+// const alertWindow = document.querySelector('.alert');
+// alertWindow.addEventListener("click", (event) => {
+//     event.target === alertWindow ? alertWindow.style.display = "none" : "";
+// });

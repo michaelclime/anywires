@@ -104,7 +104,7 @@
 
 		<!-- Modal Window Create Merchant -->
 	<div class="filter">
-		<div class="modalAddMerchant-block slide-top">
+		<div class="modalAddMerchant-block slide-left">
 
 			<h2>Create new Merchant</h2>
 
@@ -210,10 +210,79 @@
 				</div>
 			</div>
 			
+			<button id="nextModal">Next →</button>
+		</div>
+	</div>
+
+	<!-- Modal Window Fess -->
+
+	<div class="filterFess">
+		<div class="containerFees slide-right">
+			<h2>Merchants Commissions</h2>
+			<div class="feesArea">
+
+				<div class="feesBlock-first">
+						<div class="fees-block">
+							<label for="fees-block">Setup, units:</label>
+							<input class="modal-inputStyle feesData" value="2500" type="text" placeholder="Setup, units">
+						</div>
+
+						<div class="fees-block">
+							<label for="fees-block">Wire recall, units:</label>
+							<input class="modal-inputStyle feesData" value="1000" type="text" placeholder="Wire recall, units">
+						</div>
+
+						<div class="fees-block">
+							<label for="fees-block">Settlement, units:</label>
+							<input class="modal-inputStyle feesData" value="100" type="text" placeholder="Settlement, units">
+						</div>
+
+						<div class="fees-block">
+							<label for="fees-block">Monthly, units:</label>
+							<input class="modal-inputStyle feesData" value="250" type="text" placeholder="Monthly, units">
+						</div>
+
+						<div class="fees-block">
+							<label for="fees-block">Incoming transfer, units:</label>
+							<input class="modal-inputStyle feesData" value="40" type="text" placeholder="Incoming transfer, units">
+						</div>
+
+				</div>
+
+				<div class="feesBlock-second">
+						<div class="fees-block">
+							<label for="fees-block">Incoming transfer, %:</label>
+							<input class="modal-inputStyle feesData" value="8" type="text" placeholder="Incoming transfer, %">
+						</div>
+
+						<div class="fees-block">
+							<label for="fees-block">Settlement, %:</label>
+							<input class="modal-inputStyle feesData" value="4" type="text" placeholder="Settlement, %">
+						</div>
+
+						<div class="fees-block">
+							<label for="fees-block">Settlement return, %:</label>
+							<input class="modal-inputStyle feesData" value="10" type="text" placeholder="Settlement return, %">
+						</div>
+
+						<div class="fees-block">
+							<label for="fees-block">Refund, units:</label>
+							<input class="modal-inputStyle feesData" value="100" type="text" placeholder="Refund units">
+						</div>
+
+						<div class="fees-block">
+							<label for="fees-block">Refund, %:</label>
+							<input class="modal-inputStyle feesData" value="10" type="text" placeholder="Refund percent">
+						</div>
+
+				</div>
+
+			</div>
+			<button id="modalBack">← Previous</button>
 			<button id="modalCreate-btn">Create Merchant</button>
 		</div>
 	</div>
-		
+
 		<script src="./js/merchants.js"></script>
 		<script src="js/classie.js"></script>
 		<script src="js/gnmenu.js"></script>

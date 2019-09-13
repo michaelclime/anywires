@@ -23,8 +23,9 @@ class UsersList {
 
     createBankInit = () => {
         this.data = document.querySelectorAll(".allData");
-            this.data[14].checked ? this.sepa = true : this.sepa = false;
-            this.data[15].checked ? this.b2b = true : this.b2b = false;
+            this.data[15].checked ? this.sepa = true : this.sepa = false;
+            this.data[16].checked ? this.b2b = true : this.b2b = false;
+            console.log(this.data[13].value);
             this.newBank = {
                 "name" : this.data[0].value, 
                 "beneficiary_name" : this.data[1].value, 
@@ -40,6 +41,7 @@ class UsersList {
                 "incoming_fee" : 0.05, 
                 "company_site" : this.data[11].value, 
                 "stop_limit" : Number(this.data[12].value), 
+                "registration_number": this.data[13].value,
                 "sepa" : this.sepa, 
                 "b2b" : this.b2b, 
                 "company_logo" : "", 
@@ -50,15 +52,16 @@ class UsersList {
                 "balance_available" : 0, 
                 "active" : false, 
                 "balance_settlement" : 0, 
-                "description" : this.data[13].value, 
+                "description" : this.data[14].value, 
                 "creation_date" : moment().format('LL'), 
                 "created_by" : "Jack Wilson" 
             };
             console.log(this.newBank);
             
             // CheckEmpty start
+            this.requiredFields = document.querySelectorAll(".required");
             var s = [];
-            this.data.forEach((item) => {
+            this.requiredFields.forEach((item) => {
                 s.push(item.value.replace(/^\s+|\s+$/g, ''));
             });
             this.resultCheck = s.some((item) => item === "");
@@ -69,8 +72,8 @@ class UsersList {
             } else {
                 alert("OK!");
                 
-                fetch("http://18.216.223.81:3000/postBank", {
-                    // fetch("http://localhost:3000/postBank", {
+                // fetch("http://18.216.223.81:3000/postBank", {
+                    fetch("http://localhost:3000/postBank", {
                         method: "POST",
                         body: JSON.stringify(this.newBank),
                         headers:{'Content-Type': 'application/json'}
@@ -176,8 +179,8 @@ class UsersList {
     }
 
     methodPutEnable = (id, status) => {
-        // fetch("http://localhost:3000/putBank", {
-        fetch("http://18.216.223.81:3000/putBank", {
+        fetch("http://localhost:3000/putBank", {
+        // fetch("http://18.216.223.81:3000/putBank", {
                     method: "PUT",
                     body: JSON.stringify({
                         id: id, //Must be id!
@@ -250,8 +253,8 @@ class UsersList {
     }
 
     getUsers = async () => {
-        // return  await fetch("http://localhost:3000/getBank")
-        return  await fetch("http://18.216.223.81:3000/getBanks")
+        return  await fetch("http://localhost:3000/getBanks")
+        // return  await fetch("http://18.216.223.81:3000/getBanks")
         .then(res => {
             return res.json();
         }) 

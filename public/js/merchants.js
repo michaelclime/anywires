@@ -1,4 +1,4 @@
-class UsersList {
+class MerchantList {
     constructor(){
         this.ArrayLIst = [];
         this.buttonCreate_merchant = document.querySelector("#create-button");
@@ -19,21 +19,22 @@ class UsersList {
     initCreate_Merchant = () => {
         this.data = document.querySelectorAll(".allData");
         this.b2bCheckBox = document.querySelector("#b2b");
+        this.feesData = document.querySelectorAll(".feesData");
         this.b2bCheckBox.checked ? this.valueB2B = true : this.valueB2B = false;
         this.newMerchant = {
             "name": this.data[0].value,
             "b2b" : this.valueB2B,
             "fees" : {
-                "setup_fee" : 1000,
-                "wire_recall" : 100,
-                "settlement_fee_flat" : 100,
-                "monthly_fee" : 50,
-                "incoming_transfer" : 10,
-                "incoming_wire" : "0.06",
-                "settlement_fee_percent" : "0",
-                "settlement_return" : "0.2",
-                "refund_fee_flat" : 20,
-                "refund_fee_percent" : "0.02"
+                "setup_units" : Number(this.feesData[0].value),
+                "wire_recall_units" : Number(this.feesData[1].value),
+                "settlement_units" : Number(this.feesData[2].value),
+                "monthly_units" : Number(this.feesData[3].value),
+                "incoming_transfer_units " : Number(this.feesData[4].value),
+                "incoming_transfer_percent" : (this.feesData[5].value)/100,
+                "settlement_percent" : (this.feesData[6].value)/100,
+                "settlement_return" : (this.feesData[7].value)/100,
+                "refund_units" : Number(this.feesData[8].value),
+                "refund_percent" : (this.feesData[9].value)/100
             },
             "specifications" : {
                 "background" : this.data[5].value,
@@ -92,8 +93,9 @@ class UsersList {
         if (checkEmpty === true) {
             alert("Please fill put all required fields!");
         } else {
-            fetch("http://18.216.223.81:3000/postMerchant", {
-            // fetch("http://localhost:3000/postMerchant", {
+            alert("OK!");
+            // fetch("http://18.216.223.81:3000/postMerchant", {
+            fetch("http://localhost:3000/postMerchant", {
                 method: "POST",
                 body: JSON.stringify(this.newMerchant),
                 headers:{'Content-Type': 'application/json'}
@@ -115,9 +117,29 @@ class UsersList {
         this.data.forEach((item) => item.value = "");
         this.block = document.querySelector(".if_B2B_true-block");
         this.block.style.display = "none"; 
-        this.filter.style.display = "none";
+        this.filterFees.style.display = "none";
         this.B2B.checked = false;
         }
+    }
+
+    nextArea = () => {
+        this.filter.style.display = "none";
+        this.filterFees = document.querySelector(".filterFess");
+        this.filterFees.style.display = "flex";
+
+        this.filterFees.addEventListener("click", (event) => {
+            event.target === this.filterFees ? this.filterFees.style.display = "none" : "";
+        });
+
+
+        this.btn_Back = document.querySelector("#modalBack");
+        this.btn_Back.addEventListener("click", () => {
+            this.filterFees.style.display = "none";
+            this.createMerchant();
+        });
+
+        this.modalAdd_merchant = document.querySelector("#modalCreate-btn");
+        this.modalAdd_merchant.addEventListener("click", this.initCreate_Merchant);
     }
 
     createMerchant = () => {
@@ -139,9 +161,8 @@ class UsersList {
             } 
         });
         // If B2B true
-
-        this.modalAdd_merchant = document.querySelector("#modalCreate-btn");
-        this.modalAdd_merchant.addEventListener("click", this.initCreate_Merchant);
+        this.nextAreaFees_btn = document.querySelector("#nextModal");
+        this.nextAreaFees_btn.addEventListener("click", this.nextArea);
     }
 
     saveXls = () => {
@@ -193,12 +214,12 @@ class UsersList {
         array.forEach((item) => {
             this.ArrayLIst.push(item);
         });
-        this.loadUsers(this.ArrayLIst);
+        this.loadMerchants(this.ArrayLIst);
     }
 
     getMerchants = async () => {
-        return  await fetch("http://18.216.223.81:3000/getMerchants")
-        // return  await fetch("http://localhost:3000/getMerchants")
+        // return  await fetch("http://18.216.223.81:3000/getMerchants")
+        return  await fetch("http://localhost:3000/getMerchants")
         .then(res => {
             return res.json();
         }) 
@@ -207,9 +228,8 @@ class UsersList {
         });
     }
 
-    loadUsers(arr){
+    loadMerchants(arr){
         var size = 15;
-        console.log(arr);
         this.container = document.getElementById("table-list");
         arr.slice(0, size).forEach((item) => {
             item === "" ? item = "—" : "";
@@ -219,7 +239,7 @@ class UsersList {
                     <td class="column2">${"Admin"}</td> 
                     <td class="column3">${item.promo_code}</td> 
                     <td class="column4">${item.users.affiliate}</td> 
-                    <td class="column5">${item.fees.incoming_wire}</td>
+                    <td class="column5">${(item.fees.incoming_transfer_percent)*100}</td>
                     <td class="column5">${""}</td>
                     <td class="column6"> 
                         <div id="merchantButtons">
@@ -241,7 +261,7 @@ class UsersList {
     }
 };
 
-const userList = new UsersList();
+const userList = new MerchantList();
 
 
 
