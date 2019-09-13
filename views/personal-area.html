@@ -16,8 +16,25 @@
 		<link href="https://fonts.googleapis.com/css?family=Frank+Ruhl+Libre&display=swap" rel="stylesheet">
     	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 		<script src="js/modernizr.custom.js"></script>
+		<script src="https://kit.fontawesome.com/5355902e87.js"></script>
 	</head>
 	<body>
+		<!-- Modal Action Window -->
+		<% if(error && error.length > 0) {%>
+			<div class="alert" role="alert">
+				<div class="alertContent">
+					<h3>  <%= error %> </h3>
+				</div>
+			</div>
+		<% } %>
+		<% if(success && success.length > 0) {%>
+			<div class="alert" role="alert">
+				<div class="alertContent">
+					<h3>  <%= success %> </h3>
+				</div>
+			</div>
+		<% } %>
+
 		<div id="burgerMenu">
 		<div class="menu">
 			<ul id="gn-menu" class="gn-menu-main">
@@ -39,15 +56,33 @@
 								<li><a href='affiliateReport.html'><img class="icon" src="fonts/icons/aff-report.png">Affiliate report</a></li>
 								<li><a href='Dashboard-how-it-works.html'><img class="icon" src="fonts/icons/info.png">How it works</a></li>
 								
-									</ul>
-								</li>
 							</ul>
-						</div><!-- /gn-scroller -->
+						</div>
 					</nav>
 				</li>
 			</ul>
-		</div><!-- /container -->
-
+		</div>
+		<div class="authorizationMenu">
+				<span> 
+					<span class="userName"> <%= currentUser.fullname %></span>
+					<span class="userLogo"><i class="far fa-user-circle"></i></span>
+				</span>
+				<ul class="dropMenu">
+					<li class="profile">
+						<span class="liLogo"><i class="fas fa-user-alt"></i></span>
+						<a href="#">Profile</a>
+					</li>
+					<li class="merchant">
+						<span class="liLogo"><i class="fab fa-chromecast"></i></span>
+						<a href="#">Merchant</a>
+					</li>
+					<li class="logOut">
+						<span class="liLogo"><i class="fas fa-sign-out-alt"></i></span>
+						<a href="/logout">LogOut</a>
+					</li>
+				</ul>
+			</div>
+	</div>
 		<div id="wrapper">
 
 			<!--Header Page-->
@@ -111,7 +146,9 @@
 			</main>
 	
 			<footer>
-				<button class="button-reset">Reset password</button>
+				<form action="/persAreaReset" method="POST">
+					<input type="submit" class="button-reset" value="Reset password">
+				</form>
 			</footer>
 	
 		</div>
@@ -135,7 +172,7 @@
 		<div id="container">
 			<p>Your password successfully has been changed!</p>
 		</div>
-	
+		<script src="js/authorizationMenu.js"></script>
 		<script src="js/presonal-area_main.js"></script>	
 		<script src="js/classie.js"></script>
 		<script src="js/gnmenu.js"></script>
