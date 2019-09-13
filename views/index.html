@@ -251,12 +251,12 @@
                 <button class="forgotPassword-close">&times;</button>
                 <h1 class="forgotPassword-header">Reset Password</h1>
                 <div class="main-form forgotPassword-form">
-                    <form  action="#" class="forgotPassword-form">
+                    <form  action="/forgot" class="forgotPassword-form" method="POST">
                         <p class="forgotPasswordHint">Enter the email address associated
                                 with your account, and we'll email you a link to reset
                                  your password.</p>
-                        <input type="text" class="mailLogin" placeholder="Email"><br>
-                        <button type="button" class="sendResetLink">Send Reset Link</button>
+                        <input type="text" name='email' class="mailLogin" placeholder="Email"><br>
+                        <input type="submit" class="sendResetLink" value='Send Reset Link'>
                     </form>
                 </div>
             </div>

@@ -169,6 +169,8 @@ $(document).ready(function(){
 
 // Alert modal window
 const alertWindow = document.querySelector('.alert');
-alertWindow.addEventListener("click", (event) => {
-    event.target === alertWindow ? alertWindow.style.display = "none" : "";
-});
+if (alertWindow) {
+  alertWindow.addEventListener("click", (event) => {
+      event.target === alertWindow ? alertWindow.style.display = "none" : "";
+  });
+}

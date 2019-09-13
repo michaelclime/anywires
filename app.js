@@ -12,7 +12,9 @@ let express = require("express"),
     fs = require('fs'),
     flash = require('connect-flash'),
     jsonParser = express.json();
-    objectId = require("mongodb").ObjectID;
+    objectId = require("mongodb").ObjectID,
+    async = require('async'),
+    crypto = require('crypto');
 
 
 const url = 'mongodb://18.216.223.81:27017/anywires';
@@ -143,7 +145,8 @@ app.post("/invoices", function(req, res, next) {
         currency:  req.body.currency,
         sepa:  req.body.sepa,
         merch:  req.body.merch,
-        bank:  req.body.bank
+        bank:  req.body.bank,
+        date: Date.now()
     };
 
     mongo.connect(url, function(err, db) { 
@@ -270,10 +273,12 @@ app.get('/successfullRegister', function(req, res) {
 app.post('/register', function(req, res){
     let newUser = new User({
         username: req.body.username,
+        email: req.body.username,
         fullname: req.body.fullname,
         typeClass: req.body.typeClass,
         role: req.body.role,
-        merchant: req.body.merchant
+        merchant: req.body.merchant,
+        date: Date.now()
     });
     User.register(newUser, req.body.password, function(err, user) {
         if(err) {
@@ -293,7 +298,8 @@ app.post('/register', function(req, res){
 app.post('/login', passport.authenticate("local",
     {
         successRedirect: '/dashBoardMainPage.html',
-        failureRedirect: '/'
+        failureRedirect: '/',
+        failureFlash: true 
     }), function(req, res) {
 });
 
@@ -311,6 +317,155 @@ function isLoggedIn(req, res, next) {
     req.flash('error', 'You need to be logged in to do that');
     res.redirect('/');
 }
+
+// Reset Password
+
+app.get('/resetPassword', function(req, res) {
+    res.render("resetPassword.html");
+});
+
+app.post('/forgot', function(req, res, next) {
+    async.waterfall([
+        function(done) {
+            crypto.randomBytes(20, function(err, buf) {
+                var token = buf.toString('hex');
+                done(err, token);
+            });
+        },
+        function(token, done) {
+            User.findOne({email: req.body.email}, function(err, user) {
+                if (!user) {
+                    req.flash('error', 'No account with that email address exists!');
+                    return res.redirect('/');
+                };
+                user.resetPasswordToken = token;
+                user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+
+                user.save(function(err) {
+                    done(err, token, user);
+                });
+            });
+        },
+        function(token, user, done) {
+            var smtpTransporter = nodemailer.createTransport({
+                service: 'Gmail',
+                auth: {
+                  type: "login",
+                  user: "bogdan.melnik@brokers.expert",
+                  pass: "27finologycorp"
+                }
+            });
+            var mailOptions = {
+                to: user.email,
+                from: '"AnyWires" <AnyWires@gmail.com>',  
+                subject: 'Reset Password', 
+                text: 'You are receiving this because you (someone else) have requested the reset of the password for your AnyWires account.' + 
+                        'Please click on the following link to complete this process:' + '\n\n' +
+                        'http://' + req.headers.host + '/resetPassword/' + token + '\n\n' +
+                        'If you didn\'t request it, please ignore this email!'
+            };
+            smtpTransporter.sendMail(mailOptions, function(err) {
+                console.log('mail sent');
+                req.flash('success', 'An email has been sent to you with futher instructions.');
+                done(err, 'done');
+            });
+        }
+    ], function(err) {
+        if (err) return next(err);
+        res.redirect('/');
+    });
+});
+
+app.post('/persAreaReset', function(req, res, next) {
+    async.waterfall([
+        function(done) {
+            crypto.randomBytes(20, function(err, buf) {
+                var token = buf.toString('hex');
+                done(err, token);
+            });
+        },
+        function(token, done) {
+            User.findOne({email: req.user.email}, function(err, user) {
+                if (!user) {
+                    req.flash('error', 'No account with that email address exists!');
+                    return res.redirect('/');
+                };
+                user.resetPasswordToken = token;
+                user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+
+                user.save(function(err) {
+                    done(err, token, user);
+                });
+            });
+        },
+        function(token, user, done) {
+            res.redirect('http://' + req.headers.host + '/resetPassword/' + token);
+        }
+    ], function(err) {
+        if (err) return next(err);
+        res.redirect('/');
+    });
+});
+
+app.get('/resetPassword/:token', function(req, res) {
+    User.findOne( { resetPasswordToken: req.params.token, resetPasswordExpires: {$gt: Date.now()} }, function(err, user) {
+        if (!user) {
+            req.flash('error', 'Password reset token is invalid or has expired!');
+            return res.redirect('/');
+        };
+        res.render('resetPassword.html', {token: req.params.token});
+    });
+});
+
+app.post('/resetPassword/:token', function(req, res) {
+    async.waterfall([
+        function(done) {
+            User.findOne( { resetPasswordToken: req.params.token, resetPasswordExpires: {$gt: Date.now()} }, function(err, user) {
+                if (!user) {
+                    req.flash('error', 'Password reset token is invalid or has expired!');
+                    return res.redirect('back'); //??????????
+                }
+                if (req.body.password === req.body.confirm) {
+                    user.setPassword(req.body.password, function(err) {
+                        user.resetPasswordToken = undefined;
+                        user.resetPasswordExpires = undefined;
+
+                        user.save(function(err) {
+                            req.logIn(user, function(err) {
+                                done(err, user)
+                            });
+                        });
+                    });
+                } else {
+                    req.flash('error', 'Password don\'t match');
+                    return res.redirect('back') // ?????????
+                }
+            });
+        },
+        function(user, done) {
+            var smtpTransporter = nodemailer.createTransport({
+                service: 'Gmail',
+                auth: {
+                  type: "login",
+                  user: "bogdan.melnik@brokers.expert",
+                  pass: "27finologycorp"
+                }
+            });
+            var mailOptions = {
+                to: user.email,
+                from: '"AnyWires" <AnyWires@gmail.com>',  
+                subject: 'Your password has been changed', 
+                text: 'This is a confirmation, that password for your AnyWires account has been changed.'
+            };
+            smtpTransporter.sendMail(mailOptions, function(err) {
+                req.flash('success', 'Success! Your password has been changed.');
+                done(err);
+            });
+        } 
+    ], function(err) {
+        res.redirect('/personal-area.html');
+    });
+});
 
 // Sign up menu and sending email
 
