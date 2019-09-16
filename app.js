@@ -8,6 +8,7 @@ let express = require("express"),
     passport = require('passport'),
     LocalStrategy = require('passport-local'),
     User = require('./modules/user'),
+    Invoice = require('./modules/invoice'),
     nodemailer = require('nodemailer'),
     fs = require('fs'),
     flash = require('connect-flash'),
@@ -135,30 +136,51 @@ app.get('/getList', function(req, res, next) {
 });
 
 app.post("/invoices", function(req, res, next) {
-    let newInvoice = {
-        name: req.body.name,
-        address:  req.body.address,
-        country:  req.body.country,
-        phone:  req.body.phone,
-        email:  req.body.email,
-        amount:  req.body.amount,
-        currency:  req.body.currency,
-        sepa:  req.body.sepa,
-        merch:  req.body.merch,
-        bank:  req.body.bank,
-        date: Date.now()
-    };
-
-    mongo.connect(url, function(err, db) { 
+    
+    let INVOIECES = [];
+    mongo.connect(url, function(err, db) {
         assert.equal(null, err);
-        db.collection('invoices').insert(newInvoice, function(err, result) {
+        var cursor = db.collection('invoices').find();
+        cursor.forEach(function(doc, err) {
             assert.equal(null, err);
-            console.log('Item inserted');
+            INVOIECES.push(doc);
+        }, function() {
             db.close();
         });
     });
-    req.flash('success', 'Invoice successfully created!');
-    res.redirect("/invoice-list.html");
+
+    let newInvoice = {
+        number: INVOIECES.length + 1,
+        client_details: {
+            full_name: req.body.name,
+            email:  req.body.email,
+            phone:  req.body.phone,
+            country:  req.body.country,
+            address:  req.body.address
+        },
+        type: 'c2b',
+        status: 'Requested',
+        amount: {
+            amount_requested: req.body.amount
+        },
+        currency:  req.body.currency,
+        sepa:  req.body.sepa,
+        merchant:  req.body.merch,
+        bank:  req.body.bank,
+        dates: {
+            creation_date: Date.now()
+        }
+    };
+
+    Invoice.create(newInvoice, function(err, newlyCreated){
+        if(err){
+            console.log(err);
+        } else {
+            console.log('Item inserted');
+            req.flash('success', 'Invoice successfully created!');
+            res.redirect("/invoice-list.html");
+        }
+    });
 });
 
 // Merchants generation process
