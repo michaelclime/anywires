@@ -94,8 +94,8 @@ class MerchantList {
             alert("Please fill put all required fields!");
         } else {
             alert("OK!");
-            fetch("http://18.216.223.81:3000/postMerchant", {
-            // fetch("http://localhost:3000/postMerchant", {
+            // fetch("http://18.216.223.81:3000/postMerchant", {
+            fetch("http://localhost:3000/postMerchant", {
                 method: "POST",
                 body: JSON.stringify(this.newMerchant),
                 headers:{'Content-Type': 'application/json'}
@@ -218,8 +218,8 @@ class MerchantList {
     }
 
     getMerchants = async () => {
-        return  await fetch("http://18.216.223.81:3000/getMerchants")
-        // return  await fetch("http://localhost:3000/getMerchants")
+        // return  await fetch("http://18.216.223.81:3000/getMerchants")
+        return  await fetch("http://localhost:3000/getMerchants")
         .then(res => {
             return res.json();
         }) 

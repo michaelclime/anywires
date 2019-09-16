@@ -1,12 +1,11 @@
 class invoiceList {
     constructor(){
         this.ArrayLIst = [];
-        this.ArratMerch = [];
-        this.ArrayBank = [];
         this.btnExel = document.querySelector("#dowloadXls");
         this.clearFilterBtn = document.querySelector("#clearFilterBtn");
         this.showFilterBtn = document.querySelector("#showBtn");
         this.btn_search = document.querySelector(".search-btn");
+        this.containerPages = document.querySelector(".nextPage-block");
         this.render();
     }
 
@@ -65,8 +64,8 @@ class invoiceList {
         this.selets.forEach(item => item.value = "");
         this.container = document.getElementById("table-list");
         this.container.innerHTML = "";
-        this.ArrayLIst = [];
-        this.saveLocalInvoices();
+        this.loadInvoices(this.ArrayLIst, 0, 10);
+        
     }
 
     filterList = () => {
@@ -90,7 +89,7 @@ class invoiceList {
         this.container = document.getElementById("table-list");
         this.container.innerHTML = "";
 
-        this.loadInvoices(this.result);
+        this.loadInvoices(this.result, 0, 10);
     }
 
     checkDocuments = (doc) => {
@@ -107,10 +106,10 @@ class invoiceList {
 
     saveLocalInvoices = async (array) => {
         array = await this.getInvoices();
+        
         array.forEach((item) => {
             this.ArrayLIst.push(item);
         });
-        this.loadInvoices(this.ArrayLIst);
     }
 
     getInvoices = async () => {
@@ -124,54 +123,13 @@ class invoiceList {
         });
     }
 
-    getInvoiceMerch = async (id) => {
-         return await fetch("http://localhost:3000/getInvoiceMerchant", {
-           // return await fetch("http://18.216.223.81:3000/getInvoiceMerchant", {
-                        method: "POST",
-                        body: JSON.stringify({
-                            "id": id
-                        }),
-                        headers:{'Content-Type': 'application/json'}
-                        })
-                        .then(res => {
-                            return res.json();
-                        })
-                        .catch(err => {
-                            console.log(err);
-                        });
-    }
-
-    getInvoiceBank = async (bank) => {
-         return await fetch("http://localhost:3000/getInvoiceBanks", {
-           // return await fetch("http://18.216.223.81:3000/getInvoiceBanks", {
-                        method: "POST",
-                        body: JSON.stringify({
-                            "id": bank
-                        }),
-                        headers:{'Content-Type': 'application/json'}
-                        })
-                        .then(res => {
-                            return res.json();
-                        })
-                        .catch(err => {
-                            console.log(err);
-                        });
-    }
-
-    loadInvoices = (arr) => {
+    loadInvoices = (Arr, from, till) => {
         this.container = document.getElementById("table-list");
-        arr.forEach( async (item, index) => {
-            var currency = "";
-            item.currency === "EUR" ? currency = "€" : currency = "$";
-            
-            var merchantId = await this.getInvoiceMerch(item.merchant);
-            this.ArrayLIst[index].merchant_search = (merchantId[0].name);
-
-            var bankId = await this.getInvoiceBank(item.bank);
-            this.ArrayLIst[index].bank_search = (bankId[0].name);
+        Arr.slice(from, till).forEach((item) => {
+            var currency = ""; item.currency === "EUR" ? currency = "€" : currency = "$";
 
             var color = "";
-            item.status === "Available" ? color = "green" : "";
+            item.status === "Approved" ? color = "green" : "";
             item.status === "Declined" ? color = "red" : "";
             item.status === "Received" ? color = "blue" : "";
             item.status === "Sent" ? color = "yellow" : "";
@@ -186,7 +144,7 @@ class invoiceList {
                         </div>
                     </td> 
                     <td class="column2">
-                        ${item.merchant_search}
+                        ${item.merchant}
                     </td> 
                     <td class="column3">${item.client_details.full_name}</td> 
                     <td class="column4">
@@ -202,7 +160,7 @@ class invoiceList {
                             <p class="blue smallBoldText">${moment(item.dates.received_date).format('ll')}</p>
                         </div>
                     </td>
-                    <td class="column7">${item.bank_search}</td>
+                    <td class="column7">${item.bank}</td>
                     <td class="column8">
                         <p>${currency}${0}</p>
                         <p class="fiolet smallBoldText">${moment(item.dates.available_date).format('ll')}</p>
@@ -232,19 +190,16 @@ class invoiceList {
             `;
         this.container.appendChild(this.userList);
         });
-    }
-
-    saveMerchantName = () => {
         
     }
 
     render(){
-        this.saveLocalInvoices();
-        this.saveMerchantName();
+        this.countNextPage();
         this.showFilterBtn.addEventListener("click", this.filterList);
         this.clearFilterBtn.addEventListener("click", this.clearFilter);
         this.btnExel.addEventListener("click", this.saveXls);
         this.btn_search.addEventListener("click", this.searchFunction);
+        this.containerPages.addEventListener("click", this.checkClickedPages);
     }
 };
 

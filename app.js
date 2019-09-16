@@ -246,7 +246,8 @@ app.put("/putBank", jsonParser, (req, res) => {
 // Invoice list generation process
 
 app.get("/getInvoices", (req, res) => {
-    mongo.connect(url, (err, db) =>{
+    mongo.connect(url, (err, db) => {
+
         db.collection("invoices").find({}).toArray(function(err, invoices){
             if(err) return console.log("Error with upload Merchants!", err);
             db.close();
