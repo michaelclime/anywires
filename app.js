@@ -352,7 +352,7 @@ app.post('/forgot', function(req, res, next) {
                 auth: {
                   type: "login",
                   user: "bogdan.melnik@brokers.expert",
-                  pass: "27finologycorp"
+                  pass:  process.env.GMAILPW
                 }
             });
             var mailOptions = {
@@ -423,7 +423,7 @@ app.post('/resetPassword/:token', function(req, res) {
             User.findOne( { resetPasswordToken: req.params.token, resetPasswordExpires: {$gt: Date.now()} }, function(err, user) {
                 if (!user) {
                     req.flash('error', 'Password reset token is invalid or has expired!');
-                    return res.redirect('back'); //??????????
+                    return res.redirect('back');
                 }
                 if (req.body.password === req.body.confirm) {
                     user.setPassword(req.body.password, function(err) {
@@ -438,7 +438,7 @@ app.post('/resetPassword/:token', function(req, res) {
                     });
                 } else {
                     req.flash('error', 'Password don\'t match');
-                    return res.redirect('back') // ?????????
+                    return res.redirect('back');
                 }
             });
         },
@@ -484,7 +484,7 @@ app.post('/sigup', function(req, res) {
             auth: {
               type: "login", // default
               user: "bogdan.melnik@brokers.expert",
-              pass: "27finologycorp"
+              pass: process.env.GMAILPW
             }
         });
 
