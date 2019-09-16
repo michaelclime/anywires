@@ -3,7 +3,7 @@
 
  // Generate merchants list for selected menu
 
-let fetchPromise  = fetch('http://localhost:3000/getMerchanList');
+let fetchPromise  = fetch('http://localhost:3000/getMerchants');
 fetchPromise.then(response => {
     return response.json();
     }).then(merchants => {

@@ -150,7 +150,7 @@ app.post("/invoices", function(req, res, next) {
     });
 
     let newInvoice = {
-        number: INVOIECES.length + 1,
+        number: (INVOIECES.length + 1),
         client_details: {
             full_name: req.body.name,
             email:  req.body.email,
