@@ -72,8 +72,8 @@ class UsersList {
             } else {
                 alert("OK!");
                 
-                fetch("http://18.216.223.81:3000/postBank", {
-                    // fetch("http://localhost:3000/postBank", {
+                // fetch("http://18.216.223.81:3000/postBank", {
+                    fetch("http://localhost:3000/postBank", {
                         method: "POST",
                         body: JSON.stringify(this.newBank),
                         headers:{'Content-Type': 'application/json'}
@@ -179,8 +179,8 @@ class UsersList {
     }
 
     methodPutEnable = (id, status) => {
-        // fetch("http://localhost:3000/putBank", {
-        fetch("http://18.216.223.81:3000/putBank", {
+        fetch("http://localhost:3000/putBank", {
+        // fetch("http://18.216.223.81:3000/putBank", {
                     method: "PUT",
                     body: JSON.stringify({
                         id: id, //Must be id!
@@ -253,8 +253,8 @@ class UsersList {
     }
 
     getUsers = async () => {
-        // return  await fetch("http://localhost:3000/getBanks")
-        return  await fetch("http://18.216.223.81:3000/getBanks")
+        return  await fetch("http://localhost:3000/getBanks")
+        // return  await fetch("http://18.216.223.81:3000/getBanks")
         .then(res => {
             return res.json();
         }) 

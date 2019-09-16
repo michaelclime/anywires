@@ -1,12 +1,11 @@
 class invoiceList {
     constructor(){
         this.ArrayLIst = [];
-        this.ArratMerch = [];
-        this.ArrayBank = [];
         this.btnExel = document.querySelector("#dowloadXls");
         this.clearFilterBtn = document.querySelector("#clearFilterBtn");
         this.showFilterBtn = document.querySelector("#showBtn");
         this.btn_search = document.querySelector(".search-btn");
+        this.containerPages = document.querySelector(".nextPage-block");
         this.render();
     }
 
@@ -65,8 +64,8 @@ class invoiceList {
         this.selets.forEach(item => item.value = "");
         this.container = document.getElementById("table-list");
         this.container.innerHTML = "";
-        this.ArrayLIst = [];
-        this.saveLocalInvoices();
+        this.loadInvoices(this.ArrayLIst, 0, 10);
+        
     }
 
     filterList = () => {
@@ -90,7 +89,7 @@ class invoiceList {
         this.container = document.getElementById("table-list");
         this.container.innerHTML = "";
 
-        this.loadInvoices(this.result);
+        this.loadInvoices(this.result, 0, 10);
     }
 
     checkDocuments = (doc) => {
@@ -107,15 +106,15 @@ class invoiceList {
 
     saveLocalInvoices = async (array) => {
         array = await this.getInvoices();
+        
         array.forEach((item) => {
             this.ArrayLIst.push(item);
         });
-        this.loadInvoices(this.ArrayLIst);
     }
 
     getInvoices = async () => {
-        return  await fetch("http://18.216.223.81:3000/getInvoices")
-        // return  await fetch("http://localhost:3000/getInvoices")
+        // return  await fetch("http://18.216.223.81:3000/getInvoices")
+        return  await fetch("http://localhost:3000/getInvoices")
         .then(res => {
             return res.json();
         }) 
@@ -124,54 +123,106 @@ class invoiceList {
         });
     }
 
-    getInvoiceMerch = async (id) => {
-        // return await fetch("http://localhost:3000/getInvoiceMerchant", {
-            return await fetch("http://18.216.223.81:3000/getInvoiceMerchant", {
-                        method: "POST",
-                        body: JSON.stringify({
-                            "id": id
-                        }),
-                        headers:{'Content-Type': 'application/json'}
-                        })
-                        .then(res => {
-                            return res.json();
-                        })
-                        .catch(err => {
-                            console.log(err);
-                        });
-    }
+    checkClickedPages = (event) => {
+        this.containerPages = document.querySelectorAll(".nextPage-btn");
+        var evenT = event.target.tagName;
+        if (evenT === ("BUTTON")){
+            this.containerPages.forEach((btn) => {
+                btn.style.backgroundColor = "white";
+                btn.style.color = "black";
+            });
 
-    getInvoiceBank = async (bank) => {
-        // return await fetch("http://localhost:3000/getInvoiceBanks", {
-            return await fetch("http://18.216.223.81:3000/getInvoiceBanks", {
-                        method: "POST",
-                        body: JSON.stringify({
-                            "id": bank
-                        }),
-                        headers:{'Content-Type': 'application/json'}
-                        })
-                        .then(res => {
-                            return res.json();
-                        })
-                        .catch(err => {
-                            console.log(err);
-                        });
-    }
+            var first = event.target.closest("div").children[0];
+            var second = event.target.closest("div").children[1];
+            var third = event.target.closest("div").children[2];
 
-    loadInvoices = (arr) => {
-        this.container = document.getElementById("table-list");
-        arr.forEach( async (item, index) => {
-            var currency = "";
-            item.currency === "EUR" ? currency = "€" : currency = "$";
+            if (event.target === first && first.textContent === "1") {
+                second.style.backgroundColor = "#20A5F7";
+                second.style.color = "white";
+            }
+        
+        }
+    };
+
+    countNextPage = async () => {
+        await this.saveLocalInvoices();
+        this.loadInvoices(this.ArrayLIst, 0, 10);
+        
+        var lastPage = this.ArrayLIst.length / 10;
+
+        if (lastPage > 3) {
+            lastPage !== parseInt(lastPage) ? lastPage = parseInt(lastPage) + 1 : "";
+            for (let i = 1; i < 4; i++) {
+                this.renderNextPage([i]);
+            }
+            this.dotts = document.createElement("span");
+            this.dotts.textContent = "...";
+            this.dotts.classList.add("dotts");
+            this.containerPages.appendChild(this.dotts);
+            this.renderNextPage(lastPage);
+        } else {
+            for (let i = 0; i < lastPage; i++) {
+                this.renderNextPage([i+1]);
+            }
+        }
+        
+        var buttonsPage = document.querySelectorAll(".nextPage-btn");
+        buttonsPage.forEach((btn) => {
             
-            var merchantId = await this.getInvoiceMerch(item.merchant);
-            this.ArrayLIst[index].merchant_search = (merchantId[0].name);
+            btn.addEventListener("click", (event) => {
+                this.container = document.getElementById("table-list");
+                this.container.innerHTML = "";
 
-            var bankId = await this.getInvoiceBank(item.bank);
-            this.ArrayLIst[index].bank_search = (bankId[0].name);
+                this.lastItem = Number(btn.textContent)*10;
+                this.firstItem = (Number(btn.textContent)*10)-10;
+
+                this.loadInvoices(this.ArrayLIst, this.firstItem, this.lastItem);
+
+                if(Number(btn.textContent) === lastPage){
+                    btn.closest("div").children[0].textContent = lastPage - 3;
+                    btn.closest("div").children[1].textContent = lastPage - 2;
+                    btn.closest("div").children[2].textContent = lastPage - 1;
+                }
+
+                if (btn.textContent > btn.closest("div").children[1].innerHTML && btn.textContent < lastPage-1) {
+                    var first =  btn.closest("div").children[0].textContent;
+                    var second = btn.closest("div").children[1].textContent;
+                    var third = btn.closest("div").children[2].textContent;
+
+                    btn.closest("div").children[0].textContent = Number(first)+ 1;
+                    btn.closest("div").children[1].textContent = Number(second) + 1;
+                    btn.closest("div").children[2].textContent = Number(third) + 1;
+                }
+
+                if (btn.textContent < btn.closest("div").children[1].innerHTML && btn.textContent > 1) {
+                    var first =  btn.closest("div").children[0].textContent;
+                    var second = btn.closest("div").children[1].textContent;
+                    var third = btn.closest("div").children[2].textContent;
+
+                    btn.closest("div").children[0].textContent = Number(first) - 1;
+                    btn.closest("div").children[1].textContent = Number(second) - 1;
+                    btn.closest("div").children[2].textContent = Number(third) - 1;
+                }
+
+                
+            });
+        });
+    }
+
+    renderNextPage = (page) => {
+        this.buttonNext = document.createElement("button");
+        this.buttonNext.textContent = page;
+        this.buttonNext.classList.add("nextPage-btn");
+        this.containerPages.appendChild(this.buttonNext);
+    }
+
+    loadInvoices = (Arr, from, till) => {
+        this.container = document.getElementById("table-list");
+        Arr.slice(from, till).forEach((item) => {
+            var currency = ""; item.currency === "EUR" ? currency = "€" : currency = "$";
 
             var color = "";
-            item.status === "Available" ? color = "green" : "";
+            item.status === "Approved" ? color = "green" : "";
             item.status === "Declined" ? color = "red" : "";
             item.status === "Received" ? color = "blue" : "";
             item.status === "Sent" ? color = "yellow" : "";
@@ -186,7 +237,7 @@ class invoiceList {
                         </div>
                     </td> 
                     <td class="column2">
-                        ${item.merchant_search}
+                        ${item.merchant}
                     </td> 
                     <td class="column3">${item.client_details.full_name}</td> 
                     <td class="column4">
@@ -202,7 +253,7 @@ class invoiceList {
                             <p class="blue smallBoldText">${moment(item.dates.received_date).format('ll')}</p>
                         </div>
                     </td>
-                    <td class="column7">${item.bank_search}</td>
+                    <td class="column7">${item.bank}</td>
                     <td class="column8">
                         <p>${currency}${0}</p>
                         <p class="fiolet smallBoldText">${moment(item.dates.available_date).format('ll')}</p>
@@ -232,19 +283,16 @@ class invoiceList {
             `;
         this.container.appendChild(this.userList);
         });
-    }
-
-    saveMerchantName = () => {
         
     }
 
     render(){
-        this.saveLocalInvoices();
-        this.saveMerchantName();
+        this.countNextPage();
         this.showFilterBtn.addEventListener("click", this.filterList);
         this.clearFilterBtn.addEventListener("click", this.clearFilter);
         this.btnExel.addEventListener("click", this.saveXls);
         this.btn_search.addEventListener("click", this.searchFunction);
+        this.containerPages.addEventListener("click", this.checkClickedPages);
     }
 };
 
