@@ -135,51 +135,75 @@ app.get('/getList', function(req, res, next) {
     });
 });
 
-app.post("/invoices", function(req, res, next) {
-    
-    let INVOIECES = [];
+app.post("/invoices/:fullname/:_id", function(req, res, next) {
+
     mongo.connect(url, function(err, db) {
         assert.equal(null, err);
-        var cursor = db.collection('invoices').find();
-        cursor.forEach(function(doc, err) {
-            assert.equal(null, err);
-            INVOIECES.push(doc);
-        }, function() {
-            db.close();
+        let coll = db.collection('invoices');
+        coll.count().then((count) => {
+        
+            let newInvoice = {
+                number: count + 1,
+                client_details: {
+                    full_name: req.body.name,
+                    email:  req.body.email,
+                    phone:  req.body.phone,
+                    country:  req.body.country,
+                    address:  req.body.address,
+                    id_number: ''
+                },
+                type: 'c2b',
+                status: 'Requested',
+                amount: {
+                    amount_requested: req.body.amount,
+                    amount_received: 0,
+                    amount_sent: 0,
+                    amount_approved: 0,
+                    amount_available: 0
+                },
+                currency:  req.body.currency,
+                sepa:  req.body.sepa,
+                merchant:  req.body.merch,
+                bank:  req.body.bank,
+                dates: {
+                    creation_date: Date.now(),
+                    sent_date: '',
+                    received_date: '',
+                    approved_date: '',
+                    available_date: '',
+                    declined_date: ''
+                }, 
+                documents: {
+                    id: [],
+                    payment_proof: [],
+                    utility_bill: [],
+                    declaration: []
+                },
+                created_by: {
+                    id: req.params._id,
+                    name: req.params.fullname
+                },
+                commissions: '',
+                comments: [
+                    {
+                        created_by:  req.params.fullname,
+                        creation_date: Date.now(),
+                        message: `Invoice ${count + 1} for ${req.body.amount} ${req.body.currency} was Requested!`
+                    }
+                ]
+            };
+        
+            Invoice.create(newInvoice, function(err, newlyCreated){
+                if(err){
+                    console.log(err);
+                } else {
+                    console.log('Item inserted');
+                    req.flash('success', 'Invoice successfully created!');
+                    res.redirect("/invoice-list.html");
+                }
+            });
+
         });
-    });
-
-    let newInvoice = {
-        number: (INVOIECES.length + 1),
-        client_details: {
-            full_name: req.body.name,
-            email:  req.body.email,
-            phone:  req.body.phone,
-            country:  req.body.country,
-            address:  req.body.address
-        },
-        type: 'c2b',
-        status: 'Requested',
-        amount: {
-            amount_requested: req.body.amount
-        },
-        currency:  req.body.currency,
-        sepa:  req.body.sepa,
-        merchant:  req.body.merch,
-        bank:  req.body.bank,
-        dates: {
-            creation_date: Date.now()
-        }
-    };
-
-    Invoice.create(newInvoice, function(err, newlyCreated){
-        if(err){
-            console.log(err);
-        } else {
-            console.log('Item inserted');
-            req.flash('success', 'Invoice successfully created!');
-            res.redirect("/invoice-list.html");
-        }
     });
 });
 

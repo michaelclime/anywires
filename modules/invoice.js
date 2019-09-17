@@ -7,10 +7,15 @@ let InvoiceSchema = new mongoose.Schema({
     type: String,
     status: String,
     amount: Object,
-    currency:  Object,
-    sepa:  String,
-    merchant:String,
-    dates: Object
+    currency: Object,
+    sepa: String,
+    merchant: String,
+    bank: String,
+    dates: Object,
+    documents: Object,
+    created_by: Object,
+    commissions: String,
+    comments: Array
 });
 
 InvoiceSchema.plugin(passportLocalMongoose);

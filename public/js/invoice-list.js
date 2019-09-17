@@ -113,14 +113,107 @@ class invoiceList {
     }
 
     getInvoices = async () => {
-        //return  await fetch("http://18.216.223.81:3000/getInvoices")
-         return  await fetch("http://localhost:3000/getInvoices")
+        // return  await fetch("http://18.216.223.81:3000/getInvoices")
+        return  await fetch("http://localhost:3000/getInvoices")
         .then(res => {
             return res.json();
         }) 
         .catch(err => {
             console.log(err);
         });
+    }
+
+    checkClickedPages = (event) => {
+        this.containerPages = document.querySelectorAll(".nextPage-btn");
+        var evenT = event.target.tagName;
+        if (evenT === ("BUTTON")){
+            this.containerPages.forEach((btn) => {
+                btn.style.backgroundColor = "white";
+                btn.style.color = "black";
+            });
+
+            var first = event.target.closest("div").children[0];
+            var second = event.target.closest("div").children[1];
+            var third = event.target.closest("div").children[2];
+
+            if (event.target === first && first.textContent === "1") {
+                second.style.backgroundColor = "#20A5F7";
+                second.style.color = "white";
+            }
+        
+        }
+    };
+
+    countNextPage = async () => {
+        await this.saveLocalInvoices();
+        this.loadInvoices(this.ArrayLIst, 0, 10);
+        
+        var lastPage = this.ArrayLIst.length / 10;
+
+        if (lastPage > 3) {
+            lastPage !== parseInt(lastPage) ? lastPage = parseInt(lastPage) + 1 : "";
+            for (let i = 1; i < 4; i++) {
+                this.renderNextPage([i]);
+            }
+            this.dotts = document.createElement("span");
+            this.dotts.textContent = "...";
+            this.dotts.classList.add("dotts");
+            this.containerPages.appendChild(this.dotts);
+            this.renderNextPage(lastPage);
+        } else {
+            for (let i = 0; i < lastPage; i++) {
+                this.renderNextPage([i+1]);
+            }
+        }
+        
+        var buttonsPage = document.querySelectorAll(".nextPage-btn");
+        buttonsPage.forEach((btn) => {
+            
+            btn.addEventListener("click", (event) => {
+                this.container = document.getElementById("table-list");
+                this.container.innerHTML = "";
+
+                this.lastItem = Number(btn.textContent)*10;
+                this.firstItem = (Number(btn.textContent)*10)-10;
+
+                this.loadInvoices(this.ArrayLIst, this.firstItem, this.lastItem);
+
+                if(Number(btn.textContent) === lastPage){
+                    btn.closest("div").children[0].textContent = lastPage - 3;
+                    btn.closest("div").children[1].textContent = lastPage - 2;
+                    btn.closest("div").children[2].textContent = lastPage - 1;
+                }
+
+                if (btn.textContent > btn.closest("div").children[1].innerHTML && btn.textContent < lastPage-1) {
+                    var first =  btn.closest("div").children[0].textContent;
+                    var second = btn.closest("div").children[1].textContent;
+                    var third = btn.closest("div").children[2].textContent;
+
+                    btn.closest("div").children[0].textContent = Number(first)+ 1;
+                    btn.closest("div").children[1].textContent = Number(second) + 1;
+                    btn.closest("div").children[2].textContent = Number(third) + 1;
+                }
+
+                if (btn.textContent < btn.closest("div").children[1].innerHTML && btn.textContent > 1) {
+                    var first =  btn.closest("div").children[0].textContent;
+                    var second = btn.closest("div").children[1].textContent;
+                    var third = btn.closest("div").children[2].textContent;
+
+                    btn.closest("div").children[0].textContent = Number(first) - 1;
+                    btn.closest("div").children[1].textContent = Number(second) - 1;
+                    btn.closest("div").children[2].textContent = Number(third) - 1;
+                }
+
+                
+            });
+        });
+    }
+
+    renderNextPage = (page) => {
+        this.buttonNext = document.createElement("button");
+        this.buttonNext.textContent = page;
+        this.buttonNext.classList.add("nextPage-btn");
+        this.containerPages.appendChild(this.buttonNext);
     }
 
     loadInvoices = (Arr, from, till) => {
@@ -149,7 +242,7 @@ class invoiceList {
                     <td class="column3">${item.client_details.full_name}</td> 
                     <td class="column4">
                         <div class="sentTd">
-                            <p>${currency}${item.amount.amount_sent}</p>
+                            <p>${currency}${item.amount.amount_requested}</p>
                             <p class="yellow smallBoldText">${moment(item.dates.sent_date).format('ll')}</p>
                         </div>
                     </td> 
@@ -252,4 +345,3 @@ if (alertWindow) {
         event.target === alertWindow ? alertWindow.style.display = "none" : "";
     });
 };
-

@@ -23,7 +23,7 @@
         <h1 class="fillTitle">Fill to make an Invoice</h1>
         <hr>
         <div class="invoiceInfoBlock">
-            <form  action="/invoices" class="invoice-form" method="POST">
+            <form  action="/invoices/<%= currentUser.fullname %>/<%= currentUser._id %>" class="invoice-form" method="POST">
                 <input type="text" name="name" placeholder="Client's full name">
                 <input type="text" name="address" placeholder="Client's address">
                 <input type="text" name="country" placeholder="Client's country">
