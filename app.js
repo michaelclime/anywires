@@ -8,6 +8,7 @@ let express = require("express"),
     passport = require('passport'),
     LocalStrategy = require('passport-local'),
     User = require('./modules/user'),
+    Invoice = require('./modules/invoice'),
     nodemailer = require('nodemailer'),
     fs = require('fs'),
     flash = require('connect-flash'),
@@ -134,31 +135,217 @@ app.get('/getList', function(req, res, next) {
     });
 });
 
-app.post("/invoices", function(req, res, next) {
-    let newInvoice = {
-        name: req.body.name,
-        address:  req.body.address,
-        country:  req.body.country,
-        phone:  req.body.phone,
-        email:  req.body.email,
-        amount:  req.body.amount,
-        currency:  req.body.currency,
-        sepa:  req.body.sepa,
-        merch:  req.body.merch,
-        bank:  req.body.bank,
-        date: Date.now()
-    };
+app.post("/invoices/:fullname/:_id/:merchant", function(req, res, next) {
 
-    mongo.connect(url, function(err, db) { 
+    mongo.connect(url, function(err, db) {
         assert.equal(null, err);
-        db.collection('invoices').insert(newInvoice, function(err, result) {
-            assert.equal(null, err);
-            console.log('Item inserted');
-            db.close();
+        let coll = db.collection('invoices');
+        coll.count().then((count) => {
+            if (req.body.bank) {
+                var newInvoice = {
+                    number: count + 1,
+                    client_details: {
+                        full_name: req.body.name,
+                        email:  req.body.email,
+                        phone:  req.body.phone,
+                        country:  req.body.country,
+                        address:  req.body.address,
+                        id_number: ''
+                    },
+                    type: 'c2b',
+                    status: 'Requested',
+                    amount: {
+                        amount_requested: req.body.amount,
+                        amount_received: 0,
+                        amount_sent: 0,
+                        amount_approved: 0,
+                        amount_available: 0
+                    },
+                    currency:  req.body.currency,
+                    sepa:  (req.body.sepa + '').length < 4,
+                    merchant:  req.body.merch,
+                    bank:  req.body.bank,
+                    dates: {
+                        creation_date: Date.now(),
+                        sent_date: '',
+                        received_date: '',
+                        approved_date: '',
+                        available_date: '',
+                        declined_date: ''
+                    }, 
+                    documents: {
+                        id: [],
+                        payment_proof: [],
+                        utility_bill: [],
+                        declaration: []
+                    },
+                    created_by: {
+                        id: req.params._id,
+                        name: req.params.fullname
+                    },
+                    commissions: '',
+                    comments: [
+                        {
+                            created_by:  req.params.fullname,
+                            creation_date: Date.now(),
+                            message: `Invoice ${count + 1} for ${req.body.amount} ${req.body.currency} was Requested!`
+                        }
+                    ]
+                };
+
+                Invoice.create(newInvoice, function(err, newlyCreated){
+                    if(err){
+                        console.log(err);
+                    } else {
+                        console.log('Item inserted');
+                        req.flash('success', 'Invoice successfully created!');
+                        res.redirect("/invoice-list.html");
+                    }
+                });
+             };
+                
+                mongo.connect(url, function(err, db) {
+                    let availableBank = [];
+                    assert.equal(null, err);
+                    var bankList = db.collection('banks').find();
+                    bankList.forEach(function(item, err) {
+                        assert.equal(null, err);
+                        let a = ((req.body.sepa + '').length < 4);
+                        
+                        if ( (item.sepa == a) && (item.country !== req.body.country) && (+req.body.amount <= +item.max_wire) &&
+                        (+req.body.amount >= +item.min_wire) ) {
+                            availableBank.push(item.name);
+                        }
+                    }, function() {
+
+                        if (req.body.merch) {
+                            var newInvoice = {
+                                number: count + 1,
+                                client_details: {
+                                    full_name: req.body.name,
+                                    email:  req.body.email,
+                                    phone:  req.body.phone,
+                                    country:  req.body.country,
+                                    address:  req.body.address,
+                                    id_number: ''
+                                },
+                                type: 'c2b',
+                                status: 'Requested',
+                                amount: {
+                                    amount_requested: req.body.amount,
+                                    amount_received: 0,
+                                    amount_sent: 0,
+                                    amount_approved: 0,
+                                    amount_available: 0
+                                },
+                                currency:  req.body.currency,
+                                sepa:  (req.body.sepa + '').length < 4,
+                                merchant:  req.body.merch,
+                                bank:  availableBank,
+                                dates: {
+                                    creation_date: Date.now(),
+                                    sent_date: '',
+                                    received_date: '',
+                                    approved_date: '',
+                                    available_date: '',
+                                    declined_date: ''
+                                }, 
+                                documents: {
+                                    id: [],
+                                    payment_proof: [],
+                                    utility_bill: [],
+                                    declaration: []
+                                },
+                                created_by: {
+                                    id: req.params._id,
+                                    name: req.params.fullname
+                                },
+                                commissions: '',
+                                comments: [
+                                    {
+                                        created_by:  req.params.fullname,
+                                        creation_date: Date.now(),
+                                        message: `Invoice ${count + 1} for ${req.body.amount} ${req.body.currency} was Requested!`
+                                    }
+                                ]
+                            };
+            
+                            Invoice.create(newInvoice, function(err, newlyCreated){
+                                if(err){
+                                    console.log(err);
+                                } else {
+                                    console.log('Item inserted');
+                                    req.flash('success', 'Invoice successfully created!');
+                                    res.redirect("/invoice-list.html");
+                                }
+                            });
+                         } else {
+                            var newInvoice = {
+                                number: count + 1,
+                                client_details: {
+                                    full_name: req.body.name,
+                                    email:  req.body.email,
+                                    phone:  req.body.phone,
+                                    country:  req.body.country,
+                                    address:  req.body.address,
+                                    id_number: ''
+                                },
+                                type: 'c2b',
+                                status: 'Requested',
+                                amount: {
+                                    amount_requested: req.body.amount,
+                                    amount_received: 0,
+                                    amount_sent: 0,
+                                    amount_approved: 0,
+                                    amount_available: 0
+                                },
+                                currency:  req.body.currency,
+                                sepa:  (req.body.sepa + '').length < 4,
+                                merchant:  req.params.merch,
+                                bank:  availableBank,
+                                dates: {
+                                    creation_date: Date.now(),
+                                    sent_date: '',
+                                    received_date: '',
+                                    approved_date: '',
+                                    available_date: '',
+                                    declined_date: ''
+                                }, 
+                                documents: {
+                                    id: [],
+                                    payment_proof: [],
+                                    utility_bill: [],
+                                    declaration: []
+                                },
+                                created_by: {
+                                    id: req.params._id,
+                                    name: req.params.fullname
+                                },
+                                commissions: '',
+                                comments: [
+                                    {
+                                        created_by:  req.params.fullname,
+                                        creation_date: Date.now(),
+                                        message: `Invoice ${count + 1} for ${req.body.amount} ${req.body.currency} was Requested!`
+                                    }
+                                ]
+                            };
+        
+                            Invoice.create(newInvoice, function(err, newlyCreated){
+                                if(err){
+                                    console.log(err);
+                                } else {
+                                    console.log('Item inserted');
+                                    req.flash('success', 'Invoice successfully created!');
+                                    res.redirect("/invoice-list.html");
+                                }
+                            });
+                         }
+                    });
+    
+                });                   
         });
     });
-    req.flash('success', 'Invoice successfully created!');
-    res.redirect("/invoice-list.html");
 });
 
 // Merchants generation process
@@ -307,6 +494,7 @@ app.post('/register', function(req, res){
         typeClass: req.body.typeClass,
         role: req.body.role,
         merchant: req.body.merchant,
+        merchant2: req.body.merchant2,
         date: Date.now()
     });
     User.register(newUser, req.body.password, function(err, user) {
