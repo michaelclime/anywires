@@ -10,7 +10,7 @@ let InvoiceSchema = new mongoose.Schema({
     currency: Object,
     sepa: String,
     merchant: String,
-    bank: String,
+    bank: Array,
     dates: Object,
     documents: Object,
     created_by: Object,

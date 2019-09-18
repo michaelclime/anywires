@@ -9,6 +9,7 @@ let UserSchema = new mongoose.Schema({
     typeClass: String,
     role: String,
     merchant: String,
+    merchant2: String,
     date: Date,
     resetPasswordToken: String,
     resetPasswordExpires: Date
