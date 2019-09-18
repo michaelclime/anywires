@@ -258,6 +258,34 @@ app.post("/getInvoiceBanks", jsonParser, (req, res) => {
     });
 });
 
+app.post("/invoicesSearch", jsonParser, (req, res) => {
+    mongo.connect(url, (err, db) =>{
+        const id = new objectId(req.body.id);
+
+        db.collection("invoices").find({_id: id}).toArray(function(err, bank){
+            if(err) return console.log("Error with upload Invoice Merchant!", err);
+            db.close();
+            res.send(bank);
+        });
+    });
+});
+
+app.post("/api/users/search", jsonParser, function(req, res){
+    if(!req.body) return res.sendStatus(400);
+
+    const collection = req.app.locals.collection;
+    collection
+    .find({ $text: { $search: req.body.value }},
+        {
+            projection: { score: { $meta: 'textScore' } },
+            sort: { score: { $meta: 'textScore' } },
+        }
+      ).toArray(function(err, users){
+        if(err) return console.log("Error with search users!", err);
+        res.send(users);
+    });
+});
+
 //==================
 // Authorization
 //==================
