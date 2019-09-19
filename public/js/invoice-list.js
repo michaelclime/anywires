@@ -1,3 +1,4 @@
+
 class invoiceList {
     constructor(){
         this.ArrayLIst = [];
@@ -11,7 +12,7 @@ class invoiceList {
         this.bankFilter = document.querySelector("#filterBank");
         this.merchFilter = document.querySelector("#filterMerchant");
         this.creationDate = document.querySelector(".creationDate");
-        this.receiveDate = document.querySelector(".creationDate");
+        this.receiveDate = document.querySelector(".receiveDate");
         this.render();
     }
 
@@ -36,7 +37,7 @@ class invoiceList {
         filter.appendChild(this.option);
     }
 
-    searchFunction = () =>{
+    searchFunction = () => {
         var check = document.querySelector('.input-search').value.toLowerCase().split(" ");
         var result = [];
         this.ArrayLIst.forEach((obj) => {
@@ -90,6 +91,7 @@ class invoiceList {
             return buf;
         };
         saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), 'invoice_list.xlsx');
+        
     }
 
     clearFilter = () => {
@@ -117,44 +119,120 @@ class invoiceList {
         this.bank = this.bankFilter.value;
         this.merchant = this.merchFilter.value;
         this.documents = document.querySelector("#filterDocuments").value;
-
-        // Date range
         var filterCheck = [];
-        if (this.creationDate.value) {
-            this.DATE = this.creationDate.value.split("—");
-            this.creationDateStart = new Date(this.DATE[0].trim());
-            this.creationDateEnd = new Date(this.DATE[1].trim());
-        }
-        // Date range
 
+        // Присвоюємо дані для поля Receive date START.
+        if(this.receiveDate.value.length > 20){
+            this.DATErec = this.receiveDate.value.split("—");
+            this.receiveDateStart =  new Date((new Date(this.DATErec[0].trim()).getMonth()+1) +"/"+ (new Date(this.DATErec[0].trim()).getDate()) +"/"+ (new Date(this.DATErec[0].trim()).getFullYear()));
+            this.receiveDateEnd = new Date((new Date(this.DATErec[1].trim()).getMonth()+1) +"/"+ (new Date(this.DATErec[1].trim()).getDate()) +"/"+ (new Date(this.DATErec[1].trim()).getFullYear()));
+        
+        } else if(this.receiveDate.value.length <= 12){
+            this.receiveOne = new Date((new Date(this.receiveDate.value.trim()).getMonth()+1) +"/"+ (new Date(this.receiveDate.value.trim()).getDate()) +"/"+  (new Date(this.receiveDate.value.trim()).getFullYear()));
+            
+        } else {
+            this.DATErec = "";
+            this.receiveDateStart = "";
+            this.receiveDateEnd = "";
+        }
+        // Присвоюємо дані для поля Receive date END.
+
+
+        // Присвоюємо введені дати в змінні, та форматуємо їх для Creation Date START.
+        if (this.creationDate.value.length > 20) {
+            this.DATE = this.creationDate.value.split("—");
+            this.creationDateStart = new Date((new Date(this.DATE[0].trim()).getMonth()+1) +"/"+ (new Date(this.DATE[0].trim()).getDate()) +"/"+ (new Date(this.DATE[0].trim()).getFullYear()));
+            this.creationDateEnd = new Date((new Date(this.DATE[1].trim()).getMonth()+1) +"/"+ (new Date(this.DATE[1].trim()).getDate()) +"/"+ (new Date(this.DATE[1].trim()).getFullYear()));
+
+        } else if(this.creationDate.value.length <= 12){
+            this.creationOne = new Date((new Date(this.creationDate.value.trim()).getMonth()+1) +"/"+ (new Date(this.creationDate.value.trim()).getDate()) +"/"+  (new Date(this.creationDate.value.trim()).getFullYear()));
+
+        } else {
+            this.DATE = "";
+            this.creationDateStart = "";
+            this.creationDateEnd = "";
+        }
+        // Присвоюємо введені дати в змінні, та форматуємо їх END.
+
+        // Ті фільтри в яких є дані додаємо в об"єкт this.newArray START.
         this.newArray = {};
         this.bank === "" ?  "" : this.newArray.bank = this.bank;
         this.merchant === "" ?  "" : this.newArray.merchant = this.merchant;
         this.status === "" ?  "" : this.newArray.status = this.status;
         this.documents === "" ? "" : this.newArray.filter_status = this.documents;
+        // Ті фільтри в яких є дані додаємо в об"єкт END.
 
+
+        // Проводимо перевірку по всіх Інвойсах, та зрівнюємо їх з заданими фільтрами START.
         this.ArrayLIst.forEach(item => {
+
+
+            // Форматуємо дати з об"єкта якйи перевіряємо. 
             var dateCreationObj = new Date(item.dates.creation_date);
-            var dateCriteriaCreation = this.creationDateStart <= dateCreationObj && dateCreationObj <= this.creationDateEnd;
+            var dateCreationObjFormated = new Date((dateCreationObj.getMonth()+1) +"/"+ dateCreationObj.getDate() +"/"+   dateCreationObj.getFullYear()); 
 
+            var dateReceiveObj = new Date(item.dates.received_date);
+            var dateReceiveObjFormated = new Date((dateReceiveObj.getMonth()+1) +"/"+ dateReceiveObj.getDate() +"/"+   dateReceiveObj.getFullYear()); 
+            // Форматуємо дату з об"єкта якйи перевіряємо. 
+
+            
+            // Перевірка чи одна дата чи дві Creation START.
+            if(this.creationDate.value.length <= 12){
+                var dateCriteriaCreation = +this.creationOne === +dateCreationObjFormated;
+
+            } else if(this.creationDate.value.length > 20){
+                var dateCriteriaCreation = +this.creationDateStart <= +dateCreationObjFormated && +dateCreationObjFormated <= +this.creationDateEnd;
+            }
+            // Перевірка чи одна дата чи дві Creation END.
+
+
+            // Перевірка чи одна чи дві дати Receive start.
+            if (this.receiveDate.value.length <= 12) {
+                var dateCriteriaReceive = +this.receiveOne === +dateReceiveObjFormated;
+
+            } else if(this.receiveDate.value.length > 20){
+                var dateCriteriaReceive  = +this.receiveDateStart <= +dateReceiveObjFormated && +dateReceiveObjFormated <= +this.receiveDateEnd;
+            }
+            // Перевірка чи одна чи дві дати Receive start.
+
+           
+            // Перевірка чи пустий об"єкт чи ні, якщо пустий то перевірка лише по датам йде START.
             var isEmpty = this.checkIsEmptyObj(this.newArray);
-
             if (!isEmpty) {
                 var res = Object.keys(this.newArray).every(key => item[key] === this.newArray[key]);
 
-                if (this.creationDateStart) {
-                    if(res === true && dateCriteriaCreation) return filterCheck.push(item);
+                if (this.creationDate.value.length >= 11 && this.receiveDate.value.length >= 11) { // 1
+                    if(res === true && dateCriteriaCreation && dateCriteriaReceive) return filterCheck.push(item);
 
-                } else if(!this.creationDateStart) {
-                    if(res === true) return filterCheck.push(item);
+                } else if(this.creationDate.value.length >= 11 && this.receiveDate.value.length === 0){
+                    if(res === true && dateCriteriaCreation) return filterCheck.push(item); // 3
+
+                } else if(this.creationDate.value.length === 0 && this.receiveDate.value.length >= 11) {
+                    if(res === true && dateCriteriaReceive) return filterCheck.push(item); // 4
+
+                } else if (this.creationDate.value.length === 0 && this.receiveDate.value.length === 0){
+                    if(res === true) return filterCheck.push(item); // 5
                 }
 
             } else if(isEmpty){
-                if(dateCriteriaCreation) return filterCheck.push(item);
+
+                if (this.creationDate.value.length >= 11 && this.receiveDate.value.length >= 11) {
+                    if(dateCriteriaCreation && dateCriteriaReceive) return filterCheck.push(item); // 2
+
+                } else if (this.creationDate.value.length >= 11 && this.receiveDate.value.length === 0) {
+                    if(dateCriteriaCreation) return filterCheck.push(item); // 6
+
+                } else if (this.creationDate.value.length === 0 && this.receiveDate.value.length >= 11) {
+                    if(dateCriteriaReceive) return filterCheck.push(item); // 7
+
+                } else if (this.creationDate.value.length === 0 && this.receiveDate.value.length === 0) {
+                    return filterCheck = [];
+                }
             }
-            
+            // Перевірка чи пустий об"єкт чи ні, якщо пустий то перевірка лише по датам йде END.
 
         });
+        // Проводимо перевірку по всіх Інвойсах, та зрівнюємо їх з заданими фільтрами END.
 
         this.container = document.getElementById("table-list");
         this.container.innerHTML = "";
@@ -255,10 +333,6 @@ class invoiceList {
                 return doc = `<img src="img/img_3975.png" alt="empty" width="20px" height="10px">`;
             }
     }
-
- 
-
-    
 
     checkClickedPages = (event) => {
         this.buttonsPage = document.querySelectorAll(".nextPage-btn");
