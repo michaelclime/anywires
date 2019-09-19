@@ -230,14 +230,14 @@ app.post("/invoices/:fullname/:_id/:merchant", function(req, res, next) {
                                     (item) => {
                                         for (let i = 0; i < item.available_banks.length; i += 1) {
                                             if ( availableBanks.indexOf( item.available_banks[i] ) != -1) {
-                                                console.log( chalk.blue.inverse.bold(item.available_banks[i]) );
+                                                //console.log( chalk.blue.inverse.bold(item.available_banks[i]) );
                                                 availableBank = item.available_banks[i];
                                                 break;
                                             }
                                         }
 
                                         if (!availableBank) {
-                                            req.flash('error', 'Sorry, appropriate bank not founded. Please, change your invoice options or contact our support team.');
+                                            req.flash('error', 'Sorry, something went wrong. Please, change your invoice options or contact our support team.');
                                             res.redirect('/InvoiceGeneration.html');
                                         } else {
                                             var newInvoice = {
@@ -316,7 +316,7 @@ app.post("/invoices/:fullname/:_id/:merchant", function(req, res, next) {
                                         }
 
                                         if (!availableBank) {
-                                            req.flash('error', 'Sorry, appropriate bank not founded. Please, change your invoice options or contact our support team.');
+                                            req.flash('error', 'Sorry, something went wrong. Please, change your invoice options or contact our support team.');
                                             res.redirect('/InvoiceGeneration.html');
                                         } else {
                                             var newInvoice = {
