@@ -138,18 +138,18 @@
 					<div class="info-blocks">
 						<p class="person-info preson-info-merchants">You're working with Merchants:</p>
 						<div class="profile_line"></div>
-						<% if(currentUser.merchant2) {%>
+						<% if(currentUser.merchant2 !== 'null') {%>
 							<p  class="description-info">
 								<%= currentUser.merchant %>
 							</p>
 							<p  class="description-info">
 								<%= currentUser.merchant2 %>
 							</p>
-						<% } else { %>
+						<% } else { if(currentUser.merchant !== 'null') { %>
 							<p  class="description-info">
 								<%= currentUser.merchant %>
 							</p>
-						<% } %>
+						<% } } %>
 						
 					</div>
 	

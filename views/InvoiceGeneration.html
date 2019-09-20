@@ -14,6 +14,22 @@
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 </head>
 <body>
+    <!-- Modal Action Window -->
+		<% if(error && error.length > 0) {%>
+			<div class="alert" role="alert">
+				<div class="alertContent">
+					<h3>  <%= error %> </h3>
+				</div>
+			</div>
+		<% } %>
+		<% if(success && success.length > 0) {%>
+			<div class="alert" role="alert">
+				<div class="alertContent">
+					<h3>  <%= success %> </h3>
+				</div>
+			</div>
+        <% } %>
+        
     <a class="backToMain" href='/dashBoardMainPage.html'><span>
         <i class="fas fa-arrow-left"></i>Back</span></a>
     <div class="invoiceGenerationPage">
@@ -54,7 +70,7 @@
                         </select>
                     </div>
                 <% } %>
-                <% if(currentUser.merchant2) { %>
+                <% if(currentUser.merchant2 && currentUser.typeClass !== 'admin') { %>
                     <div class="merchChoose">
                         <label for="merchList2">Merch</label>
                         <select id="merchList2"  name="merch">
