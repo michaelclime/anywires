@@ -118,6 +118,10 @@ app.get('/how-it-works-dok', isLoggedIn, function(req, res) {
     });
 });
 
+app.get("/invoice-preview", isLoggedIn, function (req, res) {
+    res.render("invoice-preview.html");
+});
+
 // Invoice generation process
 
 app.get('/getList', function(req, res, next) {
@@ -470,6 +474,43 @@ app.post("/api/users/search", jsonParser, function(req, res){
       ).toArray(function(err, users){
         if(err) return console.log("Error with search users!", err);
         res.send(users);
+    });
+});
+
+
+// Invoice Preview Proccess
+
+
+app.post("/get-invoiceByNumber", jsonParser, (req, res) => {
+    mongo.connect(url, (err, db) =>{
+
+        db.collection("invoices").find({number: req.body.number}).toArray(function(err, invoice){
+            if(err) return console.log("Error with upload Invoice Merchant!", err);
+            db.close();
+            res.send(invoice);
+        });
+    });
+});
+
+app.post("/get-bankByName", jsonParser, (req, res) => {
+    mongo.connect(url, (err, db) =>{
+
+        db.collection("banks").find({name: req.body.name}).toArray(function(err, bank){
+            if(err) return console.log("Error with upload Invoice Merchant!", err);
+            db.close();
+            res.send(bank);
+        });
+    });
+});
+
+app.post("/get-merchantByName", jsonParser, (req, res) => {
+    mongo.connect(url, (err, db) =>{
+
+        db.collection("merchants").find({name: req.body.name}).toArray(function(err, merchant){
+            if(err) return console.log("Error with upload Invoice Merchant!", err);
+            db.close();
+            res.send(merchant);
+        });
     });
 });
 

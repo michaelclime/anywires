@@ -32,7 +32,7 @@ header p {
 
 .bank-logo {
     width: 220px;
-    height: 75px;
+    height: 95px;
 }
 
 .bank-logo-block {
@@ -98,7 +98,7 @@ table {
   table th {
     font-weight: normal;
     font-size: 18px;
-    background-color: #DAA520;
+    background-color: rgb(128, 128, 128);
     color: white;
 }
 

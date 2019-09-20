@@ -197,18 +197,18 @@ tbody tr {
   color: green;
 }
 
-#previewBtn{
+.previewBtn{
   width: 120px;
   height: 45px;
   background-color: #12C7B2;
   color: white;
 }
 
-#previewBtn:hover {
+.previewBtn:hover {
   background-color: #888;
 }
 
-#previewBtn:active {
+.previewBtn:active {
   background-color: #20A5F7;
 }
 
@@ -332,7 +332,7 @@ tbody tr {
     margin-bottom: 5px;
   }
 
-  #previewBtn{
+  .previewBtn{
     width: 85px;
     height: 35px;
   }

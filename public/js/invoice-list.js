@@ -13,7 +13,13 @@ class invoiceList {
         this.merchFilter = document.querySelector("#filterMerchant");
         this.creationDate = document.querySelector(".creationDate");
         this.receiveDate = document.querySelector(".receiveDate");
+        
         this.render();
+    }
+
+    previewInvoice = (event) => {
+        var number = event.target.closest("tr").children[0].children[0].children[0].children[0].textContent.split("#");
+        window.open("http://localhost:3000/invoice-preview?&" + number[1], '_blank');
     }
 
     filtersData = () => {
@@ -109,9 +115,19 @@ class invoiceList {
 
     checkIsEmptyObj = (obj) => {
         for (let key in obj) {
-            return false;
+            return false; // wrong
         }
-        return true;
+        return true; // is epmty
+    }
+
+    dateInRange = (data, first, end) => {
+        if (end === false) {
+            return +first === +data ? console.log(true) : console.log(false);
+        } else {
+            return +first <= +data && +data <= +end ? console.log(true) : console.log(false);
+        }
+        // this.dateInRange(new Date("9/19/2019"), new Date("9/17/2019") , new Date("9/25/2019"));
+        // this.dateInRange(new Date("9/19/2019"), new Date("9/17/2019") , false);
     }
 
     filterList = () => {
@@ -176,6 +192,7 @@ class invoiceList {
             // Форматуємо дату з об"єкта якйи перевіряємо. 
 
             
+            
             // Перевірка чи одна дата чи дві Creation START.
             if(this.creationDate.value.length <= 12){
                 var dateCriteriaCreation = +this.creationOne === +dateCreationObjFormated;
@@ -195,7 +212,7 @@ class invoiceList {
             }
             // Перевірка чи одна чи дві дати Receive start.
 
-           
+
             // Перевірка чи пустий об"єкт чи ні, якщо пустий то перевірка лише по датам йде START.
             var isEmpty = this.checkIsEmptyObj(this.newArray);
             if (!isEmpty) {
@@ -206,6 +223,7 @@ class invoiceList {
 
                 } else if(this.creationDate.value.length >= 11 && this.receiveDate.value.length === 0){
                     if(res === true && dateCriteriaCreation) return filterCheck.push(item); // 3
+                    
 
                 } else if(this.creationDate.value.length === 0 && this.receiveDate.value.length >= 11) {
                     if(res === true && dateCriteriaReceive) return filterCheck.push(item); // 4
@@ -226,7 +244,7 @@ class invoiceList {
                     if(dateCriteriaReceive) return filterCheck.push(item); // 7
 
                 } else if (this.creationDate.value.length === 0 && this.receiveDate.value.length === 0) {
-                    return filterCheck = [];
+                    return filterCheck = []; // 8
                 }
             }
             // Перевірка чи пустий об"єкт чи ні, якщо пустий то перевірка лише по датам йде END.
@@ -466,6 +484,10 @@ class invoiceList {
         });
     }
 
+    checkDate = (data) => {
+        return data === "" ? data = "mm/dd/yyyy" : data = moment(data).format('ll');
+    }
+
     loadInvoices = (Arr, from, till) => {
         this.container = document.getElementById("table-list");
         Arr.slice(from, till).forEach((item) => {
@@ -494,21 +516,21 @@ class invoiceList {
                     <td class="column3">${item.client_details.full_name}</td> 
                     <td class="column4">
                         <div class="sentTd">
-                            <p>${currency}${item.amount.amount_requested}</p>
-                            <p class="yellow smallBoldText">${moment(item.dates.sent_date).format('ll')}</p>
+                            <p>${currency}${item.amount.amount_sent}</p>
+                            <p class="yellow smallBoldText">${this.checkDate(item.dates.sent_date)}</p>
                         </div>
                     </td> 
                     <td class="column5">${item.commissions}</td>
                     <td class="column6">
                         <div>
                             <p>${currency}${item.amount.amount_received}</p>
-                            <p class="blue smallBoldText">${moment(item.dates.received_date).format('ll')}</p>
+                            <p class="blue smallBoldText">${this.checkDate(item.dates.received_date)}</p>
                         </div>
                     </td>
                     <td class="column7">${item.bank}</td>
                     <td class="column8">
                         <p>${currency}${0}</p>
-                        <p class="fiolet smallBoldText">${moment(item.dates.available_date).format('ll')}</p>
+                        <p class="fiolet smallBoldText">${this.checkDate(item.dates.available_date)}</p>
                     </td>
                     <td class="column9 ${color}"><strong>${item.status}</strong></td>
 
@@ -530,11 +552,13 @@ class invoiceList {
                     </td>
                     
                     <td class="column12">
-                        <button id="previewBtn">Preview</button>
+                        <button target="_blank" class="previewBtn">Preview</button>
                     </td>
             `;
         this.container.appendChild(this.userList);
         });
+        this.buttonsPreview = document.querySelectorAll(".previewBtn");
+        this.buttonsPreview.forEach((btn) => btn.addEventListener("click", this.previewInvoice));
     }
 
     render(){
