@@ -28,7 +28,10 @@ app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'html');
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({extended: true}));
-mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.set('useNewUrlParser', true);
+mongoose.set('useFindAndModify', false);
+mongoose.set('useCreateIndex', true);
+mongoose.connect(url, { useUnifiedTopology: true });
 app.use(flash());
 
 //Passport config
