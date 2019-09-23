@@ -19,7 +19,7 @@ class invoiceList {
 
     previewInvoice = (event) => {
         var number = event.target.closest("tr").children[0].children[0].children[0].children[0].textContent.split("#");
-        window.open("http://localhost:3000/invoice-preview?&" + number[1], '_blank');
+        window.open("http://18.216.223.81:3000/invoice-preview?&" + number[1], '_blank');
     }
 
     filtersData = () => {
@@ -57,9 +57,7 @@ class invoiceList {
                     check[k] === name[i] ? result.push(obj) : "";
                     check[k] === number[i] ? result.push(obj) : "";
                 }
-
             }
-
         });
         
         this.container.innerHTML = "";
@@ -298,7 +296,7 @@ class invoiceList {
                                 return "Empty";
                             }
 
-                    } else if (arr.length === 0) {
+                    } else if (arr.length === 0 || arr.length === undefined) {
                         return "Empty";
                     }
                 };
@@ -434,8 +432,8 @@ class invoiceList {
     }
 
     getMerchants = async () => {
-        // return  await fetch("http://18.216.223.81:3000/getMerchants")
-        return  await fetch("http://localhost:3000/getMerchants")
+        return  await fetch("http://18.216.223.81:3000/getMerchants")
+        // return  await fetch("http://localhost:3000/getMerchants")
         .then(res => {
             return res.json();
         }) 
@@ -454,8 +452,8 @@ class invoiceList {
     }
 
     getBanks = async () => {
-         // return  await fetch("http://18.216.223.81:3000/getInvoices")
-         return  await fetch("http://localhost:3000/getBanks")
+         return  await fetch("http://18.216.223.81:3000/getBanks")
+        //  return  await fetch("http://localhost:3000/getBanks")
          .then(res => {
              return res.json();
          }) 
@@ -474,8 +472,8 @@ class invoiceList {
     }
 
     getInvoices = async () => {
-        // return  await fetch("http://18.216.223.81:3000/getInvoices")
-        return  await fetch("http://localhost:3000/getInvoices")
+        return  await fetch("http://18.216.223.81:3000/getInvoices")
+        // return  await fetch("http://localhost:3000/getInvoices")
         .then(res => {
             return res.json();
         }) 
