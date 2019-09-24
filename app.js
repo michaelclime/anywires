@@ -397,7 +397,12 @@ app.post("/invoices/:fullname/:_id/:merchant", function(req, res, next) {
     });
 });
 
-// Merchants generation process
+
+//////////////////////////////////
+//                              //
+// Merchants generation process //
+//                              //                                            
+//////////////////////////////////
 
 app.get("/getMerchants", (req, res) => {
     mongo.connect(url, (err, db) =>{
@@ -419,7 +424,12 @@ app.post("/postMerchant",jsonParser, (req, res) => {
     });
 });
 
-// Banks generation process
+
+//////////////////////////////
+//                          //
+// Banks generation process //
+//                          //
+//////////////////////////////
 
 app.get("/getBanks", (req, res) => {
     mongo.connect(url, (err, db) =>{
@@ -457,7 +467,11 @@ app.put("/putBank", jsonParser, (req, res) => {
 });
 
 
-// Invoice list generation process
+/////////////////////////////////////
+//                                 //
+// Invoice list generation process //
+//                                 //
+/////////////////////////////////////
 
 app.get("/getInvoices", (req, res) => {
     mongo.connect(url, (err, db) => {
@@ -466,6 +480,97 @@ app.get("/getInvoices", (req, res) => {
             if(err) return console.log("Error with upload Merchants!", err);
             db.close();
             res.send(invoices);
+        })
+    });
+});
+
+app.post("/getPart-Invoices", jsonParser, (req, res) => {
+    mongo.connect(url, (err, db) => {
+        const num = req.body.numbers;
+        const filter = req.body.filter;
+        var firstDate = req.body.first;
+        var secondDate = req.body.second;
+
+        // Перевіряємо чи одна дата чи дві
+        if (firstDate && secondDate) {
+            var createDateRange = {
+                "dates.creation_date": {
+                    $gte: new Date(firstDate),
+                    $lte: new Date(secondDate),
+                }
+            };
+            req.body.first ? Object.assign(filter, createDateRange) : ""; 
+
+        } else if(secondDate === false){
+            var month = new Date(firstDate).getMonth();
+            var day = new Date(firstDate).getDate();
+            var year = new Date(firstDate).getFullYear();
+
+            secondDate = (month+1) +"/"+ (day+1) +"/"+ year;
+            secondDate = new Date(secondDate);
+
+            var createDateRange = {
+                "dates.creation_date": {
+                    $gte: new Date(firstDate),
+                    $lte: new Date(secondDate),
+                }
+            };
+            req.body.first ? Object.assign(filter, createDateRange) : ""; 
+        }
+        // Перевіряємо чи одна дата чи дві
+
+        db.collection("invoices")
+        .find(filter)
+        .skip(num)
+        .limit(10)
+        .toArray(function(err, invoices){
+            if(err) return console.log("Error with upload Get Part Invoices!", err);
+            db.close();
+            res.send(invoices);
+        })
+    });
+});
+
+app.post("/getNumber-Invoices", jsonParser, (req, res) => {
+    mongo.connect(url, (err, db) => {
+    const filter = req.body.filter;
+    var firstDate = req.body.first;
+    var secondDate = req.body.second;
+
+        // Перевіряємо чи одна дата чи дві
+        if (firstDate && secondDate) {
+            var createDateRange = {
+                "dates.creation_date": {
+                    $gte: new Date(firstDate),
+                    $lte: new Date(secondDate),
+                }
+            };
+            req.body.first ? Object.assign(filter, createDateRange) : ""; 
+            console.log("first");
+
+        } else if(secondDate === false){
+            var month = new Date(firstDate).getMonth();
+            var day = new Date(firstDate).getDate();
+            var year = new Date(firstDate).getFullYear();
+
+            secondDate = (month+1) +"/"+ (day+1) +"/"+ year;
+            secondDate = new Date(secondDate);
+
+            var createDateRange = {
+                "dates.creation_date": {
+                    $gte: new Date(firstDate),
+                    $lte: new Date(secondDate),
+                }
+            };
+            req.body.first ? Object.assign(filter, createDateRange) : ""; 
+        }
+        // Перевіряємо чи одна дата чи дві 
+
+        db.collection("invoices").find(filter).count(function(err, invoices){
+            if(err) return console.log("Error with upload Number of Invoices!", err);
+            
+            db.close();
+            res.send({"numbers": invoices});
         })
     });
 });
@@ -494,37 +599,12 @@ app.post("/getInvoiceBanks", jsonParser, (req, res) => {
     });
 });
 
-app.post("/invoicesSearch", jsonParser, (req, res) => {
-    mongo.connect(url, (err, db) =>{
-        const id = new objectId(req.body.id);
 
-        db.collection("invoices").find({_id: id}).toArray(function(err, bank){
-            if(err) return console.log("Error with upload Invoice Merchant!", err);
-            db.close();
-            res.send(bank);
-        });
-    });
-});
-
-app.post("/api/users/search", jsonParser, function(req, res){
-    if(!req.body) return res.sendStatus(400);
-
-    const collection = req.app.locals.collection;
-    collection
-    .find({ $text: { $search: req.body.value }},
-        {
-            projection: { score: { $meta: 'textScore' } },
-            sort: { score: { $meta: 'textScore' } },
-        }
-      ).toArray(function(err, users){
-        if(err) return console.log("Error with search users!", err);
-        res.send(users);
-    });
-});
-
-
-// Invoice Preview Proccess
-
+//////////////////////////////
+//                          //
+// Invoice Preview Proccess //
+//                          //
+//////////////////////////////
 
 app.post("/get-invoiceByNumber", jsonParser, (req, res) => {
     mongo.connect(url, (err, db) =>{
