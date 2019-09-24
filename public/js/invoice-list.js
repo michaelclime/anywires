@@ -525,8 +525,8 @@ class invoiceList {
     }
 
     getMerchants = async () => {
-        // return  await fetch("http://18.216.223.81:3000/getMerchants")
-        return  await fetch("http://localhost:3000/getMerchants")
+        return  await fetch("http://18.216.223.81:3000/getMerchants")
+        // return  await fetch("http://localhost:3000/getMerchants")
         .then(res => {
             return res.json();
         }) 
@@ -545,8 +545,8 @@ class invoiceList {
     }
 
     getBanks = async () => {
-         // return  await fetch("http://18.216.223.81:3000/getInvoices")
-         return  await fetch("http://localhost:3000/getBanks")
+         return  await fetch("http://18.216.223.81:3000/getBanks")
+        //  return  await fetch("http://localhost:3000/getBanks")
          .then(res => {
              return res.json();
          }) 
@@ -571,8 +571,8 @@ class invoiceList {
     }
 
     getInvoices = async (count, filter, first, second) => {
-        // return  await fetch("http://18.216.223.81:3000/getInvoices")
-        return  await fetch("http://localhost:3000/getPart-Invoices", {
+        return  await fetch("http://18.216.223.81:3000/getPart-Invoices", {
+        // return  await fetch("http://localhost:3000/getPart-Invoices", {
             method: "POST",
             body: JSON.stringify({
                 numbers: count, 
@@ -591,8 +591,8 @@ class invoiceList {
     }
 
     getNumberOfinvoices = async (filter, first, second) => {
-        // return  await fetch("http://18.216.223.81:3000/getNumber-Invoices")
-        return  await fetch("http://localhost:3000/getNumber-Invoices", {
+        return  await fetch("http://18.216.223.81:3000/getNumber-Invoices", {
+        // return  await fetch("http://localhost:3000/getNumber-Invoices", {
             method: "POST",
             body: JSON.stringify({
                 filter,
