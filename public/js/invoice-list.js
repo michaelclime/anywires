@@ -20,7 +20,7 @@ class invoiceList {
 
     previewInvoice = (event) => {
         var number = event.target.closest("tr").children[0].children[0].children[0].children[0].textContent.split("#");
-        window.open("http://localhost:3000/invoice-preview?&" + number[1], '_blank');
+        window.open("http://18.216.223.81:3000/invoice-preview?&" + number[1], '_blank');
     }
 
     filtersData = () => {
@@ -69,9 +69,7 @@ class invoiceList {
         // if (result.length) return this.countNextPage(result);
         var check = document.querySelector('.input-search').value;
 
-        const filter = {
-            $text: { $search: check }
-        };
+        const filter = { $text: { $search: check } };
 
           if(check){
             const lengthInvoice = await this.getNumberOfinvoices(filter);
