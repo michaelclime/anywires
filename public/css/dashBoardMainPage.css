@@ -211,6 +211,14 @@ main {
     padding: 50px 50px;
 }
 
+.boxInfoAdmin {
+    display: flex;
+    justify-content: center;
+    margin: 3px 0;
+    background: #FFF;
+    padding: 50px 50px;
+}
+
 .invoiceInfo, .walletBalance {
     display: flex;
     flex-direction: column;

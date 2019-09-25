@@ -155,31 +155,48 @@
                 </div>
             </div>
         </div>
-
-        <div class="boxInfo">
-            <div class="invoiceInfo">
-                <h2 class="infoTitle">Invoice</h2>
-                <div class="contentBox">
-                    <span class="invoiceImg"><i class="fas fa-file-invoice-dollar"></i></span>
-                    <div class="transactionInfo">
-                        <span class="transactions">Transactions: <span class="transactionsNumber">10</span></span>
-                        <span class="transactionsPerDay">Transactions per day: <span class="transactionsPerDayNumber">3</span></span>
-                        <span class="avgTransaction">Avg. transaction: <span class="avgTransaction">101 578$</span></span>
+        <% if (currentUser.typeClass == 'admin') { %>
+            <div class="boxInfoAdmin">
+                <div class="invoiceInfo">
+                    <h2 class="infoTitle">Invoice - Received</h2>
+                    <div class="contentBox">
+                        <span class="invoiceImg"><i class="fas fa-file-invoice-dollar"></i></span>
+                        <div class="transactionInfo">
+                            <span class="transactions">Transactions: <span class="transactionsNumber"></span></span>
+                            <span class="transactionsPerDay">Transactions per day: <span class="transactionsPerDayNumber"></span></span>
+                            <span class="avgTransaction">Avg. transaction: <span class="avgTransactionUSD"></span></span>
+                            <span class="avgTransaction">Avg. transaction: <span class="avgTransactionEUR"></span></span>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="walletBalance">
-                <h2 class="infoTitle">Wallets Balance</h2>
-                <div class="contentBox">
-                    <span class="walletImg"><i class="fas fa-wallet"></i></i></span>
-                    <div class="walletInfo">
-                        <span class="awWallet">AW Wallet: <span class="awWalletValue">10 000$</span></span>
-                        <span class="persWallet">Pers. Wallet: <span class="persWalletValue">300 000$</span></span>
+        <% } else { %>
+            <div class="boxInfo">
+                <div class="invoiceInfo">
+                    <h2 class="infoTitle">Invoice - Received</h2>
+                    <div class="contentBox">
+                        <span class="invoiceImg"><i class="fas fa-file-invoice-dollar"></i></span>
+                        <div class="transactionInfo">
+                            <span class="transactions">Transactions: <span class="transactionsNumber"></span></span>
+                            <span class="transactionsPerDay">Transactions per day: <span class="transactionsPerDayNumber"></span></span>
+                            <span class="avgTransaction">Avg. transaction: <span class="avgTransactionUSD"></span></span>
+                            <span class="avgTransaction">Avg. transaction: <span class="avgTransactionEUR"></span></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="walletBalance">
+                    <h2 class="infoTitle">Wallets Balance</h2>
+                    <div class="contentBox">
+                        <span class="walletImg"><i class="fas fa-wallet"></i></i></span>
+                        <div class="walletInfo">
+                            <span class="awWallet">AW Wallet: <span class="awWalletValue">10 000$</span></span>
+                            <span class="persWallet">Pers. Wallet: <span class="persWalletValue">300 000$</span></span>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-
+        <% } %> 
+       
         <div class="chartBox">
             <div class="chartContainer">
                 <button class="chartBoxBtn sentChartBtn"><span>Sent report</span></button>

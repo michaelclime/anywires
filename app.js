@@ -831,7 +831,7 @@ app.post('/resetPassword/:token', function(req, res) {
                 auth: {
                   type: "login",
                   user: "bogdan.melnik@brokers.expert",
-                  pass: "27finologycorp"
+                  pass:  process.env.GMAILPW
                 }
             });
             var mailOptions = {
@@ -901,8 +901,9 @@ app.get('/getInvListToday', function(req, res, next) {
     let INVOIECES = [],
         nowDate = new Date();
         minDate = nowDate.getFullYear() + '-' + (nowDate.getMonth() + 1) + '-' + (nowDate.getDate());
-        maxDate = nowDate.getFullYear() + '-' + (nowDate.getMonth() + 1) + '-' + (nowDate.getDate() + 2);
-    mongo.connect(url, function(err, db) {
+        maxDate = nowDate.getFullYear() + '-' + (nowDate.getMonth() + 1) + '-' + (nowDate.getDate() + 1);
+       
+        mongo.connect(url, function(err, db) {
         assert.equal(null, err);
         var cursor = db.collection('invoices').find({ 'dates.creation_date': { $gt: new Date(minDate), $lt: new Date(maxDate) },
                                                       'status': { $in: ['Received', 'Approved', 'Available']}  } );
@@ -920,7 +921,88 @@ app.get('/getInvListToday/:merchant', function(req, res, next) {
     let INVOIECES = [],
         nowDate = new Date();
         minDate = nowDate.getFullYear() + '-' + (nowDate.getMonth() + 1) + '-' + (nowDate.getDate());
-        maxDate = nowDate.getFullYear() + '-' + (nowDate.getMonth() + 1) + '-' + (nowDate.getDate() + 2);
+        maxDate = nowDate.getFullYear() + '-' + (nowDate.getMonth() + 1) + '-' + (nowDate.getDate() + 1);
+    mongo.connect(url, function(err, db) {
+        assert.equal(null, err);
+        var cursor = db.collection('invoices').find({ 'dates.creation_date': { $gt: new Date(minDate), $lt: new Date(maxDate) },
+                                                      'status': { $in: ['Received', 'Approved', 'Available']},
+                                                      'merchant': req.params.merchant  } );
+        cursor.forEach(function(doc, err) {
+            assert.equal(null, err);
+            INVOIECES.push(doc);
+        }, function() {
+            db.close();
+            res.send(INVOIECES);
+        });
+    });
+});
+
+app.get('/getInvListWeek', function(req, res, next) {
+    let INVOIECES = [],
+        nowDate = new Date();
+        minDate = nowDate.getFullYear() + '-' + (nowDate.getMonth() + 1) + '-' + (nowDate.getDate() - 7);
+        maxDate = nowDate.getFullYear() + '-' + (nowDate.getMonth() + 1) + '-' + (nowDate.getDate() + 1);
+        
+    mongo.connect(url, function(err, db) {
+        assert.equal(null, err);
+        var cursor = db.collection('invoices').find({ 'dates.creation_date': { $gt: new Date(minDate), $lt: new Date(maxDate) },
+                                                      'status': { $in: ['Received', 'Approved', 'Available']}  } );
+        cursor.forEach(function(doc, err) {
+            assert.equal(null, err);
+            INVOIECES.push(doc);
+        }, function() {
+            db.close();
+            res.send(INVOIECES);
+        });
+    });
+});
+
+app.get('/getInvListWeek/:merchant', function(req, res, next) {
+    let INVOIECES = [],
+        nowDate = new Date();
+        minDate = nowDate.getFullYear() + '-' + (nowDate.getMonth() + 1) + '-' + (nowDate.getDate() - 7);
+        maxDate = nowDate.getFullYear() + '-' + (nowDate.getMonth() + 1) + '-' + (nowDate.getDate() + 1);
+    mongo.connect(url, function(err, db) {
+        assert.equal(null, err);
+        var cursor = db.collection('invoices').find({ 'dates.creation_date': { $gt: new Date(minDate), $lt: new Date(maxDate) },
+                                                      'status': { $in: ['Received', 'Approved', 'Available']},
+                                                      'merchant': req.params.merchant  } );
+        cursor.forEach(function(doc, err) {
+            assert.equal(null, err);
+            INVOIECES.push(doc);
+        }, function() {
+            db.close();
+            res.send(INVOIECES);
+        });
+    });
+});
+
+
+app.get('/getInvListMonth', function(req, res, next) {
+    let INVOIECES = [],
+        nowDate = new Date();
+        minDate = nowDate.getFullYear() + '-' + (nowDate.getMonth()) + '-' + (nowDate.getDate());
+        maxDate = nowDate.getFullYear() + '-' + (nowDate.getMonth() + 1) + '-' + (nowDate.getDate() + 1);
+
+        mongo.connect(url, function(err, db) {
+        assert.equal(null, err);
+        var cursor = db.collection('invoices').find({ 'dates.creation_date': { $gt: new Date(minDate), $lt: new Date(maxDate) },
+                                                      'status': { $in: ['Received', 'Approved', 'Available']}  } );
+        cursor.forEach(function(doc, err) {
+            assert.equal(null, err);
+            INVOIECES.push(doc);
+        }, function() {
+            db.close();
+            res.send(INVOIECES);
+        });
+    });
+});
+
+app.get('/getInvListMonth/:merchant', function(req, res, next) {
+    let INVOIECES = [],
+        nowDate = new Date();
+        minDate = nowDate.getFullYear() + '-' + (nowDate.getMonth()) + '-' + (nowDate.getDate());
+        maxDate = nowDate.getFullYear() + '-' + (nowDate.getMonth() + 1) + '-' + (nowDate.getDate() + 1);
     mongo.connect(url, function(err, db) {
         assert.equal(null, err);
         var cursor = db.collection('invoices').find({ 'dates.creation_date': { $gt: new Date(minDate), $lt: new Date(maxDate) },
@@ -953,7 +1035,6 @@ app.get('/getInvListAll', function(req, res, next) {
 
 app.get('/getInvListAll/:merchant', function(req, res, next) {
     let INVOIECES = [];
-    console.log(req.params.merchant);
     mongo.connect(url, function(err, db) {
         assert.equal(null, err);
         var cursor = db.collection('invoices').find({'merchant': req.params.merchant});
@@ -962,7 +1043,6 @@ app.get('/getInvListAll/:merchant', function(req, res, next) {
             INVOIECES.push(doc);
         }, function() {
             db.close();
-            console.log(INVOIECES.length);
             res.send(INVOIECES);
         });
     });
