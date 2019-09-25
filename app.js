@@ -126,6 +126,14 @@ app.get("/invoice-preview", isLoggedIn, function (req, res) {
     res.render("invoice-preview.html");
 });
 
+app.get('/settlementReport.html', isLoggedIn, function(req, res) {
+    res.render("settlementReport.html");
+});
+
+app.get('/merchantReport.html', isLoggedIn, function(req, res) {
+    res.render("merchantReport.html");
+});
+
 // Invoice generation process
 
 app.get('/getList', function(req, res, next) {
