@@ -553,7 +553,7 @@ const allTimeAmount = () => {
         transactionsEUR = 0,
         receivedInvCount = 0;
 
-    periodTitle.innerHTML = `All time<i class="fas fa-sort-down"></i>`;
+    periodTitle.innerHTML = `All Time<i class="fas fa-sort-down"></i>`;
 
     if (merchantName.textContent == 'Select period') {
 
