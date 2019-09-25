@@ -29,13 +29,18 @@
                                             <li><a ><img class="icon" src="fonts/icons/dashboard.png">Dashboard</a></li>
                                             <li><a href='InvoiceGeneration.html'><img class="icon" src="fonts/icons/invoice.png">Invoice generation</a></li>
                                             <li><a href="invoice-list.html"><img class="icon" src="fonts/icons/invoice-list.png">Invoice list</a></li>
-                                            <li><a href="invoice-report.html"><img class="icon" src="fonts/icons/invoice-report.png">Invoice Report</a></li>
                                             <li><a href="wallets.html"><img class="icon" src="fonts/icons/wallet.png">Wallets</a></li>
                                             <li><a href="settlements.html"><img class="icon" src="fonts/icons/settlement.png">Settlements</a></li>
                                             <li><a href="merchants.html"><img class="icon" src="fonts/icons/merchant.png">Merchants</a></li>
                                             <li><a href='users.html'><img class="icon" src="fonts/icons/users.png">Users</a></li>
                                             <li><a href='banks.html'><img class="icon" src="fonts/icons/bank.png">Banks</a></li>
-                                            <li><a href='affiliateReport.html'><img class="icon" src="fonts/icons/aff-report.png">Affiliate report</a></li>
+                                            <li id="reports"><a><img class="icon" src="fonts/icons/invoice-report.png">Reports</a></li>
+                                            <ul class="gn-submenu" id="allReports">
+                                                <li><a href="invoice-report.html"><img class="icon" src="fonts/icons/aff-report.png">Invoices report</a></li>
+                                                <li><a><img class="icon" src="fonts/icons/aff-report.png">Merchants report</a></li>
+                                                <li><a><img class="icon" src="fonts/icons/aff-report.png">Settlements report</a></li>
+                                                <li><a><img class="icon" src="fonts/icons/aff-report.png">Affiliates report</a></li>
+                                            </ul>
                                             <li><a href='Dashboard-how-it-works.html'><img class="icon" src="fonts/icons/info.png">How it works</a></li>
                                                 </ul>
                                             </li>
@@ -70,6 +75,7 @@
     <script src="js/invoiceList.js"></script>
     <script src="js/classie.js"></script>
     <script src="js/gnmenu.js"></script>
+    <script src="js/menu.js"></script>
     <script>
         new gnMenu( document.getElementById( 'gn-menu' ) );
     </script>
