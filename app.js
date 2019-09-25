@@ -657,7 +657,7 @@ app.post('/register', function(req, res){
         role: req.body.role,
         merchant: req.body.merchant,
         merchant2: req.body.merchant2,
-        date: Date.now()
+        date: new Date()
     });
     User.register(newUser, req.body.password, function(err, user) {
         if(err) {
@@ -718,7 +718,7 @@ app.post('/forgot', function(req, res, next) {
                     return res.redirect('/');
                 };
                 user.resetPasswordToken = token;
-                user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+                user.resetPasswordExpires =  new Date() + 3600000; // 1 hour
 
                 user.save(function(err) {
                     done(err, token, user);
@@ -770,7 +770,7 @@ app.post('/persAreaReset', function(req, res, next) {
                     return res.redirect('/');
                 };
                 user.resetPasswordToken = token;
-                user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+                user.resetPasswordExpires =  new Date() + 3600000; // 1 hour
 
                 user.save(function(err) {
                     done(err, token, user);
@@ -886,6 +886,82 @@ app.post('/sigup', function(req, res) {
     }
     
     main().catch(console.error);
+});
+
+
+// =================================
+// Dashboard
+//==================================
+
+app.get('/getInvListToday', function(req, res, next) {
+    let INVOIECES = [],
+        nowDate = new Date();
+        minDate = nowDate.getFullYear() + '-' + (nowDate.getMonth() + 1) + '-' + (nowDate.getDate());
+        maxDate = nowDate.getFullYear() + '-' + (nowDate.getMonth() + 1) + '-' + (nowDate.getDate() + 2);
+    mongo.connect(url, function(err, db) {
+        assert.equal(null, err);
+        var cursor = db.collection('invoices').find({ 'dates.creation_date': { $gt: new Date(minDate), $lt: new Date(maxDate) },
+                                                      'status': { $in: ['Received', 'Approved', 'Available']}  } );
+        cursor.forEach(function(doc, err) {
+            assert.equal(null, err);
+            INVOIECES.push(doc);
+        }, function() {
+            db.close();
+            res.send(INVOIECES);
+        });
+    });
+});
+
+app.get('/getInvListToday/:merchant', function(req, res, next) {
+    let INVOIECES = [],
+        nowDate = new Date();
+        minDate = nowDate.getFullYear() + '-' + (nowDate.getMonth() + 1) + '-' + (nowDate.getDate());
+        maxDate = nowDate.getFullYear() + '-' + (nowDate.getMonth() + 1) + '-' + (nowDate.getDate() + 2);
+    mongo.connect(url, function(err, db) {
+        assert.equal(null, err);
+        var cursor = db.collection('invoices').find({ 'dates.creation_date': { $gt: new Date(minDate), $lt: new Date(maxDate) },
+                                                      'status': { $in: ['Received', 'Approved', 'Available']},
+                                                      'merchant': req.params.merchant  } );
+        cursor.forEach(function(doc, err) {
+            assert.equal(null, err);
+            INVOIECES.push(doc);
+        }, function() {
+            db.close();
+            res.send(INVOIECES);
+        });
+    });
+});
+
+app.get('/getInvListAll', function(req, res, next) {
+    let INVOIECES = [];
+    mongo.connect(url, function(err, db) {
+        assert.equal(null, err);
+        var cursor = db.collection('invoices').find( {'status': { $in: ['Received', 'Approved', 'Available']}} );
+        cursor.forEach(function(doc, err) {
+            assert.equal(null, err);
+            INVOIECES.push(doc);
+        }, function() {
+            db.close();
+            res.send(INVOIECES);
+        });
+    });
+});
+
+app.get('/getInvListAll/:merchant', function(req, res, next) {
+    let INVOIECES = [];
+    console.log(req.params.merchant);
+    mongo.connect(url, function(err, db) {
+        assert.equal(null, err);
+        var cursor = db.collection('invoices').find({'merchant': req.params.merchant});
+        cursor.forEach(function(doc, err) {
+            assert.equal(null, err);
+            INVOIECES.push(doc);
+        }, function() {
+            db.close();
+            console.log(INVOIECES.length);
+            res.send(INVOIECES);
+        });
+    });
 });
 
 // Running server

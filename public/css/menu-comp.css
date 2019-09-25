@@ -128,7 +128,9 @@
 .gn-submenu li a {
 		color: #c1c9d1
 }
-
+.gn-submenu {
+	display: none;
+}
 .gn-icon::before {
 		display: inline-block;
 		width: 60px;
