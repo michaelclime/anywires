@@ -1,6 +1,7 @@
 
 class invoiceList {
     constructor(){
+        
         this.ArrayLIst = [];
         this.ArrayBanks = [];
         this.ArrayMerchants = []; 
@@ -148,16 +149,16 @@ class invoiceList {
     }
 
     filterList = async () => {
+        this.filter = {};
         this.status = document.querySelector("#filterStatus").value;
         this.bank = this.bankFilter.value;
         this.merchant = this.merchFilter.value;
         this.documents = document.querySelector("#filterDocuments").value;
-        var filterCheck = {};
 
         // Додаємо критеріє відбору в об"єкт
-        this.status ? filterCheck.status = this.status : "";
-        this.bank ? filterCheck.bank = this.bank : "";
-        this.merchant ? filterCheck.merchant = this.merchant : "";
+        this.status ? this.filter.status = this.status : "";
+        this.bank ? this.filter.bank = this.bank : "";
+        this.merchant ? this.filter.merchant = this.merchant : "";
 
         // }) // Знайти всі документи в яких id = "Approved"
         const Approved = { 
@@ -184,39 +185,52 @@ class invoiceList {
         ]};
 
         // Перевірка на дату створення START.
-        var firstDate = "";
-        var secondDate = "";
+        this.firstCreat = "";
+        this.secondCreat = "";
 
         if(this.creationDate.value.length > 20){
-            const DATE = this.creationDate.value.split("—");
-            firstDate = new Date(DATE[0].trim());
-            secondDate = new Date(DATE[1].trim());
+            var DATE = this.creationDate.value.split("—");
+            this.firstCreat = new Date(DATE[0].trim());
+            this.secondCreat = new Date(DATE[1].trim());
 
         } else if(this.creationDate.value.length <= 12 && this.creationDate.value.length !== 0){
-            const DATE = this.creationDate.value;
-            firstDate = new Date(DATE.trim());
-            secondDate = false;
-            console.log(firstDate);
+            var DATE = this.creationDate.value;
+            this.firstCreat = new Date(DATE.trim());
+            this.secondCreat = false;
         }
-        
-        //Перевірка на дату створення END.
+        // Перевірка на дату створення END.
+
+        this.firstRec = "";
+        this.secondRec = "";
+
+        // Checking received Date START.
+        if(this.receiveDate.value.length > 20){
+            var DATE = this.receiveDate.value.split("—");
+            this.firstRec = new Date(DATE[0].trim());
+            this.secondRec = new Date(DATE[1].trim());
+
+        } else if(this.receiveDate.value.length <= 12 && this.receiveDate.value.length !== 0){
+            var DATE = this.receiveDate.value;
+            this.firstRec = new Date(DATE.trim());
+            this.secondRec = false;
+        }
+        // Checking received Date END.
 
         if(this.documents !== ""){
-            this.documents.trim() === "All verified" ? Object.assign(filterCheck, Approved): "";
-            this.documents.trim() === "Pending verification" ? Object.assign(filterCheck, non_ver): "";
-            this.documents.trim() === "Without documents" ? Object.assign(filterCheck, empty): "";
+            this.documents.trim() === "All verified" ? Object.assign(this.filter, Approved): "";
+            this.documents.trim() === "Pending verification" ? Object.assign(this.filter, non_ver): "";
+            this.documents.trim() === "Without documents" ? Object.assign(this.filter, empty): "";
         }
 
-        const lengthInvoice = await this.getNumberOfinvoices(filterCheck, firstDate, secondDate);
-        const filterList = await this.getInvoices(0, filterCheck, firstDate, secondDate);
+        const lengthInvoice = await this.getNumberOfinvoices(this.filter, this.firstCreat, this.secondCreat, this.firstRec, this.secondRec);
+        const filterList = await this.getInvoices(0, this.filter, this.firstCreat, this.secondCreat, this.firstRec, this.secondRec);
 
         // Очищаємо таблицю
         this.container = document.getElementById("table-list");
         this.container.innerHTML = "";
         this.containerPages.innerHTML = "";
 
-        this.countNextPage(filterList, lengthInvoice.numbers, filterCheck);
-        
+        this.countNextPage(filterList, lengthInvoice.numbers);
 
 
         
@@ -452,7 +466,7 @@ class invoiceList {
         this.containerPages.appendChild(this.buttonNext);
     }
 
-    countNextPage = (arr, numbersOfpages, filter) => {
+    countNextPage = (arr, numbersOfpages) => {
         this.loadInvoices(arr, 0, 10);
         var lastPage = numbersOfpages / 10;
 
@@ -483,7 +497,7 @@ class invoiceList {
 
                 let listNumber = ((currentEvent*10)-10);
 
-                this.nextList = await this.getInvoices(listNumber, filter);
+                this.nextList = await this.getInvoices(listNumber, this.filter, this.firstCreat, this.secondCreat, this.firstRec, this.secondRec);
                 
                 this.container = document.getElementById("table-list");
                 this.container.innerHTML = "";
@@ -568,15 +582,17 @@ class invoiceList {
         
     }
 
-    getInvoices = async (count, filter, first, second) => {
+    getInvoices = async (count, filter, firstCr, secondCr, firstRe, secondRe) => {
         return  await fetch("http://18.216.223.81:3000/getPart-Invoices", {
         // return  await fetch("http://localhost:3000/getPart-Invoices", {
             method: "POST",
             body: JSON.stringify({
                 numbers: count, 
                 filter,
-                first: first,
-                second: second
+                firstCr: firstCr,
+                secondCr: secondCr,
+                firstRe: firstRe,
+                secondRe: secondRe
             }),
             headers:{'Content-Type': 'application/json'}
         })
@@ -588,14 +604,16 @@ class invoiceList {
         });
     }
 
-    getNumberOfinvoices = async (filter, first, second) => {
+    getNumberOfinvoices = async (filter, firstCr, secondCr, firstRe, secondRe) => {
         return  await fetch("http://18.216.223.81:3000/getNumber-Invoices", {
         // return  await fetch("http://localhost:3000/getNumber-Invoices", {
             method: "POST",
             body: JSON.stringify({
                 filter,
-                first: first,
-                second: second
+                firstCr: firstCr,
+                secondCr: secondCr,
+                firstRe: firstRe,
+                secondRe: secondRe
             }),
             headers:{'Content-Type': 'application/json'}
         })
