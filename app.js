@@ -126,6 +126,14 @@ app.get("/invoice-preview", isLoggedIn, function (req, res) {
     res.render("invoice-preview.html");
 });
 
+app.get('/settlementReport.html', isLoggedIn, function(req, res) {
+    res.render("settlementReport.html");
+});
+
+app.get('/merchantReport.html', isLoggedIn, function(req, res) {
+    res.render("merchantReport.html");
+});
+
 // Invoice generation process
 
 app.get('/getList', function(req, res, next) {
@@ -484,40 +492,48 @@ app.get("/getInvoices", (req, res) => {
     });
 });
 
+// Function for Dates Range START.
+var datesObj = (key, first, second) => {
+    var Obj = {};
+    if (second === false) {
+        var month = new Date(first).getMonth();
+        var day = new Date(first).getDate();
+        var year = new Date(first).getFullYear();
+        second = (month+1) +"/"+ (day+1) +"/"+ year;
+        second = new Date(second);
+    } 
+    Obj[key] = {
+        $gte: new Date(first),
+        $lte: new Date(second),
+    };
+    return Obj;
+}; 
+// Function for Dates Range END.
+
 app.post("/getPart-Invoices", jsonParser, (req, res) => {
     mongo.connect(url, (err, db) => {
-        const num = req.body.numbers;
-        const filter = req.body.filter;
-        var firstDate = req.body.first;
-        var secondDate = req.body.second;
+        var num = req.body.numbers;
+        var filter = req.body.filter;
+        filter === undefined ? filter = {} : "";
 
-        // Перевіряємо чи одна дата чи дві
-        if (firstDate && secondDate) {
-            var createDateRange = {
-                "dates.creation_date": {
-                    $gte: new Date(firstDate),
-                    $lte: new Date(secondDate),
-                }
-            };
-            req.body.first ? Object.assign(filter, createDateRange) : ""; 
+        // Cheking one or two days Creation START.
+        var firstCrea = req.body.firstCr;
+        var secondCrea = req.body.secondCr;
+        if (firstCrea) {
+            var creation = datesObj("dates.creation_date", firstCrea, secondCrea);
+            Object.assign(filter, creation);
+        } 
+        // // Cheking one or two days Creation END.
 
-        } else if(secondDate === false){
-            var month = new Date(firstDate).getMonth();
-            var day = new Date(firstDate).getDate();
-            var year = new Date(firstDate).getFullYear();
 
-            secondDate = (month+1) +"/"+ (day+1) +"/"+ year;
-            secondDate = new Date(secondDate);
-
-            var createDateRange = {
-                "dates.creation_date": {
-                    $gte: new Date(firstDate),
-                    $lte: new Date(secondDate),
-                }
-            };
-            req.body.first ? Object.assign(filter, createDateRange) : ""; 
-        }
-        // Перевіряємо чи одна дата чи дві
+        // Cheking one or two days Receive START.
+        var firstRec = req.body.firstRe;
+        var secondRec = req.body.secondRe;
+        if (firstRec) {
+            var receive = datesObj("dates.received_date", firstRec, secondRec);
+            Object.assign(filter, receive);
+        } 
+        // Cheking one or two days Receive END.
 
         db.collection("invoices")
         .find(filter)
@@ -533,38 +549,26 @@ app.post("/getPart-Invoices", jsonParser, (req, res) => {
 
 app.post("/getNumber-Invoices", jsonParser, (req, res) => {
     mongo.connect(url, (err, db) => {
-    const filter = req.body.filter;
-    var firstDate = req.body.first;
-    var secondDate = req.body.second;
+        var filter = req.body.filter;
+        filter === undefined ? filter = {} : "";
 
-        // Перевіряємо чи одна дата чи дві
-        if (firstDate && secondDate) {
-            var createDateRange = {
-                "dates.creation_date": {
-                    $gte: new Date(firstDate),
-                    $lte: new Date(secondDate),
-                }
-            };
-            req.body.first ? Object.assign(filter, createDateRange) : ""; 
-            console.log("first");
+        // Cheking one or two days Creation START.
+        var firstCrea = req.body.firstCr;
+        var secondCrea = req.body.secondCr;
+        if (firstCrea) {
+            var creationD = datesObj("dates.creation_date", firstCrea, secondCrea);
+            Object.assign(filter, creationD);
+        } 
+        // Cheking one or two days Creation END.
 
-        } else if(secondDate === false){
-            var month = new Date(firstDate).getMonth();
-            var day = new Date(firstDate).getDate();
-            var year = new Date(firstDate).getFullYear();
-
-            secondDate = (month+1) +"/"+ (day+1) +"/"+ year;
-            secondDate = new Date(secondDate);
-
-            var createDateRange = {
-                "dates.creation_date": {
-                    $gte: new Date(firstDate),
-                    $lte: new Date(secondDate),
-                }
-            };
-            req.body.first ? Object.assign(filter, createDateRange) : ""; 
-        }
-        // Перевіряємо чи одна дата чи дві 
+        // Cheking one or two days Receive START.
+        var firstRec = req.body.firstRe;
+        var secondRec = req.body.secondRe;
+        if (firstRec) {
+            var receive = datesObj("dates.received_date", firstRec, secondRec);
+            Object.assign(filter, receive);
+        } 
+        // Cheking one or two days Receive END.
 
         db.collection("invoices").find(filter).count(function(err, invoices){
             if(err) return console.log("Error with upload Number of Invoices!", err);

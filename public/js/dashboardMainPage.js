@@ -128,7 +128,8 @@ let sentAmountEuro = 0,
 
     if (merchantName.textContent == 'Select period') {
 
-        let fetchPromise  = fetch('http://localhost:3000/getInvListToday');
+       // let fetchPromise  = fetch('http://localhost:3000/getInvListToday');
+      let fetchPromise  = fetch('http://18.216.223.81:3000/getInvListToday');
         fetchPromise.then(response => {
             return response.json();
         }).then(invoices => {
@@ -167,7 +168,8 @@ let sentAmountEuro = 0,
             avgTransactionEUR.innerHTML = `${formatStr(Math.round((receivedAmountEuro)/(transactionsEUR)))} <i class="fas fa-euro-sign">`;
         });
      } else if (!merchant1.textContent) { 
-        let newFetchPromise  = fetch(`http://localhost:3000/getInvListToday/${merchantName.textContent}`);
+        //let newFetchPromise  = fetch(`http://localhost:3000/getInvListToday/${merchantName.textContent}`);
+       let newFetchPromise  = fetch(`http://18.216.223.81:3000/getInvListToday/${merchantName.textContent}`);
         newFetchPromise.then(response => {
             return response.json();
         }).then(inv => {   
@@ -207,7 +209,8 @@ let sentAmountEuro = 0,
         });
     } else {
         let merLink = document.querySelector('.merchantName');
-        let newFetchPromise  = fetch(`http://localhost:3000/getInvListToday/${merLink.textContent}`);
+        //let newFetchPromise  = fetch(`http://localhost:3000/getInvListToday/${merLink.textContent}`);
+       let newFetchPromise  = fetch(`http://18.216.223.81:3000/getInvListToday/${merLink.textContent}`);
         newFetchPromise.then(response => {
             return response.json();
         }).then(inv => {   
@@ -550,7 +553,8 @@ const allTimeAmount = () => {
 
     if (merchantName.textContent == 'Select period') {
 
-        let fetchPromise  = fetch('http://localhost:3000/getInvListAll');
+        //let fetchPromise  = fetch('http://localhost:3000/getInvListAll');
+        let fetchPromise  = fetch('http://18.216.223.81:3000/getInvListAll');
         fetchPromise.then(response => {
             return response.json();
         }).then(invoices => {
@@ -588,7 +592,8 @@ const allTimeAmount = () => {
             avgTransactionEUR.innerHTML = `${formatStr(Math.round((receivedAmountEuro)/(transactionsEUR)))} <i class="fas fa-euro-sign">`;
         });
      } else if (!merchant1.textContent) { 
-        let newFetchPromise  = fetch(`http://localhost:3000/getInvListAll/${merchantName.textContent}`);
+       //let newFetchPromise  = fetch(`http://localhost:3000/getInvListAll/${merchantName.textContent}`);
+      let newFetchPromise  = fetch(`http://18.216.223.81:3000/getInvListAll/${merchantName.textContent}`);
         newFetchPromise.then(response => {
             return response.json();
         }).then(inv => {   
@@ -629,7 +634,8 @@ const allTimeAmount = () => {
         });
     } else {
         let merLink = document.querySelector('.merchantName');
-        let newFetchPromiseA  = fetch(`http://localhost:3000/getInvListAll/${merLink.textContent}`);
+       // let newFetchPromiseA  = fetch(`http://localhost:3000/getInvListAll/${merLink.textContent}`);
+       let newFetchPromiseA  = fetch(`http://18.216.223.81:3000/getInvListAll/${merLink.textContent}`);
         newFetchPromiseA.then(response => {
             return response.json();
         }).then(inv => {   

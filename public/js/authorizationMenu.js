@@ -12,7 +12,7 @@ merchantButton.onclick = function() {
 };
 
 logOutButton.onclick = function() {
-    document.location.href='http://localhost:3000/logout';
+    document.location.href='http://18.216.223.81:3000/logout';
 };
 
 authorizationMenu.onmouseenter = function() {
