@@ -24,7 +24,8 @@
     "passport-local-mongoose": "^5.0.1",
     "path": "^0.12.7",
     "request": "^2.88.0",
-    "swig": "^1.4.2"
+    "swig": "^1.4.2",
+    "xoauth2": "^1.2.0"
   },
   "devDependencies": {
     "nodemon": "^1.19.2"
