@@ -16,7 +16,8 @@ let express = require("express"),
     objectId = require("mongodb").ObjectID,
     async = require('async'),
     chalk = require('chalk'),
-    crypto = require('crypto');
+    crypto = require('crypto'),
+    xoauth2 = require('xoauth2');
 
 
 const url = 'mongodb://18.216.223.81:27017/anywires';
@@ -124,6 +125,14 @@ app.get('/how-it-works-dok', isLoggedIn, function(req, res) {
 
 app.get("/invoice-preview", isLoggedIn, function (req, res) {
     res.render("invoice-preview.html");
+});
+
+app.get('/settlementReport.html', isLoggedIn, function(req, res) {
+    res.render("settlementReport.html");
+});
+
+app.get('/merchantReport.html', isLoggedIn, function(req, res) {
+    res.render("merchantReport.html");
 });
 
 // Invoice generation process
@@ -751,7 +760,7 @@ app.post('/forgot', function(req, res, next) {
                     return res.redirect('/');
                 };
                 user.resetPasswordToken = token;
-                user.resetPasswordExpires =  new Date() + 3600000; // 1 hour
+                user.resetPasswordExpires =  Date.now() + 3600000; // 1 hour
 
                 user.save(function(err) {
                     done(err, token, user);
@@ -760,16 +769,27 @@ app.post('/forgot', function(req, res, next) {
         },
         function(token, user, done) {
             var smtpTransporter = nodemailer.createTransport({
-                service: 'Gmail',
+                // service: 'Gmail',
+                // auth: {
+                //   type: "login",
+                //   user: "bogdan.melnik@brokers.expert",
+                //   pass:  process.env.GMAILPW
+                // }
+                host: 'smtp.gmail.com',
+                port: 465,
+                secure: true,
                 auth: {
-                  type: "login",
-                  user: "bogdan.melnik@brokers.expert",
-                  pass:  process.env.GMAILPW
+                    type: 'OAuth2',     
+                    user: "bogdan.melnik@brokers.expert",
+                    clientId: '4299782568-tq6cm8spg6gmnjnrvuhs136vp6osaq4n.apps.googleusercontent.com',
+                    clientSecret: 'w2qGL_wcL835Pt84iCHvJrLj',
+                    refreshToken: '1/3ATanrKeAzwbCRDzZTwGE8u-ZAJwnvA9jQBFCjgcaU4',
+                    accessToken: 'ya29.Il-PB19hdRNkb0uGrXGi_cSCPr3zbNDTmyIq_XPOECC12IuepHJKPTqJCxpAwQZpgwDDoUf5idyPVCGslwQ_t1FGIfRS31Ua12Hdi0DA7TafAFNLON7yo18OX-EsFqVJ7Q'
                 }
             });
             var mailOptions = {
                 to: user.email,
-                from: '"AnyWires" <AnyWires@gmail.com>',  
+                from: '"AnyWires" <bogdan.melnik@brokers.expert>',  
                 subject: 'Reset Password', 
                 text: 'You are receiving this because you (someone else) have requested the reset of the password for your AnyWires account.' + 
                         'Please click on the following link to complete this process:' + '\n\n' +
@@ -803,7 +823,7 @@ app.post('/persAreaReset', function(req, res, next) {
                     return res.redirect('/');
                 };
                 user.resetPasswordToken = token;
-                user.resetPasswordExpires =  new Date() + 3600000; // 1 hour
+                user.resetPasswordExpires =  Date.now() + 3600000; // 1 hour
 
                 user.save(function(err) {
                     done(err, token, user);
@@ -856,16 +876,27 @@ app.post('/resetPassword/:token', function(req, res) {
         },
         function(user, done) {
             var smtpTransporter = nodemailer.createTransport({
-                service: 'Gmail',
+                // service: 'Gmail',
+                // auth: {
+                //   type: "login",
+                //   user: "bogdan.melnik@brokers.expert",
+                //   pass:  process.env.GMAILPW
+                // }
+                host: 'smtp.gmail.com',
+                port: 465,
+                secure: true,
                 auth: {
-                  type: "login",
-                  user: "bogdan.melnik@brokers.expert",
-                  pass: "27finologycorp"
+                    type: 'OAuth2',     
+                    user: "bogdan.melnik@brokers.expert",
+                    clientId: '4299782568-tq6cm8spg6gmnjnrvuhs136vp6osaq4n.apps.googleusercontent.com',
+                    clientSecret: 'w2qGL_wcL835Pt84iCHvJrLj',
+                    refreshToken: '1/3ATanrKeAzwbCRDzZTwGE8u-ZAJwnvA9jQBFCjgcaU4',
+                    accessToken: 'ya29.Il-PB19hdRNkb0uGrXGi_cSCPr3zbNDTmyIq_XPOECC12IuepHJKPTqJCxpAwQZpgwDDoUf5idyPVCGslwQ_t1FGIfRS31Ua12Hdi0DA7TafAFNLON7yo18OX-EsFqVJ7Q'
                 }
             });
             var mailOptions = {
                 to: user.email,
-                from: '"AnyWires" <AnyWires@gmail.com>',  
+                from: '"AnyWires" <bogdan.melnik@brokers.expert>',  
                 subject: 'Your password has been changed', 
                 text: 'This is a confirmation, that password for your AnyWires account has been changed.'
             };
@@ -881,46 +912,85 @@ app.post('/resetPassword/:token', function(req, res) {
 
 // Sign up menu and sending email
 
-app.post('/sigup', function(req, res) {
-    let newMessage = 
-        'Name: ' + req.body.name + '\n' +
-        'Brand: ' + req.body.brand + '\n' +
-        'SiteURL: ' + req.body.siteURL + '\n' +
-        'Email: ' + req.body.email + '\n' +
-        'PhoneNumber: ' + req.body.phoneNumber;
+// app.post('/sigup', function(req, res) {
+//     let newMessage = 
+//         'Name: ' + req.body.name + '\n' +
+//         'Brand: ' + req.body.brand + '\n' +
+//         'SiteURL: ' + req.body.siteURL + '\n' +
+//         'Email: ' + req.body.email + '\n' +
+//         'PhoneNumber: ' + req.body.phoneNumber;
 
-    async function main() {
+//     async function main() {
 
-        let transporter = nodemailer.createTransport({
-            service: 'Gmail',
-            auth: {
-              type: "login", // default
-              user: "bogdan.melnik@brokers.expert",
-              pass: process.env.GMAILPW
-            }
-        });
+//         let transporter = nodemailer.createTransport({
+//             service: 'Gmail',
+//             auth: {
+//               type: "login", // default
+//               user: "bogdan.melnik@brokers.expert",
+//               pass: process.env.GMAILPW
+//             }
+//         });
 
-        // send mail with defined transport object
-        let info = await transporter.sendMail({
-            from: '"AnyWires" <AnyWires@gmail.com>', 
-            to: 'm.clime@brokers.expert', 
-            subject: 'A New Client AnyWires', 
-            text: newMessage
-        });
+//         // send mail with defined transport object
+//         let info = await transporter.sendMail({
+//             from: '"AnyWires" <AnyWires@gmail.com>', 
+//             //to: 'm.clime@brokers.expert', 
+//             to: 'bogdan.melnik@brokers.expert',
+//             subject: 'A New Client AnyWires', 
+//             text: newMessage
+//         });
 
-        console.log('Message sent: %s', info.messageId);
-        // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+//         console.log('Message sent: %s', info.messageId);
+//         // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
 
-        // Preview only available when sending through an Ethereal account
-        console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
-        // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
-        req.flash('success', 'Your request successfully created! \n \n We\'ll contact you ASAP!');
-        res.redirect('/');
-    }
+//         // Preview only available when sending through an Ethereal account
+//         console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+//         // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
+//         req.flash('success', 'Your request successfully created! \n \n We\'ll contact you ASAP!');
+//         res.redirect('/');
+//     }
     
-    main().catch(console.error);
-});
+//     main().catch(console.error);
+// });
 
+app.post('/singup', function(req, res) {
+    let newMessage = 
+    'Name: ' + req.body.name + '\n' +
+    'Brand: ' + req.body.brand + '\n' +
+    'SiteURL: ' + req.body.siteURL + '\n' +
+    'Email: ' + req.body.email + '\n' +
+    'PhoneNumber: ' + req.body.phoneNumber;
+
+    let transporter = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true,
+        auth: {
+            type: 'OAuth2',     
+            user: "bogdan.melnik@brokers.expert",
+            clientId: '4299782568-tq6cm8spg6gmnjnrvuhs136vp6osaq4n.apps.googleusercontent.com',
+            clientSecret: 'w2qGL_wcL835Pt84iCHvJrLj',
+            refreshToken: '1/3ATanrKeAzwbCRDzZTwGE8u-ZAJwnvA9jQBFCjgcaU4',
+            accessToken: 'ya29.Il-PB19hdRNkb0uGrXGi_cSCPr3zbNDTmyIq_XPOECC12IuepHJKPTqJCxpAwQZpgwDDoUf5idyPVCGslwQ_t1FGIfRS31Ua12Hdi0DA7TafAFNLON7yo18OX-EsFqVJ7Q'
+        }
+    });
+
+    let mailOptions = {
+        to: "bogdan.melnik@brokers.expert",
+        from: '"AnyWires" <bogdan.melnik@brokers.expert>',  
+        subject: 'A New Client AnyWires', 
+        text: newMessage
+    };
+
+    transporter.sendMail(mailOptions, (err) => {
+        if (err) {
+            console.log(err);
+        } else {
+            req.flash('success', 'Your request successfully created! \n \n We\'ll contact you ASAP!');
+            res.redirect('/');
+        }
+    });
+});
 
 // =================================
 // Dashboard
@@ -930,8 +1000,9 @@ app.get('/getInvListToday', function(req, res, next) {
     let INVOIECES = [],
         nowDate = new Date();
         minDate = nowDate.getFullYear() + '-' + (nowDate.getMonth() + 1) + '-' + (nowDate.getDate());
-        maxDate = nowDate.getFullYear() + '-' + (nowDate.getMonth() + 1) + '-' + (nowDate.getDate() + 2);
-    mongo.connect(url, function(err, db) {
+        maxDate = nowDate.getFullYear() + '-' + (nowDate.getMonth() + 1) + '-' + (nowDate.getDate() + 1);
+       
+        mongo.connect(url, function(err, db) {
         assert.equal(null, err);
         var cursor = db.collection('invoices').find({ 'dates.creation_date': { $gt: new Date(minDate), $lt: new Date(maxDate) },
                                                       'status': { $in: ['Received', 'Approved', 'Available']}  } );
@@ -949,7 +1020,88 @@ app.get('/getInvListToday/:merchant', function(req, res, next) {
     let INVOIECES = [],
         nowDate = new Date();
         minDate = nowDate.getFullYear() + '-' + (nowDate.getMonth() + 1) + '-' + (nowDate.getDate());
-        maxDate = nowDate.getFullYear() + '-' + (nowDate.getMonth() + 1) + '-' + (nowDate.getDate() + 2);
+        maxDate = nowDate.getFullYear() + '-' + (nowDate.getMonth() + 1) + '-' + (nowDate.getDate() + 1);
+    mongo.connect(url, function(err, db) {
+        assert.equal(null, err);
+        var cursor = db.collection('invoices').find({ 'dates.creation_date': { $gt: new Date(minDate), $lt: new Date(maxDate) },
+                                                      'status': { $in: ['Received', 'Approved', 'Available']},
+                                                      'merchant': req.params.merchant  } );
+        cursor.forEach(function(doc, err) {
+            assert.equal(null, err);
+            INVOIECES.push(doc);
+        }, function() {
+            db.close();
+            res.send(INVOIECES);
+        });
+    });
+});
+
+app.get('/getInvListWeek', function(req, res, next) {
+    let INVOIECES = [],
+        nowDate = new Date();
+        minDate = nowDate.getFullYear() + '-' + (nowDate.getMonth() + 1) + '-' + (nowDate.getDate() - 7);
+        maxDate = nowDate.getFullYear() + '-' + (nowDate.getMonth() + 1) + '-' + (nowDate.getDate() + 1);
+        
+    mongo.connect(url, function(err, db) {
+        assert.equal(null, err);
+        var cursor = db.collection('invoices').find({ 'dates.creation_date': { $gt: new Date(minDate), $lt: new Date(maxDate) },
+                                                      'status': { $in: ['Received', 'Approved', 'Available']}  } );
+        cursor.forEach(function(doc, err) {
+            assert.equal(null, err);
+            INVOIECES.push(doc);
+        }, function() {
+            db.close();
+            res.send(INVOIECES);
+        });
+    });
+});
+
+app.get('/getInvListWeek/:merchant', function(req, res, next) {
+    let INVOIECES = [],
+        nowDate = new Date();
+        minDate = nowDate.getFullYear() + '-' + (nowDate.getMonth() + 1) + '-' + (nowDate.getDate() - 7);
+        maxDate = nowDate.getFullYear() + '-' + (nowDate.getMonth() + 1) + '-' + (nowDate.getDate() + 1);
+    mongo.connect(url, function(err, db) {
+        assert.equal(null, err);
+        var cursor = db.collection('invoices').find({ 'dates.creation_date': { $gt: new Date(minDate), $lt: new Date(maxDate) },
+                                                      'status': { $in: ['Received', 'Approved', 'Available']},
+                                                      'merchant': req.params.merchant  } );
+        cursor.forEach(function(doc, err) {
+            assert.equal(null, err);
+            INVOIECES.push(doc);
+        }, function() {
+            db.close();
+            res.send(INVOIECES);
+        });
+    });
+});
+
+
+app.get('/getInvListMonth', function(req, res, next) {
+    let INVOIECES = [],
+        nowDate = new Date();
+        minDate = nowDate.getFullYear() + '-' + (nowDate.getMonth()) + '-' + (nowDate.getDate());
+        maxDate = nowDate.getFullYear() + '-' + (nowDate.getMonth() + 1) + '-' + (nowDate.getDate() + 1);
+
+        mongo.connect(url, function(err, db) {
+        assert.equal(null, err);
+        var cursor = db.collection('invoices').find({ 'dates.creation_date': { $gt: new Date(minDate), $lt: new Date(maxDate) },
+                                                      'status': { $in: ['Received', 'Approved', 'Available']}  } );
+        cursor.forEach(function(doc, err) {
+            assert.equal(null, err);
+            INVOIECES.push(doc);
+        }, function() {
+            db.close();
+            res.send(INVOIECES);
+        });
+    });
+});
+
+app.get('/getInvListMonth/:merchant', function(req, res, next) {
+    let INVOIECES = [],
+        nowDate = new Date();
+        minDate = nowDate.getFullYear() + '-' + (nowDate.getMonth()) + '-' + (nowDate.getDate());
+        maxDate = nowDate.getFullYear() + '-' + (nowDate.getMonth() + 1) + '-' + (nowDate.getDate() + 1);
     mongo.connect(url, function(err, db) {
         assert.equal(null, err);
         var cursor = db.collection('invoices').find({ 'dates.creation_date': { $gt: new Date(minDate), $lt: new Date(maxDate) },
@@ -982,7 +1134,6 @@ app.get('/getInvListAll', function(req, res, next) {
 
 app.get('/getInvListAll/:merchant', function(req, res, next) {
     let INVOIECES = [];
-    console.log(req.params.merchant);
     mongo.connect(url, function(err, db) {
         assert.equal(null, err);
         var cursor = db.collection('invoices').find({'merchant': req.params.merchant});
@@ -991,7 +1142,6 @@ app.get('/getInvListAll/:merchant', function(req, res, next) {
             INVOIECES.push(doc);
         }, function() {
             db.close();
-            console.log(INVOIECES.length);
             res.send(INVOIECES);
         });
     });
