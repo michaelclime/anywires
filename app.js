@@ -1114,8 +1114,57 @@ app.get('/getInvListAll/:merchant', function(req, res, next) {
     });
 });
 
+app.get('/getWallet/:merchant', function(req, res, next) {
+    let idWallets = [],
+        wallets = [];
+
+    mongo.connect(url, function(err, db) {
+
+        let merch = db.collection('merchants');
+        merch.findOne({'name': req.params.merchant}).then( (item) => {
+            idWallets.push(item);
+            return idWallets;
+        }).then( (result) => {
+            if (result[0].wallets.length > 1) {
+                let [id1, id2] = result[0].wallets;
+            
+                mongo.connect(url, function(err, db) {
+                    db.collection('wallets').findOne({'_id': id1}).then( (item) => {
+                        //console.log(chalk.red.bold(item.name));
+                        wallets.push(item);
+                        return wallets;
+                    }).then( (wallets) => {
+                        mongo.connect(url, function(err, db) {
+                            db.collection('wallets').findOne({'_id': id2}).then( (item) => {
+                                //console.log(chalk.red.bold(item.name));
+                                wallets.push(item);
+                                //console.log(wallets);
+                                res.send(wallets);
+                            });
+                        });
+            
+                    });
+                });
+            } else {
+                let id = result[0].wallets[0];
+            
+                mongo.connect(url, function(err, db) {
+                    db.collection('wallets').findOne({'_id': id}).then( (item) => {
+                        //console.log(chalk.red.bold(item.name));
+                        wallets.push(item);
+                        //console.log(wallets);
+                        res.send(wallets);
+                    });
+                });
+            }
+        })
+            
+    });
+});
+
 // Running server
 app.listen(3000, function() {
     console.log('Servering localhost 3000');
 });
+
 
