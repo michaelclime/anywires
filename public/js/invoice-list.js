@@ -339,7 +339,7 @@ class invoiceList {
     }
 
     countNextPage = (arr, numbersOfpages) => {
-        this.loadInvoices(arr, 0, 10);
+        this.loadInvoices(arr);
         var lastPage = numbersOfpages / 10;
 
         if (lastPage > 3) {

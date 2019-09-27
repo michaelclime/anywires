@@ -434,7 +434,6 @@ app.post("/getPart-Merchants", jsonParser, (req, res) => {
         .limit(10)
         .sort({ score: { $meta: "textScore" } })
         .toArray(function(err, merchants){
-            console.log(merchants);
             if(err) return console.log("Error with upload Merchants!", err);
             db.close();
             res.send(merchants);
@@ -479,6 +478,38 @@ app.get("/getBanks", (req, res) => {
             if(err) return console.log("Error with upload Banks!", err);
             db.close();
             res.send(merchants);
+        })
+    });
+});
+
+app.post("/getPart-Banks", jsonParser, (req, res) => {
+    mongo.connect(url, (err, db) => {
+        var number = req.body.number;
+        var filter = req.body.filter;
+
+        db.collection("banks")
+        .find(filter, { score: { $meta: "textScore" } })
+        .skip(number)
+        .limit(10)
+        .sort({ score: { $meta: "textScore" } })
+        .toArray(function(err, bank){
+            if(err) return console.log("Error with upload Banks Part!", err);
+            db.close();
+            res.send(bank);
+        })
+    });
+});
+
+app.post("/getNumber-Banks", jsonParser, (req, res) => {
+    mongo.connect(url, (err, db) => {
+        var filter = req.body.filter;
+        filter === undefined ? filter = {} : "";
+
+        db.collection("banks").find(filter).count(function(err, bank){
+            if(err) return console.log("Error with upload Number of Banks!", err);
+            
+            db.close();
+            res.send({"numbers": bank});
         })
     });
 });
