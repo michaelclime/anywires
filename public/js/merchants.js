@@ -1,9 +1,11 @@
 class MerchantList {
     constructor(){
         this.ArrayLIst = [];
+        this.numbersMerchants = "";
         this.buttonCreate_merchant = document.querySelector("#create-button");
         this.btnExel = document.querySelector("#dowloadXls");
         this.buttonSearch = document.getElementById("search-button");
+        this.containerPages = document.querySelector(".nextPage-block");
         this.render();
     }
 
@@ -52,7 +54,8 @@ class MerchantList {
                "solution_manager" : ""
             },
             "wallets" : [],
-            "available_banks" : []
+            "available_banks" : [],
+            "created_by": ""
         };
 
         var checkEmpty = '';
@@ -107,6 +110,8 @@ class MerchantList {
                     this.container = document.getElementById("table-list");
                     this.container.innerHTML = "";
                     this.ArrayLIst = [];
+                    this.containerPages.innerHTML = "";
+
                     await this.saveLocalBanks();
                 })
                 .catch(err => {
@@ -190,36 +195,138 @@ class MerchantList {
         saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), 'merchants_table.xlsx');
     }
 
-    searchFunction(){
-        var phrase = document.getElementById('search-input');
-        var table = document.getElementById('main-table');
-        var regPhrase = new RegExp(phrase.value, 'i');
-        var flag = false;
-        for (var i = 1; i < table.rows.length; i++) {
-            flag = false;
-            for (var j = table.rows[i].cells.length - 1; j >= 0; j--) {
-                flag = regPhrase.test(table.rows[i].cells[j].innerHTML);
-                if (flag) break;
+    searchFunction = async () => {
+        var phrase = document.getElementById('search-input').value;
+
+        this.filter = { $text: { $search: phrase } };
+
+        if(phrase){
+            const lengthInvoice = await this.getNumber_Merchants(this.filter);
+            const filterList = await this.getMerchants(0, this.filter);
+
+            // Очищаємо таблицю
+            this.container = document.getElementById("table-list");
+            this.container.innerHTML = "";
+            this.containerPages.innerHTML = "";
+
+            this.countNextPage(filterList, lengthInvoice.numbers);
+          }
+    }
+
+    countNextPage = (arr, numbersOfpages) => {
+        this.loadMerchants(arr);
+        var lastPage = numbersOfpages / 10;
+
+        if(lastPage > 3){
+            lastPage !== parseInt(lastPage) ? lastPage = parseInt(lastPage) + 1 : "";
+            for (let i = 1; i < 4; i++) {
+                this.renderNextPage([i]);
             }
-            if (flag) {
-                table.rows[i].style.display = "";
-            } else {
-                table.rows[i].style.display = "none";
+            this.dotts = document.createElement("span");
+            this.dotts.textContent = "...";
+            this.dotts.classList.add("dotts");
+            this.containerPages.appendChild(this.dotts);
+            this.renderNextPage(lastPage);
+        } else {
+            for (let i = 0; i < lastPage; i++) {
+                this.renderNextPage([i+1]);
             }
         }
+        var buttonsPage = document.querySelectorAll(".nextPage-btn");
+        buttonsPage[0].classList.add("highlight");
+        buttonsPage.forEach((btn) => {
+            btn.addEventListener("click", async (event) => {
+
+                this.currentEvent = +(event.target.textContent);
+                this.listNumber = ((this.currentEvent*10)-10);
+
+                this.nextList = await this.getMerchants(this.listNumber, this.filter);
+
+                this.container = document.getElementById("table-list");
+                this.container.innerHTML = "";
+                
+                this.loadMerchants(this.nextList);
+
+                if( +(btn.textContent) === lastPage && +(btn.textContent) > 1){
+                    btn.closest("div").children[0].textContent = lastPage - 3;
+                    btn.closest("div").children[1].textContent = lastPage - 2;
+                    btn.closest("div").children[2].textContent = lastPage - 1;
+
+                } else if (+(btn.textContent) !== 1 && +(btn.textContent) > +(btn.closest("div").children[1].innerHTML) && +(btn.textContent) < lastPage-1) {
+                    var first =  btn.closest("div").children[0].textContent;
+                    var second = btn.closest("div").children[1].textContent;
+                    var third = btn.closest("div").children[2].textContent;
+
+                    btn.closest("div").children[0].textContent = Number(first)+ 1;
+                    btn.closest("div").children[1].textContent = Number(second) + 1;
+                    btn.closest("div").children[2].textContent = Number(third) + 1;
+
+                } else if ( +(btn.textContent) !== 1 && +(btn.textContent) < +(btn.closest("div").children[1].innerHTML) && +(btn.textContent) > 1) {
+                    var first =  btn.closest("div").children[0].textContent;
+                    var second = btn.closest("div").children[1].textContent;
+                    var third = btn.closest("div").children[2].textContent;
+
+                    btn.closest("div").children[0].textContent = Number(first) - 1;
+                    btn.closest("div").children[1].textContent = Number(second) - 1;
+                    btn.closest("div").children[2].textContent = Number(third) - 1;
+
+                } else if( +(btn.textContent) === 1 ){}
+
+                this.checkClickedPages(this.currentEvent);
+            });
+        });
+    }
+
+    checkClickedPages = (event) => {
+        this.buttonsPage = document.querySelectorAll(".nextPage-btn");
+        this.buttonsPage.forEach((btn) => {
+            event === +(btn.textContent) ? btn.classList.add("highlight") : btn.classList.remove("highlight");;
+        });
+    };
+
+    renderNextPage = (page) => {
+        this.buttonNext = document.createElement("button");
+        this.buttonNext.textContent = page;
+        this.buttonNext.classList.add("nextPage-btn");
+        this.containerPages.appendChild(this.buttonNext);
     }
 
     saveLocalBanks = async (array) => {
-        array = await this.getMerchants();
+        this.numbersMerchants = await this.getNumber_Merchants();
+        array = await this.getMerchants(0);
         array.forEach((item) => {
             this.ArrayLIst.push(item);
         });
-        this.loadMerchants(this.ArrayLIst);
+        this.countNextPage(this.ArrayLIst, this.numbersMerchants.numbers);
     }
 
-    getMerchants = async () => {
-        return  await fetch("http://18.216.223.81:3000/getMerchants")
-        // return  await fetch("http://localhost:3000/getMerchants")
+    getMerchants = async (number, filter) => {
+        return  await fetch("http://18.216.223.81:3000/getPart-Merchants", {
+        // return  await fetch("http://localhost:3000/getPart-Merchants", {
+            method: "POST",
+            body: JSON.stringify({
+                number, 
+                filter
+            }),
+            headers:{'Content-Type': 'application/json'}
+        })
+        .then(res => {
+            return res.json();
+        }) 
+        .catch(err => {
+            console.log(err);
+        });
+    }
+
+    getNumber_Merchants = async (filter) => {
+        return  await fetch("http://18.216.223.81:3000/getNumber-Merchants", {
+        // return  await fetch("http://localhost:3000/getNumber-Merchants", {
+            method: "POST",
+            body: JSON.stringify({
+                filter
+            }),
+            headers:{'Content-Type': 'application/json'}
+        })
         .then(res => {
             return res.json();
         }) 
@@ -229,14 +336,13 @@ class MerchantList {
     }
 
     loadMerchants(arr){
-        var size = 15;
         this.container = document.getElementById("table-list");
-        arr.slice(0, size).forEach((item) => {
+        arr.forEach((item) => {
             item === "" ? item = "—" : "";
             this.userList = document.createElement("tr");
             this.userList.innerHTML =  `
                     <td class="column1">${item.name}</td> 
-                    <td class="column2">${"Admin"}</td> 
+                    <td class="column2">${item.created_by}</td> 
                     <td class="column3">${item.promo_code}</td> 
                     <td class="column4">${item.users.affiliate}</td> 
                     <td class="column5">${(item.fees.incoming_transfer_percent)*100}</td>

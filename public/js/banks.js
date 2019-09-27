@@ -1,11 +1,15 @@
 class UsersList {
     constructor(){
+        this.filter = {};
         this.ArrayLIst = [];
+        this.banksNumber = [];
+        this.container = document.getElementById("table-list");
         this.createBankBtn = document.querySelector("#createBank-button");
         this.clearFilter = document.querySelector("#clearFilterBtn");
         this.btnShowFilter = document.querySelector("#showBtn");
         this.buttonSearch = document.getElementById("search-button");
         this.buttonExel = document.querySelector("#dowloadPdf");
+        this.containerPages = document.querySelector(".nextPage-block");
         this.render();
     }
 
@@ -100,15 +104,19 @@ class UsersList {
     }
 
     clearFilters = () => {
+        this.filter = {};
         this.selets = document.querySelectorAll("select");
         this.selets.forEach(item => item.value = "");
         this.searchInput = document.querySelector("#search-input").value = "";
-        this.container = document.getElementById("table-list");
+
         this.container.innerHTML = "";
-        this.loadUsers(this.ArrayLIst);
+        this.containerPages.innerHTML = "";
+
+        this.countNextPage(this.ArrayLIst,  this.banksNumber.numbers);
     }
 
-    showFilters = () => {
+    showFilters = async () => {
+        this.filter = {};
         this.filterArray = document.querySelectorAll(".filter");
         this.filterMin = document.querySelector("#filterMin").value;
         this.filterMax = document.querySelector("#filterMax").value;
@@ -117,29 +125,67 @@ class UsersList {
         this.filterSolution = document.querySelector("#filterSolution").value;
         this.filterCurrency = document.querySelector("#filterCurrency").value;
         this.filterCountry = document.querySelector("#filterCountry").value;
-        this.newArray = {};
-        this.filterMin === "" ?  "" : this.newArray.min_wire = Number(this.filterMin);
-        this.filterMax === "" ? "" : this.newArray.max_wire = Number(this.filterMax);
 
-        if(this.filterSepa === "") {} else{
-            this.filterSepa === "no" ? this.filterSepa = false : this.filterSepa = true;
-            this.newArray.sepa = this.filterSepa;
+        // Min Wire Filter
+        if (this.filterMin !== ""){
+            this.filter.min_wire = {
+                $lte: +(this.filterMin)
+            };
         }
-        if(this.filterEnable === ""){} else{
-            this.filterEnable === "no" ? this.filterEnable = false : this.filterEnable = true;
-            this.newArray.active = this.filterEnable
-        };
 
-        this.filterSolution === "" ? "" : this.newArray.solution_name = this.filterSolution;
-        this.filterCurrency === "" ? "" : this.newArray.currency = this.filterCurrency;
-        this.filterCountry === "" ? "" : this.newArray.country = this.filterCountry;
-        this.result = this.ArrayLIst.filter(item => 
-            Object.keys(this.newArray).every(key => 
-                item[key] === this.newArray[key])
-        );
-        this.container = document.getElementById("table-list");
-        this.container.innerHTML = "";
-        this.loadUsers(this.result);
+        // Max Wire Filter
+        if (this.filterMax !== ""){
+            this.filter.max_wire = {
+                $gte: +(this.filterMax)
+            };
+        }
+
+        // Sepa Filter
+        if (this.filterSepa !== ""){
+            this.filterSepa === "yes" ? this.filterSepa = true : this.filterSepa = false;
+            this.filter.sepa = this.filterSepa;
+        }
+
+        // Enable Filter
+        if (this.filterEnable !== ""){
+            this.filterEnable === "yes" ? this.filterEnable = true : this.filterEnable = false;
+            this.filter.active = this.filterEnable;
+        }
+
+        // Solution Filter
+        this.filterSolution !== "" ? this.filter.solution_name = this.filterSolution : "";
+
+        // Currency Filter
+        if(this.filterCurrency !== ""){
+            this.filter.currency = {$elemMatch: {$eq: this.filterCurrency}};
+        }
+
+        // Country Filter
+        this.filterCountry !== "" ? this.filter.country = this.filterCountry : "";
+
+        // If empty Filter
+        var emptyObj = this.checkIsEmptyObj(this.filter);
+        if (!emptyObj) {
+
+            this.lengthBanks = await this.getBanks_Number(this.filter);
+            this.arrBanks = await this.getBanks(0, this.filter);
+            
+            // Table cleaning
+            this.container.innerHTML = "";
+            this.containerPages.innerHTML = "";
+
+            // If we got Empty Obj from Data Base. 
+            if (this.lengthBanks.numbers) {
+                this.countNextPage(this.arrBanks, this.lengthBanks.numbers);
+            }
+        }
+    }
+
+    checkIsEmptyObj = (obj) => {
+        for (let key in obj) {
+            return false; // wrong
+        }
+        return true; // is epmty
     }
 
     downloadExel = () => {
@@ -159,22 +205,18 @@ class UsersList {
         saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), 'banks.xlsx');
     }
 
-    searchFunction = () =>{
-        var phrase = document.getElementById('search-input');
-        var table = document.getElementById('table-banks');
-        var regPhrase = new RegExp(phrase.value, 'i');
-        var flag = false;
-        for (var i = 1; i < table.rows.length; i++) {
-            flag = false;
-            for (var j = table.rows[i].cells.length - 1; j >= 0; j--) {
-                flag = regPhrase.test(table.rows[i].cells[j].innerHTML);
-                if (flag) break;
-            }
-            if (flag) {
-                table.rows[i].style.display = "";
-            } else {
-                table.rows[i].style.display = "none";
-            }
+    searchFunction = async () =>{
+        this.phrase = document.getElementById('search-input').value;
+        this.filter = { $text: { $search: this.phrase } };
+
+        if(this.phrase){
+            this.length = await this.getBanks_Number(this.filter);
+            this.filterList = await this.getBanks(0, this.filter);
+
+            this.container.innerHTML = "";
+            this.containerPages.innerHTML = "";
+
+            this.countNextPage(this.filterList, this.length.numbers);
         }
     }
 
@@ -252,9 +294,114 @@ class UsersList {
         });
     }
 
-    getUsers = async () => {
-        // return  await fetch("http://localhost:3000/getBanks")
-        return  await fetch("http://18.216.223.81:3000/getBanks")
+    renderNextPage = (page) => {
+        this.buttonNext = document.createElement("button");
+        this.buttonNext.textContent = page;
+        this.buttonNext.classList.add("nextPage-btn");
+        this.containerPages.appendChild(this.buttonNext);
+    }
+
+    
+    countNextPage = (arr, numbersOfpages) => {
+        this.loadBanks(arr);
+        var lastPage = numbersOfpages / 10;
+
+        if(lastPage > 3){
+            lastPage !== parseInt(lastPage) ? lastPage = parseInt(lastPage) + 1 : "";
+            for (let i = 1; i < 4; i++) {
+                this.renderNextPage([i]);
+            }
+            this.dotts = document.createElement("span");
+            this.dotts.textContent = "...";
+            this.dotts.classList.add("dotts");
+            this.containerPages.appendChild(this.dotts);
+            this.renderNextPage(lastPage);
+        } else {
+            for (let i = 0; i < lastPage; i++) {
+                this.renderNextPage([i+1]);
+            }
+        }
+        var buttonsPage = document.querySelectorAll(".nextPage-btn");
+        buttonsPage[0].classList.add("highlight");
+        buttonsPage.forEach((btn) => {
+            btn.addEventListener("click", async (event) => {
+
+                this.currentEvent = +(event.target.textContent);
+                this.listNumber = ((this.currentEvent*10)-10);
+
+                this.nextList = await this.getBanks(this.listNumber, this.filter);
+
+                this.container = document.getElementById("table-list");
+                this.container.innerHTML = "";
+                
+                this.loadBanks(this.nextList);
+
+                if( +(btn.textContent) === lastPage && +(btn.textContent) > 1){
+                    btn.closest("div").children[0].textContent = lastPage - 3;
+                    btn.closest("div").children[1].textContent = lastPage - 2;
+                    btn.closest("div").children[2].textContent = lastPage - 1;
+
+                } else if (+(btn.textContent) !== 1 && +(btn.textContent) > +(btn.closest("div").children[1].innerHTML) && +(btn.textContent) < lastPage-1) {
+                    var first =  btn.closest("div").children[0].textContent;
+                    var second = btn.closest("div").children[1].textContent;
+                    var third = btn.closest("div").children[2].textContent;
+
+                    btn.closest("div").children[0].textContent = Number(first)+ 1;
+                    btn.closest("div").children[1].textContent = Number(second) + 1;
+                    btn.closest("div").children[2].textContent = Number(third) + 1;
+
+                } else if ( +(btn.textContent) !== 1 && +(btn.textContent) < +(btn.closest("div").children[1].innerHTML) && +(btn.textContent) > 1) {
+                    var first =  btn.closest("div").children[0].textContent;
+                    var second = btn.closest("div").children[1].textContent;
+                    var third = btn.closest("div").children[2].textContent;
+
+                    btn.closest("div").children[0].textContent = Number(first) - 1;
+                    btn.closest("div").children[1].textContent = Number(second) - 1;
+                    btn.closest("div").children[2].textContent = Number(third) - 1;
+
+                } else if( +(btn.textContent) === 1 ){}
+
+                this.checkClickedPages(this.currentEvent);
+            });
+        });
+    }
+
+    checkClickedPages = (event) => {
+        this.buttonsPage = document.querySelectorAll(".nextPage-btn");
+        this.buttonsPage.forEach((btn) => {
+            event === +(btn.textContent) ? btn.classList.add("highlight") : btn.classList.remove("highlight");;
+        });
+    };
+
+    getBanks = async (number, filter) => {
+        return  await fetch("http://18.216.223.81:3000/getPart-Banks", {
+        // return  await fetch("http://localhost:3000/getPart-Banks", {
+            method: "POST",
+            body: JSON.stringify({
+                number, 
+                filter
+            }),
+            headers:{'Content-Type': 'application/json'}
+        })
+        
+        .then(res => {
+            return res.json();
+        }) 
+        .catch(err => {
+            console.log(err);
+        });
+    }
+
+    getBanks_Number = async (filter) => {
+        return  await fetch("http://18.216.223.81:3000/getNumber-Banks", {
+        // return  await fetch("http://localhost:3000/getNumber-Banks", {
+            method: "POST",
+            body: JSON.stringify({
+                filter
+            }),
+            headers:{'Content-Type': 'application/json'}
+        })
+        
         .then(res => {
             return res.json();
         }) 
@@ -264,14 +411,15 @@ class UsersList {
     }
 
     saveLocalBanks = async (array) => {
-        array = await this.getUsers();
+        this.banksNumber = await this.getBanks_Number({});
+        array = await this.getBanks(0);
         array.forEach((item) => {
             this.ArrayLIst.push(item);
         });
-        this.loadUsers(this.ArrayLIst);
+        this.countNextPage(this.ArrayLIst, this.banksNumber.numbers);
     }
 
-    loadUsers = (array) => {
+    loadBanks = (array) => {
         this.container = document.getElementById("table-list");
         array.forEach((item) => {
             this.userList = document.createElement("tr");

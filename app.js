@@ -413,7 +413,7 @@ app.post("/invoices/:fullname/:_id/:merchant", function(req, res, next) {
 //                              //                                            
 //////////////////////////////////
 
-app.get("/getMerchants", (req, res) => {
+app.get("/getMerchants", jsonParser, (req, res) => {
     mongo.connect(url, (err, db) =>{
         db.collection("merchants").find({}).toArray(function(err, merchants){
             if(err) return console.log("Error with upload Merchants!", err);
@@ -423,10 +423,42 @@ app.get("/getMerchants", (req, res) => {
     });
 });
 
+app.post("/getPart-Merchants", jsonParser, (req, res) => {
+    mongo.connect(url, (err, db) => {
+    var number = req.body.number;
+    var filter = req.body.filter;
+
+        db.collection("merchants")
+        .find(filter, { score: { $meta: "textScore" } })
+        .skip(number)
+        .limit(10)
+        .sort({ score: { $meta: "textScore" } })
+        .toArray(function(err, merchants){
+            if(err) return console.log("Error with upload Merchants!", err);
+            db.close();
+            res.send(merchants);
+        })
+    });
+});
+
+app.post("/getNumber-Merchants", jsonParser, (req, res) => {
+    mongo.connect(url, (err, db) => {
+        var filter = req.body.filter;
+        filter === undefined ? filter = {} : "";
+
+        db.collection("merchants").find(filter).count(function(err, merchants){
+            if(err) return console.log("Error with upload Number of Invoices!", err);
+            
+            db.close();
+            res.send({"numbers": merchants});
+        })
+    });
+});
+
 app.post("/postMerchant",jsonParser, (req, res) => {
     mongo.connect(url, (err, db) => {
         db.collection("merchants").insertOne(req.body, function(err, result) {
-            if(err) return console.log("Bad POST request!", err);
+            if(err) return console.log("Bad POST Merchants request!", err);
             db.close();
             res.send(req.body);
         });
@@ -443,9 +475,41 @@ app.post("/postMerchant",jsonParser, (req, res) => {
 app.get("/getBanks", (req, res) => {
     mongo.connect(url, (err, db) =>{
         db.collection("banks").find({}).toArray(function(err, merchants){
-            if(err) return console.log("Error with upload Merchants!", err);
+            if(err) return console.log("Error with upload Banks!", err);
             db.close();
             res.send(merchants);
+        })
+    });
+});
+
+app.post("/getPart-Banks", jsonParser, (req, res) => {
+    mongo.connect(url, (err, db) => {
+        var number = req.body.number;
+        var filter = req.body.filter;
+
+        db.collection("banks")
+        .find(filter, { score: { $meta: "textScore" } })
+        .skip(number)
+        .limit(10)
+        .sort({ score: { $meta: "textScore" } })
+        .toArray(function(err, bank){
+            if(err) return console.log("Error with upload Banks Part!", err);
+            db.close();
+            res.send(bank);
+        })
+    });
+});
+
+app.post("/getNumber-Banks", jsonParser, (req, res) => {
+    mongo.connect(url, (err, db) => {
+        var filter = req.body.filter;
+        filter === undefined ? filter = {} : "";
+
+        db.collection("banks").find(filter).count(function(err, bank){
+            if(err) return console.log("Error with upload Number of Banks!", err);
+            
+            db.close();
+            res.send({"numbers": bank});
         })
     });
 });
@@ -453,7 +517,7 @@ app.get("/getBanks", (req, res) => {
 app.post("/postBank",jsonParser, (req, res) => {
     mongo.connect(url, (err, db) => {
         db.collection("banks").insertOne(req.body, function(err, result) {
-            if(err) return console.log("Bad POST request!", err);
+            if(err) return console.log("Bad POST Banks request!", err);
             db.close();
             res.send(req.body);
         });
@@ -486,7 +550,7 @@ app.get("/getInvoices", (req, res) => {
     mongo.connect(url, (err, db) => {
 
         db.collection("invoices").find({}).toArray(function(err, invoices){
-            if(err) return console.log("Error with upload Merchants!", err);
+            if(err) return console.log("Error with upload Invoices!", err);
             db.close();
             res.send(invoices);
         })
@@ -597,7 +661,7 @@ app.post("/getInvoiceBanks", jsonParser, (req, res) => {
         const id = new objectId(req.body.id);
 
         db.collection("banks").find({_id: id}).toArray(function(err, bank){
-            if(err) return console.log("Error with upload Invoice Merchant!", err);
+            if(err) return console.log("Error with upload Invoice Banks!", err);
             db.close();
             res.send(bank);
         });
@@ -615,7 +679,7 @@ app.post("/get-invoiceByNumber", jsonParser, (req, res) => {
     mongo.connect(url, (err, db) =>{
 
         db.collection("invoices").find({number: req.body.number}).toArray(function(err, invoice){
-            if(err) return console.log("Error with upload Invoice Merchant!", err);
+            if(err) return console.log("Error with upload Invoice Preview!", err);
             db.close();
             res.send(invoice);
         });
@@ -626,7 +690,7 @@ app.post("/get-bankByName", jsonParser, (req, res) => {
     mongo.connect(url, (err, db) =>{
 
         db.collection("banks").find({name: req.body.name}).toArray(function(err, bank){
-            if(err) return console.log("Error with upload Invoice Merchant!", err);
+            if(err) return console.log("Error with upload Bank!", err);
             db.close();
             res.send(bank);
         });
