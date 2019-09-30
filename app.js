@@ -25,15 +25,16 @@ const url = 'mongodb://18.216.223.81:27017/anywires';
 
 // View Engine Setup
 app.set('views', path.join(__dirname, 'views'));
-app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'html');
+app.engine('html', require('ejs').renderFile);
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(flash());
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useFindAndModify', false);
 mongoose.set('useCreateIndex', true);
 mongoose.connect(url, { useUnifiedTopology: true });
-app.use(flash());
+
 
 //Passport config
 app.use(require('express-session')({

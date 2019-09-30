@@ -144,8 +144,8 @@ let sentAmountEuro = 0,
 
     if (merchantName.textContent == 'Select period') {
 
-        let fetchPromise  = fetch('http://localhost:3000/getInvListToday');
-        //let fetchPromise  = fetch('http://18.216.223.81:3000/getInvListToday');
+        //let fetchPromise  = fetch('http://localhost:3000/getInvListToday');
+        let fetchPromise  = fetch('http://18.216.223.81:3000/getInvListToday');
         fetchPromise.then(response => {
             return response.json();
         }).then(invoices => {
@@ -200,8 +200,8 @@ let sentAmountEuro = 0,
             chartBox(datesChart, amountsChart);
         });
      } else if (!merchant1.textContent) { 
-        let newFetchPromise  = fetch(`http://localhost:3000/getInvListToday/${merchantName.textContent}`);
-        //let newFetchPromise  = fetch(`http://18.216.223.81:3000/getInvListToday/${merchantName.textContent}`);
+        //let newFetchPromise  = fetch(`http://localhost:3000/getInvListToday/${merchantName.textContent}`);
+        let newFetchPromise  = fetch(`http://18.216.223.81:3000/getInvListToday/${merchantName.textContent}`);
         newFetchPromise.then(response => {
             return response.json();
         }).then(inv => {   
@@ -257,8 +257,8 @@ let sentAmountEuro = 0,
         });
     } else {
         let merLink = document.querySelector('.merchantName');
-        let newFetchPromise  = fetch(`http://localhost:3000/getInvListToday/${merLink.textContent}`);
-        //let newFetchPromise  = fetch(`http://18.216.223.81:3000/getInvListToday/${merLink.textContent}`);
+        //let newFetchPromise  = fetch(`http://localhost:3000/getInvListToday/${merLink.textContent}`);
+        let newFetchPromise  = fetch(`http://18.216.223.81:3000/getInvListToday/${merLink.textContent}`);
         newFetchPromise.then(response => {
             return response.json();
         }).then(inv => {   
@@ -349,8 +349,8 @@ const weekAmount = () => {
     periodTitle.innerHTML = `Week<i class="fas fa-sort-down"></i>`;
 
     if (merchantName.textContent == 'Select period') {
-        //let fetchPromise  = fetch('http://18.216.223.81:3000/getInvListWeek');
-        let fetchPromise  = fetch('http://localhost:3000/getInvListWeek');
+        let fetchPromise  = fetch('http://18.216.223.81:3000/getInvListWeek');
+        //let fetchPromise  = fetch('http://localhost:3000/getInvListWeek');
         fetchPromise.then(response => {
             return response.json();
         }).then(invoices => {
@@ -407,8 +407,8 @@ const weekAmount = () => {
             chartBox(datesChart, amountsChart);
         });
         } else if (!merchant1.textContent) {
-         //   let newFetchPromise  = fetch(`http://18.216.223.81:3000/getInvListWeek/${merchantName.textContent}`);
-        let newFetchPromise  = fetch(`http://localhost:3000/getInvListWeek/${merchantName.textContent}`);
+        let newFetchPromise  = fetch(`http://18.216.223.81:3000/getInvListWeek/${merchantName.textContent}`);
+        //let newFetchPromise  = fetch(`http://localhost:3000/getInvListWeek/${merchantName.textContent}`);
         newFetchPromise.then(response => {
             return response.json();
         }).then(inv => {   
@@ -466,8 +466,8 @@ const weekAmount = () => {
         });
     } else {
         let merLink = document.querySelector('.merchantName');
-        //let newFetchPromise  = fetch(`http://18.216.223.81:3000/getInvListWeek/${merLink.textContent}`);
-        let newFetchPromise  = fetch(`http://localhost:3000/getInvListWeek/${merLink.textContent}`);
+        let newFetchPromise  = fetch(`http://18.216.223.81:3000/getInvListWeek/${merLink.textContent}`);
+        //let newFetchPromise  = fetch(`http://localhost:3000/getInvListWeek/${merLink.textContent}`);
         newFetchPromise.then(response => {
             return response.json();
         }).then(inv => {   
@@ -561,8 +561,8 @@ const monthAmount = () => {
     periodTitle.innerHTML = `Month<i class="fas fa-sort-down"></i>`;
 
     if (merchantName.textContent == 'Select period') {
-        //let fetchPromise  = fetch('http://18.216.223.81:3000/getInvListMonth');
-        let fetchPromise  = fetch('http://localhost:3000/getInvListMonth');
+        let fetchPromise  = fetch('http://18.216.223.81:3000/getInvListMonth');
+        //let fetchPromise  = fetch('http://localhost:3000/getInvListMonth');
         fetchPromise.then(response => {
             return response.json();
         }).then(invoices => {
@@ -617,8 +617,8 @@ const monthAmount = () => {
             chartBox(datesChart, amountsChart);
         });
         } else if (!merchant1.textContent) {
-        //let newFetchPromise  = fetch(`http://18.216.223.81:3000/getInvListMonth/${merchantName.textContent}`); 
-        let newFetchPromise  = fetch(`http://localhost:3000/getInvListMonth/${merchantName.textContent}`);
+        let newFetchPromise  = fetch(`http://18.216.223.81:3000/getInvListMonth/${merchantName.textContent}`); 
+        //let newFetchPromise  = fetch(`http://localhost:3000/getInvListMonth/${merchantName.textContent}`);
         newFetchPromise.then(response => {
             return response.json();
         }).then(inv => {   
@@ -674,8 +674,8 @@ const monthAmount = () => {
         });
     } else {
         let merLink = document.querySelector('.merchantName');
-        //let newFetchPromise  = fetch(`http://18.216.223.81:3000/getInvListMonth/${merLink.textContent}`);
-        let newFetchPromise  = fetch(`http://localhost:3000/getInvListMonth/${merLink.textContent}`);
+        let newFetchPromise  = fetch(`http://18.216.223.81:3000/getInvListMonth/${merLink.textContent}`);
+        //let newFetchPromise  = fetch(`http://localhost:3000/getInvListMonth/${merLink.textContent}`);
         newFetchPromise.then(response => {
             return response.json();
         }).then(inv => {   
@@ -766,8 +766,8 @@ const allTimeAmount = () => {
 
     if (merchantName.textContent == 'Select period') {
 
-        let fetchPromise  = fetch('http://localhost:3000/getInvListAll');
-        //let fetchPromise  = fetch('http://18.216.223.81:3000/getInvListAll');
+        //let fetchPromise  = fetch('http://localhost:3000/getInvListAll');
+        let fetchPromise  = fetch('http://18.216.223.81:3000/getInvListAll');
         fetchPromise.then(response => {
             return response.json();
         }).then(invoices => {
@@ -821,8 +821,8 @@ const allTimeAmount = () => {
             chartBox(datesChart, amountsChart);
         });
      } else if (!merchant1.textContent) { 
-        let newFetchPromise  = fetch(`http://localhost:3000/getInvListAll/${merchantName.textContent}`);
-        //let newFetchPromise  = fetch(`http://18.216.223.81:3000/getInvListAll/${merchantName.textContent}`);
+        //let newFetchPromise  = fetch(`http://localhost:3000/getInvListAll/${merchantName.textContent}`);
+        let newFetchPromise  = fetch(`http://18.216.223.81:3000/getInvListAll/${merchantName.textContent}`);
         newFetchPromise.then(response => {
             return response.json();
         }).then(inv => {   
@@ -879,8 +879,8 @@ const allTimeAmount = () => {
         });
     } else {
         let merLink = document.querySelector('.merchantName');
-        let newFetchPromiseA  = fetch(`http://localhost:3000/getInvListAll/${merLink.textContent}`);
-        //let newFetchPromiseA  = fetch(`http://18.216.223.81:3000/getInvListAll/${merLink.textContent}`);
+        //let newFetchPromiseA  = fetch(`http://localhost:3000/getInvListAll/${merLink.textContent}`);
+        let newFetchPromiseA  = fetch(`http://18.216.223.81:3000/getInvListAll/${merLink.textContent}`);
         newFetchPromiseA.then(response => {
             return response.json();
         }).then(inv => {   
@@ -944,8 +944,9 @@ allTime.onclick = allTimeAmount;
 const walletBalance = () => {
     let merchLink = document.querySelector('.merchantName'),
         walletInfo = document.querySelector('.walletInfo');
-    
-    let walletPromise = fetch(`http://localhost:3000/getWallet/${merchLink.textContent}`);
+        
+    let walletPromise = fetch(`http://18.216.223.81:3000/getWallet/${merchLink.textContent}`);
+    //let walletPromise = fetch(`http://localhost:3000/getWallet/${merchLink.textContent}`);
     walletPromise.then(response => {
         return response.json();
     }).then( (wallets) => {
@@ -968,13 +969,40 @@ const chartBox = (dates, amounts) => {
     ctx.innerHTML = '';
     let [dateListSentUSD, dateListReceivedUSD, dateListApprovedUSD, dateListSentEUR, dateListReceivedEUR, dateListApprovedEUR] = dates;
     let [amountListSentUSD, amountListReceivedUSD, amountListApprovedUSD, amountListSentEUR, amountListReceivedEUR, amountListApprovedEUR] = amounts;
+    const sentChartBtn = document.querySelector('.sentChartBtn'),
+          receivedChartBtn = document.querySelector('.receivedChartBtn'),
+          approvedChartBtn = document.querySelector('.approvedChartBtn'),
+          settledChartBtn = document.querySelector('.settledChartBtn');
     
-    if (dateListSentUSD.length >= dateListSentEUR) {  
-        let data = {
-            labels: dateListSentUSD,
+    var activeBtn = '';
+
+    let isActiveBtn = () => {
+        
+       if ( sentChartBtn.classList.contains('selectedBtn') ) {
+        activeBtn = 'sent'
+       } else  if ( receivedChartBtn.classList.contains('selectedBtn') ) {
+        activeBtn = 'received'
+       } else  if ( approvedChartBtn.classList.contains('selectedBtn') ) {
+        activeBtn = 'approved'
+       } else if ( settledChartBtn.classList.contains('selectedBtn') ) {
+        activeBtn = 'settled'
+       } 
+    };
+    isActiveBtn();
+
+    let chartData = (dateUSD, dateEUR,amountUSD, amountEUR) => {
+        let date;
+        if (dateUSD >= dateEUR) {
+            date = dateUSD;
+        } else {
+            date = dateEUR;
+        }
+
+        var data = {
+            labels: date,
             datasets: [{
             label: "Dollar",
-            data: amountListSentUSD,
+            data: amountUSD,
                 lineTension: 0.5,
                 borderColor: '#475664',
                 backgroundColor: 'rgba(225, 225, 225, 0)',
@@ -987,7 +1015,7 @@ const chartBox = (dates, amounts) => {
                 },
                 {
                 label: "Euro",
-                data: amountListSentEUR,
+                data: amountEUR,
                     lineTension: 0.5,
                     borderColor: 'rgb(78, 185, 235)',
                     backgroundColor: 'rgba(225, 225, 225, 0)',
@@ -1000,7 +1028,7 @@ const chartBox = (dates, amounts) => {
                     }]
         };
         
-        let options = {
+        var options = {
             legend: {
             display: true,
             position: 'top',
@@ -1011,60 +1039,126 @@ const chartBox = (dates, amounts) => {
             }
         };
 
-        let myLineChart = new Chart(ctx, {
+        var myLineChart = new Chart(ctx, {
             type: 'line',
             data: data,
             options: options
         });
-    } else {
-        let data = {
-            labels: dateListSentEUR,
-            datasets: [{
-            label: "Dollar",
-            data: amountListSentUSD,
-                lineTension: 0.5,
-                borderColor: '#475664',
-                backgroundColor: 'rgba(225, 225, 225, 0)',
-                pointBorderColor: '#475664',
-                pointRadius: 3,
-                pointHoverRadius: 10,
-                pointHitRadius: 30,
-                pointBorderWidth: 2,
-                pointStyle: 'rectRounded'
-                },
-                {
-                label: "Euro",
-                data: amountListSentEUR,
-                    lineTension: 0.5,
-                    borderColor: 'rgb(78, 185, 235)',
-                    backgroundColor: 'rgba(225, 225, 225, 0)',
-                    pointBorderColor: 'rgb(78, 185, 235)',
-                    pointRadius: 3,
-                    pointHoverRadius: 10,
-                    pointHitRadius: 30,
-                    pointBorderWidth: 2,
-                    pointStyle: 'rectRounded'
-                    }]
-        };
-        
-        let options = {
-            legend: {
-            display: true,
-            position: 'top',
-            labels: {
-                boxWidth: 80,
-                fontColor: 'black'
-            }
-            }
-        };
+    }
 
-        let myLineChart = new Chart(ctx, {
-            type: 'line',
-            data: data,
-            options: options
-        });
-    } 
+    switch (activeBtn) {
+        case 'sent':
+            chartData(dateListSentUSD, dateListSentEUR, amountListSentUSD, amountListSentEUR);
+          break;
+        case 'received':
+            chartData(dateListReceivedUSD, dateListReceivedEUR, amountListReceivedUSD, amountListReceivedEUR);
+          break;
+        case 'approved':
+            chartData(dateListApprovedUSD, dateListApprovedEUR, amountListApprovedUSD, amountListApprovedEUR);
+          break;
+        case 'settled':
+            chartData(0, 0, 0, 0);
+        break;
+      }
+    
 }
+
+$(document).ready(function(){
+    $('.sentChartBtn').on('click', function(){
+      $('.sentChartBtn').addClass('selectedBtn');
+      let currentPeriod = document.querySelector('.periodTitle').textContent;
+    
+        switch (currentPeriod) {
+            case 'Today':
+                todayAmount();
+            break;
+            case 'Week':
+                weekAmount();
+            break;
+            case 'Month':
+                monthAmount();
+            break;
+            case 'All Time':
+                allTimeAmount();
+            break;
+        }
+      $('.receivedChartBtn').removeClass('selectedBtn');
+      $('.approvedChartBtn').removeClass('selectedBtn');
+      $('.settledChartBtn').removeClass('selectedBtn');
+    });
+  });
+  $(document).ready(function(){
+    $('.receivedChartBtn').on('click', function(){
+      $('.sentChartBtn').removeClass('selectedBtn');
+      $('.receivedChartBtn').addClass('selectedBtn');
+      let currentPeriod = document.querySelector('.periodTitle').textContent;
+    
+        switch (currentPeriod) {
+            case 'Today':
+                todayAmount();
+            break;
+            case 'Week':
+                weekAmount();
+            break;
+            case 'Month':
+                monthAmount();
+            break;
+            case 'All Time':
+                allTimeAmount();
+            break;
+        }
+      
+      $('.approvedChartBtn').removeClass('selectedBtn');
+      $('.settledChartBtn').removeClass('selectedBtn');
+    });
+  });
+  $(document).ready(function(){
+    $('.approvedChartBtn').on('click', function(){
+      $('.sentChartBtn').removeClass('selectedBtn');
+      $('.receivedChartBtn').removeClass('selectedBtn');
+      $('.approvedChartBtn').addClass('selectedBtn');
+      let currentPeriod = document.querySelector('.periodTitle').textContent;
+    
+        switch (currentPeriod) {
+            case 'Today':
+                todayAmount();
+            break;
+            case 'Week':
+                weekAmount();
+            break;
+            case 'Month':
+                monthAmount();
+            break;
+            case 'All Time':
+                allTimeAmount();
+            break;
+        }
+      $('.settledChartBtn').removeClass('selectedBtn');
+    });
+  });$(document).ready(function(){
+    $('.settledChartBtn').on('click', function(){
+      $('.sentChartBtn').removeClass('selectedBtn');
+      $('.receivedChartBtn').removeClass('selectedBtn');
+      $('.approvedChartBtn').removeClass('selectedBtn');
+      $('.settledChartBtn').addClass('selectedBtn');
+      let currentPeriod = document.querySelector('.periodTitle').textContent;
+    
+        switch (currentPeriod) {
+            case 'Today':
+                todayAmount();
+            break;
+            case 'Week':
+                weekAmount();
+            break;
+            case 'Month':
+                monthAmount();
+            break;
+            case 'All Time':
+                allTimeAmount();
+            break;
+        }
+    });
+  });
 
 // Correct amount function
 
