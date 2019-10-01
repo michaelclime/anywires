@@ -10,7 +10,7 @@ let UserSchema = new mongoose.Schema({
     role: String,
     merchant: String,
     merchant2: String,
-    date: Date,
+    dateCreation: Date,
     resetPasswordToken: String,
     resetPasswordExpires: Date
 });
