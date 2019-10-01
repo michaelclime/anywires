@@ -304,7 +304,7 @@ function openDialog() {
 let prevSettleBtn = document.querySelector('.prevSettleBtn');
 
 prevSettleBtn.addEventListener('click', (e) => {
-    document.location.href='settlementPreview.html';
+    document.location.href='/settlementPreview.html';
 
 });
 

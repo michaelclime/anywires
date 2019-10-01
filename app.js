@@ -132,6 +132,10 @@ app.get('/settlementReport.html', isLoggedIn, function(req, res) {
     res.render("settlementReport.html");
 });
 
+app.get('/settlementPreview.html', isLoggedIn, function(req, res) {
+    res.render("settlementPreview.html");
+});
+
 app.get('/merchantReport.html', isLoggedIn, function(req, res) {
     res.render("merchantReport.html");
 });
