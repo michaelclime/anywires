@@ -731,7 +731,7 @@ app.post('/register', function(req, res){
         role: req.body.role,
         merchant: req.body.merchant,
         merchant2: req.body.merchant2,
-        date: new Date()
+        dateCreation: new Date()
     });
     User.register(newUser, req.body.password, function(err, user) {
         if(err) {

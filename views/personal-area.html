@@ -76,11 +76,11 @@
 				<ul class="dropMenu">
 					<li class="profile">
 						<span class="liLogo"><i class="fas fa-user-alt"></i></span>
-						<a href="#">Profile</a>
+						<a href="personal-area.html">Profile</a>
 					</li>
 					<li class="merchant">
 						<span class="liLogo"><i class="fab fa-chromecast"></i></span>
-						<a href="#">Merchant</a>
+						<a href="merchants.html">Merchant</a>
 					</li>
 					<li class="logOut">
 						<span class="liLogo"><i class="fas fa-sign-out-alt"></i></span>
@@ -134,7 +134,7 @@
 					<div class="info-blocks">
 							<p class="description-info">Registered on:</p>
 							<p class="person-info">
-								<%= currentUser.date.getDate() + '/' + (currentUser.date.getMonth()+ 1) + '/' +  currentUser.date.getFullYear() %>
+								<%= currentUser.dateCreation.getDate() + '/' + (currentUser.dateCreation.getMonth()+ 1) + '/' +  currentUser.dateCreation.getFullYear() %>
 							</p>
 							<div class="profile_line"></div>
 					</div>
