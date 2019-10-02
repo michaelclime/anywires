@@ -653,7 +653,14 @@ label {
 .firstPage-block img {
     width: 60px;
     height: 60px;
+    cursor: pointer;
 }
+
+.firstPage-block img:hover {
+    filter: grayscale(50%) invert(100%);
+}
+
+
 /* Popup Window View End */
 
 /* Animations */

@@ -19,6 +19,7 @@ class invoiceList {
         this.currentUser = document.querySelector("#currentUser");
         this.addCommentBtn = document.querySelector("#addCommentBtn");
         this.firstPage = document.querySelector(".firstPage-block");
+        this.firstPageImg = document.querySelector("#first-img");
         
         this.render();
     }
@@ -745,6 +746,7 @@ class invoiceList {
         this.btnExel.addEventListener("click", this.saveXls);
         this.btn_search.addEventListener("click", this.searchFunction);
         this.addCommentBtn.addEventListener("click", this.addComment);
+        this.firstPageImg.addEventListener("click", this.clearFilter);
     }
 };
 
