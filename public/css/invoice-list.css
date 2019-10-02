@@ -324,38 +324,326 @@ label {
     color: white;
 }
 
-
-/* Modal Window for Actions */
-.alert {
-    display: flex;
+/* Popup Window View Start */
+.filter {
+    display: none;
     justify-content: center;
     align-items: center;
-    font-size: 24px;
-    letter-spacing: 1.2px;
+    background-color: rgba(0, 0, 0, 0.6);
     position: fixed;
-	top: 0;
-	right: 0;
-	left: 0;
-	bottom: 0;
-	width: 100%;
-	height: 100%;
-    z-index: 9;
-    background-color: rgba(0, 0, 0, 0.5);
-    font-family: Helvetica, Arial, serif;
-    font-size: 20px;
-    font-weight: 700;
-    color:  rgb(51, 51, 51);
+    top: 0; bottom: 0; left: 0; right: 0;
+    z-index: 100;
 }
 
-.alertContent {
-    position: fixed;
-	text-align: center;
-	left: 50%;
-	top: 10%;
-	transform: translateX(-50%);
-	background-color: #fff;
-    padding: 40px 60px;
+.modalView-block {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 900px;
+    background-color: white;
+    padding: 20px;
+    z-index: 120;
 }
+
+.invoiceNum-block {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.transfer-block {
+    margin: 10px 0;
+    width: 100%;
+}
+
+.remainder {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.remainder p {
+    font-size: 14px;
+    color: rgb(255, 51, 51);
+}
+
+.documentsP {
+    text-align: left;
+    width: 100%;
+}
+
+.buttonBlock {
+    width: 100%;
+    margin: 20px 0;
+    display: flex;
+    justify-content: space-between;
+}
+
+.buttonBlock button {
+    width: 100px;
+    height: 35px;
+    color: black;
+    transition: .2s;
+    font-size: 15px;
+}
+
+#requested {
+    margin-right: 10px;
+    background-color: #DEDEDE;
+}
+
+#sent {
+    margin-right: 10px;
+    background-color: #FFBB33;
+}
+
+#received {
+    margin-right: 10px;
+    background-color: #7491F2;
+}
+
+#approved {
+    margin-right: 10px;
+    background-color: #83C9A0;
+}
+
+#available {
+    background-color: #00C851;
+}
+
+#requested:hover, #sent:hover, #received:hover, #approved:hover, #available:hover, #editBtn:hover, 
+#settledBtn:hover, #declinedBtn:hover, #frozenBtn:hover, #recallBtn:hover{
+    background-color: #12C7B2;
+    box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.75);
+}
+
+#requested:active, #sent:active, #received:active, #approved:active, #available:active, #editBtn:active, 
+#settledBtn:active, #declinedBtn:active, #frozenBtn:active, #recallBtn:active{
+    background-color: #888;
+}
+
+.currentStatus{
+    font-weight: bold;
+    color: #20A5F7;
+    font-size: 18px;
+}
+
+.actions-block {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.docs-block {
+    display: flex;
+    width: 90%;
+}
+
+.restButton-block {
+    display: flex;
+    flex-direction: column;
+}
+
+.restButton-block button {
+    width: 100px;
+    height: 35px;
+    margin-bottom: 10px;
+}
+
+.docTable-block {
+    width: 70%;
+    overflow: scroll;
+    overflow-x:hidden;
+    height: 165px; 
+}
+
+.docsUpload-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 25%;
+}
+
+#docsTable {
+    width: 100%;
+}
+
+#docsTable tr, #table-comments tr {
+    height: 30px;
+}
+
+#docsTable th, #table-comments th  {
+    background-color: #20A5F7;
+    color: white;
+}
+
+.docsInside-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    width: 100%;
+    margin-top: 10px;
+    height: 100%;
+}
+
+#docsSelect {
+    width: 140px;
+    height: 35px; 
+    margin: 7px 0;  
+}
+
+#docPreview:hover {
+    background-color: #555;
+}
+
+#docPreview:active {
+    background-color: #20A5F7;
+}
+
+#currentUser {
+    display: none;
+}
+
+#uploadDocs {
+    width: 140px;
+    height: 50px;  
+}
+
+#uploadBtn {
+    width: 140px;
+    height: 35px;  
+    background-color: #4D4D4D;
+    color: white;
+    transition: .2s;
+}
+
+#uploadBtn:hover, #addCommentBtn:hover {
+    background-color: #12C7B2;
+}
+
+#uploadBtn:active, #addCommentBtn:active {
+    background-color: rgb(93, 93, 93);
+}
+
+
+#editBtn{
+    background-color: #FFBB33;
+    color: white;
+    transition: .2s;
+}
+
+#settledBtn{
+    background-color: #23A158;
+    color: white;
+    width: 110px;
+    height: 35px;
+    transition: .2s;
+}
+#declinedBtn{
+    background-color: rgb(255, 0, 0);
+    color: white;
+    transition: .2s;
+}
+#frozenBtn{
+    background-color: #20A5F7;
+    color: white;
+    transition: .2s;
+}
+#recallBtn{
+    background-color: #4D4D4D;
+    color: white;
+    transition: .2s;
+}
+
+#docPreview {
+    width: 100%;
+    height: 30px;
+    background-color: #12C7B2;
+    color: white;
+    margin: 4px 0 0 0;
+}
+
+.comments-block {
+    width: 100%;
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+#table-comments {
+    width: 100%;
+}
+
+#table-comments tbody tr {
+    height: 40px;
+  }
+
+#table-comments tbody tr, #docsTable tbody tr, #docsTable tbody td {
+    font-size: 14px;
+    font-weight: normal;
+}
+
+#table-comments th, #docsTable th {
+    font-size: 14px;
+    
+}
+
+.tableComments-block {
+    width: 62%;
+    overflow: scroll;
+    overflow-x:hidden;
+    height: 165px; 
+}
+
+.commentsInside-block {
+    width: 35%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+#commentText {
+    width: 100%;
+    height: 125px;
+    border: 1px solid rgb(135, 133, 133);
+    border-radius: 3px;
+    padding: 5px;
+    font-family: 'Frank Ruhl Libre', serif;
+}
+
+#addCommentBtn {
+    width: 100%;
+    height: 35px;
+    margin-top: 5px;
+    background-color: #4D4D4D;
+    color: white;
+    transition: .2s;
+}
+
+#docGood, #docBad{
+    cursor: pointer;
+    user-select: none;
+}
+
+#docGood:hover, #docBad:hover{
+    opacity: .4;
+}
+
+#docGood:active, #docBad:active{
+    filter: grayscale(12%) invert(100%);
+}
+
+.comentsDate {
+    color: #20A5F7;
+    font-size: 12px;
+    margin-top: 3px;
+}
+/* Popup Window View End */
 
 /* Animations */
 @keyframes slideInTop{

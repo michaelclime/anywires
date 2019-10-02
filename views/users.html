@@ -15,12 +15,12 @@
 		<link rel="stylesheet" type="text/css" href="css/users-table.css">
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 		<link href="https://fonts.googleapis.com/css?family=Frank+Ruhl+Libre&display=swap" rel="stylesheet">
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-		<script src="https://unpkg.com/jspdf@1.5.3/dist/jspdf.min.js"></script>
-		<script src="https://unpkg.com/jspdf-autotable@3.1.4/dist/jspdf.plugin.autotable.js"></script>
 		<script src="js/modernizr.custom.js"></script>
 		<script src="https://kit.fontawesome.com/b1090e9fd1.js"></script>
+		<link rel="stylesheet" href="./css/datepicker.min.css">
+		<script src="./js/datepicker.min.js"></script>
+		<script src="./js/datepicker.en.js"></script>
 	</head>
 	<body>
 		<div id="burgerMenu">
@@ -69,39 +69,40 @@
 			<main>
 				<div class="containerBlock">
 					<div class="filterBlock-first">
-							<div class="byCreation-block" >
-								<label for="byCreation-block">Last login date:</label>
-								<input class="dateForm datepicker-here" data-multiple-dates-separator="—" 
+							<div class="lastLog-block" >
+								<label for="lastLog-block">Last login date:</label>
+								<input id="lastLog" class="dateForm datepicker-here clear" data-multiple-dates-separator=" — " 
 																		data-range="true"
 																		data-language="en"
 																		type="text" 
 																		placeholder="Jul 01, 2019 — Aug 01, 2019">
 							</div>
 
-							<div class="filterStatus-block">
-								<label for="filterStatus-block">Mechant</label>
-								<select id="filterStatus" type="text">
+							<div class="filterMerchant-block">
+								<label for="filterMerchant-block">Mechant</label>
+								<select id="merchant" class="clear" type="text">
 										<option value="" selected></option>
-										<option value="Requested">Requested</option>
-										<option value="Sent">Sent</option>
-										<option value="Received">Received</option>
-										<option value="Declined">Declined</option>
+										<option value="Merchant 1">Merchant 1</option>
 								</select>
 							</div>
 	
-							<div class="filterBank-block">
-								<label for="filterBank-block">Role</label>
-								<select id="filterBank" type="text">
-										<option value="" selected></option>
-										<option value="AnyWires Bank">AnyWires Bank</option>
-										<option value="BNP Poland (EUR) VTK">BNP Poland (EUR) VTK</option>
-										<option value="DE Transferwise FinEdu EUR">DE Transferwise FinEdu EUR</option>
+							<div class="filterRole-block">
+								<label for="filterRole-block">Role</label>
+								<select class="clear" id="filterRole" type="text">
+									<option value="" selected></option>
+									<option value="CrmFinanceManager">CRM finance manager</option>
+									<option value="CrmInvoiceManager">CRM invoice manager</option>
+									<option value="CrmAdmin">CRM admin</option>
+									<option value="merchantManager">Merchant manager</option>
+									<option value="invoiceManager">Invoice manager</option>
+									<option value="affiliate">Affiliate</option>
+									<option value="solutionManager">Solution manager</option>
 								</select>
 							</div>
 						</div>
 				
 						<div class="search-block">
-							<input id="search-input" type="search" placeholder="Search..."/>
+							<input id="search-input" class="clear" type="search" placeholder="Search..."/>
 							<img id="search-button" src="./img/magnifying-glass.png" alt="search button"/>
 						</div>
 				</div>
@@ -118,8 +119,6 @@
 					<div class="tableUser-header">
 						<h2>LIST OF USERS</h2>
 						<div class="table-arrows">
-							<img src="./img/left-arrow.png" alt="arrow left table" width="15px" height="15px"/> 
-							<img id="nextList" src="./img/right-arrow.png" alt="arrow right table" width="15px" height="15px"/>
 							<img title="Download .pdf" id="dowloadPdf" src="./img/download.png" alt="arrow right table" width="15px" height="15px"/>
 						</div>
 					</div>
@@ -154,6 +153,8 @@
 							<tbody id="table-list"></tbody>
 						</table>
 					</div>
+
+					<div class="nextPage-block"></div>
 						
 					
 				</div>
@@ -164,17 +165,6 @@
 		</div>
 
 		<!-- Modal Window "Create User" -->
-		<div id="modal-createUser" class="slide-top">
-			<div>
-				Name: <input class="modal-InputName" type="text" placeholder="Enter your name"/>
-				Email: <input class="modal-InputEmail" type="text" placeholder="Enter your Email"/>
-			</div>
-			<div>
-				Merchant: <input class="modal-InputMer" type="text" placeholder="Merchant"/>
-				Role: <input class="modal-InputRole" type="text" placeholder="Role"/>
-			</div>
-			<button id="saveUser-btn">Create</button>
-		</div>
 		
 		<script src="./js/users.js"></script>
 		<script src="js/classie.js"></script>

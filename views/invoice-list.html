@@ -69,6 +69,7 @@
 		</div><!-- /container -->
 
 		<div id="wrapper">
+				<span id="currentUser"><%= currentUser.fullname %></span>
 
 			<!--Header Page-->
 			<header> 
@@ -183,6 +184,103 @@
 					<div class="nextPage-block"></div>
 				</div>
 			</main>
+		</div>
+
+		<!-- Popup window View Invoice -->
+		
+		<div class="filter">
+			<div class="modalView-block">
+					
+				<div class="invoiceNum-block">
+					<div>
+						<strong>Invoice #<span id="invoiceNumber"></span></strong>
+					</div>
+					<div id="invoiceMerchant">Invoice Merchant</div>
+				</div>
+
+				<div class="transfer-block">
+					<p>Transfer from <span id="clientFullName"></span> for <span id="invoiceCurrency"></span><span id="requestFee"></span> to <span id="invoiceBank"></span> now  is - <span class="currentStatus">Requested</span></p>
+					<div class="buttonBlock">
+						<div>
+							<button id="requested">Requested</button>
+							<button id="sent">Sent</button>
+							<button id="received">Received</button>
+							<button id="approved">Approved</button>
+							<button id="available">Available</button>
+						</div>
+						<div>
+							<button id="editBtn">Edit invoice</button>
+						</div>
+						
+					</div>
+					<div class="remainder">
+						<p class="remainder">Please don't forget to upload: Payment Proof, Client's ID, Client's Utility Bill, Declaration of Payment.</p>
+						<button id="settledBtn">Settled</button>
+					</div>
+					
+				</div>
+
+				<h3 class="documentsP">Documents</h3>
+
+				<div class="actions-block">
+					<div class="docs-block">
+						<div class="docTable-block">
+							<table id="docsTable">
+								<thead>
+									<tr>
+										<th>Created by</th> <th>Type</th> <th>Status</th> <th>Confirmation</th> <th></th>
+									</tr>
+								</thead>
+								<tbody id="table-docs"></tbody>
+							</table>
+						</div>
+
+						<div class="docsUpload-block">
+							<div class="docsInside-block">
+								<button id="uploadDocs">Click to upload Document</button>
+								<select id="docsSelect">
+									<option value="" selected></option>
+									<option value="Payment proof">Payment proof</option>
+									<option value="ID">ID</option>
+									<option value="Utility Bill">Utility Bill</option>
+									<option value="Declaration">Declaration</option>
+								</select>
+								<button id="uploadBtn">Upload</button>
+							</div>
+						</div>
+					</div>
+
+					<div class="restButton-block">
+						
+						
+						<button id="declinedBtn">Declined</button>
+						<button id="frozenBtn">Frozen</button>
+						<button id="recallBtn">Recall</button>
+					</div>
+				</div>
+
+				<h3 class="documentsP">Comments</h3>
+
+				<div class="comments-block">
+					<div class="tableComments-block">
+						<table id="table-comments">
+							<thead>
+								<tr>
+									<th>Created by</th>
+									<th>Message</th>
+								</tr>
+							</thead>
+							<tbody id="tableTbody-comments"></tbody>
+						</table>
+					</div>
+
+					<div class="commentsInside-block">
+						<textarea id="commentText" placeholder="Comments to invoice"></textarea>
+						<button id="addCommentBtn">Add comment</button>
+					</div>
+				</div>
+
+			</div>
 		</div>
 
 		<script src="./js/invoice-list.js"></script>

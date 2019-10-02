@@ -29,7 +29,6 @@ class UsersList {
         this.data = document.querySelectorAll(".allData");
             this.data[15].checked ? this.sepa = true : this.sepa = false;
             this.data[16].checked ? this.b2b = true : this.b2b = false;
-            console.log(this.data[13].value);
             this.newBank = {
                 "name" : this.data[0].value, 
                 "beneficiary_name" : this.data[1].value, 
@@ -60,7 +59,6 @@ class UsersList {
                 "creation_date" : moment().format('LL'), 
                 "created_by" : "Jack Wilson" 
             };
-            console.log(this.newBank);
             
             // CheckEmpty start
             this.requiredFields = document.querySelectorAll(".required");
