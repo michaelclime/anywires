@@ -25,15 +25,16 @@ const url = 'mongodb://18.216.223.81:27017/anywires';
 
 // View Engine Setup
 app.set('views', path.join(__dirname, 'views'));
-app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'html');
+app.engine('html', require('ejs').renderFile);
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(flash());
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useFindAndModify', false);
 mongoose.set('useCreateIndex', true);
 mongoose.connect(url, { useUnifiedTopology: true });
-app.use(flash());
+
 
 //Passport config
 app.use(require('express-session')({
@@ -129,6 +130,10 @@ app.get("/invoice-preview", isLoggedIn, function (req, res) {
 
 app.get('/settlementReport.html', isLoggedIn, function(req, res) {
     res.render("settlementReport.html");
+});
+
+app.get('/settlementPreview.html', isLoggedIn, function(req, res) {
+    res.render("settlementPreview.html");
 });
 
 app.get('/merchantReport.html', isLoggedIn, function(req, res) {
@@ -821,7 +826,7 @@ app.post('/register', function(req, res){
         role: req.body.role,
         merchant: req.body.merchant,
         merchant2: req.body.merchant2,
-        date: new Date()
+        dateCreation: new Date()
     });
     User.register(newUser, req.body.password, function(err, user) {
         if(err) {
@@ -905,8 +910,8 @@ app.post('/forgot', function(req, res, next) {
                     user: "bogdan.melnik@brokers.expert",
                     clientId: '4299782568-tq6cm8spg6gmnjnrvuhs136vp6osaq4n.apps.googleusercontent.com',
                     clientSecret: 'w2qGL_wcL835Pt84iCHvJrLj',
-                    refreshToken: '1/3ATanrKeAzwbCRDzZTwGE8u-ZAJwnvA9jQBFCjgcaU4',
-                    accessToken: 'ya29.Il-PB19hdRNkb0uGrXGi_cSCPr3zbNDTmyIq_XPOECC12IuepHJKPTqJCxpAwQZpgwDDoUf5idyPVCGslwQ_t1FGIfRS31Ua12Hdi0DA7TafAFNLON7yo18OX-EsFqVJ7Q'
+                    refreshToken: '1/s8L2H1aqy32HycaRa0Zz7DagW-dJzZFMachf1ipJyQE',
+                    accessToken: 'ya29.Il-UB0lqRnIoXkNvpiRSjevi6biQLn0uTUTaRm1uKpYgfPqii5uvRhiM2VE8USTM8auKmyU_Ao1ruJ8wkiEDia78YX60gLZky8MEyTFdZucI8GGNwscuAbJZZyXyHJSTQg'
                 }
             });
             var mailOptions = {
@@ -1012,8 +1017,8 @@ app.post('/resetPassword/:token', function(req, res) {
                     user: "bogdan.melnik@brokers.expert",
                     clientId: '4299782568-tq6cm8spg6gmnjnrvuhs136vp6osaq4n.apps.googleusercontent.com',
                     clientSecret: 'w2qGL_wcL835Pt84iCHvJrLj',
-                    refreshToken: '1/3ATanrKeAzwbCRDzZTwGE8u-ZAJwnvA9jQBFCjgcaU4',
-                    accessToken: 'ya29.Il-PB19hdRNkb0uGrXGi_cSCPr3zbNDTmyIq_XPOECC12IuepHJKPTqJCxpAwQZpgwDDoUf5idyPVCGslwQ_t1FGIfRS31Ua12Hdi0DA7TafAFNLON7yo18OX-EsFqVJ7Q'
+                    refreshToken: '1/s8L2H1aqy32HycaRa0Zz7DagW-dJzZFMachf1ipJyQE',
+                    accessToken: 'ya29.Il-UB0lqRnIoXkNvpiRSjevi6biQLn0uTUTaRm1uKpYgfPqii5uvRhiM2VE8USTM8auKmyU_Ao1ruJ8wkiEDia78YX60gLZky8MEyTFdZucI8GGNwscuAbJZZyXyHJSTQg'
                 }
             });
             var mailOptions = {
@@ -1032,49 +1037,6 @@ app.post('/resetPassword/:token', function(req, res) {
     });
 });
 
-// Sign up menu and sending email
-
-// app.post('/sigup', function(req, res) {
-//     let newMessage = 
-//         'Name: ' + req.body.name + '\n' +
-//         'Brand: ' + req.body.brand + '\n' +
-//         'SiteURL: ' + req.body.siteURL + '\n' +
-//         'Email: ' + req.body.email + '\n' +
-//         'PhoneNumber: ' + req.body.phoneNumber;
-
-//     async function main() {
-
-//         let transporter = nodemailer.createTransport({
-//             service: 'Gmail',
-//             auth: {
-//               type: "login", // default
-//               user: "bogdan.melnik@brokers.expert",
-//               pass: process.env.GMAILPW
-//             }
-//         });
-
-//         // send mail with defined transport object
-//         let info = await transporter.sendMail({
-//             from: '"AnyWires" <AnyWires@gmail.com>', 
-//             //to: 'm.clime@brokers.expert', 
-//             to: 'bogdan.melnik@brokers.expert',
-//             subject: 'A New Client AnyWires', 
-//             text: newMessage
-//         });
-
-//         console.log('Message sent: %s', info.messageId);
-//         // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
-
-//         // Preview only available when sending through an Ethereal account
-//         console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
-//         // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
-//         req.flash('success', 'Your request successfully created! \n \n We\'ll contact you ASAP!');
-//         res.redirect('/');
-//     }
-    
-//     main().catch(console.error);
-// });
-
 app.post('/singup', function(req, res) {
     let newMessage = 
     'Name: ' + req.body.name + '\n' +
@@ -1092,8 +1054,8 @@ app.post('/singup', function(req, res) {
             user: "bogdan.melnik@brokers.expert",
             clientId: '4299782568-tq6cm8spg6gmnjnrvuhs136vp6osaq4n.apps.googleusercontent.com',
             clientSecret: 'w2qGL_wcL835Pt84iCHvJrLj',
-            refreshToken: '1/3ATanrKeAzwbCRDzZTwGE8u-ZAJwnvA9jQBFCjgcaU4',
-            accessToken: 'ya29.Il-PB19hdRNkb0uGrXGi_cSCPr3zbNDTmyIq_XPOECC12IuepHJKPTqJCxpAwQZpgwDDoUf5idyPVCGslwQ_t1FGIfRS31Ua12Hdi0DA7TafAFNLON7yo18OX-EsFqVJ7Q'
+            refreshToken: '1/s8L2H1aqy32HycaRa0Zz7DagW-dJzZFMachf1ipJyQE',
+            accessToken: 'ya29.Il-UB0lqRnIoXkNvpiRSjevi6biQLn0uTUTaRm1uKpYgfPqii5uvRhiM2VE8USTM8auKmyU_Ao1ruJ8wkiEDia78YX60gLZky8MEyTFdZucI8GGNwscuAbJZZyXyHJSTQg'
         }
     });
 

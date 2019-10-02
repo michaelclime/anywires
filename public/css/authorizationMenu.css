@@ -19,12 +19,15 @@ header {
     color:  rgb(34, 218, 95);
 }
 
+.userName {
+    position: relative;
+}
 .dropMenu {
     display: none;
     flex-direction: column;
-    position: fixed;
-    right: 50px;
-    top: 60px;
+    position: absolute;
+    right: 80px;
+    top: 50px;
     font-size: 20px;
     background:  #FFF;
     list-style-type: none;
@@ -32,6 +35,8 @@ header {
 
 .dropMenu li {
     margin: 5px 0;
+    width: 120%;
+    background:  #FFF;
 }
 
 .dropMenu li:hover {
@@ -63,8 +68,6 @@ header {
     }
     
     .dropMenu {
-        right: 30px;
-        top: 60px;
         font-size: 14px;
     }
 
