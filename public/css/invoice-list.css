@@ -643,6 +643,17 @@ label {
     font-size: 12px;
     margin-top: 3px;
 }
+
+.firstPage-block {
+    width: 90%;
+    display: none;
+    align-items: flex-start;
+}
+
+.firstPage-block img {
+    width: 60px;
+    height: 60px;
+}
 /* Popup Window View End */
 
 /* Animations */
