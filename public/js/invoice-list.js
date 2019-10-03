@@ -18,11 +18,13 @@ class invoiceList {
         this.receiveDate = document.querySelector(".receiveDate");
         this.currentUser = document.querySelector("#currentUser");
         this.addCommentBtn = document.querySelector("#addCommentBtn");
+        this.textAreaAddComment = document.querySelector("#commentText")
         this.firstPage = document.querySelector(".firstPage-block");
         this.firstPageImg = document.querySelector("#first-img");
         this.editInvoiceBtn = document.querySelector("#editBtn");
         this.saveEditedInvoice_btn = document.querySelector("#saveEditedInvoice-btn");
         this.editData = document.querySelectorAll(".editData");
+        this.inputSearch = document.querySelector(".input-search");
         this.currentInvoice = [];
         
         this.render();
@@ -344,7 +346,7 @@ class invoiceList {
     }
 
     searchFunction = async () => {
-        var check = document.querySelector('.input-search').value;
+        var check = this.inputSearch.value;
 
         const filter = { $text: { $search: check } };
 
@@ -396,7 +398,7 @@ class invoiceList {
     clearFilter = () => {
         this.creationDate.value = "";
         this.receiveDate.value = "";
-        this.searchInput = document.querySelector('.input-search').value = "";
+        this.searchInput = this.inputSearch.value = "";
         this.selets = document.querySelectorAll("select");
         this.selets.forEach(item => item.value = "");
         this.container = document.getElementById("table-list");
@@ -861,6 +863,17 @@ class invoiceList {
         this.firstPageImg.addEventListener("click", this.clearFilter);
         this.editInvoiceBtn.addEventListener("click", this.editInvoice);
         this.saveEditedInvoice_btn.addEventListener("click", this.saveEditedInvoice);
+
+        this.textAreaAddComment.addEventListener("keyup", () => {
+            event.preventDefault();
+            event.keyCode === 13 ? this.addComment() : "";
+        });
+
+        this.inputSearch.addEventListener("keyup", () => {
+            event.preventDefault();
+            event.keyCode === 13 ? this.searchFunction() : "";
+        });
+
     }
 };
 
