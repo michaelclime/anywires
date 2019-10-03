@@ -133,19 +133,19 @@ label {
     align-items: flex-end;
 }
 
-.byCreation-block {
+.lastLog-block {
     display: flex;
     flex-direction: column;
     width: 240px;
     margin-right: 20px;
 }
 
-.filterStatus-block {
+.filterMerchant-block {
     width: 240px;
     margin-right: 20px;
 }
 
-.filterBank-block {
+.filterRole-block {
     width: 240px;
 }
 /* Filter Block First END*/
@@ -257,59 +257,6 @@ label {
 }
 
 
-/* Modal Window Create User */
-#modal-createUser {
-    display: none;
-    justify-content: space-between;
-    position: fixed;
-    top: 250px;
-    align-self: center;
-    width: 600px;
-    height: auto;
-    background-color: #FFF;
-    padding: 20px;
-    box-shadow: 0px 0px 2px 2px rgba(201, 200, 200, 0.75);
-    font-family: 'Frank Ruhl Libre', serif;
-}
-
-#modal-createUser div {
-    display: flex;
-    flex-direction: column;
-    margin-right: 20px;
-}
-
-#modal-createUser input {
-    border: 1px solid rgb(189, 189, 189);
-    background-color: rgb(255, 255, 255);
-    box-sizing: border-box;
-    height: 30px;
-    width: 200px;
-    border-radius: 3px;
-    font-size: 14px;
-    color: rgb(85, 85, 85);
-    padding: 0px 4px;
-    box-shadow: none;
-    margin-bottom: 10px;
-    font-family: 'Frank Ruhl Libre', serif;
-    margin-bottom: 20px;
-    margin-top: 5px;
-}
-
-#saveUser-btn {
-    height: 50px;
-    width: 100px;
-    margin-top: 80px;
-    background-color: green;
-}
-
-#saveUser-btn:hover {
-    background-color: rgb(143, 143, 143);
-}
-#saveUser-btn:active {
-    background-color: rgb(231, 66, 44);
-}
-
-
 /* Animations */
 @keyframes slideInTop{
     0%{
@@ -323,140 +270,42 @@ label {
     animation: .5s slideInTop ease-in-out 1;
 }
 
+   /* Next Page Block */
 
-@media screen and (max-width: 640px) {
-    #modal-createUser {
-        top:50px;
-    }
-    header h1 {
-        font-size: 22px;
-    }
-    header img {
-        width: 35px;
-        height: 35px;
-    }
-
-    #createUser-button {
-        width: 120px;
-        height: 40px;
-        font-size: 14px;
-    }
-
-    #search-input {
-        width: 200px;
-        height: 40px;
-        font-size: 14px;
-    }
-    #search-button {
-        width: 40px;
-        height: 40px;
-        padding: 14px;
-    } 
-    .tableUser-header h2 {
-        font-size: 17px;
-    }
-
-    /* Modal Create User */
-    #modal-createUser {
-       flex-direction: column;
-       width: auto;
-    }
-    #saveUser-btn {
-        margin-top: 10px;
-    }
+   .nextPage-block {
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    margin-top: 20px;
 }
 
-
-@media screen and (max-width: 490px) {
-    
-    header {
-        padding: 20px 0 20px 20px;
-    }
-    header h1 {
-        font-size: 20px;
-    }
-    header img {
-        width: 30px;
-        height: 30px;
-    }
-    #createUser-block {
-        width: 95%;
-    }
-    #tableUser-block {
-        width: 95%;
-    }
-    #createUser-button {
-        width: 100px;
-        height: 30px;
-        font-size: 12px;
-    }
-    #search-input {
-        width: 150px;
-        height: 30px;
-        font-size: 12px;
-    }
-    #search-button {
-        width: 30px;
-        height: 30px;
-        padding: 10px;
-    }
-    .tableUser-header h2 {
-        font-size: 15px;
-    }
-    .table-arrows img {
-        width: 10px;
-        height: 10px;
-    }
-
-    main {
-        padding: 30px 0 30px 0px;
-    }
-    
-    .table-line {
-        margin: 0;
-    }
-    #tableUser-block {
-        padding: 40px 0;
-    }
-
-    #saveUser-btn {
-        width: 80px;
-        height: 35px;
-    }
+.nextPage-btn {
+    width: 30px;
+    height: 30px;
+    background-color: inherit;
+    border: 1px solid #20A5F7;
+    border-radius: 0;
+    margin-right: 2px;
+    color: black;
 }
 
-@media screen and (max-width: 370px) {
-    header h1 {
-        font-size: 18px;
-    }
-    header img {
-        width: 28px;
-        height: 28px;
-    }
-    #createUser-button {
-        width: 97px;
-        height: 30px;
-        font-size: 11px;
-        padding: 4px;
-    }
-    #search-input {
-        width: 130px;
-        height: 30px;
-        font-size: 11px;
-        padding: 4px;
-    }
-    #search-button {
-        width: 30px;
-        height: 30px;
-        padding: 10px;
-    }
-    .tableUser-header h2 {
-        font-size: 14px;
-    }
+.nextPage-btn:hover {
+    background-color: #20A5F7;
+    color: white;
 }
 
-input {
-    -webkit-appearance: none;
+.dotts {
+    display: flex;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    font-size: 30px;
+    line-height: 40px;
+    color: #4D4D4D;
 }
 
-
+.highlight {
+    background-color: #20A5F7;
+    color: white;
+}

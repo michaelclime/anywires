@@ -2,6 +2,7 @@
 class invoiceList {
     constructor(){
         
+        this.curNumber = "";
         this.ArrayLIst = [];
         this.ArrayBanks = [];
         this.ArrayMerchants = []; 
@@ -15,8 +16,192 @@ class invoiceList {
         this.merchFilter = document.querySelector("#filterMerchant");
         this.creationDate = document.querySelector(".creationDate");
         this.receiveDate = document.querySelector(".receiveDate");
+        this.currentUser = document.querySelector("#currentUser");
+        this.addCommentBtn = document.querySelector("#addCommentBtn");
+        this.firstPage = document.querySelector(".firstPage-block");
+        this.firstPageImg = document.querySelector("#first-img");
         
         this.render();
+    }
+
+    renderViewInvoice = (obj) => {
+        this.filter = document.querySelector(".filter");
+        this.filter.style.display = "flex";
+        this.filter.addEventListener("click", (event) => {
+            event.target === this.filter ? this.filter.style.display = "none" : "";
+        });
+
+        var statusColor = "";
+        if(obj[0].status === "Sent") statusColor = "#FFBB33";
+        if(obj[0].status === "Requested") statusColor = "black";
+        if(obj[0].status === "Received") statusColor = "#7491F2";
+        if(obj[0].status === "Approved") statusColor = "#83C9A0";
+        if(obj[0].status === "Available") statusColor = "#00C851";
+
+        this.invoiceNumber = document.querySelector("#invoiceNumber").innerHTML = obj[0].number;
+        this.currentStatus = document.querySelector(".currentStatus");
+        this.currentStatus.innerHTML = obj[0].status;
+        this.currentStatus.style.color = statusColor;
+
+        this.invoiceMerchant = document.querySelector("#invoiceMerchant").innerHTML = obj[0].merchant;
+        this.invoiceBank = document.querySelector("#invoiceBank").innerHTML = obj[0].bank;
+        this.clientName = document.querySelector("#clientFullName").innerHTML = obj[0].client_details.full_name;
+
+        this.requestFee = document.querySelector("#requestFee").innerHTML = obj[0].amount.amount_requested;
+
+        var currency = "";
+        obj[0].currency === "EUR" ? currency = "€" : currency = "$";
+        this.invoiceCurrency = document.querySelector("#invoiceCurrency").innerHTML = currency;
+
+        // Cleaning docs table before new docs
+        this.tableDocs = document.querySelector("#table-docs").innerHTML = "";
+        this.tableComments = document.querySelector("#tableTbody-comments").innerHTML = "";
+
+        // Check and render docs
+        this.tableDocsRender(obj[0].documents.id);
+        this.tableDocsRender(obj[0].documents.payment_proof);
+        this.tableDocsRender(obj[0].documents.utility_bill);
+        this.tableDocsRender(obj[0].documents.declaration);
+        
+        // Render all Comments
+        this.tableCommentsRender(obj[0].comments);
+
+        // Number of Current Invoice
+        this.curNumber = obj[0].number;
+
+        // Add Comments Button Action
+    }
+
+    postCommet = async (number, data, create_by) => {
+        return  await fetch("http://18.216.223.81:3000/postComment", {
+            // return  await fetch("http://localhost:3000/postComment", {
+                method: "POST",
+                body: JSON.stringify({
+                    number,
+                    data,
+                    create_by
+                }),
+                headers:{'Content-Type': 'application/json'}
+            })
+            .then(res => {
+                return res.text();
+            }) 
+            .catch(err => {
+                console.log(err);
+            });
+    }
+
+    addComment = async () => {
+        // Remove spaces form data
+        var data = document.querySelector("#commentText").value.trim();
+        // If not empty than
+        if (data) {
+            // Get current User
+            var created_by = this.currentUser.textContent.trim();
+            // Post new comment
+            await this.postCommet(this.curNumber, data, created_by);
+
+            // Render without post request
+            this.tableComments = document.querySelector("#tableTbody-comments");
+            var tableTr = document.createElement("tr");
+            tableTr.innerHTML = `
+                <td>
+                    <div>
+                        <div>${created_by}</div>
+                        <div class="comentsDate">${moment(new Date()).format('lll')}</div>
+                    </div>
+                </td>
+                <td>${data}</td>
+            `;
+            this.tableComments.appendChild(tableTr);
+        }
+        document.querySelector("#commentText").value = "";
+    }
+
+    tableCommentsRender = (arr) => {
+        // Table wich we need to render
+        this.tableComments = document.querySelector("#tableTbody-comments");
+        // Check if empty
+        var ifEmpty = this.checkIsEmptyObj(arr);
+        if(!ifEmpty){
+            arr.forEach((item) => {
+                var tableTr = document.createElement("tr");
+                tableTr.innerHTML = `
+                    <td>
+                        <div>
+                            <div>${item.created_by}</div>
+                            <div class="comentsDate">${moment(item.creation_date).format('lll')}</div>
+                        </div>
+                    </td>
+                    <td>${item.message}</td>
+                `;
+
+                this.tableComments.appendChild(tableTr);
+            });
+        }
+    }
+
+    tableDocsRender = (arr) => {
+        // Table wich we need to render
+        this.tableDocs = document.querySelector("#table-docs");
+        // Check if empty
+        var ifEmpty = this.checkIsEmptyObj(arr);
+        // If not empty render arr
+        if(!ifEmpty){
+            arr.forEach( async (item) => {
+                var docArr = await this.getDocs({}, item.id);
+                docArr.forEach((doc) => {
+                    var tableTr = document.createElement("tr");
+                    tableTr.innerHTML = `
+                        <td>${doc.creator}</td> 
+                        <td>${doc.type}</td> 
+                        <td>${doc.status}</td> 
+                        <td>
+                            <span id="docGood"><i class="far fa-check-circle"></i></span>
+                            <span id="docBad"><i class="far fa-times-circle"></i></span>
+                        </td>
+                        <td> <button id="docPreview">Preview</button> </td>
+                    `;
+                    this.tableDocs.appendChild(tableTr);
+                });
+            });
+        }
+    }
+
+    getDocs = async (filter, id) => {
+         return  await fetch("http://18.216.223.81:3000/getDocs", {
+            // return  await fetch("http://localhost:3000/getDocs", {
+                method: "POST",
+                body: JSON.stringify({
+                    filter,
+                    id
+                }),
+                headers:{'Content-Type': 'application/json'}
+            })
+            .then(res => {
+                return res.json();
+            }) 
+            .catch(err => {
+                console.log(err);
+            });
+    }
+
+    viewInvoice = async () => {
+        this.tableTd = document.querySelectorAll(".view");
+        this.tableTd.forEach((td) => {
+
+            td.addEventListener("click", async () => {
+                // Remove all filters
+                this.filter = {};
+                // Get number of invoice
+                this.number = td.parentElement.children[0].children[0].children[0].children[0].textContent.split("#")[1];
+                // Get invoice
+                this.currentInvoice = await this.getInvoices(0, {"number": this.number} ); 
+                // Render popup window
+                this.renderViewInvoice(this.currentInvoice);
+            });
+
+        });
     }
 
     previewInvoice = (event) => {
@@ -47,28 +232,6 @@ class invoiceList {
     }
 
     searchFunction = async () => {
-        // var check = document.querySelector('.input-search').value;
-        // var result = [];
-        // this.ArrayLIst.forEach((obj) => {
-
-        //     var name = obj.client_details.full_name.toLowerCase().split(" ");
-        //     var number = obj.number.toString().split(" ");
-
-        //     for (let i = 0; i < name.length; i++) {
-
-        //         for (let k = 0; k < check.length; k++) {
-        //             check[k] === name[i] ? result.push(obj) : "";
-        //             check[k] === number[i] ? result.push(obj) : "";
-        //         }
-
-        //     }
-
-        // });
-        
-        // this.container.innerHTML = "";
-        // this.containerPages.innerHTML = "";
-
-        // if (result.length) return this.countNextPage(result);
         var check = document.querySelector('.input-search').value;
 
         const filter = { $text: { $search: check } };
@@ -404,6 +567,8 @@ class invoiceList {
                 this.checkClickedPages(currentEvent);
             });
         });
+
+        this.firstPage.style.display = "flex";
     }
 
     getMerchants = async () => {
@@ -514,36 +679,36 @@ class invoiceList {
 
             this.userList = document.createElement("tr");
             this.userList.innerHTML =  `
-                    <td class="column1">
+                    <td class="column1 view">
                         <div class="createdTd">
-                            <p class="green"><b>#${item.number}</b></p>
+                            <p class="green"><b class="number">#${item.number}</b></p>
                             <p class="smallBoldText">${this.checkDate(item.dates.creation_date)}</p>
                             <p>${moment(item.dates.creation_date).format("h:mm a")}</p>
                         </div>
                     </td> 
-                    <td class="column2">
+                    <td class="column2 view">
                         ${item.merchant}
                     </td> 
-                    <td class="column3">${item.client_details.full_name}</td> 
-                    <td class="column4">
+                    <td class="column3 view">${item.client_details.full_name}</td> 
+                    <td class="column4 view">
                         <div class="sentTd">
                             <p>${currency}${item.amount.amount_sent}</p>
                             <p class="yellow smallBoldText">${this.checkDate(item.dates.sent_date)}</p>
                         </div>
                     </td> 
-                    <td class="column5">${item.commissions}</td>
-                    <td class="column6">
+                    <td class="column5 view">${item.commissions}</td>
+                    <td class="column6 view">
                         <div>
                             <p>${currency}${item.amount.amount_received}</p>
                             <p class="blue smallBoldText">${this.checkDate(item.dates.received_date)}</p>
                         </div>
                     </td>
-                    <td class="column7">${item.bank}</td>
-                    <td class="column8">
+                    <td class="column7 view">${item.bank}</td>
+                    <td class="column8 view">
                         <p>${currency}${0}</p>
                         <p class="fiolet smallBoldText">${this.checkDate(item.dates.available_date)}</p>
                     </td>
-                    <td class="column9 ${color}"><strong>${item.status}</strong></td>
+                    <td class="column9 ${color} view"><strong>${item.status}</strong></td>
 
                     <td class="column10">
                         <div class="documentsIcon">
@@ -570,6 +735,7 @@ class invoiceList {
         });
         this.buttonsPreview = document.querySelectorAll(".previewBtn");
         this.buttonsPreview.forEach((btn) => btn.addEventListener("click", this.previewInvoice));
+        this.viewInvoice();
     }
 
     render(){
@@ -579,6 +745,8 @@ class invoiceList {
         this.clearFilterBtn.addEventListener("click", this.clearFilter);
         this.btnExel.addEventListener("click", this.saveXls);
         this.btn_search.addEventListener("click", this.searchFunction);
+        this.addCommentBtn.addEventListener("click", this.addComment);
+        this.firstPageImg.addEventListener("click", this.clearFilter);
     }
 };
 
