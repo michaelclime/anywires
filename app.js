@@ -707,6 +707,20 @@ app.post("/postComment", jsonParser, (req, res) => {
     });
 });
 
+app.post("/postEditedInvoice", jsonParser, (req, res) => {
+    mongo.connect(url, (err, db) => {
+        const number = req.body.number;
+        const data = req.body.newInvoice;
+
+        db.collection("invoices").updateOne({"number": number}, {$set: data },
+        {returnOriginal: false },function(err, result){
+           if(err) return console.log(err);     
+           const invoice = result.value;
+           res.send(invoice);
+       });
+    });
+});
+
 //////////////////////////////
 //                          //
 // Invoice Preview Proccess //
