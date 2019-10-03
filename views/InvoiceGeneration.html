@@ -69,8 +69,8 @@
                             <option value=""></option>
                         </select>
                     </div>
-                <% } %>
-                <% if(currentUser.merchant2 && currentUser.typeClass !== 'admin') { %>
+                <% } else { %>
+                <% if(currentUser.merchant2 !== 'null' && currentUser.typeClass !== 'admin') { %>
                     <div class="merchChoose">
                         <label for="merchList2">Merch</label>
                         <select id="merchList2"  name="merch">
@@ -79,7 +79,8 @@
                             <option  value="<%= currentUser.merchant2 %>"><%= currentUser.merchant2 %></option>
                         </select>
                     </div> 
-                <% } %>
+               
+                <% } } %>
                 <input class='invoiceBtn' type="submit" value='Make an Invoice' >
             </form>
         </div>
