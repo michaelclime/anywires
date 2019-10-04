@@ -73,8 +73,8 @@ class invoiceList {
     }
 
     postCommet = async (number, data, create_by) => {
-        return  await fetch("http://18.216.223.81:3000/postComment", {
-            // return  await fetch("http://localhost:3000/postComment", {
+        //return  await fetch("http://18.216.223.81:3000/postComment", {
+             return  await fetch("http://localhost:3000/postComment", {
                 method: "POST",
                 body: JSON.stringify({
                     number,
@@ -169,8 +169,8 @@ class invoiceList {
     }
 
     getDocs = async (filter, id) => {
-         return  await fetch("http://18.216.223.81:3000/getDocs", {
-            // return  await fetch("http://localhost:3000/getDocs", {
+         //return  await fetch("http://18.216.223.81:3000/getDocs", {
+             return  await fetch("http://localhost:3000/getDocs", {
                 method: "POST",
                 body: JSON.stringify({
                     filter,
@@ -572,8 +572,8 @@ class invoiceList {
     }
 
     getMerchants = async () => {
-        return  await fetch("http://18.216.223.81:3000/getMerchants")
-        // return  await fetch("http://localhost:3000/getMerchants")
+        //return  await fetch("http://18.216.223.81:3000/getMerchants")
+         return  await fetch("http://localhost:3000/getMerchants")
         .then(res => {
             return res.json();
         }) 
@@ -592,8 +592,8 @@ class invoiceList {
     }
 
     getBanks = async () => {
-         return  await fetch("http://18.216.223.81:3000/getBanks")
-        //  return  await fetch("http://localhost:3000/getBanks")
+         //return  await fetch("http://18.216.223.81:3000/getBanks")
+          return  await fetch("http://localhost:3000/getBanks")
          .then(res => {
              return res.json();
          }) 
@@ -618,8 +618,8 @@ class invoiceList {
     }
 
     getInvoices = async (count, filter, firstCr, secondCr, firstRe, secondRe) => {
-        return  await fetch("http://18.216.223.81:3000/getPart-Invoices", {
-        // return  await fetch("http://localhost:3000/getPart-Invoices", {
+        //return  await fetch("http://18.216.223.81:3000/getPart-Invoices", {
+         return  await fetch("http://localhost:3000/getPart-Invoices", {
             method: "POST",
             body: JSON.stringify({
                 numbers: count, 
@@ -640,8 +640,8 @@ class invoiceList {
     }
 
     getNumberOfinvoices = async (filter, firstCr, secondCr, firstRe, secondRe) => {
-        return  await fetch("http://18.216.223.81:3000/getNumber-Invoices", {
-        // return  await fetch("http://localhost:3000/getNumber-Invoices", {
+       // return  await fetch("http://18.216.223.81:3000/getNumber-Invoices", {
+         return  await fetch("http://localhost:3000/getNumber-Invoices", {
             method: "POST",
             body: JSON.stringify({
                 filter,

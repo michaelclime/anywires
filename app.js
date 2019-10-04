@@ -1279,6 +1279,37 @@ app.get('/getWallet/:merchant', function(req, res, next) {
     });
 });
 
+///////////////////////////////
+//    SETTLEMENTS
+///////////////////////////////
+
+app.get('/availableInvs/:merchant', function(req, res, next) {
+    let INVOIECES = [];
+    mongo.connect(url, function(err, db) {
+        assert.equal(null, err);
+        var cursor = db.collection('invoices').find({ 'status': 'Available',
+                                                      'merchant': req.params.merchant  } );
+        cursor.forEach(function(doc, err) {
+            assert.equal(null, err);
+            INVOIECES.push(doc);
+        }, function() {
+            db.close();
+            res.send(INVOIECES);
+        });
+    });
+});
+
+app.get("/getWalletsList", (req, res) => {
+    mongo.connect(url, (err, db) =>{
+        db.collection("wallets").find({}).toArray(function(err, wallets){
+            if(err) return console.log("Error with upload Banks!", err);
+            db.close();
+            res.send(wallets);
+        })
+    });
+});
+
+
 // Running server
 app.listen(3000, function() {
     console.log('Servering localhost 3000');

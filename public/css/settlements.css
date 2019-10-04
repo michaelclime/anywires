@@ -54,7 +54,7 @@ main {
 
 /* BUTTONS MENU */
 
-.btn {
+.btn, .requestBtn {
     margin: 0 10px;
     padding: 15px 30px;
     font-size: 14px;
@@ -70,7 +70,7 @@ main {
     margin: 0;
 }
 
-.btn:hover {
+.btn:hover, .requestBtn:hover {
     background-color: #888;
 }
 
@@ -192,9 +192,30 @@ table {
 
 /* Modal windows */
 
+/* Settle Transfers Windo */
+ #ttable th{
+    color: #FFF;
+ }
+
+.footBox {
+    margin: 20px 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-column-gap: 70px;
+}
+
+.SettleTransfersWindow-h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.check {
+    margin: 0 20px;
+}
+
 /* Merchant Login Window  */
 
-.MerchantPayWindow, .createWalletWindow {
+.MerchantPayWindow, .createWalletWindow, .SettleTransfersWindow {
 	display: none;
 	position: fixed;
 	top: 0;
@@ -206,7 +227,7 @@ table {
 	z-index: 9;
     background-color: rgba(0, 0, 0, 0.5);
 }
-.MerchantPayWindow-content {
+.MerchantPayWindow-content, .SettleTransfersWindow-content {
 	position: fixed;
 	text-align: center;
 	left: 50%;
@@ -236,7 +257,7 @@ table {
     outline: none;
 }
 
-.MerchantPayWindow-close, .createWalletWindow-close, .settlementDetails-close {
+.MerchantPayWindow-close, .createWalletWindow-close, .settlementDetails-close, .SettleTransfersWindow-close {
 	position: absolute;
 	top: -15px;
 	right: -40px;
@@ -250,7 +271,7 @@ table {
     outline: none;
 }
 
-.MerchantPayWindow-close:hover, .createWalletWindow-close:hover, .settlementDetails-close:hover {
+.MerchantPayWindow-close:hover, .createWalletWindow-close:hover, .settlementDetails-close:hover, .SettleTransfersWindow-close:hover {
     transform: scale(1.5);
 }
 

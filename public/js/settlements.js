@@ -1,6 +1,100 @@
 
+// Settle Transfers
+
 $(document).ready(function(){
-    $('.merchPayBtn, .payFromAwWalletBtn').on('click', function(event){
+    $('.settleTransfBtn').on('click', function(event){
+      event.preventDefault();
+      $('.SettleTransfersWindow').fadeIn();
+        let merchantName = document.querySelector('.merchantList').value;
+        document.querySelector(".ttableList").innerHTML = '';
+        document.querySelector(".walletList").innerHTML = '<option value="">Wallet for Settlement:</option>';
+        //let availableInvs  = fetch('http://18.216.223.81:3000/getList');
+        let availableInvs  = fetch(`http://localhost:3000/availableInvs/${merchantName}`);
+        availableInvs.then(response => {
+            return response.json();
+        }).then(invoices => {
+
+            class InvoicesList {
+                constructor(){
+                    this.list = invoices;
+                    this.render();
+                }
+            
+                loadInvoice(list) {
+                    this.container = document.querySelector(".ttableList");
+                    list.slice(0, list.length).forEach((item, i) => {
+                        this.invsList = document.createElement("tr");
+                        this.invsList.className = `tr${i}`;
+                            this.invsList.innerHTML =  `
+                            <td class="column column0">  <input class="check" type="checkbox" name=''> ${item.client_details.full_name}</td> 
+                            <td class="column column1">${item.amount.amount_received} ${item.currency}</td> 
+                            <td class="column column2">${item.commissions} ${item.currency}</td> 
+                            <td class="column column3">${item.amount.amount_approved} ${item.currency}</td> 
+                        `;   
+                    this.container.appendChild(this.invsList);
+                    });
+                }
+                render(){
+                    this.loadInvoice(this.list);
+                }
+            };
+
+            const a = new InvoicesList(invoices);
+        });
+
+        //let walletsList  = fetch('http://18.216.223.81:3000/getWalletsList');
+        let walletsList  = fetch('http://localhost:3000/getWalletsList');
+        walletsList.then(response => {
+            return response.json();
+            }).then(wallets => {
+        
+                class WalletOptoinList {
+                    constructor(){
+                        this.list = wallets;
+                        this.render();
+                    }
+                
+                    loadWalllet(list) {
+                        this.container = document.querySelector('.walletList');
+                        list.slice(0, list.length).forEach((item, i) => {
+                            if ( this.container) {
+                            this.option = document.createElement("option");
+                            this.option.value = item.name;
+                            this.option.innerHTML =  item.name;   
+                            this.container.append(this.option);
+                            }
+                        });
+                    }
+                    render(){
+                        this.loadWalllet(this.list);
+                    }
+                };
+        
+            const a = new WalletOptoinList(wallets);
+
+            const checkBoxes = document.querySelectorAll(".check");
+
+            checkBoxes.forEach((i) => {
+                i.addEventListener('click', (e) => {
+                    let spanSum = document.querySelector(".totalSum");
+                
+                    let indexNumber = +e.target.parentElement.className.match(/\d+/);
+                    console.log(indexNumber);
+                });
+            })
+        });
+    });
+    $('.SettleTransfersWindow-close').on('click', function(event){
+      event.preventDefault();
+      $('.SettleTransfersWindow').fadeOut();
+    });
+});
+
+
+// Pay From AW Wallet
+
+$(document).ready(function(){
+    $('.payFromAwWalletBtn').on('click', function(event){
       event.preventDefault();
       $('.MerchantPayWindow').fadeIn();
     });
@@ -9,6 +103,8 @@ $(document).ready(function(){
       $('.MerchantPayWindow').fadeOut();
     });
 });
+
+// CREATE WALLET
 
 $(document).ready(function(){
     $('.createWalletBtn').on('click', function(event){
@@ -23,7 +119,6 @@ $(document).ready(function(){
     });
 });
 
-// CREATE WALLET
 
 $(document).ready(function(){
     $('.creatingWalletBtn').on('click', function(event){
@@ -37,11 +132,14 @@ $(document).ready(function(){
 // SETTLEMENTS LIST 
 
 // Add appendAfter method
+
 Element.prototype.appendAfter = function (element) {
     element.parentNode.insertBefore(this, element.nextSibling);
   },false;
 
+
 // Add action to buttons ShowAll and Filter
+
 let showAllBtn = document.querySelector('.showAllBtn');
 let filterlBtn = document.querySelector('.filterBtn');
 
@@ -52,6 +150,39 @@ filterlBtn.addEventListener('click', (e) => {
     document.querySelector(".tableList").innerHTML = '';
     const filterList = new FilterList();});
 
+// Generate merchants list for selected menu
+
+let fetchPromise  = fetch('http://localhost:3000/getMerchants');
+fetchPromise.then(response => {
+    return response.json();
+    }).then(merchants => {
+
+        class MerchantOptoinList {
+            constructor(){
+                this.list = merchants;
+                this.render();
+            }
+        
+            loadMerchant(list) {
+                this.container = document.querySelector('#filterMerchantA');
+                list.slice(0, list.length).forEach((item, i) => {
+                    if ( this.container) {
+                    this.option = document.createElement("option");
+                    this.option.value = item.name;
+                    this.option.innerHTML =  item.name;   
+                    this.container.append(this.option);
+                    }
+                });
+            }
+            render(){
+                this.loadMerchant(this.list);
+            }
+        };
+
+    const a = new MerchantOptoinList(merchants);
+});
+
+// Show settlements list
 
 const SETTLEMENTS = [{
     CreatedBy: 'CMP24',
@@ -156,12 +287,12 @@ class SettlementsList {
             this.settleList.className = `tr${i}`;
             
                 this.settleList.innerHTML =  `
-                <td class="col column0">${item.CreatedBy}</td> 
-                <td class="col column1">${item.Date}</td> 
-                <td class="col column2">${item.Amount}</td> 
+                <td class="col column0">${item.merchant}</td> 
+                <td class="col column1">${item.dates.creation_date}</td> 
+                <td class="col column2">${item.amount}</td> 
                 <td class="col column3">${item.Type}</td> 
-                <td class="col column4">${item.Wallet}</td> 
-                <td class="col column5">${item.Status}</td>
+                <td class="col column4">${item.wallets[0]}</td> 
+                <td class="col column5">${item.status}</td>
             `;
 
         this.settleList.addEventListener('click', (e) => {
@@ -259,7 +390,7 @@ class SettlementsList {
         this.keyPressSearch();
     }
 };
-const settlementsList1 = new SettlementsList();
+//const settlementsList1 = new SettlementsList();
 
 // FILTER
 

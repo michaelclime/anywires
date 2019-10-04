@@ -109,50 +109,23 @@
                 <div class="filterBank-block">
                     <div class="filterMerchant-block">
                         <label for="filterMerchant-block">Merchant</label>
-                        <select class="merchantList"  id="filterMerchant">
-                            <option value=""></option>
-                            <option value="CK">CK</option>
-                            <option value="CMP24">CMP24</option>
-                            <option value="GigaFX">GigaFX</option>
-                            <option value="Omer">Omer</option>
-                            <option value="CFM Solutions">CFM Solutions</option>
-                            <option value="Lions">Lions</option>
-                            <option value="English">English</option>
-                            <option value="TurboF">TurboF</option>
-                            <option value="BU">BU</option>
-                            <option value="ESP">ESP</option>
-                            <option value="ScaleApps">ScaleApps</option>
-                            <option value="MarketsCFD">MarketsCFD</option>
-                            <option value="TradeFXHub">TradeFXHub</option>
-                            <option value="QTeck">QTeck</option>
-                            <option value="60op">60op</option>
-                            <option value="GlobalFin">GlobalFin</option>
-                            <option value="Click2Sell">Click2Sell</option>
-                            <option value="BitSale">BitSale</option>
-                            <option value="XTrade">XTrade</option>
-                            <option value="Aro Trade">Aro Trade</option>
-                            <option value="Get Bits">Get Bits</option>
-                            <option value="Popcorn">Popcorn</option>
-                            <option value="GreatFXpro">GreatFXpro</option>
-                            <option value="Los Diablos">Los Diablos</option>
-                            <option value="TiRex">TiRex</option>
-                            <option value="AspenHolding">AspenHolding</option>
-                            <option value="MaxiPartners">MaxiPartners</option>
-                            <option value="SWGMarkets">SWGMarkets</option>
-                            <option value="Dax-300">Dax-300</option>
-                            <option value="Stox-50">Stox-50</option>
-                            <option value="MTC Brokers">MTC Brokers</option>
-                            <option value="FinixCapital">FinixCapital</option>
-                            <option value="CertusFinance">CertusFinance</option>
-                            <option value="DiamondGroup">DiamondGroup</option>
-                            <option value="F15">F15</option>
-                            <option value="TradeWell.io">TradeWell.io</option>
-                            <option value="Boxinvesting">Boxinvesting</option>
-                            <option value="Imperial">Imperial</option>
-                            <option value="Test">Test</option>
-                            <option value="Ainvestments">Ainvestments</option>
-                            <option value="DiamondGroup">IB Albania</option>
-                        </select>
+                        
+                        <% if (currentUser.typeClass == 'admin') { %>
+                            <select class="merchantList"  id="filterMerchantA">
+                                <option value=""></option>
+                            </select>
+                        <% } else { %>
+                        <% if (currentUser.merchant2 == 'null') { %>
+                            <select class="merchantList"  id="filterMerchant">
+                                <option value="<%= currentUser.merchant %>"><%= currentUser.merchant %></option>
+                            </select>
+                        <% } else { %>
+                            <select class="merchantList"  id="filterMerchant">
+                                <option value=""></option>
+                                <option value="<%= currentUser.merchant %>"><%= currentUser.merchant %></option>
+                                <option value="<%= currentUser.merchant2 %>"><%= currentUser.merchant2 %></option>
+                            </select>
+                        <% } } %>
                     </div>
                 </div>
                 
@@ -162,7 +135,6 @@
                 <div class="buttonsBlock">
                     <button class="btn filterBtn">Show</button>
                     <button class="btn showAllBtn">Clear</button>
-                    <button class="btn merchPayBtn">Merch Pay</button>
                     <button class="btn payFromAwWalletBtn">Pay from AW Wallet</button>
                     <button class="btn settleTransfBtn">Settle Transfers</button>
                 </div>
@@ -199,6 +171,34 @@
     </main>
 
     <!-- Modal windows -->
+
+    <!-- Settle Transfers Window -->
+    <div class="SettleTransfersWindow">
+            <div class="SettleTransfersWindow-content">
+                <button class="SettleTransfersWindow-close">&times;</button>
+                <h1 class="SettleTransfersWindow-h1">Please mark Available for Settlement invoices to include them to settlement.</h1>
+                <form action="#">
+                    <table id="ttable">
+                        <thead>
+                            <tr class="ttable-head">
+                                <th class="column0">Name</th>
+                                <th class="column1">Received</th>
+                                <th class="column2">Fee</th>
+                                <th class="column3">Approved</th>
+                            </tr>
+                        </thead>
+                        <tbody class="ttableList"></tbody>
+                    </table>
+                    <span class="totalSum"></span>
+                   <div class="footBox">
+                        <select class="walletList">
+                            <option value="">Wallet for Settlement:</option>
+                        </select>
+                        <input type="submit" value="Request" class="requestBtn">
+                   </div>
+                </form>
+            </div>
+    </div>
 
     <!-- Merchant Pay Window -->
     <div class="MerchantPayWindow">
