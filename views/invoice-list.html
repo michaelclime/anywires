@@ -286,6 +286,76 @@
 			</div>
 		</div>
 
+		<!-- Edit Invoice Modal Window -->
+		<div class="filterEditIvoice">
+			<div class="modalEdit-block">
+				<h2>Invoice №<span class="invoceNumber"></span></h2>
+				<div class="editDetails-block">
+					<div class="invoceDeatails">
+						<h3>Transfer details</h3>
+						<div>
+							<label>Amount:</label>
+							<input class="detailsInputs editData" type="number" placeholder="Amount">
+						</div>
+						<div>
+							<label>Type:</label>
+							<input class="detailsInputs editData" type="text" placeholder="Type">
+						</div>
+						<div>
+							<label>Currency:</label>
+							<select id="editCurrency" class="editData">
+								<option value=""></option>
+							</select>
+						</div>
+						<div>
+							<label>Bank:</label>
+							<select id="editBank" class="editData">
+								<option value=""></option>
+							</select>
+						</div>
+						<div>
+							<label>Merchant:</label>
+							<select id="editMerhcnat" class="editData">
+								<option value=""></option>
+							</select>
+						</div>
+						<div>
+							<label>Sepa:</label>
+							<input id="sepaEdit" type="checkbox" class="editData">
+						</div>
+					</div>
+					<div class="clientDetails">
+						<h3>Client details</h4>
+						<div>
+							<label>Full name:</label>
+							<input class="detailsInputs editData" type="text" placeholder="Full name">
+						</div>
+						<div>
+							<label>Email:</label>
+							<input class="detailsInputs editData" type="text" placeholder="Email">
+						</div>
+						<div>
+							<label>Phone:</label>
+							<input class="detailsInputs editData" type="text" placeholder="Phone">
+						</div>
+						<div>
+							<label>Country:</label>
+							<input class="detailsInputs editData" type="text" placeholder="Country">
+						</div>
+						<div>
+							<label>Address:</label>
+							<input class="detailsInputs editData" type="text" placeholder="Address">
+						</div>
+						<div>
+							<label>ID number:</label>
+							<input class="detailsInputs editData" type="text" placeholder="ID number">
+						</div>
+					</div>
+				</div>
+				<button id="saveEditedInvoice-btn">Change</button>
+			</div>
+		</div>
+
 		<script src="./js/invoice-list.js"></script>
 		<script src="js/classie.js"></script>
 		<script src="js/gnmenu.js"></script>

@@ -18,10 +18,124 @@ class invoiceList {
         this.receiveDate = document.querySelector(".receiveDate");
         this.currentUser = document.querySelector("#currentUser");
         this.addCommentBtn = document.querySelector("#addCommentBtn");
+        this.textAreaAddComment = document.querySelector("#commentText")
         this.firstPage = document.querySelector(".firstPage-block");
         this.firstPageImg = document.querySelector("#first-img");
+        this.editInvoiceBtn = document.querySelector("#editBtn");
+        this.saveEditedInvoice_btn = document.querySelector("#saveEditedInvoice-btn");
+        this.editData = document.querySelectorAll(".editData");
+        this.inputSearch = document.querySelector(".input-search");
+        this.currentInvoice = [];
         
         this.render();
+    }
+
+    saveEditedInvoice = async () => {
+        var sepa = false;
+        this.editData[5].checked ? sepa = true : sepa = false;
+
+        var newInvoice = {
+            "amount.amount_requested": +(this.editData[0].value),
+            "type": this.editData[1].value,
+            "currency": this.editData[2].value,
+            "bank": this.editData[3].value,
+            "merchant": this.editData[4].value,
+            "sepa": sepa,
+            "client_details.full_name": this.editData[6].value,
+            "client_details.email": this.editData[7].value,
+            "client_details.phone": this.editData[8].value,
+            "client_details.country": this.editData[9].value,
+            "client_details.address": this.editData[10].value,
+            "client_details.id_number": this.editData[11].value
+        };
+        await this.postEditedInvoice(this.curNumber, newInvoice);
+
+        // Cleanning edit Modal Window Edit
+        this.editData.forEach((item) => item.value = "");
+        this.editData[5].removeAttribute("checked", "checked");
+        this.filterEdit.style.display = "none";
+
+        // Update Modal Window View
+        this.currentInvoice = await this.getInvoices(0, {"number": this.curNumber} ); 
+        this.renderViewInvoice(this.currentInvoice);
+    }
+
+    postEditedInvoice = async (number, newInvoice) => {
+    return  await fetch("http://18.216.223.81:3000/postEditedInvoice", {
+        // return  await fetch("http://localhost:3000/postEditedInvoice", {
+            method: "POST",
+            body: JSON.stringify({
+                number,
+                newInvoice
+            }),
+            headers:{'Content-Type': 'application/json'}
+        })
+        .then(res => {
+            return res.text();
+        }) 
+        .catch(err => {
+            console.log(err);
+        });
+    }
+
+    renderOptionFromArray = (obj, value, select) => {
+        obj.forEach((item) => {
+            this.renderOption(select, item[value]);
+        });
+    }
+
+    renderAndSelectOption = (select, value) => {
+        var option = document.createElement("option");
+        option.setAttribute("selected", "selected");
+        option.value = value;
+        option.innerHTML = value;
+        select.appendChild(option);
+    }
+
+    editInvoice = () => {
+        this.invoceNumber = document.querySelector(".invoceNumber").innerHTML = this.curNumber;
+        // If click on filter - close
+        this.filterEdit = document.querySelector(".filterEditIvoice");
+        this.filterEdit.style.display = "flex";
+        this.filterEdit.addEventListener("click", (event) => {
+            event.target === this.filterEdit ? this.filterEdit.style.display = "none" : "";
+        });
+
+        // Rendering Current Data Objecs
+        this.editData[0].value = this.currentInvoice[0].amount.amount_requested;
+        this.editData[1].value = this.currentInvoice[0].type;
+        this.editData[6].value = this.currentInvoice[0].client_details.full_name;
+        this.editData[7].value = this.currentInvoice[0].client_details.email;
+        this.editData[8].value = this.currentInvoice[0].client_details.phone;
+        this.editData[9].value = this.currentInvoice[0].client_details.country;
+        this.editData[10].value = this.currentInvoice[0].client_details.address;
+        this.editData[11].value = this.currentInvoice[0].client_details.id_number;
+
+        // Render Merchant and Banks in select
+        this.editData[3].innerHTML = "";
+        this.renderOptionFromArray(this.ArrayBanks, "name", this.editData[3]);
+        this.renderAndSelectOption(this.editData[3], this.currentInvoice[0].bank);
+
+        this.editData[4].innerHTML = "";
+        this.renderOptionFromArray(this.ArrayMerchants, "name", this.editData[4]);
+        this.renderAndSelectOption(this.editData[4], this.currentInvoice[0].merchant);
+
+        // Check Sepa
+        if(this.currentInvoice[0].sepa){
+            this.editData[5].setAttribute("checked", "checked");
+        } else {
+            this.editData[5].removeAttribute("checked", "checked");
+        }
+
+        // Check currency
+        this.editData[2].innerHTML = "";
+        if(this.currentInvoice[0].currency === "EUR"){
+            this.renderAndSelectOption(this.editData[2], this.currentInvoice[0].currency);
+            this.renderOption(this.editData[2], "USD");
+        } else {
+            this.renderAndSelectOption(this.editData[2], this.currentInvoice[0].currency);
+            this.renderOption(this.editData[2], "EUR");
+        }
     }
 
     renderViewInvoice = (obj) => {
@@ -217,14 +331,14 @@ class invoiceList {
         this.ArrayMerchants.forEach((merchant) => merchList.push(merchant.name));
         
         for (let i = 0; i < bankList.length; i++) {
-            this.renderFilters(this.bankFilter, bankList[i]);
+            this.renderOption(this.bankFilter, bankList[i]);
         }
         for (let m = 0; m < merchList.length; m++) {
-            this.renderFilters(this.merchFilter, merchList[m]);
+            this.renderOption(this.merchFilter, merchList[m]);
         }
     }
 
-    renderFilters = (filter, name) => {
+    renderOption = (filter, name) => {
         this.option = document.createElement("option");
         this.option.value = name;
         this.option.textContent = name;
@@ -232,7 +346,7 @@ class invoiceList {
     }
 
     searchFunction = async () => {
-        var check = document.querySelector('.input-search').value;
+        var check = this.inputSearch.value;
 
         const filter = { $text: { $search: check } };
 
@@ -284,7 +398,7 @@ class invoiceList {
     clearFilter = () => {
         this.creationDate.value = "";
         this.receiveDate.value = "";
-        this.searchInput = document.querySelector('.input-search').value = "";
+        this.searchInput = this.inputSearch.value = "";
         this.selets = document.querySelectorAll("select");
         this.selets.forEach(item => item.value = "");
         this.container = document.getElementById("table-list");
@@ -747,6 +861,19 @@ class invoiceList {
         this.btn_search.addEventListener("click", this.searchFunction);
         this.addCommentBtn.addEventListener("click", this.addComment);
         this.firstPageImg.addEventListener("click", this.clearFilter);
+        this.editInvoiceBtn.addEventListener("click", this.editInvoice);
+        this.saveEditedInvoice_btn.addEventListener("click", this.saveEditedInvoice);
+
+        this.textAreaAddComment.addEventListener("keyup", () => {
+            event.preventDefault();
+            event.keyCode === 13 ? this.addComment() : "";
+        });
+
+        this.inputSearch.addEventListener("keyup", () => {
+            event.preventDefault();
+            event.keyCode === 13 ? this.searchFunction() : "";
+        });
+
     }
 };
 
