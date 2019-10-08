@@ -325,6 +325,10 @@ label {
 }
 
 /* Popup Window View Start */
+.modal-open {
+    overflow: hidden;
+}
+
 .filter {
     display: none;
     justify-content: center;
@@ -496,11 +500,19 @@ label {
     margin: 7px 0;  
 }
 
-#docPreview:hover {
+#uploadForm {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+.docPreview:hover {
     background-color: #555;
 }
 
-#docPreview:active {
+.docPreview:active {
     background-color: #20A5F7;
 }
 
@@ -508,19 +520,7 @@ label {
     display: none;
 }
 
-#uploadDocs {
-    width: 140px;
-    height: 50px;  
-}
 
-#uploadDocs:hover {
-    background-color: #12C7B2;
-}
-
-#uploadDocs:active {
-    background-color: #555;
-    color: white;
-}
 
 #uploadBtn {
     width: 140px;
@@ -543,6 +543,41 @@ label {
     background-color: #FFBB33;
     color: white;
     transition: .2s;
+}
+
+.hide {
+    display: none;
+}
+
+.fileWrapper {
+    width: 140px;
+    height: 70px;
+    text-align: center;
+    font-size: 14px;
+    border: 1px solid rgb(159, 159, 159);
+    border-radius: 3px;
+    cursor: pointer;
+    padding-top: 15px;
+    overflow: hidden;
+    position: relative;
+    transition: .3s;
+}
+.fileWrapper:hover {
+    background-color: #20A5F7;
+    color: white;
+}
+
+#uploadDocs {
+    width: 100%;
+    height: 100%;
+    background: inherit;
+    cursor: pointer;
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
 }
 
 #settledBtn{
@@ -568,7 +603,7 @@ label {
     transition: .2s;
 }
 
-#docPreview {
+.docPreview {
     width: 100%;
     height: 30px;
     background-color: #12C7B2;

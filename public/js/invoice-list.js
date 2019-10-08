@@ -25,9 +25,111 @@ class invoiceList {
         this.saveEditedInvoice_btn = document.querySelector("#saveEditedInvoice-btn");
         this.editData = document.querySelectorAll(".editData");
         this.inputSearch = document.querySelector(".input-search");
+        this.uploadBtn = document.querySelector("#uploadBtn");
+        this.clickToDownload = document.querySelector("#uploadDocs");
         this.currentInvoice = [];
         
         this.render();
+    }
+
+    changeDocsStatus = async (id, status, number, type) => {
+        return  await fetch("http://18.216.223.81:3000/changeDocStatus", {
+            // return  await fetch("http://localhost:3000/changeDocStatus", {
+                method: "POST",
+                body: JSON.stringify({
+                    id,
+                    status, 
+                    number, 
+                    type
+                }),
+                headers:{'Content-Type': 'application/json'}
+            })
+            .then(res => {
+                return res.text();
+            }) 
+            .catch(err => {
+                console.log(err);
+            });
+    }
+
+    docsBad = async () => {
+        var id = event.target.closest("tr").children[4].textContent.trim();
+        var status = "Declined";
+        var type = event.target.closest("tr").children[1].textContent.trim();
+        var statusTd = event.target.closest("tr").children[2].innerHTML = status;
+        
+        await this.changeDocsStatus(id, status, this.curNumber, type);
+    }
+
+    docsGood = async () => {
+        var id = event.target.closest("tr").children[4].textContent.trim();
+        var status = "Approved";
+        var type = event.target.closest("tr").children[1].textContent.trim();
+        var statusTd = event.target.closest("tr").children[2].innerHTML = status;
+
+        await this.changeDocsStatus(id, status, this.curNumber, type);
+    }
+
+    openDocsImage = (event) => {
+        var id = event.target.closest("tr").children[4].textContent.trim();
+        window.open(`http://18.216.223.81:3000/image/${id}`, '_blank');
+        // 18.216.223.81 localhost
+    }
+
+    changeFileClickTo = () => {
+        this.fileName = document.querySelector(".fileName");
+        this.fileWrapper = document.querySelector(".fileWrapper");
+
+        var fileName = this.clickToDownload.files[0];
+        this.fileName.innerHTML = fileName.name
+
+        // Add border
+        this.fileWrapper.style.backgroundColor = "rgba(18,199,178,1)";
+        this.fileWrapper.style.color = "white";
+        this.fileWrapper.style.fontWeight = "bold";
+        this.fileWrapper.style.border = "none";
+    }
+
+    initialUpload = async (event) => {
+        event.preventDefault();
+
+        var name = document.querySelector("#docsSelect").value.trim();
+        var number = this.curNumber;
+        var file = document.querySelector("#uploadDocs").files[0];
+        var creator = this.currentUser.textContent.trim();
+        var emptyFile = this.checkIsEmptyObj(file);
+        
+        // If File exist and Type too than send req
+        if(!emptyFile && name){
+            var fd = new FormData();
+            fd.append("file", file);
+            fd.append("number", number);
+            fd.append("name", name);
+            fd.append("creator", creator);
+            await this.postFile(fd);
+     
+             // Update Modal Window View
+             this.currentInvoice = await this.getInvoices(0, {"number": this.curNumber} ); 
+             this.renderViewInvoice(this.currentInvoice);
+        } else {
+            alert("Please choose the file!");
+        }
+    }
+
+    postFile = async (fd) => {
+    return  await fetch("http://18.216.223.81:3000/upload", {
+        // return  await fetch("http://localhost:3000/upload", {
+            method: "POST",
+            body: fd,
+            mode: "no-cors",
+            headers:{'Accept': 'application/json'}
+        })
+        .then(res => {
+            return res.text();
+        }) 
+        .catch(err => {
+            console.log(err);
+        });
     }
 
     saveEditedInvoice = async () => {
@@ -138,11 +240,16 @@ class invoiceList {
         }
     }
 
-    renderViewInvoice = (obj) => {
+    renderViewInvoice = async (obj) => {
         this.filter = document.querySelector(".filter");
         this.filter.style.display = "flex";
         this.filter.addEventListener("click", (event) => {
-            event.target === this.filter ? this.filter.style.display = "none" : "";
+            if(event.target === this.filter){
+                // Off overflow for BODY
+                document.body.classList.remove("modal-open");
+                // Hide Modal Window
+                this.filter.style.display = "none";
+            }
         });
 
         var statusColor = "";
@@ -176,14 +283,15 @@ class invoiceList {
         this.tableDocsRender(obj[0].documents.payment_proof);
         this.tableDocsRender(obj[0].documents.utility_bill);
         this.tableDocsRender(obj[0].documents.declaration);
-        
+
         // Render all Comments
         this.tableCommentsRender(obj[0].comments);
 
         // Number of Current Invoice
         this.curNumber = obj[0].number;
 
-        // Add Comments Button Action
+        // Off overflow for BODY
+        document.body.classList.add("modal-open");
     }
 
     postCommet = async (number, data, create_by) => {
@@ -255,12 +363,13 @@ class invoiceList {
         }
     }
 
-    tableDocsRender = (arr) => {
+    tableDocsRender = async (arr) => {
         // Table wich we need to render
         this.tableDocs = document.querySelector("#table-docs");
         // Check if empty
         var ifEmpty = this.checkIsEmptyObj(arr);
         // If not empty render arr
+        
         if(!ifEmpty){
             arr.forEach( async (item) => {
                 var docArr = await this.getDocs({}, item.id);
@@ -271,11 +380,12 @@ class invoiceList {
                         <td>${doc.type}</td> 
                         <td>${doc.status}</td> 
                         <td>
-                            <span id="docGood"><i class="far fa-check-circle"></i></span>
-                            <span id="docBad"><i class="far fa-times-circle"></i></span>
+                            <span id="docGood" onclick="userList.docsGood(event)"><i class="far fa-check-circle"></i></span>
+                            <span id="docBad" onclick="userList.docsBad(event)"><i class="far fa-times-circle"></i></span>
                         </td>
-                        <td> <button id="docPreview">Preview</button> </td>
-                    `;
+                        <td class="hide">${doc._id}</td>
+                        <td> <button class="docPreview" onclick="userList.openDocsImage(event)">Preview</button> </td> 
+                    `; 
                     this.tableDocs.appendChild(tableTr);
                 });
             });
@@ -863,6 +973,8 @@ class invoiceList {
         this.firstPageImg.addEventListener("click", this.clearFilter);
         this.editInvoiceBtn.addEventListener("click", this.editInvoice);
         this.saveEditedInvoice_btn.addEventListener("click", this.saveEditedInvoice);
+        this.uploadBtn.addEventListener("click", this.initialUpload);
+        this.clickToDownload.addEventListener("input", this.changeFileClickTo);
 
         this.textAreaAddComment.addEventListener("keyup", () => {
             event.preventDefault();
