@@ -337,6 +337,332 @@ table {
     width: 100%;
 }
 
+/* Popup Window View Start */
+.filter {
+    display: none;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.6);
+    position: absolute;
+    min-height: 1200px;
+    top: 0; bottom: 0; left: 0; right: 0;
+    z-index: 100;
+}
+
+.modalView-block {
+    position: absolute;
+    top: 10%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 900px;
+    background-color: white;
+    padding: 20px;
+    z-index: 120;
+}
+
+.invoiceNum-block {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.transfer-block {
+    margin: 10px 0;
+    width: 100%;
+}
+
+.remainder {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.remainder p {
+    font-size: 14px;
+    color: rgb(255, 51, 51);
+}
+
+.documentsP {
+    text-align: left;
+    width: 100%;
+}
+
+.buttonBlock {
+    width: 100%;
+    margin: 20px 0;
+    display: flex;
+    justify-content: space-between;
+}
+
+.buttonBlock button {
+    width: 100px;
+    height: 35px;
+    color: black;
+    transition: .2s;
+    font-size: 15px;
+}
+
+#prevSettleBtn button {
+    margin: 10px;
+    padding: 5px 10px;
+    width: 100%;
+    height: 100%;
+    font-size: 18px;
+    font-weight: 500;
+    background: rgb(77, 77, 77);
+    color: #FFF;
+    border: none;
+    border-radius: 5px;
+    outline: none;
+}
+
+#prevSettleBtn button:hover {
+    background: #20a5f7;
+}
+
+
+#sent {
+    margin-right: 10px;
+    background-color: #FFBB33;
+}
+
+#received {
+    margin-right: 10px;
+    background-color: rgb(73, 197, 73);
+}
+
+#declined {
+    margin-right: 10px;
+    background-color:  rgb(255, 0, 0);;
+}
+
+#sent:hover, #received:hover, #declined:hover {
+    background-color: #12C7B2;
+    box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.75);
+}
+
+#sent:active, #received:active, #declined:active {
+    background-color: #888;
+}
+
+.currentStatus{
+    font-weight: bold;
+    text-decoration: underline;
+    font-size: 18px;
+}
+
+.actions-block {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.docs-block {
+    display: flex;
+    width: 90%;
+}
+
+.restButton-block {
+    display: flex;
+    flex-direction: column;
+}
+
+.restButton-block button {
+    width: 100px;
+    height: 35px;
+    margin-bottom: 10px;
+}
+
+.docTable-block {
+    width: 70%;
+    overflow: scroll;
+    overflow-x:hidden;
+    height: 165px; 
+}
+
+.docsUpload-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 25%;
+}
+
+#docsTable {
+    width: 100%;
+}
+
+#docsTable tr, #table-comments tr {
+    height: 30px;
+}
+
+#docsTable th, #table-comments th  {
+    background-color: #20A5F7;
+    color: white;
+}
+
+.docsInside-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    width: 100%;
+    margin-top: 10px;
+    height: 100%;
+}
+
+#docsSelect {
+    width: 140px;
+    height: 35px; 
+    margin: 7px 0;  
+}
+
+#docPreview:hover {
+    background-color: #555;
+}
+
+#docPreview:active {
+    background-color: #20A5F7;
+}
+
+#currentUser {
+    display: none;
+}
+
+#uploadDocs {
+    width: 140px;
+    height: 50px;  
+}
+
+#uploadDocs:hover {
+    background-color: #20a5f7;
+}
+
+#uploadDocs:active {
+    background-color: #555;
+    color: white;
+}
+
+#uploadBtn {
+    width: 140px;
+    height: 35px;  
+    background-color: #4D4D4D;
+    color: white;
+    transition: .2s;
+}
+
+#uploadBtn:hover, #addCommentBtn:hover {
+    background-color: #20a5f7;
+}
+
+#uploadBtn:active, #addCommentBtn:active {
+    background-color: rgb(93, 93, 93);
+}
+
+#docPreview {
+    width: 100%;
+    height: 30px;
+    background-color: #12C7B2;
+    color: white;
+    margin: 4px 0 0 0;
+}
+
+.comments-block {
+    width: 100%;
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+#table-comments {
+    width: 100%;
+}
+
+#table-comments tbody tr {
+    height: 40px;
+  }
+
+#table-comments tbody tr, #docsTable tbody tr, #docsTable tbody td {
+    font-size: 14px;
+    font-weight: normal;
+}
+
+#table-comments th, #docsTable th {
+    font-size: 14px;
+    
+}
+
+.tableComments-block {
+    width: 62%;
+    overflow: scroll;
+    overflow-x:hidden;
+    height: 165px; 
+}
+
+.commentsInside-block {
+    width: 35%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+#commentText {
+    width: 100%;
+    height: 125px;
+    border: 1px solid rgb(135, 133, 133);
+    border-radius: 3px;
+    padding: 5px;
+    font-family: 'Frank Ruhl Libre', serif;
+}
+
+#addCommentBtn {
+    width: 100%;
+    height: 35px;
+    margin-top: 5px;
+    background-color: #4D4D4D;
+    color: white;
+    transition: .2s;
+}
+
+#docGood, #docBad{
+    cursor: pointer;
+    user-select: none;
+}
+
+#docGood:hover, #docBad:hover{
+    opacity: .4;
+}
+
+#docGood:active, #docBad:active{
+    filter: grayscale(12%) invert(100%);
+}
+
+.comentsDate {
+    color: #20A5F7;
+    font-size: 12px;
+    margin-top: 3px;
+}
+
+.firstPage-block {
+    width: 90%;
+    display: none;
+    align-items: flex-start;
+}
+
+.firstPage-block img {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+}
+
+.firstPage-block img:hover {
+    filter: grayscale(50%) invert(70%);
+}
+
+
+
 /* Settlement Details Window */
 
 .settlementDetails {
@@ -407,21 +733,7 @@ table {
     color: rgb(119, 114, 114);
 }
 
-.settlePrevBtn {
-    margin: 10px;
-    padding: 10px 20px;
-    font-size: 18px;
-    font-weight: 500;
-    background: rgb(77, 77, 77);
-    color: #FFF;
-    border: none;
-    border-radius: 5px;
-    outline: none;
-}
 
-.settlePrevBtn:hover {
-    background: #20a5f7;
-}
 
 .main-form {
     display: flex;

@@ -1324,24 +1324,21 @@ app.get("/getWalletsList", (req, res) => {
 });
 
 app.get("/getSettlementsList", (req, res) => {
-    mongo.connect(url, (err, db) =>{
-        db.collection("settlements").find({}).toArray(function(err, settlements){
-            if(err) return console.log("Error with upload!", err);
-            
-            settlements.forEach( (i) => {
-                let idWalllet = i.wallets[0];
-                let walletes = db.collection('wallets');
-                walletes.findOne({'_id': idWalllet}).then( (item) => {
-                    i.wallets[0] = item.name;
-                });
-            }, function(err, res) {
-                if (err) {
-                    console.log(err);
-                } else {
-                    res.send(settlements);
-                }
-            });
-        })
+    mongo.connect(url, function(err, db) {
+        db.collection('settlements').aggregate([
+            {
+            $lookup: {
+                from: "wallets",
+                localField: "wallets",    // field in the settlements collection
+                foreignField: "_id",  // field in the wallets collection
+                as: "wallet"
+            }
+            }
+        ]).toArray(function(err, settlements) {
+            if (err) throw err;
+            res.send(settlements);
+            db.close();
+        });
     });
 });
 
@@ -1350,5 +1347,3 @@ app.get("/getSettlementsList", (req, res) => {
 app.listen(3000, function() {
     console.log('Servering localhost 3000');
 });
-
-
