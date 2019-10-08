@@ -213,6 +213,13 @@ table {
     margin: 0 20px;
 }
 
+.totalSum {
+    padding: 10px 0;
+    padding-left: 80%;
+    color: rgb(18, 119, 18);
+    font-weight: 700;
+}
+
 /* Merchant Login Window  */
 
 .MerchantPayWindow, .createWalletWindow, .SettleTransfersWindow {
