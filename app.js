@@ -17,7 +17,10 @@ let express = require("express"),
     async = require('async'),
     chalk = require('chalk'),
     crypto = require('crypto'),
-    xoauth2 = require('xoauth2');
+    xoauth2 = require('xoauth2'),
+    multer = require("multer"),
+    GridFsStorage = require("multer-gridfs-storage"),
+    Grid = require("gridfs-stream");
 
 
 const url = 'mongodb://18.216.223.81:27017/anywires';
@@ -720,6 +723,166 @@ app.post("/postEditedInvoice", jsonParser, (req, res) => {
        });
     });
 });
+
+// Create mongo connection
+const conn = mongoose.createConnection(url,  { useNewUrlParser: true });
+
+// Init gfs
+let gfs;
+
+conn.once("open", () => {
+    // Init stream
+    gfs = Grid(conn.db, mongoose.mongo);
+    gfs.collection("uploads");
+});
+
+// Create storage engine
+const storage = new GridFsStorage({
+    url: url,
+    file: (req, file) => {
+      return new Promise((resolve, reject) => {
+        crypto.randomBytes(16, (err, buf) => {
+          if (err) {
+            return reject(err);
+          }
+          const filename = buf.toString('hex') + path.extname(file.originalname);
+          const status = "Non-Verified";
+          const fileInfo = {
+            filename: filename,
+            status: status,
+            bucketName: 'uploads'
+          };
+          resolve(fileInfo);
+        });
+      });
+    }
+  });
+    
+const upload = multer({storage});
+
+
+// @route POST /upload
+// @desc Uploads file to DB
+app.post("/upload", upload.single("file"), jsonParser, (req, res) => {
+    var obj = {};
+    var type = "";
+    const number = req.body.number;
+    const name = req.body.name;
+    const fileID = req.file.id;
+    const creator = req.body.creator;
+    name === "ID" ? obj = {"documents.id": {"id": fileID, "status": "Non-Verified"} } : "";
+    name === "Payment proof" ? obj = {"documents.payment_proof": {"id": fileID, "status": "Non-Verified"} } : "";
+    name === "Utility Bill" ? obj = {"documents.utility_bill": {"id": fileID, "status": "Non-Verified"} } : "";
+    name === "Declaration" ? obj = {"documents.declaration": {"id": fileID, "status": "Non-Verified"} } : "";
+
+
+    mongo.connect(url, (err, db) =>{
+        if(err) return console.log(err);  
+        const fileId = new objectId(req.file.id);
+
+        db.collection("invoices").updateOne({"number":number}, {$push: obj},
+        {returnOriginal: false }, function(err, result){
+            // Insert new doc to Documents collection
+            mongo.connect(url, (err, db) => {
+                db.collection("documents").insertOne({
+                    "_id": fileId,
+                    "type": name,
+                    "status": "Non-Verified",
+                    "file": req.file.filename,
+                    "creation_date": req.file.uploadDate,
+                    "creator": creator
+                }), {returnOriginal: false }, (err, res) => {
+                    if(err) return console.log(err);
+                };
+            });
+
+           if(err) return console.log(err);     
+           const invoice = result.value;
+           res.send(invoice);
+
+       });
+    });
+});
+
+// @route GET /image/:fileId
+// @desc Display image
+app.get("/image/:fileId", (req, res) => {
+    gfs.files.findOne({id: req.params.id}, (err, file) => {
+        if(!file || file.length === 0) {
+            return res.status(404).json({err: "No file exist!"});
+        }
+
+        // Check if image
+        if(file.contentType === "image/jpeg" || file.contentType === "image/png"){
+            // Read output ro browser
+            const readstream = gfs.createReadStream(file.filename);
+            readstream.pipe(res);
+        } else {
+            res.status(404).json({err: "Not an image!"});
+        }
+    });
+});
+
+
+// @route PUT /changeDocStatus
+// @desc Changed Documents status
+app.post("/changeDocStatus", jsonParser, (req, res) => {
+    mongo.connect(url, (err, db) => {
+        var obj = {};
+        var objDel = {};
+        const id = new objectId(req.body.id);
+        const status = req.body.status;
+        const number = req.body.number;
+        const type = req.body.type;
+
+        type === "ID" ? objDel = {"documents.id": {"id": id} } : "";
+        type === "Payment proof" ? objDel = {"documents.payment_proof": {"id": id} } : "";
+        type === "Utility Bill" ? objDel = {"documents.utility_bill": {"id": id} } : "";
+        type === "Declaration" ? objDel = {"documents.declaration": {"id": id} } : "";
+
+        type === "ID" ? obj = {"documents.id": {"id": id, "status": status} } : "";
+        type === "Payment proof" ? obj = {"documents.payment_proof": {"id": id, "status": status} } : "";
+        type === "Utility Bill" ? obj = {"documents.utility_bill": {"id": id, "status": status} } : "";
+        type === "Declaration" ? obj = {"documents.declaration": {"id": id, "status": status} } : "";
+
+        db.collection("documents").findOneAndUpdate({_id: id}, {$set: {"status": status}},
+            {returnOriginal: false },function(err, result){
+
+                mongo.connect(url, (err, db) => {
+                    db.collection("invoices").bulkWrite([
+                        {
+                            // Remove exist doc
+                            updateOne: {
+                                "filter": {"number": number},
+                                "update": {"$pull": objDel },
+                                "upsert" : true,
+                                "collation": {"number": number}
+                            }
+                        },
+                        {
+                            // Add new doc
+                            updateOne: {
+                                "filter": {"number": number},
+                                "update": {"$push": obj},
+                                "upsert" : true,
+                                "collation": {"number": number}
+                            }
+                        }
+                    ]), {returnOriginal: false}, (err, res) => {
+
+                        if (err) return console.log(err);
+                    };
+                });
+
+           if(err) return console.log(err);     
+           const doc = result.value;
+           res.send(doc);
+       });
+    });
+});
+
+
+
 
 //////////////////////////////
 //                          //

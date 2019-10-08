@@ -240,15 +240,19 @@
 
 						<div class="docsUpload-block">
 							<div class="docsInside-block">
-								<button id="uploadDocs">Click to upload Document</button>
-								<select id="docsSelect">
-									<option value="" selected></option>
-									<option value="Payment proof">Payment proof</option>
-									<option value="ID">ID</option>
-									<option value="Utility Bill">Utility Bill</option>
-									<option value="Declaration">Declaration</option>
-								</select>
-								<button id="uploadBtn">Upload</button>
+								<form id="uploadForm" action="#">
+									<div class="fileWrapper"> <span class="fileName">Click to upload Document</span>
+										<input type="file" name="file" id="uploadDocs">
+									</div>
+									<select id="docsSelect">
+										<option value="" selected></option>
+										<option value="Payment proof">Payment proof</option>
+										<option value="ID">ID</option>
+										<option value="Utility Bill">Utility Bill</option>
+										<option value="Declaration">Declaration</option>
+									</select>
+									<button id="uploadBtn">Upload</button>
+								</form>
 							</div>
 						</div>
 					</div>
