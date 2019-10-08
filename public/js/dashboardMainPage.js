@@ -959,7 +959,11 @@ const walletBalance = () => {
         });
     });
 }
-walletBalance();
+
+if (document.querySelector('.walletInfo')) {
+    walletBalance();
+}
+
 
 
 // Chart box info

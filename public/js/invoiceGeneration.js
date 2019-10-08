@@ -17,10 +17,12 @@ fetchPromise.then(response => {
             loadMerchant(list) {
                 this.container = document.querySelector('#merchList');
                 list.slice(0, list.length).forEach((item, i) => {
+                    if ( this.container) {
                     this.option = document.createElement("option");
                     this.option.value = item.name;
                     this.option.innerHTML =  item.name;   
                     this.container.append(this.option);
+                    }
                 });
             }
             render(){
@@ -47,10 +49,12 @@ fetchPromise2.then(response => {
             loadBank(list) {
                 this.container = document.querySelector('#bankList');
                 list.slice(0, list.length).forEach((item, i) => {
+                    if (this.container) {
                     this.option = document.createElement("option");
                     this.option.value = item.name;
                     this.option.innerHTML =  item.name;   
                     this.container.append(this.option);
+                    }
                 });
             }
             render(){
