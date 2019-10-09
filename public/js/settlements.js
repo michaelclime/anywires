@@ -27,9 +27,9 @@ $(document).ready(function(){
                         this.invsList.className = `tr${i}`;
                             this.invsList.innerHTML =  `
                             <td class="column column0">  <input class="check" type="checkbox" name=${item.amount.amount_approved + '/' + item.currency}> ${item.client_details.full_name}</td> 
-                            <td class="column column1">${item.amount.amount_received} ${item.currency}</td> 
-                            <td class="column column2">${item.commissions} ${item.currency}</td> 
-                            <td class="column column3">${item.amount.amount_approved} ${item.currency}</td> 
+                            <td class="column column1"> ${formatStr(item.amount.amount_received)} ${item.currency}</td> 
+                            <td class="column column2">${formatStr(item.commissions)} ${item.currency}</td> 
+                            <td class="column column3">${formatStr(item.amount.amount_approved)} ${item.currency}</td> 
                         `;   
                     this.container.appendChild(this.invsList);
                     });
@@ -210,8 +210,7 @@ Element.prototype.appendAfter = function (element) {
 (async () => {
     let settleList = await  fetch('http://localhost:3000/getSettlementsList');
     let SETTLEMENTS = await settleList.json();
-    
-    
+
     class SettlementsList {
         constructor(){
             this.buttonSearch = document.querySelector('.search-btn');
@@ -228,37 +227,38 @@ Element.prototype.appendAfter = function (element) {
                     this.settleList.innerHTML =  `
                     <td class="col column0">${item.merchant}</td> 
                     <td class="col column1">${new Date(item.dates.creation_date).getDate() + '/' + (new Date(item.dates.creation_date).getMonth()+ 1) + '/' +   new Date(item.dates.creation_date).getFullYear()}</td> 
-                    <td class="col column2">${item.amount}</td> 
+                    <td class="col column2">${formatStr(item.amount)} ${item.currency}</td> 
                     <td class="col column3">${item.type}</td> 
-                    <td class="col column4">${item.wallets[0]}</td> 
+                    <td class="col column4">${item.wallet[0].name}</td> 
                     <td class="col column5">${item.status}</td>
                 `;
                 
             this.settleList.addEventListener('click', (e) => {
                 e.preventDefault();
-                $('.settlementDetails').fadeIn();
-    
+                //$('.filter').fadeIn();
+                $('.filter').css('display', 'flex');
                 // Settlement Details Window
                 
-                this.p = document.createElement('p');
-                this.p.className = 'settleInfoText';
-                this.span = document.createElement('span');
-                this.span.className = 'settleStatusSpan';
-                this.indexNumber = +e.target.parentElement.className.match(/\d+/);
-                this.p.innerHTML = `Settlement to <strong>${SETTLEMENTS[this.indexNumber].Wallet}</strong> made on : 
-                    <strong>${SETTLEMENTS[this.indexNumber].Date}</strong> for <strong>${SETTLEMENTS[this.indexNumber].Amount}</strong>.`;
-                this.p.appendAfter(document.querySelector('.settlementDetails-header'));
-                this.span.innerHTML = `Status: <strong>${SETTLEMENTS[this.indexNumber].Status}</strong>.`;
-                this.span.appendAfter(this.p);
+                // this.p = document.createElement('p');
+                // this.p.className = 'settleInfoText';
+                // this.span = document.createElement('span');
+                // this.span.className = 'settleStatusSpan';
+                // this.indexNumber = +e.target.parentElement.className.match(/\d+/);
+                // this.p.innerHTML = `Settlement to <strong>${SETTLEMENTS[this.indexNumber].Wallet}</strong> made on : 
+                //     <strong>${SETTLEMENTS[this.indexNumber].Date}</strong> for <strong>${SETTLEMENTS[this.indexNumber].Amount}</strong>.`;
+                // this.p.appendAfter(document.querySelector('.settlementDetails-header'));
+                // this.span.innerHTML = `Status: <strong>${SETTLEMENTS[this.indexNumber].Status}</strong>.`;
+                // this.span.appendAfter(this.p);
     
                 document.querySelector('.settlementDetails-close').addEventListener('click', (e) => {
-                    this.p.innerHTML = '';
-                    this.span.innerHTML = '';
-                    $('.settlementDetails').fadeOut();
+                    // this.p.innerHTML = '';
+                    // this.span.innerHTML = '';
+                    // $('.settlementDetails').fadeOut();
+                    $('.filter').css('display', 'none');
                 });
             });   
             this.container.appendChild(this.settleList);
-            })
+            });
         }
     
         colorStatus() {
@@ -342,13 +342,16 @@ Element.prototype.appendAfter = function (element) {
             let date =  document.querySelector('.dateForm').value;
             let claim1 = statusMenu.options[statusMenu.selectedIndex].value;
             let claim2 = merchantList.options[merchantList.selectedIndex].value;
+            console.log(claim1);
+            console.log(claim2);
             if (claim1 && claim2) {
                 newSettleList = SETTLEMENTS.filter( (i) => {
-                    return (i.Status == claim1) && (i.CreatedBy == claim2);
+                    return (i.status == claim1) && (i.merchant == claim2);
                 } );
             } else {
+                console.log('claim2');
                 newSettleList = SETTLEMENTS.filter( (i) => {
-                    return claim1 ? (i.Status == claim1) : (i.CreatedBy == claim2);
+                    return claim1 ? (i.status == claim1) : (i.merchant == claim2);
                 } );
             }
         }
@@ -368,97 +371,120 @@ Element.prototype.appendAfter = function (element) {
 
     showAllBtn.addEventListener('click', (e) => { 
         document.querySelector(".tableList").innerHTML = '';
-        const settlementsList = new SettlementsList();});
+        const settlementsList = new SettlementsList();
+    });
     filterlBtn.addEventListener('click', (e) => { 
         document.querySelector(".tableList").innerHTML = '';
-        const filterList = new FilterList();});
+        const filterList = new FilterList();
+    });
 
 })();
 
-
-// UPLOAD FILE BUTTON
-
-document.getElementById('buttonid').addEventListener('click', openDialog);
-
-function openDialog() {
-  document.getElementById('fileid').click();
-}
-
 // SETTLEMENT PREVIEW 
 
-let prevSettleBtn = document.querySelector('.prevSettleBtn');
+let prevSettleBtn = document.querySelector('.settlePrevBtn');
 
 prevSettleBtn.addEventListener('click', (e) => {
     document.location.href='/settlementPreview.html';
 
 });
 
-// COMMENT BUTTON
 
-class Comment {
-    constructor(userName, comm) {
-        this.userName = userName;
-        this.comm = comm;
-        this.render();
-    }
+// // UPLOAD FILE BUTTON
 
-    coment() {
-        this.container = document.querySelector(".commentTitile");
-        this.div = document.createElement("div");
-        this.div.className = 'comment';
-        this.div.innerHTML = `
-            <span>${this.userName}</span>
-            <p>${this.comm}</p>
-        `;
-     this.div.appendAfter(this.container);
-    }
+// document.getElementById('buttonid').addEventListener('click', openDialog);
 
-    render() {
-        this.coment();
+// function openDialog() {
+//   document.getElementById('fileid').click();
+// }
+
+// // COMMENT BUTTON
+
+// class Comment {
+//     constructor(userName, comm) {
+//         this.userName = userName;
+//         this.comm = comm;
+//         this.render();
+//     }
+
+//     coment() {
+//         this.container = document.querySelector(".commentTitile");
+//         this.div = document.createElement("div");
+//         this.div.className = 'comment';
+//         this.div.innerHTML = `
+//             <span>${this.userName}</span>
+//             <p>${this.comm}</p>
+//         `;
+//      this.div.appendAfter(this.container);
+//     }
+
+//     render() {
+//         this.coment();
+//     }
+// }
+
+// let commentBtn = document.querySelector('.addCommentBtn');
+
+// commentBtn.addEventListener('click', (e) => {
+//     let userName = 'AW_Finance';
+//     let comm =  document.querySelector('.commentField').value;
+//     let a = new Comment(userName, comm);
+// });
+
+
+// // ADD COMMISSION BUTTON
+
+// class Commission {
+//     constructor(userName, commis, commisSum) {
+//         this.userName = userName;
+//         this.commis = commis;
+//         this.commisSum = commisSum;
+//         this.render();
+//     }
+
+//     commissions() {
+//         this.container = document.querySelector(".fourthRowCommentBlock");
+//         this.div = document.createElement("div");
+//         this.div.className = 'comment';
+//         this.div.innerHTML = `
+//             <span>${this.userName}</span>
+//             <p>${this.commis}</p>
+//             <span>€${this.commisSum}</span>
+//         `;
+//      this.div.appendAfter(this.container);
+//     }
+
+//     render() {
+//         this.commissions();
+//     }
+// }
+
+// let commissionBtn = document.querySelector('.addCommissionBtn');
+
+// commissionBtn.addEventListener('click', (e) => {
+//     let userName = 'AW_Finance';
+//     let commis =  document.querySelector('.commissionType').value;
+//     let commisSum =  document.querySelector('.commissionAmount').value;
+//     let c = new Commission(userName, commis, commisSum);
+// });
+
+
+// Correct amount function
+
+function formatStr(num) {
+    let str = num + '';
+    str = str.replace(/(\.(.*))/g, '');
+    var arr = str.split('');
+    var str_temp = '';
+    if (str.length > 3) {
+        for (var i = arr.length - 1, j = 1; i >= 0; i--, j++) {
+            str_temp = arr[i] + str_temp;
+            if (j % 3 == 0) {
+                str_temp = ' ' + str_temp;
+            }
+        }
+        return str_temp;
+    } else {
+        return str;
     }
 }
-
-let commentBtn = document.querySelector('.addCommentBtn');
-
-commentBtn.addEventListener('click', (e) => {
-    let userName = 'AW_Finance';
-    let comm =  document.querySelector('.commentField').value;
-    let a = new Comment(userName, comm);
-});
-
-
-// ADD COMMISSION BUTTON
-
-class Commission {
-    constructor(userName, commis, commisSum) {
-        this.userName = userName;
-        this.commis = commis;
-        this.commisSum = commisSum;
-        this.render();
-    }
-
-    commissions() {
-        this.container = document.querySelector(".fourthRowCommentBlock");
-        this.div = document.createElement("div");
-        this.div.className = 'comment';
-        this.div.innerHTML = `
-            <span>${this.userName}</span>
-            <p>${this.commis}</p>
-            <span>€${this.commisSum}</span>
-        `;
-     this.div.appendAfter(this.container);
-    }
-
-    render() {
-        this.commissions();
-    }
-}
-
-let commissionBtn = document.querySelector('.addCommissionBtn');
-
-commissionBtn.addEventListener('click', (e) => {
-    let userName = 'AW_Finance';
-    let commis =  document.querySelector('.commissionType').value;
-    let commisSum =  document.querySelector('.commissionAmount').value;
-    let c = new Commission(userName, commis, commisSum);
-});
