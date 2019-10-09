@@ -725,7 +725,7 @@ app.post("/postEditedInvoice", jsonParser, (req, res) => {
 });
 
 // Create mongo connection
-const conn = mongoose.createConnection(url,  { useNewUrlParser: true });
+const conn = mongoose.createConnection(url,  { useNewUrlParser: true, useUnifiedTopology: true });
 
 // Init gfs
 let gfs;
