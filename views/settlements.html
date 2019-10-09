@@ -34,7 +34,7 @@
                             <div class="gn-scroller">
                                 <ul class="gn-menu">
                                     <li><a href='personal-area.html'><img class="icon" src="fonts/icons/personal-area.png">Personal Area</a></li>
-                                    <li><a ><img class="icon" src="fonts/icons/dashboard.png">Dashboard</a></li>
+                                    <li><a href='dashBoardMainPage.html'><img class="icon" src="fonts/icons/dashboard.png">Dashboard</a></li>
                                     <li><a href='InvoiceGeneration.html'><img class="icon" src="fonts/icons/invoice.png">Invoice generation</a></li>
                                     <li><a href="invoice-list.html"><img class="icon" src="fonts/icons/invoice-list.png">Invoice list</a></li>
                                     <li><a href="wallets.html"><img class="icon" src="fonts/icons/wallet.png">Wallets</a></li>
@@ -257,11 +257,11 @@
                 <div>
                     <h1>Settlement details</h1>
                 </div>
-                <div id="invoiceMerchant">Merchant Name</div>
+                <div id="settleMerchant">Merchant Name</div>
             </div>
 
             <div class="transfer-block">
-                <p>Transfer from <span id="clientFullName"></span> for <span id="invoiceCurrency"></span><span id="requestFee"></span> to <span id="invoiceBank"></span> now  is - <span class="currentStatus">Requested</span></p>
+                <p class="settleInfoTitle"></p>
                 <div class="buttonBlock">
                     <div>
                         <button id="sent">Sent</button>
@@ -284,7 +284,7 @@
                         <table id="docsTable">
                             <thead>
                                 <tr>
-                                    <th>Created by</th> <th>Type</th> <th>Status</th> <th>Confirmation</th> <th></th>
+                                    <th>Type</th> <th>Uploaded Date</th> <th></th>
                                 </tr>
                             </thead>
                             <tbody id="table-docs"></tbody>
@@ -293,14 +293,16 @@
 
                     <div class="docsUpload-block">
                         <div class="docsInside-block">
-                            <button id="uploadDocs">Click to upload Document</button>
-                            <select id="docsSelect">
-                                <option value="" selected></option>
-                                <option value="Payment proof">Payment proof</option>
-                                <option value="Contract">Contract</option>
-                                <option value="Additional">Additional</option>
-                            </select>
-                            <button id="uploadBtn">Upload</button>
+                            <form class="uploadForm" action="#">
+                                <input type="submit" id="uploadDocs" value='Click to Upload'>
+                                <select id="docsSelect">
+                                    <option value="" selected></option>
+                                    <option value="Payment proof">Payment proof</option>
+                                    <option value="Contract">Contract</option>
+                                    <option value="Additional">Additional</option>
+                                </select>
+                                <input type="submit" id="uploadBtn" value='Upload'>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -322,118 +324,41 @@
                 </div>
 
                 <div class="commentsInside-block">
-                    <textarea id="commentText" placeholder="Comments to Settlement"></textarea>
-                    <button id="addCommentBtn">Add Comment</button>
+                    <form action="#">
+                        <textarea id="commentText" placeholder="Comments to Settlement"></textarea>
+                        <input type="submit" id="addCommentBtn" value='Add Comment'>
+                    </form>
                 </div>
             </div>
 
             <h3 class="documentsP">Commissions</h3>
-
-            <div class="comments-block">
-                <div class="tableComments-block">
-                    <table id="table-comments">
+            
+            <div class="commissions-block">
+                <div class="tableCommissions-block">
+                    <table id="table-commissions">
                         <thead>
                             <tr>
                                 <th>Created by</th>
-                                <th>Message</th>
+                                <th>Commission Type</th>
+                                <th>Amount</th>
                             </tr>
                         </thead>
-                        <tbody id="tableTbody-comments"></tbody>
+                        <tbody id="tableTbody-commissions"></tbody>
                     </table>
                 </div>
 
-                <div class="commentsInside-block">
-                    <textarea id="commentText" placeholder="Comments to Settlement"></textarea>
-                    <button id="addCommentBtn">Add Commission</button>
+                <div class="commissionssInside-block">
+                    <form action="#">
+                        <input type="text" class="commissionType" placeholder="Commission type">
+                        <input type="number" class="commissionAmount" placeholder="Amount">
+                        <input type="submit" id="addCommissionsBtn" value='Add Commission' >
+                    </form>
                 </div>
             </div>
 
         </div>
     </div>
-     <!-- Settlement Details Window 
-     <div class="settlementDetails">
-            <div class="settlementDetails-content">
-                <button class="settlementDetails-close">&times;</button>
-                <div class="setDetBlock1">
-                    <h1 class="settlementDetails-header">Settlement details</h1>
-                </div>
-                <hr class="settleHr">
-                <div class="setDetBlock2">
-                    <h1 class="settlementDetails-header">Documents</h1>
-                    <table class="SetDetTable">
-                        <thead>
-                            <tr class="SetDetTableHead">
-                                <th class="col0">Type</th>
-                                <th class="col1">Uploaded</th>
-                                <th class="col2"></th>
-                            </tr>
-                        </thead>
-                        <tbody class="SetDetTableList">
-                            <tr>
-                                <th class="col0">Additional</th>
-                                <th class="col1">Apr 19, 2019</th>
-                                <th class="col2"><a href="#">View</a></th>
-                            </tr>
-                            <tr>
-                                <th class="col0">Additional</th>
-                                <th class="col1">Apr 25, 2019</th>
-                                <th class="col2"><a href="#">View</a></th>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <button class="prevSettleBtn settlePrevBtn">Preview settlement</button>
-                </div>
-                <hr class="settleHr">
-                <div class="main-form commnetsMenu">
-                    <h1 class="settlementDetails-header commentTitile">Comments and Updates</h1>
-                    <div class="comment">
-                            <span>AW_Finance</span>
-                            <p>Included fee for B2C transfer to client Camillo Pasquini, proof is attached in Additional documents</p>
-                    </div>
-                    <div class="comment">
-                            <span>AW_Finance</span>
-                            <p>Settlement was made with 2 parts to MrTango account.
-                                    Today we've got confirmation that settlement payment have been received by merchant.
-                                    Settlement will be marked as Received.</p>
-                    </div>
-                    <div class="firstRowCommentBlock RowCommentBlock">
-                        <form action="#">
-                            <input type="text" class="commissionType" placeholder="Commission type">
-                            <input type="number" class="commissionAmount" placeholder="Amount">
-                            <input type="submit" class="addCommissionBtn settlePrevBtn" value="Add Commission">
-                        </form>
-                    </div>
-                    <div class="secondRowCommentBlock RowCommentBlock">
-                        <form action="#">
-                            <select name="docType" class="docType">
-                                <option value="">Document Type</option>
-                                <option value="Payment proof">Payment proof</option>
-                                <option value="Contract">Contract</option>
-                                <option value="Additional">Additional</option>
-                            </select>
-                            <input id='buttonid' type="file" name="file" accept="file/*">
-                            <input type="submit" class="addDocBtn settlePrevBtn" value="Upload">
-                        </form>
-                    </div>
-                    <div class="thirdRowCommentBlock RowCommentBlock">
-                        <input type="text" class="commentField" placeholder='Type here...'>
-                        <input type="submit" class="addCommentBtn settlePrevBtn" value="Add Comment">
-                    </div>
-                    <div class="fourthRowCommentBlock RowCommentBlock">
-                        <div class="comment">
-                            <span>AW_Finance</span>
-                            <p>B2C Transfer 2000 EUR for client Camillo Pasquini</p>
-                            <span>€2 000</span>
-                        </div>
-                        <div class="comment">
-                            <span>AW_Finance</span>
-                            <p>Commission for B2C Transfer 2000 EUR for client Camillo Pasquini (5% + 100 EUR)</p>
-                            <span>€200</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-    </div> -->
+     
     <script type="text/javascript" src="js/sweetalert2.js"></script>
     <script src="js/classie.js"></script>
     <script src="js/gnmenu.js"></script>
