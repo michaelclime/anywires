@@ -18,9 +18,7 @@ let express = require("express"),
     chalk = require('chalk'),
     crypto = require('crypto'),
     xoauth2 = require('xoauth2'),
-    multer = require("multer"),
-    GridFsStorage = require("multer-gridfs-storage"),
-    Grid = require("gridfs-stream");
+    multer = require("multer");
 
 
 const url = 'mongodb://18.216.223.81:27017/anywires';
@@ -724,160 +722,147 @@ app.post("/postEditedInvoice", jsonParser, (req, res) => {
     });
 });
 
-// Create mongo connection
-const conn = mongoose.createConnection(url,  { useNewUrlParser: true, useUnifiedTopology: true });
 
-// Init gfs
-let gfs;
-
-conn.once("open", () => {
-    // Init stream
-    gfs = Grid(conn.db, mongoose.mongo);
-    gfs.collection("uploads");
-});
-
-// Create storage engine
-const storage = new GridFsStorage({
-    url: url,
-    file: (req, file) => {
-      return new Promise((resolve, reject) => {
-        crypto.randomBytes(16, (err, buf) => {
-          if (err) {
-            return reject(err);
-          }
-          const filename = buf.toString('hex') + path.extname(file.originalname);
-          const status = "Non-Verified";
-          const fileInfo = {
-            filename: filename,
-            status: status,
-            bucketName: 'uploads'
-          };
-          resolve(fileInfo);
-        });
-      });
-    }
-  });
-    
-const upload = multer({storage});
-
+// Init Multer for uploading files into MongoDB and Server
+const upload = multer({dest:"uploads"});
 
 // @route POST /upload
 // @desc Uploads file to DB
 app.post("/upload", upload.single("file"), jsonParser, (req, res) => {
-    var obj = {};
-    var type = "";
-    const number = req.body.number;
-    const name = req.body.name;
-    const fileID = req.file.id;
-    const creator = req.body.creator;
-    name === "ID" ? obj = {"documents.id": {"id": fileID, "status": "Non-Verified"} } : "";
-    name === "Payment proof" ? obj = {"documents.payment_proof": {"id": fileID, "status": "Non-Verified"} } : "";
-    name === "Utility Bill" ? obj = {"documents.utility_bill": {"id": fileID, "status": "Non-Verified"} } : "";
-    name === "Declaration" ? obj = {"documents.declaration": {"id": fileID, "status": "Non-Verified"} } : "";
 
+    let file = req.file;
+    if(!file) return res.send("Ошибка при загрузке файла");
+
+    const type = req.body.type;
+    const newDoc = {
+        "type": type,
+        "status": "Non-Verified",
+        "filename": req.file.filename,
+        "creation_date": new Date(),
+        "creator": req.body.creator,
+        "originalname": req.file.originalname,
+        "encoding": req.file.encoding,
+        "mimetype": req.file.mimetype,
+        "size": req.file.size
+    };
+    var obj = {};
+    const number = req.body.number;
+    
+    // First Step "Insert new document to Documents collection"
+     mongo.connect(url, (err, db) => {
+        db.collection("documents").insertOne(newDoc, (err) => {
+            if (err) return console.log(err, "Error with inseerting Document!");
+
+            var docId = new objectId(newDoc._id);
+            type === "ID" ? obj = {"documents.id": {"id": docId, "status": "Non-Verified"} } : "";
+            type === "Payment proof" ? obj = {"documents.payment_proof": {"id": docId, "status": "Non-Verified"} } : "";
+            type === "Utility Bill" ? obj = {"documents.utility_bill": {"id": docId, "status": "Non-Verified"} } : "";
+            type === "Declaration" ? obj = {"documents.declaration": {"id": docId, "status": "Non-Verified"} } : "";
+
+            // Second step is insert new document to Invoice
+            mongo.connect(url, (err, db) =>{
+                if(err) return console.log(err);  
+        
+                db.collection("invoices").updateOne({"number": number}, {$push: obj},
+                {returnOriginal: false }, function(err, result){
+        
+                   if(err) return console.log(err);   
+                   res.send("Invoice successfully has been changed!");
+               });
+            });
+        }), {returnOriginal: false }, (err, res) => {
+            if(err) return console.log(err);
+        };
+    });
+});
+
+
+// Checking if type is supported for open in browser
+var checkTypeOfDocument = (type, filePath, res) => {
+    if(type !== "application/pdf" && type !== "image/jpeg" && type !== "image/png"){
+        res.send("File type is not supported!");
+    } else {
+        fs.readFile(__dirname + filePath , (err, data) => {
+            res.contentType(type);
+            res.send(data);
+        });
+    }
+};
+
+
+// @route GET /upload/:filename 
+// @desc Open file from PATH /upload
+
+app.get("/upload/:filename", (req, res) => {
+    const filename = req.params.filename;
+    var filePath = `/uploads/${filename}`;
 
     mongo.connect(url, (err, db) =>{
-        if(err) return console.log(err);  
-        const fileId = new objectId(req.file.id);
+        db.collection("documents").find({"filename": filename}).toArray(function(err, doc){
+            if(err) return console.log("Error with upload Invoice Merchant!", err);
 
-        db.collection("invoices").updateOne({"number":number}, {$push: obj},
-        {returnOriginal: false }, function(err, result){
-            // Insert new doc to Documents collection
+            checkTypeOfDocument(doc[0].mimetype, filePath, res);
+        });
+    });
+});
+
+
+// @route POST /changeDocStatus
+// @desc Changed Documents status
+
+app.post("/changeDocStatus", jsonParser, (req, res) => {
+    const filename = req.body.filename;
+    const status = req.body.status;
+
+    // 1. First, we need to find Document which we need and change status in Document for current status.
+    mongo.connect(url, (err, db) => {
+        db.collection("documents").findOneAndUpdate({"filename": filename}, {$set: {"status": status}}, (function(err, doc){
+            if(err) return console.log("Error with upload Invoice Banks!", err);
+            
+            const id = new objectId(doc.value._id);
+            var obj = {};
+            var objDel = {};
+            const number = req.body.number;
+            const type = req.body.type;
+
+            // 2. Second, we need to delete old Document in Invoice.
+            type === "ID" ? objDel = {"documents.id": {"id": id} } : "";
+            type === "Payment proof" ? objDel = {"documents.payment_proof": {"id": id} } : "";
+            type === "Utility Bill" ? objDel = {"documents.utility_bill": {"id": id} } : "";
+            type === "Declaration" ? objDel = {"documents.declaration": {"id": id} } : "";
+
+            // 3. After, we need to add new Document with new Status to Invoice
+            type === "ID" ? obj = {"documents.id": {"id": id, "status": status} } : "";
+            type === "Payment proof" ? obj = {"documents.payment_proof": {"id": id, "status": status} } : "";
+            type === "Utility Bill" ? obj = {"documents.utility_bill": {"id": id, "status": status} } : "";
+            type === "Declaration" ? obj = {"documents.declaration": {"id": id, "status": status} } : "";
+
             mongo.connect(url, (err, db) => {
-                db.collection("documents").insertOne({
-                    "_id": fileId,
-                    "type": name,
-                    "status": "Non-Verified",
-                    "file": req.file.filename,
-                    "creation_date": req.file.uploadDate,
-                    "creator": creator
-                }), {returnOriginal: false }, (err, res) => {
-                    if(err) return console.log(err);
+                db.collection("invoices").bulkWrite([
+                    {
+                        // Remove exist doc
+                        updateOne: {
+                            "filter": {"number": number},
+                            "update": {"$pull": objDel },
+                            "upsert" : true,
+                            "collation": {"number": number}
+                        }
+                    },
+                    {
+                        // Add new doc
+                        updateOne: {
+                            "filter": {"number": number},
+                            "update": {"$push": obj},
+                            "upsert" : true,
+                            "collation": {"number": number}
+                        }
+                    }
+                ]), {returnOriginal: false}, (err, res) => {
+                    if (err) return console.log(err);
+                    res.send("Status were changed!");
                 };
             });
-
-           if(err) return console.log(err);     
-           const invoice = result.value;
-           res.send(invoice);
-
-       });
-    });
-});
-
-// @route GET /image/:fileId
-// @desc Display image
-app.get("/image/:fileId", (req, res) => {
-    gfs.files.findOne({id: req.params.id}, (err, file) => {
-        if(!file || file.length === 0) {
-            return res.status(404).json({err: "No file exist!"});
-        }
-
-        // Check if image
-        if(file.contentType === "image/jpeg" || file.contentType === "image/png"){
-            // Read output ro browser
-            const readstream = gfs.createReadStream(file.filename);
-            readstream.pipe(res);
-        } else {
-            res.status(404).json({err: "Not an image!"});
-        }
-    });
-});
-
-
-// @route PUT /changeDocStatus
-// @desc Changed Documents status
-app.post("/changeDocStatus", jsonParser, (req, res) => {
-    mongo.connect(url, (err, db) => {
-        var obj = {};
-        var objDel = {};
-        const id = new objectId(req.body.id);
-        const status = req.body.status;
-        const number = req.body.number;
-        const type = req.body.type;
-
-        type === "ID" ? objDel = {"documents.id": {"id": id} } : "";
-        type === "Payment proof" ? objDel = {"documents.payment_proof": {"id": id} } : "";
-        type === "Utility Bill" ? objDel = {"documents.utility_bill": {"id": id} } : "";
-        type === "Declaration" ? objDel = {"documents.declaration": {"id": id} } : "";
-
-        type === "ID" ? obj = {"documents.id": {"id": id, "status": status} } : "";
-        type === "Payment proof" ? obj = {"documents.payment_proof": {"id": id, "status": status} } : "";
-        type === "Utility Bill" ? obj = {"documents.utility_bill": {"id": id, "status": status} } : "";
-        type === "Declaration" ? obj = {"documents.declaration": {"id": id, "status": status} } : "";
-
-        db.collection("documents").findOneAndUpdate({_id: id}, {$set: {"status": status}},
-            {returnOriginal: false },function(err, result){
-
-                mongo.connect(url, (err, db) => {
-                    db.collection("invoices").bulkWrite([
-                        {
-                            // Remove exist doc
-                            updateOne: {
-                                "filter": {"number": number},
-                                "update": {"$pull": objDel },
-                                "upsert" : true,
-                                "collation": {"number": number}
-                            }
-                        },
-                        {
-                            // Add new doc
-                            updateOne: {
-                                "filter": {"number": number},
-                                "update": {"$push": obj},
-                                "upsert" : true,
-                                "collation": {"number": number}
-                            }
-                        }
-                    ]), {returnOriginal: false}, (err, res) => {
-
-                        if (err) return console.log(err);
-                    };
-                });
-
-           if(err) return console.log(err);     
-           const doc = result.value;
-           res.send(doc);
-       });
+        }));
     });
 });
 
@@ -1487,21 +1472,24 @@ app.get("/getWalletsList", (req, res) => {
 });
 
 app.get("/getSettlementsList", (req, res) => {
-    mongo.connect(url, function(err, db) {
-        db.collection('settlements').aggregate([
-            {
-            $lookup: {
-                from: "wallets",
-                localField: "wallets",    // field in the settlements collection
-                foreignField: "_id",  // field in the wallets collection
-                as: "wallet"
-            }
-            }
-        ]).toArray(function(err, settlements) {
-            if (err) throw err;
-            res.send(settlements);
-            db.close();
-        });
+    mongo.connect(url, (err, db) =>{
+        db.collection("settlements").find({}).toArray(function(err, settlements){
+            if(err) return console.log("Error with upload!", err);
+            
+            settlements.forEach( (i) => {
+                let idWalllet = i.wallets[0];
+                let walletes = db.collection('wallets');
+                walletes.findOne({'_id': idWalllet}).then( (item) => {
+                    i.wallets[0] = item.name;
+                });
+            }, function(err, res) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    res.send(settlements);
+                }
+            });
+        })
     });
 });
 
@@ -1510,3 +1498,5 @@ app.get("/getSettlementsList", (req, res) => {
 app.listen(3000, function() {
     console.log('Servering localhost 3000');
 });
+
+
