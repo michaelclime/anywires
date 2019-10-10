@@ -337,7 +337,7 @@ table {
     width: 100%;
 }
 
-/* Popup Window View Start */
+/*  Settlement Details Window */
 .filter {
     display: none;
     justify-content: center;
@@ -377,6 +377,11 @@ table {
     justify-content: space-between;
 }
 
+#settleMerchant {
+    font-size: 24px;
+    font-weight: 700;
+}
+
 .remainder p {
     font-size: 14px;
     color: rgb(255, 51, 51);
@@ -390,6 +395,7 @@ table {
 .buttonBlock {
     width: 100%;
     margin: 20px 0;
+    padding-right: 70px;
     display: flex;
     justify-content: space-between;
 }
@@ -403,8 +409,7 @@ table {
 }
 
 #prevSettleBtn button {
-    margin: 10px;
-    padding: 5px 10px;
+    padding: 10px 20px;
     width: 100%;
     height: 100%;
     font-size: 18px;
@@ -448,7 +453,7 @@ table {
 .currentStatus{
     font-weight: bold;
     text-decoration: underline;
-    font-size: 18px;
+    font-size: 24px;
 }
 
 .actions-block {
@@ -462,6 +467,7 @@ table {
 .docs-block {
     display: flex;
     width: 90%;
+    justify-content: space-between;
 }
 
 .restButton-block {
@@ -493,11 +499,11 @@ table {
     width: 100%;
 }
 
-#docsTable tr, #table-comments tr {
+#docsTable tr, #table-comments tr,  #table-commissions tr {
     height: 30px;
 }
 
-#docsTable th, #table-comments th  {
+#docsTable th, #table-comments th, #table-commissions th {
     background-color: #20A5F7;
     color: white;
 }
@@ -506,10 +512,9 @@ table {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-end;
     width: 100%;
-    margin-top: 10px;
     height: 100%;
+    margin-left: 30px;
 }
 
 #docsSelect {
@@ -552,7 +557,7 @@ table {
     transition: .2s;
 }
 
-#uploadBtn:hover, #addCommentBtn:hover {
+#uploadBtn:hover, #addCommentBtn:hover, #addCommissionsBtn:hover {
     background-color: #20a5f7;
 }
 
@@ -568,39 +573,39 @@ table {
     margin: 4px 0 0 0;
 }
 
-.comments-block {
+.comments-block, .commissions-block {
     width: 100%;
     margin-top: 10px;
     display: flex;
     justify-content: space-between;
 }
 
-#table-comments {
+#table-comments, #table-commissions {
     width: 100%;
 }
 
-#table-comments tbody tr {
+#table-comments tbody tr,  #table-commissions tbody tr {
     height: 40px;
   }
 
-#table-comments tbody tr, #docsTable tbody tr, #docsTable tbody td {
+#table-comments tbody tr, #docsTable tbody tr, #docsTable tbody td,  #table-commissions tbody tr {
     font-size: 14px;
     font-weight: normal;
 }
 
-#table-comments th, #docsTable th {
+#table-comments th, #docsTable th,  #table-commissions th {
     font-size: 14px;
     
 }
 
-.tableComments-block {
+.tableComments-block, .tableCommissions-block {
     width: 62%;
     overflow: scroll;
     overflow-x:hidden;
     height: 165px; 
 }
 
-.commentsInside-block {
+.commentsInside-block, .commissionssInside-block {
     width: 35%;
     display: flex;
     flex-direction: column;
@@ -617,7 +622,7 @@ table {
     font-family: 'Frank Ruhl Libre', serif;
 }
 
-#addCommentBtn {
+#addCommentBtn, #addCommissionsBtn {
     width: 100%;
     height: 35px;
     margin-top: 5px;
@@ -661,167 +666,15 @@ table {
     filter: grayscale(50%) invert(70%);
 }
 
-
-
-/* Settlement Details Window */
-
-.settlementDetails {
-	display: none;
-	position: absolute;
-	top: 0;
-	right: 0;
-	left: 0;
-	bottom: 0;
-	width: 100%;
-	height: 200%;
-	z-index: 9;
-    background-color: rgba(0, 0, 0, 0.5);
-}
-
-.settlementDetails-content {
-	position: absolute;
-    text-align: center;
-	left: 50%;
-    top: 5%;
-	transform: translateX(-50%);
-	background-color: #fff;
-    padding: 30px;
-}
-
-.settlementDetails-header {
-    margin: 20px;
-    text-align: center;
-    font-size: 28px;
-    padding: 10px;
-}
-
-.settleHr {
-    height: 4px;
-    background: #035f97;
-}
-
-.setDetBlock1 {
-    text-align: left;
-    padding: 20px 0;
-    font-size: 20px;
-}
-
-.setDetBlock2 {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.SetDetTable {
+.commissionType, .commissionAmount {
     width: 100%;
+    height: 30px;
+    padding-left: 20px;
+    margin-bottom: 10px;
 }
 
-.SetDetTableHead {
-    background-color:  #20a5f7;
-    font-size: 20px;
-    color: #FFF; 
-}
-
-.col0, .col1, .col2 {
-    padding: 10px;
-}
-
-.SetDetTableList {
+.uploadForm {
     text-align: center;
-    font-size: 16px;
-    font-weight: 700;
-    color: rgb(119, 114, 114);
-}
-
-
-
-.main-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.comment {
-    display: flex;
-    justify-content: space-around;
-    border: 1px dashed rgb(77, 77, 77);
-    width: 100%;
-}
-
-.comment span {
-    padding: 20px;
-}
-
-.comment p {
-    padding: 20px;
-}
-.settlementDetails-form {
-    padding: 0;
-    margin-top: 10px;
-}
-
-.RowCommentBlock {
-    width: 100%;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    margin-top: 10px;;
-}
-
-.RowCommentBlock form {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-}
-
-.RowCommentBlock input, .docType {
-    margin: 20px;
-    height: 40px;
-    border-style: ridge;
-    border-radius: 5px;
-    padding-left: 10px;
-    outline: none;
-    font-size: 20px;
-    text-indent: 0;
-}
-
-.fourthRowCommentBlock {
-    display: flex;
-    flex-direction: column;
-}
-
-.docType {
-    height: 40px;
-    padding: 5px;
-}
-
-#buttonid {
-    height: 50%;
-    margin: 10px;
-    padding: 5px;
-    font-size: 18px;
-    font-weight: 500;
-}
-
-.commentField {
-    width: 75%;
-}
-
-.RowCommentBlock .settlePrevBtn {
-    height: 80%;
-    margin: 10px;
-    padding: 10px 20px;
-    font-size: 18px;
-    font-weight: 500;
-    background: rgb(77, 77, 77);
-    color: #FFF;
-    border: none;
-    border-radius: 5px;
-    outline: none;
-}
-
-.RowCommentBlock .settlePrevBtn:hover {
-    background: #20a5f7;
 }
 
 /* --------------------------------------------- */

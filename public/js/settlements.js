@@ -187,24 +187,6 @@ fetchPromise.then(response => {
 
 // SETTLEMENTS LIST 
 
-// Add appendAfter method
-
-Element.prototype.appendAfter = function (element) {
-    element.parentNode.insertBefore(this, element.nextSibling);
-  },false;
-
-
-// async function getSettle() {
-// let settleList = await  fetch('http://localhost:3000/getSettlementsList');
-// let set = await settleList.json();
-// console.log(set);
-// return Promise.resolve(set);
-// };
-
-// let ablia = await getSettle();
-
-// console.log(ablia);
-
 // Show settlements list
 
 (async () => {
@@ -235,25 +217,19 @@ Element.prototype.appendAfter = function (element) {
                 
             this.settleList.addEventListener('click', (e) => {
                 e.preventDefault();
-                //$('.filter').fadeIn();
                 $('.filter').css('display', 'flex');
+
                 // Settlement Details Window
                 
-                // this.p = document.createElement('p');
-                // this.p.className = 'settleInfoText';
-                // this.span = document.createElement('span');
-                // this.span.className = 'settleStatusSpan';
-                // this.indexNumber = +e.target.parentElement.className.match(/\d+/);
-                // this.p.innerHTML = `Settlement to <strong>${SETTLEMENTS[this.indexNumber].Wallet}</strong> made on : 
-                //     <strong>${SETTLEMENTS[this.indexNumber].Date}</strong> for <strong>${SETTLEMENTS[this.indexNumber].Amount}</strong>.`;
-                // this.p.appendAfter(document.querySelector('.settlementDetails-header'));
-                // this.span.innerHTML = `Status: <strong>${SETTLEMENTS[this.indexNumber].Status}</strong>.`;
-                // this.span.appendAfter(this.p);
-    
+                this.merchName = document.querySelector('#settleMerchant');
+                this.merchName.innerHTML = `${item.merchant}`
+               
+                document.querySelector('.settleInfoTitle').innerHTML = `Settlement to <strong>${item.wallet[0].name}</strong> made on  
+                     <strong>${new Date(item.dates.creation_date).getDate() + '/' + (new Date(item.dates.creation_date).getMonth()+ 1) + '/' +   new Date(item.dates.creation_date).getFullYear()}</strong> for <strong>${formatStr(item.amount)} ${item.currency}</strong> - <span class="currentStatus">${item.status}</span>`;
+                
+                
+
                 document.querySelector('.settlementDetails-close').addEventListener('click', (e) => {
-                    // this.p.innerHTML = '';
-                    // this.span.innerHTML = '';
-                    // $('.settlementDetails').fadeOut();
                     $('.filter').css('display', 'none');
                 });
             });   
@@ -340,18 +316,30 @@ Element.prototype.appendAfter = function (element) {
             let statusMenu = document.querySelector('.status');
             let merchantList = document.querySelector('.merchantList');
             let date =  document.querySelector('.dateForm').value;
+            let dateArr = date.split('—');
+            let [date1, date2] = dateArr;
             let claim1 = statusMenu.options[statusMenu.selectedIndex].value;
             let claim2 = merchantList.options[merchantList.selectedIndex].value;
-            console.log(claim1);
-            console.log(claim2);
-            if (claim1 && claim2) {
+
+            if (claim1 && claim2 && date ) {
                 newSettleList = SETTLEMENTS.filter( (i) => {
-                    return (i.status == claim1) && (i.merchant == claim2);
+                    return (i.status == claim1) && (i.merchant == claim2) && ( new Date(i.dates.creation_date) > new Date(date1) ) && ( new Date(i.dates.creation_date) < new Date(date2) )
                 } );
-            } else {
-                console.log('claim2');
+            } else if (claim1 && date ) {
+                newSettleList = SETTLEMENTS.filter( (i) => {
+                    return (i.status == claim1) && ( new Date(i.dates.creation_date) > new Date(date1) ) && ( new Date(i.dates.creation_date) < new Date(date2) )
+                } );
+            } else if (claim2 && date ) {
+                newSettleList = SETTLEMENTS.filter( (i) => {
+                    return (i.merchant == claim2) && ( new Date(i.dates.creation_date) > new Date(date1) ) && ( new Date(i.dates.creation_date) < new Date(date2) )
+                } );
+            } else if (!date) {
                 newSettleList = SETTLEMENTS.filter( (i) => {
                     return claim1 ? (i.status == claim1) : (i.merchant == claim2);
+                } );
+            } else if ( !claim1 && !claim2 && date ) {
+                newSettleList = SETTLEMENTS.filter( (i) => {
+                    return ( new Date(i.dates.creation_date) > new Date(date1) ) && ( new Date(i.dates.creation_date) < new Date(date2) )
                 } );
             }
         }
@@ -371,7 +359,8 @@ Element.prototype.appendAfter = function (element) {
 
     showAllBtn.addEventListener('click', (e) => { 
         document.querySelector(".tableList").innerHTML = '';
-        const settlementsList = new SettlementsList();
+        //const settlementsList = new SettlementsList();
+        location.reload(true);
     });
     filterlBtn.addEventListener('click', (e) => { 
         document.querySelector(".tableList").innerHTML = '';
@@ -488,3 +477,9 @@ function formatStr(num) {
         return str;
     }
 }
+
+// Add appendAfter method
+
+Element.prototype.appendAfter = function (element) {
+    element.parentNode.insertBefore(this, element.nextSibling);
+  },false;
