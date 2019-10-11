@@ -1496,6 +1496,20 @@ app.get("/getSettlementsList", (req, res) => {
                 foreignField: "_id",  // field in the wallets collection
                 as: "wallet"
             }
+            }, {
+                $lookup: {
+                    from: "documents",
+                    localField: 'documents',    // field in the settlements collection
+                    foreignField: "_id",  // field in the documents collection
+                    as: "documentList"
+                }
+            }, {
+                $lookup: {
+                    from: "commissions",
+                    localField: 'commissions',    // field in the settlements collection
+                    foreignField: "_id",  // field in the commissions  collection
+                    as: "commissionsList"
+                }
             }
         ]).toArray(function(err, settlements) {
             if (err) throw err;
@@ -1505,6 +1519,21 @@ app.get("/getSettlementsList", (req, res) => {
     });
 });
 
+app.post('/addSettleComment/:id', jsonParser,  function(req, res) {
+    let newComment = {
+        created_by: req.body.created_by,
+        creation_date: req.body.creation_date,
+        message: req.body.message
+    };
+    //console.log(newComment);
+    mongo.connect(url, (err, db) => {
+        db.collection("settlements").findOneAndUpdate( {
+             _id: new objectId(req.params.id)
+        }, {
+            $push: {comments: newComment}
+        });
+    });
+});
 
 // Running server
 app.listen(3000, function() {

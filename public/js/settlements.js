@@ -190,6 +190,7 @@ fetchPromise.then(response => {
 // Show settlements list
 
 (async () => {
+    //let settleList = await  fetch('http://18.216.223.81:3000/getSettlementsList');
     let settleList = await  fetch('http://localhost:3000/getSettlementsList');
     let SETTLEMENTS = await settleList.json();
 
@@ -215,11 +216,14 @@ fetchPromise.then(response => {
                     <td class="col column5">${item.status}</td>
                 `;
                 
+            // Settlement Details Window 
+
             this.settleList.addEventListener('click', (e) => {
                 e.preventDefault();
+                document.querySelector('#table-docs').innerHTML = '';
+                document.querySelector('#tableTbody-comments').innerHTML = '';
+                document.querySelector('#tableTbody-commissions').innerHTML = '';
                 $('.filter').css('display', 'flex');
-
-                // Settlement Details Window
                 
                 this.merchName = document.querySelector('#settleMerchant');
                 this.merchName.innerHTML = `${item.merchant}`
@@ -227,7 +231,91 @@ fetchPromise.then(response => {
                 document.querySelector('.settleInfoTitle').innerHTML = `Settlement to <strong>${item.wallet[0].name}</strong> made on  
                      <strong>${new Date(item.dates.creation_date).getDate() + '/' + (new Date(item.dates.creation_date).getMonth()+ 1) + '/' +   new Date(item.dates.creation_date).getFullYear()}</strong> for <strong>${formatStr(item.amount)} ${item.currency}</strong> - <span class="currentStatus">${item.status}</span>`;
                 
+                // Documents
+
+                item.documentList.forEach((i) => {
+                    this.docTable =  document.querySelector('#table-docs');
+                    this.docList = document.createElement("tr");
+                    this.docList.className = `tr${i}`;
+                    this.docList.innerHTML = `
+                        <td class="col column0">${i.type}</td> 
+                        <td class="col column1">${new Date(i.creation_date).getDate() + '/' + (new Date(i.creation_date).getMonth()+ 1) + '/' +   new Date(i.creation_date).getFullYear()}</td> 
+                        <td class="col column2"><a href="#">View</a></td> 
+                    `;
+
+                    this.docTable.appendChild(this.docList);
+                });
+
+                // Comments
+
+                item.comments.forEach((i) => {
+                    this.commentTable =  document.querySelector('#tableTbody-comments');
+                    this.commentList = document.createElement("tr");
+                    this.commentList.className = `tr${i}`;
+                    this.commentList.innerHTML = `
+                        <td class="col column0">${i.created_by}</td> 
+                        <td class="col column1">${i.message}</td>
+                    `;
+
+                    this.commentTable.appendChild(this.commentList);
+                });
                 
+                this.addCommentBtn = document.querySelector('#addCommentBtn');
+
+                this.addCommentBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    let commentForm = document.querySelector('#commentForm');
+                    let userName = document.querySelector('.userName').textContent;
+                    let comm =  document.querySelector('#commentText').value;
+                    this.commentTable =  document.querySelector('#tableTbody-comments');
+                    this.commentTr = document.createElement("tr");
+                    this.commentTr.innerHTML = `
+                        <td class="col column0">${userName}</td> 
+                        <td class="col column1">${comm}</td>
+                    `;
+                    this.commentTable.appendChild(this.commentTr);
+
+                    (async () => {
+                        //let addComment = await fetch(`http://18.216.223.81:3000/addSettleComment/${item._id}`, {
+                        let addComment = await fetch(`http://localhost:3000/addSettleComment/${item._id}`, {
+                            method: "POST",
+                            body: JSON.stringify({
+                                created_by: userName,
+                                creation_date: new Date(),
+                                message: comm
+                            }),
+                            headers:{'Content-Type': 'application/json'}
+                        });
+                    })();
+
+                });
+               
+                // Commissions
+
+                item.commissionsList.forEach((i) => {
+                    this.commisionTable =  document.querySelector('#tableTbody-commissions');
+                    this.commisionList = document.createElement("tr");
+                    this.commisionList.className = `tr${i}`;
+                    this.commisionList.innerHTML = `
+                        <td class="col column0">${i.created_by}</td> 
+                        <td class="col column1">${i.type}</td>
+                        <td class="col column1">${i.amount}</td>
+                    `;
+                    this.commisionTable.appendChild(this.commisionList);
+
+                    (async () => {
+                        //let addCommision = await fetch(`http://18.216.223.81:3000/addSettleCommision/${item._id}`, {
+                        let addCommision = await fetch(`http://localhost:3000/addSettleCommision/${item._id}`, {
+                            method: "POST",
+                            body: JSON.stringify({
+                                created_by: userName,
+                                creation_date: new Date(),
+                                message: comm
+                            }),
+                            headers:{'Content-Type': 'application/json'}
+                        });
+                    })();
+                });
 
                 document.querySelector('.settlementDetails-close').addEventListener('click', (e) => {
                     $('.filter').css('display', 'none');
@@ -258,22 +346,6 @@ fetchPromise.then(response => {
             });
         }
     
-        changeStatus() {
-            let btns = document.querySelectorAll('.receivedBtn');
-    
-            btns.forEach( (i) => {
-                i.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    let state = (e.target.parentElement).previousElementSibling;
-                    state.innerHTML = "Received";
-                    this.colorStatus();
-                    i.style.display = 'none';
-                    let rowId = +((e.target.parentElement).parentElement).className.match(/\d+/);
-                    SETTLEMENTS[rowId].Status = "Received";
-                });
-            });        
-        }
-    
         searchFunction() {
             let table = document.getElementById('main-table');
             let phrase = document.querySelector('.input-search').value.toLowerCase();
@@ -299,7 +371,6 @@ fetchPromise.then(response => {
     
         render(){
             this.loadSettle(SETTLEMENTS);
-            this.changeStatus();
             this.colorStatus();
             this.buttonSearch.addEventListener("click", this.searchFunction);
             this.keyPressSearch();
@@ -352,7 +423,7 @@ fetchPromise.then(response => {
         }
     };
 
-    // Add action to buttons ShowAll and Filter
+    // Add action to buttons Clear(ShowAll) and Show(Filter)
 
     let showAllBtn = document.querySelector('.showAllBtn');
     let filterlBtn = document.querySelector('.filterBtn');
@@ -378,86 +449,6 @@ prevSettleBtn.addEventListener('click', (e) => {
 
 });
 
-
-// // UPLOAD FILE BUTTON
-
-// document.getElementById('buttonid').addEventListener('click', openDialog);
-
-// function openDialog() {
-//   document.getElementById('fileid').click();
-// }
-
-// // COMMENT BUTTON
-
-// class Comment {
-//     constructor(userName, comm) {
-//         this.userName = userName;
-//         this.comm = comm;
-//         this.render();
-//     }
-
-//     coment() {
-//         this.container = document.querySelector(".commentTitile");
-//         this.div = document.createElement("div");
-//         this.div.className = 'comment';
-//         this.div.innerHTML = `
-//             <span>${this.userName}</span>
-//             <p>${this.comm}</p>
-//         `;
-//      this.div.appendAfter(this.container);
-//     }
-
-//     render() {
-//         this.coment();
-//     }
-// }
-
-// let commentBtn = document.querySelector('.addCommentBtn');
-
-// commentBtn.addEventListener('click', (e) => {
-//     let userName = 'AW_Finance';
-//     let comm =  document.querySelector('.commentField').value;
-//     let a = new Comment(userName, comm);
-// });
-
-
-// // ADD COMMISSION BUTTON
-
-// class Commission {
-//     constructor(userName, commis, commisSum) {
-//         this.userName = userName;
-//         this.commis = commis;
-//         this.commisSum = commisSum;
-//         this.render();
-//     }
-
-//     commissions() {
-//         this.container = document.querySelector(".fourthRowCommentBlock");
-//         this.div = document.createElement("div");
-//         this.div.className = 'comment';
-//         this.div.innerHTML = `
-//             <span>${this.userName}</span>
-//             <p>${this.commis}</p>
-//             <span>€${this.commisSum}</span>
-//         `;
-//      this.div.appendAfter(this.container);
-//     }
-
-//     render() {
-//         this.commissions();
-//     }
-// }
-
-// let commissionBtn = document.querySelector('.addCommissionBtn');
-
-// commissionBtn.addEventListener('click', (e) => {
-//     let userName = 'AW_Finance';
-//     let commis =  document.querySelector('.commissionType').value;
-//     let commisSum =  document.querySelector('.commissionAmount').value;
-//     let c = new Commission(userName, commis, commisSum);
-// });
-
-
 // Correct amount function
 
 function formatStr(num) {
@@ -477,9 +468,3 @@ function formatStr(num) {
         return str;
     }
 }
-
-// Add appendAfter method
-
-Element.prototype.appendAfter = function (element) {
-    element.parentNode.insertBefore(this, element.nextSibling);
-  },false;
