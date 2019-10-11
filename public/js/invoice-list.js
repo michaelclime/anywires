@@ -32,12 +32,12 @@ class invoiceList {
         this.render();
     }
 
-    changeDocsStatus = async (id, status, number, type) => {
+    changeDocsStatus = async (filename, status, number, type) => {
         return  await fetch("http://18.216.223.81:3000/changeDocStatus", {
             // return  await fetch("http://localhost:3000/changeDocStatus", {
                 method: "POST",
                 body: JSON.stringify({
-                    id,
+                    filename,
                     status, 
                     number, 
                     type
@@ -53,26 +53,26 @@ class invoiceList {
     }
 
     docsBad = async () => {
-        var id = event.target.closest("tr").children[4].textContent.trim();
+        var filename = event.target.closest("tr").children[4].textContent.trim();
         var status = "Declined";
         var type = event.target.closest("tr").children[1].textContent.trim();
         var statusTd = event.target.closest("tr").children[2].innerHTML = status;
         
-        await this.changeDocsStatus(id, status, this.curNumber, type);
+        await this.changeDocsStatus(filename, status, this.curNumber, type);
     }
 
     docsGood = async () => {
-        var id = event.target.closest("tr").children[4].textContent.trim();
+        var filename = event.target.closest("tr").children[4].textContent.trim();
         var status = "Approved";
         var type = event.target.closest("tr").children[1].textContent.trim();
         var statusTd = event.target.closest("tr").children[2].innerHTML = status;
-
-        await this.changeDocsStatus(id, status, this.curNumber, type);
+        
+        await this.changeDocsStatus(filename, status, this.curNumber, type);
     }
 
     openDocsImage = (event) => {
-        var id = event.target.closest("tr").children[4].textContent.trim();
-        window.open(`http://18.216.223.81:3000/image/${id}`, '_blank');
+        var filename = event.target.closest("tr").children[4].textContent.trim();
+        window.open(`http://18.216.223.81:3000/upload/${filename}`, '_blank');
         // 18.216.223.81 localhost
     }
 
@@ -93,24 +93,34 @@ class invoiceList {
     initialUpload = async (event) => {
         event.preventDefault();
 
-        var name = document.querySelector("#docsSelect").value.trim();
+        var type = document.querySelector("#docsSelect").value.trim();
         var number = this.curNumber;
         var file = document.querySelector("#uploadDocs").files[0];
         var creator = this.currentUser.textContent.trim();
         var emptyFile = this.checkIsEmptyObj(file);
         
         // If File exist and Type too than send req
-        if(!emptyFile && name){
+        if(!emptyFile && type){
             var fd = new FormData();
             fd.append("file", file);
             fd.append("number", number);
-            fd.append("name", name);
+            fd.append("type", type);
             fd.append("creator", creator);
             await this.postFile(fd);
      
              // Update Modal Window View
              this.currentInvoice = await this.getInvoices(0, {"number": this.curNumber} ); 
              this.renderViewInvoice(this.currentInvoice);
+
+            //  Cleanning Click ti Upload Input
+             document.querySelector("#uploadDocs").value = "";
+             document.querySelector("#docsSelect").value = "";
+             document.querySelector(".fileName").innerHTML = "Click to upload Document";
+            //  Restore style for File Wrapper
+             this.fileWrapper.style.backgroundColor = "white";
+             this.fileWrapper.style.color = "black";
+             this.fileWrapper.style.border = "1px solid rgb(159, 159, 159)";
+             this.fileWrapper.style.fontWeight = "normal";
         } else {
             alert("Please choose the file!");
         }
@@ -383,7 +393,7 @@ class invoiceList {
                             <span id="docGood" onclick="userList.docsGood(event)"><i class="far fa-check-circle"></i></span>
                             <span id="docBad" onclick="userList.docsBad(event)"><i class="far fa-times-circle"></i></span>
                         </td>
-                        <td class="hide">${doc._id}</td>
+                        <td class="hide">${doc.filename}</td>
                         <td> <button class="docPreview" onclick="userList.openDocsImage(event)">Preview</button> </td> 
                     `; 
                     this.tableDocs.appendChild(tableTr);

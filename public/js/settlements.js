@@ -303,18 +303,18 @@ fetchPromise.then(response => {
                     `;
                     this.commisionTable.appendChild(this.commisionList);
 
-                    (async () => {
-                        //let addCommision = await fetch(`http://18.216.223.81:3000/addSettleCommision/${item._id}`, {
-                        let addCommision = await fetch(`http://localhost:3000/addSettleCommision/${item._id}`, {
-                            method: "POST",
-                            body: JSON.stringify({
-                                created_by: userName,
-                                creation_date: new Date(),
-                                message: comm
-                            }),
-                            headers:{'Content-Type': 'application/json'}
-                        });
-                    })();
+                    // (async () => {
+                    //     //let addCommision = await fetch(`http://18.216.223.81:3000/addSettleCommision/${item._id}`, {
+                    //     let addCommision = await fetch(`http://localhost:3000/addSettleCommision/${item._id}`, {
+                    //         method: "POST",
+                    //         body: JSON.stringify({
+                    //             created_by: userName,
+                    //             creation_date: new Date(),
+                    //             message: comm
+                    //         }),
+                    //         headers:{'Content-Type': 'application/json'}
+                    //     });
+                    // })();
                 });
 
                 document.querySelector('.settlementDetails-close').addEventListener('click', (e) => {
