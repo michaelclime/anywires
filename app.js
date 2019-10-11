@@ -767,7 +767,7 @@ app.post("/upload", upload.single("file"), jsonParser, (req, res) => {
                 {returnOriginal: false }, function(err, result){
         
                    if(err) return console.log(err);   
-                   res.send("Invoice successfully has been changed!");
+                   res.send("Document successfully has been uploaded!");
                });
             });
         }), {returnOriginal: false }, (err, res) => {
@@ -783,6 +783,7 @@ var checkTypeOfDocument = (type, filePath, res) => {
         res.send("File type is not supported!");
     } else {
         fs.readFile(__dirname + filePath , (err, data) => {
+            if (err) return console.log(err, "Can't open current file!");
             res.contentType(type);
             res.send(data);
         });
@@ -797,9 +798,10 @@ app.get("/upload/:filename", (req, res) => {
     const filename = req.params.filename;
     var filePath = `/uploads/${filename}`;
 
-    mongo.connect(url, (err, db) =>{
+    mongo.connect(url, (err, db) => {
+        if (err) return console.log(err, "Can't connect to database!");
         db.collection("documents").find({"filename": filename}).toArray(function(err, doc){
-            if(err) return console.log("Error with upload Invoice Merchant!", err);
+            if(err) return console.log("Error with openning file!", err);
 
             checkTypeOfDocument(doc[0].mimetype, filePath, res);
         });
@@ -816,8 +818,9 @@ app.post("/changeDocStatus", jsonParser, (req, res) => {
 
     // 1. First, we need to find Document which we need and change status in Document for current status.
     mongo.connect(url, (err, db) => {
+        if (err) return console.log(err, "Can't connect to database!");
         db.collection("documents").findOneAndUpdate({"filename": filename}, {$set: {"status": status}}, (function(err, doc){
-            if(err) return console.log("Error with upload Invoice Banks!", err);
+            if(err) return console.log("Error with changing status for document!", err);
             
             const id = new objectId(doc.value._id);
             var obj = {};
@@ -838,6 +841,7 @@ app.post("/changeDocStatus", jsonParser, (req, res) => {
             type === "Declaration" ? obj = {"documents.declaration": {"id": id, "status": status} } : "";
 
             mongo.connect(url, (err, db) => {
+                if (err) return console.log(err, "Can't connect to database!");
                 db.collection("invoices").bulkWrite([
                     {
                         // Remove exist doc
@@ -858,9 +862,9 @@ app.post("/changeDocStatus", jsonParser, (req, res) => {
                         }
                     }
                 ]), {returnOriginal: false}, (err, res) => {
-                    if (err) return console.log(err);
-                    res.send("Status were changed!");
+                    if (err) return console.log(err, "Error with changing document status inside Invoice!");
                 };
+                res.send("Status were changed!");
             });
         }));
     });
