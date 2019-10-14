@@ -231,6 +231,66 @@ fetchPromise.then(response => {
                 document.querySelector('.settleInfoTitle').innerHTML = `Settlement to <strong>${item.wallet[0].name}</strong> made on  
                      <strong>${new Date(item.dates.creation_date).getDate() + '/' + (new Date(item.dates.creation_date).getMonth()+ 1) + '/' +   new Date(item.dates.creation_date).getFullYear()}</strong> for <strong>${formatStr(item.amount)} ${item.currency}</strong> - <span class="currentStatus">${item.status}</span>`;
                 
+                // EDIT BUTTONS
+
+                this.sentBTN = document.querySelector('#sent');
+                this.receivedBTN = document.querySelector('#received');
+                this.declinedBTN = document.querySelector('#declined');
+
+                this.sentBTN.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    document.querySelector('.settleInfoTitle').innerHTML = `Settlement to <strong>${item.wallet[0].name}</strong> made on  
+                     <strong>${new Date(item.dates.creation_date).getDate() + '/' + (new Date(item.dates.creation_date).getMonth()+ 1) + '/' +   new Date(item.dates.creation_date).getFullYear()}</strong> for <strong>${formatStr(item.amount)} ${item.currency}</strong> - <span class="currentStatus">Sent</span>`;
+                    
+                    (async () => {
+                        //let addComment = await fetch(`http://18.216.223.81:3000/changeSettleStatus/${item._id}`, {
+                        let changeSStatus = await fetch(`http://localhost:3000/changeSettleStatus/${item._id}`, {
+                            method: "POST",
+                            body: JSON.stringify({
+                                newStatus: 'Sent',
+                                sent_date: new Date(),
+                            }),
+                            headers:{'Content-Type': 'application/json'}
+                        });
+                    })();
+                });
+
+                this.receivedBTN.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    document.querySelector('.settleInfoTitle').innerHTML = `Settlement to <strong>${item.wallet[0].name}</strong> made on  
+                     <strong>${new Date(item.dates.creation_date).getDate() + '/' + (new Date(item.dates.creation_date).getMonth()+ 1) + '/' +   new Date(item.dates.creation_date).getFullYear()}</strong> for <strong>${formatStr(item.amount)} ${item.currency}</strong> - <span class="currentStatus">Received</span>`;
+                    
+                    (async () => {
+                        //let addComment = await fetch(`http://18.216.223.81:3000/changeSettleStatus/${item._id}`, {
+                        let changeSStatus = await fetch(`http://localhost:3000/changeSettleStatus/${item._id}`, {
+                            method: "POST",
+                            body: JSON.stringify({
+                                newStatus: 'Received',
+                                received_date: new Date(),
+                            }),
+                            headers:{'Content-Type': 'application/json'}
+                        });
+                    })();
+                });
+
+                this.declinedBTN.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    document.querySelector('.settleInfoTitle').innerHTML = `Settlement to <strong>${item.wallet[0].name}</strong> made on  
+                     <strong>${new Date(item.dates.creation_date).getDate() + '/' + (new Date(item.dates.creation_date).getMonth()+ 1) + '/' +   new Date(item.dates.creation_date).getFullYear()}</strong> for <strong>${formatStr(item.amount)} ${item.currency}</strong> - <span class="currentStatus"> Declined</span>`;
+                    
+                     (async () => {
+                        //let addComment = await fetch(`http://18.216.223.81:3000/changeSettleStatus/${item._id}`, {
+                        let changeSStatus = await fetch(`http://localhost:3000/changeSettleStatus/${item._id}`, {
+                            method: "POST",
+                            body: JSON.stringify({
+                                newStatus: 'Declined',
+                                declined_date: new Date(),
+                            }),
+                            headers:{'Content-Type': 'application/json'}
+                        });
+                    })();
+                });
+                
                 // Documents
 
                 item.documentList.forEach((i) => {
@@ -264,7 +324,6 @@ fetchPromise.then(response => {
 
                 this.addCommentBtn.addEventListener('click', (e) => {
                     e.preventDefault();
-                    let commentForm = document.querySelector('#commentForm');
                     let userName = document.querySelector('.userName').textContent;
                     let comm =  document.querySelector('#commentText').value;
                     this.commentTable =  document.querySelector('#tableTbody-comments');
@@ -287,7 +346,6 @@ fetchPromise.then(response => {
                             headers:{'Content-Type': 'application/json'}
                         });
                     })();
-
                 });
                
                 // Commissions
@@ -299,26 +357,45 @@ fetchPromise.then(response => {
                     this.commisionList.innerHTML = `
                         <td class="col column0">${i.created_by}</td> 
                         <td class="col column1">${i.type}</td>
-                        <td class="col column1">${i.amount}</td>
+                        <td class="col column2">${i.amount}</td>
                     `;
                     this.commisionTable.appendChild(this.commisionList);
+                });
+                
+                this.addCommissionsBtn = document.querySelector('#addCommissionsBtn');
+                
+                this.addCommissionsBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.userName = document.querySelector('.userName').textContent;
+                    this.commisType =  document.querySelector('.commissionType').value;
+                    this.commisAmount =  document.querySelector('.commissionAmount').value;
 
-                    // (async () => {
-                    //     //let addCommision = await fetch(`http://18.216.223.81:3000/addSettleCommision/${item._id}`, {
-                    //     let addCommision = await fetch(`http://localhost:3000/addSettleCommision/${item._id}`, {
-                    //         method: "POST",
-                    //         body: JSON.stringify({
-                    //             created_by: userName,
-                    //             creation_date: new Date(),
-                    //             message: comm
-                    //         }),
-                    //         headers:{'Content-Type': 'application/json'}
-                    //     });
-                    // })();
+                    this.commisstTable =  document.querySelector('#tableTbody-commissions');
+                    this.commisTR = document.createElement("tr");
+                    this.commisTR.innerHTML = `
+                        <td class="col column0">${this.userName}</td> 
+                        <td class="col column1">${this.commisType}</td>
+                        <td class="col column2">${this.commisAmount}</td>
+                    `;
+                    this.commisstTable.appendChild(this.commisTR);
+
+                    (async () => {
+                        //let addCommision = await fetch(`http://18.216.223.81:3000/addSettleCommision/${item._id}`, {
+                        let addCommision = await fetch(`http://localhost:3000/addSettleCommision/${item._id}`, {
+                            method: "POST",
+                            body: JSON.stringify({
+                                created_by: this.userName,
+                                type: this.commisType,
+                                amount: this.commisAmount
+                            }),
+                            headers:{'Content-Type': 'application/json'}
+                        });
+                    })();
                 });
 
                 document.querySelector('.settlementDetails-close').addEventListener('click', (e) => {
                     $('.filter').css('display', 'none');
+                    location.reload(true);
                 });
             });   
             this.container.appendChild(this.settleList);
@@ -376,7 +453,7 @@ fetchPromise.then(response => {
             this.keyPressSearch();
         }
     };
-    const settlementsList1 = new SettlementsList();
+const settlementsList1 = new SettlementsList();
 
     // FILTER
 
@@ -404,7 +481,11 @@ fetchPromise.then(response => {
                 newSettleList = SETTLEMENTS.filter( (i) => {
                     return (i.merchant == claim2) && ( new Date(i.dates.creation_date) > new Date(date1) ) && ( new Date(i.dates.creation_date) < new Date(date2) )
                 } );
-            } else if (!date) {
+            } else if ( claim1 && claim2 && !date ) {
+                newSettleList = SETTLEMENTS.filter( (i) => {
+                    return (i.status == claim1) && (i.merchant == claim2)
+                } );
+            }  else if (!date) {
                 newSettleList = SETTLEMENTS.filter( (i) => {
                     return claim1 ? (i.status == claim1) : (i.merchant == claim2);
                 } );
@@ -418,7 +499,6 @@ fetchPromise.then(response => {
         render() {
             this.filter()
             this.loadSettle(newSettleList);
-            this.changeStatus();
             this.colorStatus();
         }
     };

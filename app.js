@@ -1479,7 +1479,7 @@ app.get('/availableInvs/:merchant', function(req, res, next) {
 app.get("/getWalletsList", (req, res) => {
     mongo.connect(url, (err, db) =>{
         db.collection("wallets").find({}).toArray(function(err, wallets){
-            if(err) return console.log("Error with upload Banks!", err);
+            if(err) return console.log("Error with upload wallets!", err);
             db.close();
             res.send(wallets);
         })
@@ -1513,7 +1513,7 @@ app.get("/getSettlementsList", (req, res) => {
             }
         ]).toArray(function(err, settlements) {
             if (err) throw err;
-            res.send(settlements);
+            res.send(settlements.reverse());
             db.close();
         });
     });
@@ -1525,13 +1525,65 @@ app.post('/addSettleComment/:id', jsonParser,  function(req, res) {
         creation_date: req.body.creation_date,
         message: req.body.message
     };
-    //console.log(newComment);
     mongo.connect(url, (err, db) => {
         db.collection("settlements").findOneAndUpdate( {
              _id: new objectId(req.params.id)
         }, {
             $push: {comments: newComment}
         });
+    });
+});
+
+app.post('/addSettleCommision/:id', jsonParser,  function(req, res) {
+    let newID =  objectId();
+
+    mongo.connect(url, (err, db) => {
+        db.collection("commissions").insertOne( {
+            _id: newID,
+            created_by: req.body.created_by, 
+            amount: req.body.amount,
+            type: req.body.type,
+            percentage: ''
+        });
+    });
+
+    mongo.connect(url, (err, db) => {
+        db.collection("settlements").findOneAndUpdate( {
+             _id: new objectId(req.params.id)
+        }, {
+            $push: {commissions: newID}
+        });
+    });
+});
+
+app.post('/changeSettleStatus/:id', jsonParser,  function(req, res) {
+    
+    mongo.connect(url, (err, db) => {
+        if (req.body.sent_date) {
+            db.collection("settlements").findOneAndUpdate( {
+                _id: new objectId(req.params.id)
+            }, { $set: { 
+                    "status": req.body.newStatus,
+                    "dates.sent_date":  req.body.sent_date
+                }         
+            });
+        } else  if (req.body.received_date) {
+            db.collection("settlements").findOneAndUpdate( {
+                _id: new objectId(req.params.id)
+            }, { $set: { 
+                    "status": req.body.newStatus,
+                    "dates.received_date":  req.body.received_date
+                }         
+            });
+        } else {
+            db.collection("settlements").findOneAndUpdate( {
+                _id: new objectId(req.params.id)
+            }, { $set: { 
+                    "status": req.body.newStatus,
+                    "dates.declined_date":  req.body.declined_date
+                }         
+            });
+        }
     });
 });
 
