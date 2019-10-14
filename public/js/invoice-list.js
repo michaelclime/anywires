@@ -33,7 +33,7 @@ class invoiceList {
     }
 
     changeDocsStatus = async (filename, status, number, type) => {
-        return  await fetch("http://18.216.223.81:3000/changeDocStatus", {
+        return  await fetch("http://localhost:3000/changeDocStatus", {
             // return  await fetch("http://localhost:3000/changeDocStatus", {
                 method: "POST",
                 body: JSON.stringify({
@@ -72,8 +72,8 @@ class invoiceList {
 
     openDocsImage = (event) => {
         var filename = event.target.closest("tr").children[4].textContent.trim();
-        window.open(`http://18.216.223.81:3000/upload/${filename}`, '_blank');
-        // 18.216.223.81 localhost
+        window.open(`http://localhost:3000/upload/${filename}`, '_blank');
+        // localhost localhost
     }
 
     changeFileClickTo = () => {
@@ -127,7 +127,7 @@ class invoiceList {
     }
 
     postFile = async (fd) => {
-    return  await fetch("http://18.216.223.81:3000/upload", {
+    return  await fetch("http://localhost:3000/upload", {
         // return  await fetch("http://localhost:3000/upload", {
             method: "POST",
             body: fd,
@@ -173,7 +173,7 @@ class invoiceList {
     }
 
     postEditedInvoice = async (number, newInvoice) => {
-    return  await fetch("http://18.216.223.81:3000/postEditedInvoice", {
+    return  await fetch("http://localhost:3000/postEditedInvoice", {
         // return  await fetch("http://localhost:3000/postEditedInvoice", {
             method: "POST",
             body: JSON.stringify({
@@ -305,7 +305,7 @@ class invoiceList {
     }
 
     postCommet = async (number, data, create_by) => {
-        return  await fetch("http://18.216.223.81:3000/postComment", {
+        return  await fetch("http://localhost:3000/postComment", {
             //  return  await fetch("http://localhost:3000/postComment", {
                 method: "POST",
                 body: JSON.stringify({
@@ -403,7 +403,7 @@ class invoiceList {
     }
 
     getDocs = async (filter, id) => {
-         return  await fetch("http://18.216.223.81:3000/getDocs", {
+         return  await fetch("http://localhost:3000/getDocs", {
             //  return  await fetch("http://localhost:3000/getDocs", {
                 method: "POST",
                 body: JSON.stringify({
@@ -440,8 +440,8 @@ class invoiceList {
 
     previewInvoice = (event) => {
         var number = event.target.closest("tr").children[0].children[0].children[0].children[0].textContent.split("#");
-        window.open("http://18.216.223.81:3000/invoice-preview?&" + number[1], '_blank');
-        // 18.216.223.81 // localhost:3000
+        window.open("http://localhost:3000/invoice-preview?&" + number[1], '_blank');
+        // localhost // localhost:3000
     }
 
     filtersData = () => {
@@ -806,7 +806,7 @@ class invoiceList {
     }
 
     getMerchants = async () => {
-        return  await fetch("http://18.216.223.81:3000/getMerchants")
+        return  await fetch("http://localhost:3000/getMerchants")
         //  return  await fetch("http://localhost:3000/getMerchants")
         .then(res => {
             return res.json();
@@ -826,7 +826,7 @@ class invoiceList {
     }
 
     getBanks = async () => {
-         return  await fetch("http://18.216.223.81:3000/getBanks")
+         return  await fetch("http://localhost:3000/getBanks")
         //   return  await fetch("http://localhost:3000/getBanks")
          .then(res => {
              return res.json();
@@ -852,7 +852,7 @@ class invoiceList {
     }
 
     getInvoices = async (count, filter, firstCr, secondCr, firstRe, secondRe) => {
-        return  await fetch("http://18.216.223.81:3000/getPart-Invoices", {
+        return  await fetch("http://localhost:3000/getPart-Invoices", {
         //  return  await fetch("http://localhost:3000/getPart-Invoices", {
             method: "POST",
             body: JSON.stringify({
@@ -874,7 +874,7 @@ class invoiceList {
     }
 
     getNumberOfinvoices = async (filter, firstCr, secondCr, firstRe, secondRe) => {
-       return  await fetch("http://18.216.223.81:3000/getNumber-Invoices", {
+       return  await fetch("http://localhost:3000/getNumber-Invoices", {
         //  return  await fetch("http://localhost:3000/getNumber-Invoices", {
             method: "POST",
             body: JSON.stringify({
