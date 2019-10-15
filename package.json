@@ -12,6 +12,7 @@
     "consolidate": "^0.15.1",
     "ejs": "^2.6.2",
     "express": "^4.17.1",
+    "express-fileupload": "^1.1.6-alpha.5",
     "express-session": "^1.16.2",
     "fs": "0.0.1-security",
     "gridfs-bucket": "^0.7.4",

@@ -20,7 +20,6 @@ let express = require("express"),
     xoauth2 = require('xoauth2'),
     multer = require("multer");
 
-
 const url = 'mongodb://18.216.223.81:27017/anywires';
 // const url = 'mongodb://localhost:27017/anywires';
 
@@ -1569,6 +1568,48 @@ app.post('/changeSettleStatus/:id', jsonParser,  function(req, res) {
                 }         
             });
         }
+    });
+});
+
+app.post("/uploadSettleDoc", upload.single("file"), jsonParser, (req, res) => {
+   
+    let file = req.file;
+    if(!file) return res.send("Error to download file");
+
+    const newID = new objectId();
+
+    const newDoc = {
+        "_id": newID,
+        "type": req.body.type,
+        "status": "Non-Verified",
+        "filename": req.file.filename,
+        "creation_date": new Date(),
+        "creator": req.body.creator,
+        "originalname": req.file.originalname,
+        "encoding": req.file.encoding,
+        "mimetype": req.file.mimetype,
+        "size": req.file.size
+    };
+    
+     mongo.connect(url, (err, db) => {
+        db.collection("documents").insertOne(newDoc, (err) => {
+            if (err) return console.log(err, "Error with inseerting Document!");
+
+            mongo.connect(url, (err, db) =>{
+                if(err) return console.log(err);  
+        
+                db.collection("settlements").findOneAndUpdate(
+                    {"_id": new objectId(req.body.numberID)},
+                    {$push: 
+                        { documents: newID}
+                    },
+                    {returnOriginal: false }, function(err, result){
+        
+                    if(err) return console.log(err);   
+                    res.send("Document successfully has been uploaded!");
+               });
+            });
+        })
     });
 });
 

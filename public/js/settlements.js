@@ -300,10 +300,99 @@ fetchPromise.then(response => {
                     this.docList.innerHTML = `
                         <td class="col column0">${i.type}</td> 
                         <td class="col column1">${new Date(i.creation_date).getDate() + '/' + (new Date(i.creation_date).getMonth()+ 1) + '/' +   new Date(i.creation_date).getFullYear()}</td> 
-                        <td class="col column2"><a href="#">View</a></td> 
+                        <td class="col column2"><span onclick="openDocsImage(event)" class="viewSpan">View</span></td>
+                        <td class="col column3 hide">${i.filename}</td> 
                     `;
 
                     this.docTable.appendChild(this.docList);
+                });
+
+                this.uploadDocs = document.querySelector('#uploadDocs');
+
+                this.uploadDocs.addEventListener('input', (e) => {
+                   
+                    this.clickToDownload = document.querySelector("#uploadDocs");
+                    this.fileName = document.querySelector(".fileName");
+                    this.fileWrapper = document.querySelector(".fileWrapper");
+            
+                    var fileName = this.clickToDownload.files[0];
+                    this.fileName.innerHTML = fileName.name
+            
+                    // Add border
+                    this.fileWrapper.style.backgroundColor = "rgba(18,199,178,1)";
+                    this.fileWrapper.style.color = "white";
+                    this.fileWrapper.style.fontWeight = "bold";
+                    this.fileWrapper.style.border = "none";
+                    
+                });
+
+                this.uploadBtn = document.querySelector('#uploadBtn');
+
+                this.uploadBtn.addEventListener('click', (e) => {
+
+                    const initialUpload = async () => {
+                        e.preventDefault();
+                
+                        var type = document.querySelector("#docsSelect").value.trim();
+                        var numberID = item._id;
+                        var file = document.querySelector("#uploadDocs").files[0];
+                        var creator = document.querySelector('.userName').textContent;
+                        var emptyFile = checkIsEmptyObj(file);
+                        
+                        // If File exist and Type too than send req
+                        if(!emptyFile && type){
+                            var fd = new FormData();
+                            fd.append("file", file);
+                            fd.append("numberID", numberID);
+                            fd.append("type", type);
+                            fd.append("creator", creator);
+                            await postFile(fd);
+                     
+                             // Update Modal Window View
+                            this.docTablee =  document.querySelector('#table-docs');
+                            this.docListt = document.createElement("tr");
+                            this.docListt.className = `tr${i}`;
+                            this.docListt.innerHTML = `
+                                <td class="col column0">${type}</td> 
+                                <td class="col column1">${new Date().getDate() + '/' + (new Date().getMonth()+ 1) + '/' +   new Date().getFullYear()}</td> 
+                                <td class="col column2"><span onclick="openDocsImage(event)" class="viewSpan">View</span></td> 
+                                <td class="col column3 hide">${file.filename}</td>
+                            `;
+
+                            this.docTablee.appendChild(this.docListt);
+                
+                            //  Cleanning Click ti Upload Input
+                             document.querySelector("#uploadDocs").value = "";
+                             document.querySelector("#docsSelect").value = "";
+                             document.querySelector(".fileName").innerHTML = "Click to upload Document";
+                            //  Restore style for File Wrapper
+                             this.fileWrapper.style.backgroundColor = "white";
+                             this.fileWrapper.style.color = "black";
+                             this.fileWrapper.style.border = "1px solid rgb(159, 159, 159)";
+                             this.fileWrapper.style.fontWeight = "normal";
+                        } else {
+                            Swal.fire("Please, choose the file and type!");
+                        }
+                    }
+                
+                    const postFile = async (fd) => {
+                    return  await fetch("http://localhost:3000/uploadSettleDoc", {
+                        // return  await fetch("http://18.216.223.81:3000/upload", {
+                            method: "POST",
+                            body: fd,
+                            mode: "no-cors",
+                            headers:{'Accept': 'application/json'}
+                        })
+                        .then(res => {
+                            return res.text();
+                        }) 
+                        .catch(err => {
+                            console.log(err);
+                        });
+                    }
+
+                    initialUpload();
+                   
                 });
 
                 // Comments
@@ -395,7 +484,7 @@ fetchPromise.then(response => {
 
                 document.querySelector('.settlementDetails-close').addEventListener('click', (e) => {
                     $('.filter').css('display', 'none');
-                    location.reload(true);
+                    //location.reload(true);
                 });
             });   
             this.container.appendChild(this.settleList);
@@ -547,4 +636,21 @@ function formatStr(num) {
     } else {
         return str;
     }
+}
+
+// Additional function
+
+function checkIsEmptyObj (obj) {
+    for (let key in obj) {
+        return false; // wrong
+    }
+    return true; // is epmty
+}
+
+// Open downloded files for settlement
+
+function openDocsImage (event) {
+    var filename = event.target.closest("tr").children[3].textContent.trim();
+    window.open(`http://localhost:3000/upload/${filename}`, '_blank');
+    //window.open(`http://18.216.223.81:3000/upload/${filename}`, '_blank');
 }
