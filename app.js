@@ -1590,8 +1590,8 @@ app.post("/uploadSettleDoc", upload.single("file"), jsonParser, (req, res) => {
                     },
                     {returnOriginal: false }, function(err, result){
         
-                    if(err) return console.log(err);   
-                    res.send("Document successfully has been uploaded!");
+                    if(err) return console.log(err);  
+                    res.status(200).send("Document successfully has been uploaded!");
                });
             });
         })
