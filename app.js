@@ -683,11 +683,10 @@ app.post("/postComment", jsonParser, (req, res) => {
         var now = new Date();
         var createBy = req.body.create_by;
 
-        db.collection("invoices").updateOne({"number":number}, {$push: {comments: { "created_by": createBy, "creation_date": now, "message": newComment } } },
+        db.collection("invoices").updateOne({"number": number}, {$push: {comments: { "created_by": createBy, "creation_date": now, "message": newComment } } },
         {returnOriginal: false },function(err, result){
-           if(err) return console.log(err);     
-           const bank = result.value;
-           res.send(bank);
+           if(err) return console.log(err);  
+           res.send("Comment was add!");
        });
     });
 });
@@ -767,7 +766,7 @@ var checkTypeOfDocument = (type, filePath, res) => {
         res.send("File type is not supported!");
     } else {
         fs.readFile(__dirname + filePath , (err, data) => {
-            if (err) return console.log(err, "Can't open current file!");
+            if (err) return res.sendStatus(404);
             res.contentType(type);
             res.send(data);
         });
@@ -849,6 +848,61 @@ app.post("/changeDocStatus", jsonParser, (req, res) => {
                 res.send("Status were changed!");
             });
         }));
+    });
+});
+
+
+// @route POST /sentStatus
+// @desc Change all data to sent
+app.post("/sentStatus", jsonParser, (req, res) => {
+    const invNumber = req.body.invNumber;
+    const amountSent = req.body.amountSent;
+    mongo.connect(url, (err, db) => {
+        if (err) return console.log(err, "Can't connect to database!");
+        db.collection("invoices").findOneAndUpdate({"number": invNumber}, {$set: {"status":"Sent", "dates.sent_date": new Date(), "amount.amount_sent": amountSent} }, 
+        {returnOriginal: false}, (err, inv) => {
+            if(err) return console.log(err, "Error with change status to Sent!");
+            const bankName = inv.value.bank;
+            
+            mongo.connect(url, (err, db) => {
+                if (err) return console.log(err, "Can't connect to database!");
+                db.collection("banks").updateOne({"name": bankName}, {$inc: {"balance_sent": amountSent} }, {returnOriginal: false}, (err, result) => {
+                    if(err) return console.log(err, "Error with change balance at Bank!");
+                    res.send("Sent status has been set successfully!");
+                });
+            });
+
+        });
+    });
+});
+
+
+// @route POST /requestStatus
+// @desc Change all data to requested
+app.post("/requestStatus", jsonParser, (req, res) => {
+    var invoiceNum = req.body.invoiceNum;
+    var reqAmount = '';
+    var bankName = '';
+    mongo.connect(url, (err, db) => {
+        if (err) return console.log(err, "Can't connect to database!");
+        db.collection("invoices").findOneAndUpdate({"number": invoiceNum}, {$set: {
+            "status":"Requested", 
+            "dates.sent_date": "", 
+            "amount.amount_sent":0 
+        }}, {returnOriginal: false}, (err, result) => {
+            if(err) return console.log(err, "Error with change status to Requested!");
+            reqAmount = result.value.amount.amount_requested;
+            bankName = result.value.bank;
+
+            mongo.connect(url, (err, db) => {
+                if (err) return console.log(err, "Can't connect to database!");
+                db.collection("banks").findOneAndUpdate({"name": bankName}, {$inc: {"balance_sent": -reqAmount}}, {returnOriginal: false}, (err, bank) => {
+                    if(err) return console.log(err, "Error with change bank balance!");
+                    res.send("Requested status has been set successfully!");
+                });
+            });
+
+        });
     });
 });
 
