@@ -20,7 +20,6 @@ let express = require("express"),
     xoauth2 = require('xoauth2'),
     multer = require("multer");
 
-
 const url = 'mongodb://18.216.223.81:27017/anywires';
 // const url = 'mongodb://localhost:27017/anywires';
 
@@ -142,21 +141,6 @@ app.get('/merchantReport.html', isLoggedIn, function(req, res) {
 });
 
 // Invoice generation process
-
-app.get('/getList', function(req, res, next) {
-    let INVOIECES = [];
-    mongo.connect(url, function(err, db) {
-        assert.equal(null, err);
-        var cursor = db.collection('invoices').find();
-        cursor.forEach(function(doc, err) {
-            assert.equal(null, err);
-            INVOIECES.push(doc);
-        }, function() {
-            db.close();
-            res.send(INVOIECES);
-        });
-    });
-});
 
 app.post("/invoices/:fullname/:_id/:merchant", function(req, res, next) {
 
@@ -1518,7 +1502,7 @@ app.get('/availableInvs/:merchant', function(req, res, next) {
 app.get("/getWalletsList", (req, res) => {
     mongo.connect(url, (err, db) =>{
         db.collection("wallets").find({}).toArray(function(err, wallets){
-            if(err) return console.log("Error with upload Banks!", err);
+            if(err) return console.log("Error with upload wallets!", err);
             db.close();
             res.send(wallets);
         })
@@ -1552,7 +1536,7 @@ app.get("/getSettlementsList", (req, res) => {
             }
         ]).toArray(function(err, settlements) {
             if (err) throw err;
-            res.send(settlements);
+            res.send(settlements.reverse());
             db.close();
         });
     });
@@ -1564,13 +1548,107 @@ app.post('/addSettleComment/:id', jsonParser,  function(req, res) {
         creation_date: req.body.creation_date,
         message: req.body.message
     };
-    //console.log(newComment);
     mongo.connect(url, (err, db) => {
         db.collection("settlements").findOneAndUpdate( {
              _id: new objectId(req.params.id)
         }, {
             $push: {comments: newComment}
         });
+    });
+});
+
+app.post('/addSettleCommision/:id', jsonParser,  function(req, res) {
+    let newID =  objectId();
+
+    mongo.connect(url, (err, db) => {
+        db.collection("commissions").insertOne( {
+            _id: newID,
+            created_by: req.body.created_by, 
+            amount: req.body.amount,
+            type: req.body.type,
+            percentage: ''
+        });
+    });
+
+    mongo.connect(url, (err, db) => {
+        db.collection("settlements").findOneAndUpdate( {
+             _id: new objectId(req.params.id)
+        }, {
+            $push: {commissions: newID}
+        });
+    });
+});
+
+app.post('/changeSettleStatus/:id', jsonParser,  function(req, res) {
+    
+    mongo.connect(url, (err, db) => {
+        if (req.body.sent_date) {
+            db.collection("settlements").findOneAndUpdate( {
+                _id: new objectId(req.params.id)
+            }, { $set: { 
+                    "status": req.body.newStatus,
+                    "dates.sent_date":  req.body.sent_date
+                }         
+            });
+        } else  if (req.body.received_date) {
+            db.collection("settlements").findOneAndUpdate( {
+                _id: new objectId(req.params.id)
+            }, { $set: { 
+                    "status": req.body.newStatus,
+                    "dates.received_date":  req.body.received_date
+                }         
+            });
+        } else {
+            db.collection("settlements").findOneAndUpdate( {
+                _id: new objectId(req.params.id)
+            }, { $set: { 
+                    "status": req.body.newStatus,
+                    "dates.declined_date":  req.body.declined_date
+                }         
+            });
+        }
+    });
+});
+
+app.post("/uploadSettleDoc", upload.single("file"), jsonParser, (req, res) => {
+   
+    let file = req.file;
+    if(!file) return res.send("Error to download file");
+
+    const newID = new objectId();
+
+    const newDoc = {
+        "_id": newID,
+        "type": req.body.type,
+        "status": "Non-Verified",
+        "filename": req.file.filename,
+        "creation_date": new Date(),
+        "creator": req.body.creator,
+        "originalname": req.file.originalname,
+        "encoding": req.file.encoding,
+        "mimetype": req.file.mimetype,
+        "size": req.file.size
+    };
+    
+     mongo.connect(url, (err, db) => {
+        db.collection("documents").insertOne(newDoc, (err) => {
+            if (err) return console.log(err, "Error with inseerting Document!");
+
+            mongo.connect(url, (err, db) =>{
+                if(err) return console.log(err);  
+        
+                db.collection("settlements").findOneAndUpdate(
+                    {"_id": new objectId(req.body.numberID)},
+                    {$push: 
+                        { documents: newID}
+                    },
+                    {returnOriginal: false }, function(err, result){
+        
+                    if(err) return console.log(err);   
+                    res.send("Document successfully has been uploaded!");
+               });
+            });
+        })
     });
 });
 
