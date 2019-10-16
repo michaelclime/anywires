@@ -516,7 +516,7 @@ label {
     background-color: #20A5F7;
 }
 
-#currentUser {
+#currentUser, .curentUserRole {
     display: none;
 }
 

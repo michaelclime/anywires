@@ -1,8 +1,9 @@
 
 class invoiceList {
     constructor(){
-        
+        this.currentTr = "";
         this.curNumber = "";
+        this.curStatus = "";
         this.ArrayLIst = [];
         this.ArrayBanks = [];
         this.ArrayMerchants = []; 
@@ -27,9 +28,119 @@ class invoiceList {
         this.inputSearch = document.querySelector(".input-search");
         this.uploadBtn = document.querySelector("#uploadBtn");
         this.clickToDownload = document.querySelector("#uploadDocs");
+        this.requestedBtn = document.querySelector("#requested");
         this.currentInvoice = [];
-        
+        this.currentUserRole = document.querySelector(".curentUserRole");
+        this.sentBtn = document.querySelector("#sent");
         this.render();
+    }
+
+    sentInvoiceStatus = async (invNumber, amountSent) => {
+        return  await fetch("http://18.216.223.81:3000/sentStatus", {
+            // return  await fetch("http://18.216.223.81:3000/sentStatus", {
+                method: "POST",
+                body: JSON.stringify({
+                    invNumber,
+                    amountSent
+                }),
+                headers:{'Content-Type': 'application/json'}
+            })
+            .then(res => {
+                return res.text();
+            }) 
+            .catch(err => {
+                console.log(err);
+            });
+    }
+
+    sentStatus = async () => {
+        var requested = this.currentInvoice[0].amount.amount_requested;
+        var currency = "";
+        this.currentInvoice[0].currency === "USD" ? currency = "$" : currency = "€";
+
+        // Checking role of Current User
+        var role = this.currentUserRole.textContent.trim();
+        var accessRole = ["CrmFinanceManager", "CrmInvoiceManager", "CrmSuccessManager", "CrmAdmin"];
+        var result = accessRole.some((item) => item === role);
+
+        // If Current User has access
+        if (result) {
+            // Request for status "Sent" 
+            this.sentInvoiceStatus(this.curNumber, requested);
+
+            // Change status, sent date, amount sent for currentInvoice
+            this.currentInvoice[0].status = "Sent";
+            this.currentInvoice[0].dates.sent_date = new Date();
+            this.currentInvoice[0].amount.amount_sent = requested;
+
+            // Change table information
+            this.currentTr.children[8].innerHTML = `<strong>Sent</strong>`;
+            this.currentTr.children[8].style.color = "rgb(255, 187, 51)";
+            this.currentTr.children[3].children[0].children[0].textContent = `${currency}${requested}`;
+            this.currentTr.children[3].children[0].children[1].innerHTML = `${this.checkDate(new Date())}`;
+
+            // Change style for popUp
+            document.querySelector(".currentStatus").textContent = "Sent";
+            document.querySelector(".currentStatus").style.color = "rgb(255, 187, 51)";
+
+            // // Add new comment
+            await this.addComment(`Transfer for ${currency}${requested} was Sent!`);
+            
+        } else {
+            alert("You can't do this!");
+        }
+    }
+
+    requestedInvoiceStatus = async (invoiceNum) => {
+        return  await fetch("http://18.216.223.81:3000/requestStatus", {
+            // return  await fetch("http://18.216.223.81:3000/requestStatus", {
+                method: "POST",
+                body: JSON.stringify({
+                    invoiceNum
+                }),
+                headers:{'Content-Type': 'application/json'}
+            })
+            .then(res => {
+                return res.text();
+            }) 
+            .catch(err => {
+                console.log(err);
+            });
+    }
+
+    requestedStatus = async () => {
+        var role = this.currentUserRole.textContent.trim();
+        var bankName = this.currentInvoice[0].bank;
+        var reqAmount = this.currentInvoice[0].amount.amount_requested;
+        var currency = "";
+        this.currentInvoice[0].currency === "USD" ? currency = "$" : currency = "€";
+
+        // If user CRM admin and Status is Sent
+        if (this.curStatus === "Sent" && role === "CrmAdmin") { 
+            // Request for status "Requested"
+            this.requestedInvoiceStatus(this.curNumber, bankName, reqAmount);
+
+            // Change status, sent date, amount sent for currentInvoice
+            this.currentInvoice[0].status = "Requested";
+            this.currentInvoice[0].dates.sent_date = "";
+            this.currentInvoice[0].amount.amount_sent = 0;
+
+            // Change style for popUp
+            document.querySelector(".currentStatus").textContent = "Requested";
+            document.querySelector(".currentStatus").style.color = "rgb(104, 103, 103)";
+
+            // Change table info
+            this.currentTr.children[8].innerHTML = `<strong>Requested</strong>`;
+            this.currentTr.children[8].style.color = "black";
+            this.currentTr.children[3].children[0].children[0].textContent = `${currency}0`;
+            this.currentTr.children[3].children[0].children[1].innerHTML = `mm/dd/yyyy`;
+            
+            // this.changeInvoiceStatus("Requested", this.curNumber);
+            await this.addComment("Status was changed from Sent to Requested!");
+
+        } else {
+            alert("You can't do this!");
+        }
     }
 
     changeDocsStatus = async (filename, status, number, type) => {
@@ -59,6 +170,7 @@ class invoiceList {
         var statusTd = event.target.closest("tr").children[2].innerHTML = status;
         
         await this.changeDocsStatus(filename, status, this.curNumber, type);
+        this.addComment(`${type} was Declined!`);
     }
 
     docsGood = async () => {
@@ -68,6 +180,7 @@ class invoiceList {
         var statusTd = event.target.closest("tr").children[2].innerHTML = status;
         
         await this.changeDocsStatus(filename, status, this.curNumber, type);
+        this.addComment(`${type} was Approved!`);
     }
 
     openDocsImage = (event) => {
@@ -107,12 +220,15 @@ class invoiceList {
             fd.append("type", type);
             fd.append("creator", creator);
             await this.postFile(fd);
+
+            // Add comment about action
+            await this.addComment(`${type} was Uploaded!`);
      
              // Update Modal Window View
              this.currentInvoice = await this.getInvoices(0, {"number": this.curNumber} ); 
              this.renderViewInvoice(this.currentInvoice);
 
-            //  Cleanning Click ti Upload Input
+            //  Cleanning Click to Upload Input
              document.querySelector("#uploadDocs").value = "";
              document.querySelector("#docsSelect").value = "";
              document.querySelector(".fileName").innerHTML = "Click to upload Document";
@@ -142,6 +258,16 @@ class invoiceList {
         });
     }
 
+    checkChangesOfEditedInvoice = (current, newData, name) => {
+        var comment = ``;
+        current = current.toString().trim();
+        newData = newData.toString().trim();
+        if (current !== newData) {
+            comment = `${comment} ${name} changed from ${current} to ${newData};`;
+        }
+        return comment;
+    }
+
     saveEditedInvoice = async () => {
         var sepa = false;
         this.editData[5].checked ? sepa = true : sepa = false;
@@ -160,16 +286,36 @@ class invoiceList {
             "client_details.address": this.editData[10].value,
             "client_details.id_number": this.editData[11].value
         };
-        await this.postEditedInvoice(this.curNumber, newInvoice);
+
+        // Add comment about action - "save changes to Invoice".
+        var comment = ``;
+        var reqNew = this.checkChangesOfEditedInvoice(this.currentInvoice[0].amount.amount_requested, this.editData[0].value, "amount requested");
+        var typeNew = this.checkChangesOfEditedInvoice(this.currentInvoice[0].type, this.editData[1].value, "type");
+        var currNew = this.checkChangesOfEditedInvoice(this.currentInvoice[0].currency, this.editData[2].value, "currency");
+        var bankNew = this.checkChangesOfEditedInvoice(this.currentInvoice[0].bank, this.editData[3].value, "bank");
+        var merchNew = this.checkChangesOfEditedInvoice(this.currentInvoice[0].merchant, this.editData[4].value, "merchant");
+        var nameNew = this.checkChangesOfEditedInvoice(this.currentInvoice[0].client_details.full_name, this.editData[6].value, "client's name");
+        var emailNew = this.checkChangesOfEditedInvoice(this.currentInvoice[0].client_details.email, this.editData[7].value, "client's email");
+        var phNew = this.checkChangesOfEditedInvoice(this.currentInvoice[0].client_details.phone, this.editData[8].value, "client's phone");
+        var countryNew = this.checkChangesOfEditedInvoice(this.currentInvoice[0].client_details.country, this.editData[9].value, "client's country");
+        var addrNew = this.checkChangesOfEditedInvoice(this.currentInvoice[0].client_details.address, this.editData[10].value, "client's address");
+        var idNew = this.checkChangesOfEditedInvoice(this.currentInvoice[0].client_details.id_number, this.editData[11].value, "client's id number");
+
+        comment = reqNew + typeNew + currNew + bankNew + merchNew + nameNew + emailNew + phNew + countryNew + addrNew + idNew;
+
+        // If something was changed then ->
+        if (comment){
+            await this.postEditedInvoice(this.curNumber, newInvoice);
+            await this.addComment(comment);
+            // Update Modal Window View
+            this.currentInvoice = await this.getInvoices(0, {"number": this.curNumber} ); 
+            this.renderViewInvoice(this.currentInvoice);
+        } 
 
         // Cleanning edit Modal Window Edit
         this.editData.forEach((item) => item.value = "");
         this.editData[5].removeAttribute("checked", "checked");
         this.filterEdit.style.display = "none";
-
-        // Update Modal Window View
-        this.currentInvoice = await this.getInvoices(0, {"number": this.curNumber} ); 
-        this.renderViewInvoice(this.currentInvoice);
     }
 
     postEditedInvoice = async (number, newInvoice) => {
@@ -300,6 +446,9 @@ class invoiceList {
         // Number of Current Invoice
         this.curNumber = obj[0].number;
 
+        // Status of Current Invoice
+        this.curStatus = obj[0].status;
+
         // Off overflow for BODY
         document.body.classList.add("modal-open");
     }
@@ -323,9 +472,14 @@ class invoiceList {
             });
     }
 
-    addComment = async () => {
+    addCommentForBtn = () => {
         // Remove spaces form data
         var data = document.querySelector("#commentText").value.trim();
+        this.addComment(data);
+    }
+
+    addComment = async (data) => {
+        data = `Invoice #${this.curNumber}. ${data}`;
         // If not empty than
         if (data) {
             // Get current User
@@ -333,19 +487,23 @@ class invoiceList {
             // Post new comment
             await this.postCommet(this.curNumber, data, created_by);
 
-            // Render without post request
-            this.tableComments = document.querySelector("#tableTbody-comments");
-            var tableTr = document.createElement("tr");
-            tableTr.innerHTML = `
-                <td>
-                    <div>
-                        <div>${created_by}</div>
-                        <div class="comentsDate">${moment(new Date()).format('lll')}</div>
-                    </div>
-                </td>
-                <td>${data}</td>
-            `;
-            this.tableComments.appendChild(tableTr);
+            this.currentInvoice = await this.getInvoices(0, {"number": this.curNumber} ); 
+            this.tableComments = document.querySelector("#tableTbody-comments").innerHTML = "";
+            this.tableCommentsRender(this.currentInvoice[0].comments);
+
+            // // Render without post request
+            // this.tableComments = document.querySelector("#tableTbody-comments");
+            // var tableTr = document.createElement("tr");
+            // tableTr.innerHTML = `
+            //     <td class="comCol1">
+            //         <div>
+            //             <div>${created_by}</div>
+            //             <div class="comentsDate">${moment(new Date()).format('lll')}</div>
+            //         </div>
+            //     </td>
+            //     <td>${data}</td>
+            // `;
+            // this.tableComments.appendChild(tableTr);
         }
         document.querySelector("#commentText").value = "";
     }
@@ -356,16 +514,16 @@ class invoiceList {
         // Check if empty
         var ifEmpty = this.checkIsEmptyObj(arr);
         if(!ifEmpty){
-            arr.forEach((item) => {
+            arr.reverse().forEach((item) => {
                 var tableTr = document.createElement("tr");
                 tableTr.innerHTML = `
-                    <td>
+                    <td class="comCol1">
                         <div>
                             <div>${item.created_by}</div>
                             <div class="comentsDate">${moment(item.creation_date).format('lll')}</div>
                         </div>
                     </td>
-                    <td>${item.message}</td>
+                    <td class="comCol2">${item.message}</td>
                 `;
 
                 this.tableComments.appendChild(tableTr);
@@ -425,6 +583,8 @@ class invoiceList {
         this.tableTd.forEach((td) => {
 
             td.addEventListener("click", async () => {
+                // Take current Tr for future changed
+                this.currentTr = td.parentElement;
                 // Remove all filters
                 this.filter = {};
                 // Get number of invoice
@@ -801,7 +961,6 @@ class invoiceList {
                 this.checkClickedPages(currentEvent);
             });
         });
-
         this.firstPage.style.display = "flex";
     }
 
@@ -840,7 +999,6 @@ class invoiceList {
         // Отримуємо кількість інвойсів та записуємо їх в глобальну змінну. 
         this.number = await this.getNumberOfinvoices();
         this.InvoiceNumbers.push(this.number.numbers);
-        
 
         this.array = await this.getInvoices(0);
         this.array.forEach((item) => {
@@ -848,7 +1006,6 @@ class invoiceList {
         });
         this.countNextPage(this.ArrayLIst, this.InvoiceNumbers[0]);
         this.documentsStatus();
-        
     }
 
     getInvoices = async (count, filter, firstCr, secondCr, firstRe, secondRe) => {
@@ -943,7 +1100,6 @@ class invoiceList {
                         <p class="fiolet smallBoldText">${this.checkDate(item.dates.available_date)}</p>
                     </td>
                     <td class="column9 ${color} view"><strong>${item.status}</strong></td>
-
                     <td class="column10">
                         <div class="documentsIcon">
                             <div>ID: ${docs === false ? emptyImg : this.checkDocuments(item.documents.id)}</div>
@@ -952,7 +1108,6 @@ class invoiceList {
                             <div>Declaration: ${docs === false ? emptyImg : this.checkDocuments(item.documents.declaration)}</div>
                         </div>
                     </td>
-
                     <td class="column11">
                         <div class="previewIcons">
                             <i class="fas fa-file-alt"></i>
@@ -960,7 +1115,6 @@ class invoiceList {
                             <i class="fas fa-file-invoice-dollar"></i>
                         </div>
                     </td>
-                    
                     <td class="column12">
                         <button target="_blank" class="previewBtn">Preview</button>
                     </td>
@@ -979,7 +1133,7 @@ class invoiceList {
         this.clearFilterBtn.addEventListener("click", this.clearFilter);
         this.btnExel.addEventListener("click", this.saveXls);
         this.btn_search.addEventListener("click", this.searchFunction);
-        this.addCommentBtn.addEventListener("click", this.addComment);
+        this.addCommentBtn.addEventListener("click", this.addCommentForBtn);
         this.firstPageImg.addEventListener("click", this.clearFilter);
         this.editInvoiceBtn.addEventListener("click", this.editInvoice);
         this.saveEditedInvoice_btn.addEventListener("click", this.saveEditedInvoice);
@@ -988,7 +1142,7 @@ class invoiceList {
 
         this.textAreaAddComment.addEventListener("keyup", () => {
             event.preventDefault();
-            event.keyCode === 13 ? this.addComment() : "";
+            event.keyCode === 13 ? this.addCommentForBtn() : "";
         });
 
         this.inputSearch.addEventListener("keyup", () => {
@@ -996,11 +1150,12 @@ class invoiceList {
             event.keyCode === 13 ? this.searchFunction() : "";
         });
 
+        this.requestedBtn.addEventListener("click", this.requestedStatus);
+        this.sentBtn.addEventListener("click", this.sentStatus);
     }
 };
 
 const userList = new invoiceList();
-
 
 // Alert modal window
 const alertWindow = document.querySelector('.alert');
@@ -1009,36 +1164,3 @@ if (alertWindow) {
         event.target === alertWindow ? alertWindow.style.display = "none" : "";
     });
 };
-
-// const obj = {
-//     "number":1,
-//     "client_details":{
-//         "full_name":"Jack Wilson",
-//         "email":"wilson@gmail.com",
-//         "phone":"+4412345678",
-//         "address":"Poland, general street 88A",
-//         "country":"Poland",
-//         "id_number":"AA2021948"
-//     },
-//     "type":"c2b",
-//     "status":"Requested",
-//     "merchant":"Merchant 1",
-//     "documents":{
-//         "id":[{"id":"5d809c3d63374a633890c3f0","status":"Approved"},{"id":"5d809c64b4725c6338e12512","status":"Declined"}],
-//         "payment_proof":[{"id":"5d809c77b4725c6338e12513","status":"Approved"}],"utility_bill":[{"id":"5d809cb1b4725c6338e12515","status":"Non-Verified"}],
-//         "declaration":[{"id":"5d809c95b4725c6338e12514","status":"Approved"}]
-//     },
-//     "dates":{
-//         "creation_date":"1999-12-31T22:00:00.000Z",
-//         "sent_date":"0000-01-01T00:00:00.000Z",
-//         "received_date":"0000-01-01T00:00:00.000Z",
-//         "approved_date":"1999-12-31T22:00:00.000Z",
-//         "available_date":"0000-01-01T00:00:00.000Z",
-//         "declined_date":"1999-12-31T22:00:00.000Z"
-//     },
-//     "currency":"EUR",
-//     "bank":"Wilson Bank",
-//     "amount":{"amount_received":1000,"amount_sent":1000,"amount_approved":900,"amount_requested":1100,"amount_available":0},
-//     "created_by":{"name":"Michael Clime","id":"5d78f4a72aef540757d6aa4f"},
-//     "commissions":"",
-//     "comments":[{"created_by":"Michael Clime","creation_date":"1999-12-31T22:00:00.000Z","message":"Invoice #1 for 1100 EUR was Requested!"}]}
