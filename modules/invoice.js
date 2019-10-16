@@ -8,7 +8,7 @@ let InvoiceSchema = new mongoose.Schema({
     status: String,
     amount: Object,
     currency: String,
-    sepa: String,
+    sepa: Boolean,
     merchant: String,
     bank: String,
     dates: {
