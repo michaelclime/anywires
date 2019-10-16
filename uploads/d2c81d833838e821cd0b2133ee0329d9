@@ -1,0 +1,63 @@
+const promise1 = () => (
+  new Promise((res, rej) => {
+    const data = { data: 'data1'};
+
+    setTimeout(() => {
+      res(data);
+    }, 500);
+  })
+);
+
+const promise2 = () => (
+  new Promise((res, rej) => {
+    const data = { data: 'data2'};
+
+    setTimeout(() => {
+      res(data);
+    }, 500);
+  })
+);
+
+const promise3 = () => (
+  new Promise((res, rej) => {
+    const data = { data: 'data3'};
+
+    setTimeout(() => {
+      res(data);
+    }, 500);
+  })
+);
+
+const customFunction = () => {
+  const allData = [];
+
+  const handlerPromise1Success = (data1) => {
+    allData.push(data1);
+    
+    return "ololo";
+  };
+
+  const handlerPromise2Success = (data2) => {
+    allData.push(data2);
+    
+    return promise3();
+  };
+
+  const handlerPromise3Success = (data3) => {
+    allData.push(data3);
+    
+    console.log("allData from handlerPromise3Success", allData);
+  };
+
+  const errorHandler = (error) => {
+    console.log("errorHandler", error);
+  };
+
+  const result = promise1()
+    .then(handlerPromise1Success)
+    .then(handlerPromise2Success)
+    .then(handlerPromise3Success)
+    .catch(errorHandler);
+
+  return "XYZW";
+};

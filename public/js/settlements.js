@@ -6,7 +6,6 @@ $(document).ready(function(){
       event.preventDefault();
       $('.SettleTransfersWindow').fadeIn();
         let merchantName = document.querySelector('.merchantList').value;
-        document.querySelector(".ttableList").innerHTML = '';
         document.querySelector(".walletList").innerHTML = '<option value="">Wallet for Settlement:</option>';
         //let availableInvs  = fetch('http://18.216.223.81:3000/getList');
         let availableInvs  = fetch(`http://localhost:3000/availableInvs/${merchantName}`);
@@ -30,6 +29,7 @@ $(document).ready(function(){
                             <td class="column column1"> ${formatStr(item.amount.amount_received)} ${item.currency}</td> 
                             <td class="column column2">${formatStr(item.commissions)} ${item.currency}</td> 
                             <td class="column column3">${formatStr(item.amount.amount_approved)} ${item.currency}</td> 
+                            <td class="hide column column4">${item._id}</td> 
                         `;   
                     this.container.appendChild(this.invsList);
                     });
@@ -190,7 +190,7 @@ fetchPromise.then(response => {
 
 // Show settlements list
 
-(async () => {
+async function loadSettleList()  {
     //let settleList = await  fetch('http://18.216.223.81:3000/getSettlementsList');
     let settleList = await  fetch('http://localhost:3000/getSettlementsList');
     let SETTLEMENTS = await settleList.json();
@@ -204,6 +204,7 @@ fetchPromise.then(response => {
     
         loadSettle(list) {
             this.container = document.querySelector(".tableList");
+            document.querySelector(".tableList").innerHTML = '';
             list.slice(0, list.length).forEach((item, i) => {
                 this.settleList = document.createElement("tr");
                 this.settleList.className = `tr${i}`;
@@ -385,7 +386,7 @@ fetchPromise.then(response => {
                             headers:{'Accept': 'application/json'}
                         })
                         .then(res => {
-                            return res.text();
+                            if (res.status == 200) Swal.fire("Document successfully has been uploaded!");
                         }) 
                         .catch(err => {
                             console.log(err);
@@ -486,6 +487,8 @@ fetchPromise.then(response => {
                 document.querySelector('.settlementDetails-close').addEventListener('click', (e) => {
                     $('.filter').css('display', 'none');
                     //location.reload(true);
+                    document.querySelector(".tableList").innerHTML = `<div class="loadAnimationWrapp"><img class="loadAnimation" src="img/Gear-2.5s-200px.gif"><span>Loading...</span></div>`;
+                    loadSettleList();
                 });
             });   
             this.container.appendChild(this.settleList);
@@ -609,7 +612,9 @@ const settlementsList1 = new SettlementsList();
         const filterList = new FilterList();
     });
 
-})();
+};
+document.querySelector(".tableList").innerHTML = `<div class="loadAnimationWrapp"><img class="loadAnimation" src="img/Gear-2.5s-200px.gif"><span>Loading...</span></div>`;
+loadSettleList();
 
 // SETTLEMENT PREVIEW 
 
@@ -655,4 +660,13 @@ function openDocsImage (event) {
     var filename = event.target.closest("tr").children[3].textContent.trim();
     window.open(`http://localhost:3000/upload/${filename}`, '_blank');
     //window.open(`http://18.216.223.81:3000/upload/${filename}`, '_blank');
+}
+
+
+// Alert modal window
+const alertWindow = document.querySelector('.alert');
+if (alertWindow) {
+  alertWindow.addEventListener("click", (event) => {
+      event.target === alertWindow ? alertWindow.style.display = "none" : "";
+  });
 }

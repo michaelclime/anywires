@@ -1,3 +1,4 @@
+
 let allInvoicesList = [];
 const periodTitle = document.querySelector('.periodTitle'),
     period =  document.querySelector('.period'),
@@ -27,6 +28,7 @@ const  transactionsNumber = document.querySelector('.transactionsNumber'),
        avgTransactionEUR = document.querySelector('.avgTransactionEUR'),
        awWalletValue = document.querySelector('awWalletValue'),
        persWalletValue = document.querySelector('persWalletValue');
+       
 
 // Merchant select
 
@@ -114,6 +116,16 @@ periodTitle.onmouseleave = function() {
 // TODAY amount process
 
 const todayAmount = () => {
+    document.querySelector(".receivedUSD").innerHTML = `<div class="loadAnimationWrapp"><img class="loadAnimation" src="img/Gear-2.5s-200px.gif"><span>Loading...</span></div>`;
+    document.querySelector('.receivedUSD').innerHTML = `<div class="loadAnimationWrapp"><img class="loadAnimation" src="img/Gear-2.5s-200px.gif"><span>Loading...</span></div>`;
+    document.querySelector('.receivedEUR').innerHTML = `<div class="loadAnimationWrapp"><img class="loadAnimation" src="img/Gear-2.5s-200px.gif"><span>Loading...</span></div>`;
+    document.querySelector('.approvedUSD').innerHTML = `<div class="loadAnimationWrapp"><img class="loadAnimation" src="img/Gear-2.5s-200px.gif"><span>Loading...</span></div>`;
+    document.querySelector('.approvedEUR').innerHTML = `<div class="loadAnimationWrapp"><img class="loadAnimation" src="img/Gear-2.5s-200px.gif"><span>Loading...</span></div>`;
+    document.querySelector('.settledUSD').innerHTML = `<div class="loadAnimationWrapp"><img class="loadAnimation" src="img/Gear-2.5s-200px.gif"><span>Loading...</span></div>`;
+    document.querySelector('.settledEUR').innerHTML = `<div class="loadAnimationWrapp"><img class="loadAnimation" src="img/Gear-2.5s-200px.gif"><span>Loading...</span></div>`;
+    document.querySelector('.sentUSD').innerHTML = `<div class="loadAnimationWrapp"><img class="loadAnimation" src="img/Gear-2.5s-200px.gif"><span>Loading...</span></div>`;
+    document.querySelector('.sentEUR').innerHTML = `<div class="loadAnimationWrapp"><img class="loadAnimation" src="img/Gear-2.5s-200px.gif"><span>Loading...</span></div>`;
+
 let sentAmountEuro = 0,
     sentAmountDollar = 0,
     receivedAmountEuro = 0,
@@ -320,6 +332,16 @@ today.onclick = todayAmount;
 // WEEK amount process
 
 const weekAmount = () => {
+    document.querySelector(".receivedUSD").innerHTML = `<div class="loadAnimationWrapp"><img class="loadAnimation" src="img/Gear-2.5s-200px.gif"><span>Loading...</span></div>`;
+    document.querySelector('.receivedUSD').innerHTML = `<div class="loadAnimationWrapp"><img class="loadAnimation" src="img/Gear-2.5s-200px.gif"><span>Loading...</span></div>`;
+    document.querySelector('.receivedEUR').innerHTML = `<div class="loadAnimationWrapp"><img class="loadAnimation" src="img/Gear-2.5s-200px.gif"><span>Loading...</span></div>`;
+    document.querySelector('.approvedUSD').innerHTML = `<div class="loadAnimationWrapp"><img class="loadAnimation" src="img/Gear-2.5s-200px.gif"><span>Loading...</span></div>`;
+    document.querySelector('.approvedEUR').innerHTML = `<div class="loadAnimationWrapp"><img class="loadAnimation" src="img/Gear-2.5s-200px.gif"><span>Loading...</span></div>`;
+    document.querySelector('.settledUSD').innerHTML = `<div class="loadAnimationWrapp"><img class="loadAnimation" src="img/Gear-2.5s-200px.gif"><span>Loading...</span></div>`;
+    document.querySelector('.settledEUR').innerHTML = `<div class="loadAnimationWrapp"><img class="loadAnimation" src="img/Gear-2.5s-200px.gif"><span>Loading...</span></div>`;
+    document.querySelector('.sentUSD').innerHTML = `<div class="loadAnimationWrapp"><img class="loadAnimation" src="img/Gear-2.5s-200px.gif"><span>Loading...</span></div>`;
+    document.querySelector('.sentEUR').innerHTML = `<div class="loadAnimationWrapp"><img class="loadAnimation" src="img/Gear-2.5s-200px.gif"><span>Loading...</span></div>`;
+
     let sentAmountEuro = 0,
         sentAmountDollar = 0,
         receivedAmountEuro = 0,
@@ -532,6 +554,16 @@ week.onclick = weekAmount;
 
 
 const monthAmount = () => {
+    document.querySelector(".receivedUSD").innerHTML = `<div class="loadAnimationWrapp"><img class="loadAnimation" src="img/Gear-2.5s-200px.gif"><span>Loading...</span></div>`;
+    document.querySelector('.receivedUSD').innerHTML = `<div class="loadAnimationWrapp"><img class="loadAnimation" src="img/Gear-2.5s-200px.gif"><span>Loading...</span></div>`;
+    document.querySelector('.receivedEUR').innerHTML = `<div class="loadAnimationWrapp"><img class="loadAnimation" src="img/Gear-2.5s-200px.gif"><span>Loading...</span></div>`;
+    document.querySelector('.approvedUSD').innerHTML = `<div class="loadAnimationWrapp"><img class="loadAnimation" src="img/Gear-2.5s-200px.gif"><span>Loading...</span></div>`;
+    document.querySelector('.approvedEUR').innerHTML = `<div class="loadAnimationWrapp"><img class="loadAnimation" src="img/Gear-2.5s-200px.gif"><span>Loading...</span></div>`;
+    document.querySelector('.settledUSD').innerHTML = `<div class="loadAnimationWrapp"><img class="loadAnimation" src="img/Gear-2.5s-200px.gif"><span>Loading...</span></div>`;
+    document.querySelector('.settledEUR').innerHTML = `<div class="loadAnimationWrapp"><img class="loadAnimation" src="img/Gear-2.5s-200px.gif"><span>Loading...</span></div>`;
+    document.querySelector('.sentUSD').innerHTML = `<div class="loadAnimationWrapp"><img class="loadAnimation" src="img/Gear-2.5s-200px.gif"><span>Loading...</span></div>`;
+    document.querySelector('.sentEUR').innerHTML = `<div class="loadAnimationWrapp"><img class="loadAnimation" src="img/Gear-2.5s-200px.gif"><span>Loading...</span></div>`;
+
     let sentAmountEuro = 0,
         sentAmountDollar = 0,
         receivedAmountEuro = 0,
@@ -736,6 +768,16 @@ month.onclick = monthAmount;
 // All time amount process
 
 const allTimeAmount = () => {
+    document.querySelector(".receivedUSD").innerHTML = `<div class="loadAnimationWrapp"><img class="loadAnimation" src="img/Gear-2.5s-200px.gif"><span>Loading...</span></div>`;
+    document.querySelector('.receivedUSD').innerHTML = `<div class="loadAnimationWrapp"><img class="loadAnimation" src="img/Gear-2.5s-200px.gif"><span>Loading...</span></div>`;
+    document.querySelector('.receivedEUR').innerHTML = `<div class="loadAnimationWrapp"><img class="loadAnimation" src="img/Gear-2.5s-200px.gif"><span>Loading...</span></div>`;
+    document.querySelector('.approvedUSD').innerHTML = `<div class="loadAnimationWrapp"><img class="loadAnimation" src="img/Gear-2.5s-200px.gif"><span>Loading...</span></div>`;
+    document.querySelector('.approvedEUR').innerHTML = `<div class="loadAnimationWrapp"><img class="loadAnimation" src="img/Gear-2.5s-200px.gif"><span>Loading...</span></div>`;
+    document.querySelector('.settledUSD').innerHTML = `<div class="loadAnimationWrapp"><img class="loadAnimation" src="img/Gear-2.5s-200px.gif"><span>Loading...</span></div>`;
+    document.querySelector('.settledEUR').innerHTML = `<div class="loadAnimationWrapp"><img class="loadAnimation" src="img/Gear-2.5s-200px.gif"><span>Loading...</span></div>`;
+    document.querySelector('.sentUSD').innerHTML = `<div class="loadAnimationWrapp"><img class="loadAnimation" src="img/Gear-2.5s-200px.gif"><span>Loading...</span></div>`;
+    document.querySelector('.sentEUR').innerHTML = `<div class="loadAnimationWrapp"><img class="loadAnimation" src="img/Gear-2.5s-200px.gif"><span>Loading...</span></div>`;
+    
     let sentAmountEuro = 0,
         sentAmountDollar = 0,
         receivedAmountEuro = 0,
@@ -1183,5 +1225,6 @@ function formatStr(num) {
         return str;
     }
 }
+
 
 
