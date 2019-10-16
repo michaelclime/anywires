@@ -405,7 +405,7 @@ app.post("/invoices/:fullname/:_id/:merchant", function(req, res, next) {
 
 app.get("/getMerchants", jsonParser, (req, res) => {
     mongo.connect(url, (err, db) =>{
-        db.collection("merchants").find({}).toArray(function(err, merchants){
+        db.collection("merchants").find({}).sort({"name": 1}).toArray(function(err, merchants){
             if(err) return console.log("Error with upload Merchants!", err);
             db.close();
             res.send(merchants);
@@ -464,7 +464,7 @@ app.post("/postMerchant",jsonParser, (req, res) => {
 
 app.get("/getBanks", (req, res) => {
     mongo.connect(url, (err, db) =>{
-        db.collection("banks").find({}).toArray(function(err, merchants){
+        db.collection("banks").find({}).sort({"name": 1}).toArray(function(err, merchants){
             if(err) return console.log("Error with upload Banks!", err);
             db.close();
             res.send(merchants);
@@ -536,17 +536,6 @@ app.put("/putBank", jsonParser, (req, res) => {
 //                                 //
 /////////////////////////////////////
 
-app.get("/getInvoices", (req, res) => {
-    mongo.connect(url, (err, db) => {
-
-        db.collection("invoices").find({}).toArray(function(err, invoices){
-            if(err) return console.log("Error with upload Invoices!", err);
-            db.close();
-            res.send(invoices);
-        })
-    });
-});
-
 // Function for Dates Range START.
 var datesObj = (key, first, second) => {
     var Obj = {};
@@ -592,6 +581,7 @@ app.post("/getPart-Invoices", jsonParser, (req, res) => {
 
         db.collection("invoices")
         .find(filter)
+        .sort({_id:-1})
         .skip(num)
         .limit(10)
         .toArray(function(err, invoices){
@@ -631,30 +621,6 @@ app.post("/getNumber-Invoices", jsonParser, (req, res) => {
             db.close();
             res.send({"numbers": invoices});
         })
-    });
-});
-
-app.post("/getInvoiceMerchant", jsonParser, (req, res) => {
-    mongo.connect(url, (err, db) =>{
-        const id = new objectId(req.body.id);
-
-        db.collection("merchants").find({_id: id}).toArray(function(err, merchant){
-            if(err) return console.log("Error with upload Invoice Merchant!", err);
-            db.close();
-            res.send(merchant);
-        });
-    });
-});
-
-app.post("/getInvoiceBanks", jsonParser, (req, res) => {
-    mongo.connect(url, (err, db) =>{
-        const id = new objectId(req.body.id);
-
-        db.collection("banks").find({_id: id}).toArray(function(err, bank){
-            if(err) return console.log("Error with upload Invoice Banks!", err);
-            db.close();
-            res.send(bank);
-        });
     });
 });
 

@@ -1,9 +1,9 @@
 
+
 class invoiceList {
     constructor(){
         this.currentTr = "";
         this.curNumber = "";
-        this.curStatus = "";
         this.ArrayLIst = [];
         this.ArrayBanks = [];
         this.ArrayMerchants = []; 
@@ -32,6 +32,7 @@ class invoiceList {
         this.currentInvoice = [];
         this.currentUserRole = document.querySelector(".curentUserRole");
         this.sentBtn = document.querySelector("#sent");
+        this.loadingGif = document.querySelector("#loadingGif");
         this.render();
     }
 
@@ -64,7 +65,7 @@ class invoiceList {
         var result = accessRole.some((item) => item === role);
 
         // If Current User has access
-        if (result) {
+        if (result && this.currentInvoice[0].status !== "Sent") {
             // Request for status "Sent" 
             this.sentInvoiceStatus(this.curNumber, requested);
 
@@ -116,7 +117,7 @@ class invoiceList {
         this.currentInvoice[0].currency === "USD" ? currency = "$" : currency = "€";
 
         // If user CRM admin and Status is Sent
-        if (this.curStatus === "Sent" && role === "CrmAdmin") { 
+        if (this.currentInvoice[0].status === "Sent" && role === "CrmAdmin") { 
             // Request for status "Requested"
             this.requestedInvoiceStatus(this.curNumber, bankName, reqAmount);
 
@@ -127,11 +128,11 @@ class invoiceList {
 
             // Change style for popUp
             document.querySelector(".currentStatus").textContent = "Requested";
-            document.querySelector(".currentStatus").style.color = "rgb(104, 103, 103)";
+            document.querySelector(".currentStatus").style.color = "black";
 
             // Change table info
             this.currentTr.children[8].innerHTML = `<strong>Requested</strong>`;
-            this.currentTr.children[8].style.color = "black";
+            this.currentTr.children[8].style.color = "rgb(104, 103, 103)";
             this.currentTr.children[3].children[0].children[0].textContent = `${currency}0`;
             this.currentTr.children[3].children[0].children[1].innerHTML = `mm/dd/yyyy`;
             
@@ -445,9 +446,6 @@ class invoiceList {
 
         // Number of Current Invoice
         this.curNumber = obj[0].number;
-
-        // Status of Current Invoice
-        this.curStatus = obj[0].status;
 
         // Off overflow for BODY
         document.body.classList.add("modal-open");
@@ -1052,10 +1050,13 @@ class invoiceList {
     }
 
     checkDate = (data) => {
-        return data === "" ? data = "mm/dd/yyyy" : data = moment(data).format('ll');
+        return data === "" || !data ? data = "mm/dd/yyyy" : data = moment(data).format('ll');
     }
 
     loadInvoices = (Arr) => {
+        // Loading gif
+        this.loadingGif.style.display = "none";
+
         this.container = document.getElementById("table-list");
         Arr.forEach((item) => {
             var currency = ""; item.currency === "EUR" ? currency = "€" : currency = "$";
