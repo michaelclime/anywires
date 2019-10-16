@@ -142,21 +142,6 @@ app.get('/merchantReport.html', isLoggedIn, function(req, res) {
 
 // Invoice generation process
 
-app.get('/getList', function(req, res, next) {
-    let INVOIECES = [];
-    mongo.connect(url, function(err, db) {
-        assert.equal(null, err);
-        var cursor = db.collection('invoices').find();
-        cursor.forEach(function(doc, err) {
-            assert.equal(null, err);
-            INVOIECES.push(doc);
-        }, function() {
-            db.close();
-            res.send(INVOIECES);
-        });
-    });
-});
-
 app.post("/invoices/:fullname/:_id/:merchant", function(req, res, next) {
 
     mongo.connect(url, function(err, db) {

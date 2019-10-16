@@ -155,6 +155,7 @@ $(document).ready(function(){
 
 // Generate merchants list for selected menu
 
+//let fetchPromise  = fetch('http://18.216.223.81:3000/getMerchants');
 let fetchPromise  = fetch('http://localhost:3000/getMerchants');
 fetchPromise.then(response => {
     return response.json();
@@ -377,7 +378,7 @@ fetchPromise.then(response => {
                 
                     const postFile = async (fd) => {
                     return  await fetch("http://localhost:3000/uploadSettleDoc", {
-                        // return  await fetch("http://18.216.223.81:3000/upload", {
+                        // return  await fetch("http://18.216.223.81:3000/uploadSettleDoc", {
                             method: "POST",
                             body: fd,
                             mode: "no-cors",
@@ -542,6 +543,7 @@ fetchPromise.then(response => {
             this.keyPressSearch();
         }
     };
+
 const settlementsList1 = new SettlementsList();
 
     // FILTER
