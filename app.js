@@ -162,7 +162,7 @@ app.post("/invoices/:fullname/:_id/:merchant", function(req, res, next) {
                     type: 'c2b',
                     status: 'Requested',
                     amount: {
-                        amount_requested: req.body.amount,
+                        amount_requested: +req.body.amount,
                         amount_received: 0,
                         amount_sent: 0,
                         amount_approved: 0,
@@ -173,7 +173,7 @@ app.post("/invoices/:fullname/:_id/:merchant", function(req, res, next) {
                     merchant:  req.body.merch,
                     bank:  req.body.bank,
                     dates: {
-                        creation_date: Date.now(),
+                        creation_date: new Date(),
                         sent_date: '',
                         received_date: '',
                         approved_date: '',
@@ -187,14 +187,14 @@ app.post("/invoices/:fullname/:_id/:merchant", function(req, res, next) {
                         declaration: []
                     },
                     created_by: {
-                        id: req.params._id,
+                        id: objectId(req.params._id),
                         name: req.params.fullname
                     },
                     commissions: '',
                     comments: [
                         {
                             created_by:  req.params.fullname,
-                            creation_date: Date.now(),
+                            creation_date: new Date(),
                             message: `Invoice ${count + 1} for ${req.body.amount} ${req.body.currency} was Requested!`
                         }
                     ]
@@ -259,7 +259,7 @@ app.post("/invoices/:fullname/:_id/:merchant", function(req, res, next) {
                                                 type: 'c2b',
                                                 status: 'Requested',
                                                 amount: {
-                                                    amount_requested: req.body.amount,
+                                                    amount_requested: +req.body.amount,
                                                     amount_received: 0,
                                                     amount_sent: 0,
                                                     amount_approved: 0,
@@ -270,7 +270,7 @@ app.post("/invoices/:fullname/:_id/:merchant", function(req, res, next) {
                                                 merchant:  req.body.merch,
                                                 bank:  availableBank,
                                                 dates: {
-                                                    creation_date: Date.now(),
+                                                    creation_date: new Date(),
                                                     sent_date: '',
                                                     received_date: '',
                                                     approved_date: '',
@@ -284,14 +284,14 @@ app.post("/invoices/:fullname/:_id/:merchant", function(req, res, next) {
                                                     declaration: []
                                                 },
                                                 created_by: {
-                                                    id: req.params._id,
+                                                    id: objectId(req.params._id),
                                                     name: req.params.fullname
                                                 },
                                                 commissions: '',
                                                 comments: [
                                                     {
                                                         created_by:  req.params.fullname,
-                                                        creation_date: Date.now(),
+                                                        creation_date: new Date(),
                                                         message: `Invoice ${count + 1} for ${req.body.amount} ${req.body.currency} was Requested!`
                                                     }
                                                 ]
@@ -338,7 +338,7 @@ app.post("/invoices/:fullname/:_id/:merchant", function(req, res, next) {
                                                 type: 'c2b',
                                                 status: 'Requested',
                                                 amount: {
-                                                    amount_requested: req.body.amount,
+                                                    amount_requested: +req.body.amount,
                                                     amount_received: 0,
                                                     amount_sent: 0,
                                                     amount_approved: 0,
@@ -349,7 +349,7 @@ app.post("/invoices/:fullname/:_id/:merchant", function(req, res, next) {
                                                 merchant:  req.params.merchant,
                                                 bank:  availableBank,
                                                 dates: {
-                                                    creation_date: Date.now(),
+                                                    creation_date: new Date(),
                                                     sent_date: '',
                                                     received_date: '',
                                                     approved_date: '',
@@ -363,14 +363,14 @@ app.post("/invoices/:fullname/:_id/:merchant", function(req, res, next) {
                                                     declaration: []
                                                 },
                                                 created_by: {
-                                                    id: req.params._id,
+                                                    id: objectId(req.params._id),
                                                     name: req.params.fullname
                                                 },
                                                 commissions: '',
                                                 comments: [
                                                     {
                                                         created_by:  req.params.fullname,
-                                                        creation_date: Date.now(),
+                                                        creation_date: new Date(),
                                                         message: `Invoice ${count + 1} for ${req.body.amount} ${req.body.currency} was Requested!`
                                                     }
                                                 ]

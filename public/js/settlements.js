@@ -6,6 +6,10 @@ $(document).ready(function(){
       event.preventDefault();
       $('.SettleTransfersWindow').fadeIn();
         let merchantName = document.querySelector('.merchantList').value;
+        if (!merchantName) {
+            Swal.fire("Please, choose the merchant");
+            $('.SettleTransfersWindow').fadeOut();
+        }
         document.querySelector(".walletList").innerHTML = '<option value="">Wallet for Settlement:</option>';
         //let availableInvs  = fetch('http://18.216.223.81:3000/getList');
         let availableInvs  = fetch(`http://localhost:3000/availableInvs/${merchantName}`);
@@ -459,7 +463,7 @@ async function loadSettleList()  {
                     e.preventDefault();
                     this.userName = document.querySelector('.userName').textContent;
                     this.commisType =  document.querySelector('.commissionType').value;
-                    this.commisAmount =  document.querySelector('.commissionAmount').value;
+                    this.commisAmount =  +document.querySelector('.commissionAmount').value;
 
                     this.commisstTable =  document.querySelector('#tableTbody-commissions');
                     this.commisTR = document.createElement("tr");
@@ -486,9 +490,9 @@ async function loadSettleList()  {
 
                 document.querySelector('.settlementDetails-close').addEventListener('click', (e) => {
                     $('.filter').css('display', 'none');
-                    //location.reload(true);
-                    document.querySelector(".tableList").innerHTML = `<div class="loadAnimationWrapp"><img class="loadAnimation" src="img/Gear-2.5s-200px.gif"><span>Loading...</span></div>`;
-                    loadSettleList();
+                    location.reload(true);
+                    // document.querySelector(".tableList").innerHTML = `<div class="loadAnimationWrapp"><img class="loadAnimation" src="img/Gear-2.5s-200px.gif"><span>Loading...</span></div>`;
+                    // loadSettleList();
                 });
             });   
             this.container.appendChild(this.settleList);
