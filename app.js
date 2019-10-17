@@ -464,10 +464,10 @@ app.post("/postMerchant",jsonParser, (req, res) => {
 
 app.get("/getBanks", (req, res) => {
     mongo.connect(url, (err, db) =>{
-        db.collection("banks").find({}).sort({"name": 1}).toArray(function(err, merchants){
+        db.collection("banks").find({}).sort({"name": 1}).toArray(function(err, bank){
             if(err) return console.log("Error with upload Banks!", err);
             db.close();
-            res.send(merchants);
+            res.send(bank);
         })
     });
 });
@@ -871,6 +871,70 @@ app.post("/requestStatus", jsonParser, (req, res) => {
         });
     });
 });
+
+
+// @route POST /receivedStatus
+// @desc Change all data to received
+app.post("/receivedStatus", jsonParser, (req, res) => {
+    var invNumber = req.body.invNumber;
+    var typedAmount = +(req.body.typedAmount);
+    var amountAfter = +(req.body.amountAfter);
+    var createdBy = req.body.createdBy;
+
+    // Change Invoice status, amounts and date
+    mongo.connect(url, (err, db) => {
+        if (err) return console.log(err, "Can't connect to database!");
+        db.collection("invoices").findOneAndUpdate({"number": invNumber}, {$set: {
+            "status": "Received", 
+            "amount.amount_received": typedAmount, 
+            "dates.received_date": new Date(),
+            "amount.received_after_commision": amountAfter
+        }}, {returnOriginal: false}, (err, inv) => {
+            if(err) return console.log(err, "Error with change invoice to received status!");
+            var bankName = inv.value.bank;
+            var amountSent = +(inv.value.amount.amount_sent);
+
+            // Change Bank Balance and take some value from Bank
+            mongo.connect(url, (err, db) => {
+                if (err) return console.log(err, "Can't connect to database!");
+                db.collection("banks").findOneAndUpdate({"name": bankName}, {$inc: {
+                    "balance_received": typedAmount, 
+                    "balance_sent": -amountSent}},
+                {returnOriginal: false}, (err, bank) => {
+                    if(err) return console.log(err, "Error with change bank received details!");
+                    var bankCommission = bank.value.incoming_fee;
+
+                    // Inserted new commission
+                    mongo.connect(url, (err, db) => {
+                        if (err) return console.log(err, "Can't connect to database!");
+                        var amountCommission = +(amountSent - typedAmount);
+                        var newComment = {
+                            "created_by": createdBy,
+                            "amount": amountCommission,
+                            "type": "Incoming Solution Commission",
+                            "percentage": bankCommission
+                        };
+                        db.collection("commissions").insertOne(newComment, (err) => {
+                            if(err) return console.log(err, "Error with add commission!");
+                            var commissionId = new objectId(newComment._id);
+
+                            // Insert Commission ID into Invoice 
+                            mongo.connect(url, (err, db) => {
+                                if (err) return console.log(err, "Can't connect to database!");
+                                db.collection("invoices").updateOne({"number": invNumber}, {$push:{"commissions": commissionId}}, 
+                                {returnOriginal:false}, (err, result) => {
+                                    if(err) return console.log(err, "Error with pushing commission to Invoice!");
+                                    res.send("Received status has been set successfully!")
+                                });
+                            });
+                        });
+                    });
+
+                });
+            });
+        });
+    });
+}); 
 
 
 //////////////////////////////

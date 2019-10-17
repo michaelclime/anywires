@@ -30,10 +30,67 @@ class invoiceList {
         this.clickToDownload = document.querySelector("#uploadDocs");
         this.requestedBtn = document.querySelector("#requested");
         this.currentInvoice = [];
+        this.currentBank = [];
         this.currentUserRole = document.querySelector(".curentUserRole");
         this.sentBtn = document.querySelector("#sent");
         this.loadingGif = document.querySelector("#loadingGif");
+        this.receivedBtn = document.querySelector("#received");
         this.render();
+    }
+
+    receivedInvoiceStatus = async (invNumber, typedAmount, amountAfter, createdBy) => {
+        return  await fetch("http://18.216.223.81:3000/receivedStatus", {
+            // return  await fetch("http://18.216.223.81:3000/receivedStatus", {
+                method: "POST",
+                body: JSON.stringify({
+                    invNumber,
+                    typedAmount,
+                    amountAfter,
+                    createdBy
+                }),
+                headers:{'Content-Type': 'application/json'}
+            })
+            .then(res => {
+                return res.text();
+            }) 
+            .catch(err => {
+                console.log(err);
+            });
+    }
+
+    receivedStatus = async () => {
+        if (this.currentInvoice[0].status === "Sent") {
+            // Filter for background
+            this.filterReceive = document.querySelector(".receive_Filter");
+            this.filterReceive.style.display = "flex";
+            this.filterReceive.addEventListener("click", (event) => {
+                event.target === this.filterReceive ? this.filterReceive.style.display = "none" : "";
+            });
+
+            // Counting proccess
+            var amountSent = this.currentInvoice[0].amount.amount_sent;
+            var IncFee = (this.currentBank[0].incoming_fee * 100);
+            var amountAfter = amountSent - ((amountSent / 100) * IncFee);
+            var creator = this.currentUser.textContent.trim();
+
+            // PopUp render Info
+            var currency = "";
+            this.currentInvoice[0].currency === "USD" ? currency = "$" : currency = "€";
+            document.querySelector(".receive_InvoiceNumber").innerHTML = `invoice #${this.curNumber}`;
+            document.querySelector(".receive_SentAmount").innerHTML = `${amountSent}${currency}`
+            document.querySelector("#receive_input").value = `${amountSent}`;
+            document.querySelector(".receive_BankFee").innerHTML = `${IncFee}%`;
+            
+            // Action for Submit button
+            document.querySelector("#receive_Submit").addEventListener("click", (event) => {
+                event.preventDefault();
+                var typedAmount = document.querySelector("#receive_input").value;
+                this.receivedInvoiceStatus(this.curNumber, typedAmount, amountAfter, creator);
+            });
+
+        } else {
+            alert("You can't do this!");
+        }
     }
 
     sentInvoiceStatus = async (invNumber, amountSent) => {
@@ -402,7 +459,7 @@ class invoiceList {
         this.filter.style.display = "flex";
         this.filter.addEventListener("click", (event) => {
             if(event.target === this.filter){
-                // Off overflow for BODY
+                // "On" overflow for BODY
                 document.body.classList.remove("modal-open");
                 // Hide Modal Window
                 this.filter.style.display = "none";
@@ -449,6 +506,28 @@ class invoiceList {
 
         // Off overflow for BODY
         document.body.classList.add("modal-open");
+
+        // Get Current Bank
+        var bankName = obj[0].bank;
+        this.currentBank = await this.getCurrentBank(0, {"name": bankName});
+    }
+
+    getCurrentBank = async (number, filter ) => {
+        return  await fetch("http://18.216.223.81:3000/getPart-Banks", {
+            //  return  await fetch("http://18.216.223.81:3000/getPart-Banks", {
+                method: "POST",
+                body: JSON.stringify({
+                    number,
+                    filter
+                }),
+                headers:{'Content-Type': 'application/json'}
+            })
+            .then(res => {
+                return res.json();
+            }) 
+            .catch(err => {
+                console.log(err);
+            });
     }
 
     postCommet = async (number, data, create_by) => {
@@ -488,20 +567,6 @@ class invoiceList {
             this.currentInvoice = await this.getInvoices(0, {"number": this.curNumber} ); 
             this.tableComments = document.querySelector("#tableTbody-comments").innerHTML = "";
             this.tableCommentsRender(this.currentInvoice[0].comments);
-
-            // // Render without post request
-            // this.tableComments = document.querySelector("#tableTbody-comments");
-            // var tableTr = document.createElement("tr");
-            // tableTr.innerHTML = `
-            //     <td class="comCol1">
-            //         <div>
-            //             <div>${created_by}</div>
-            //             <div class="comentsDate">${moment(new Date()).format('lll')}</div>
-            //         </div>
-            //     </td>
-            //     <td>${data}</td>
-            // `;
-            // this.tableComments.appendChild(tableTr);
         }
         document.querySelector("#commentText").value = "";
     }
@@ -581,6 +646,9 @@ class invoiceList {
         this.tableTd.forEach((td) => {
 
             td.addEventListener("click", async () => {
+                // Loading GIF appear and scroll off
+                this.loadingGif.style.display = "flex";
+                document.body.classList.add("modal-open");
                 // Take current Tr for future changed
                 this.currentTr = td.parentElement;
                 // Remove all filters
@@ -589,6 +657,8 @@ class invoiceList {
                 this.number = td.parentElement.children[0].children[0].children[0].children[0].textContent.split("#")[1];
                 // Get invoice
                 this.currentInvoice = await this.getInvoices(0, {"number": this.number} ); 
+                // Loading GIF hide
+                this.loadingGif.style.display = "none";
                 // Render popup window
                 this.renderViewInvoice(this.currentInvoice);
             });
@@ -705,6 +775,11 @@ class invoiceList {
     }
 
     filterList = async () => {
+        // Loading GIF appear and scroll off
+        this.loadingGif.style.display = "flex";
+        document.body.classList.add("modal-open");
+        //  
+
         this.filter = {};
         this.status = document.querySelector("#filterStatus").value;
         this.bank = this.bankFilter.value;
@@ -780,6 +855,11 @@ class invoiceList {
 
         const lengthInvoice = await this.getNumberOfinvoices(this.filter, this.firstCreat, this.secondCreat, this.firstRec, this.secondRec);
         const filterList = await this.getInvoices(0, this.filter, this.firstCreat, this.secondCreat, this.firstRec, this.secondRec);
+
+        // Loading GIF appear and scroll off
+        this.loadingGif.style.display = "none";
+        document.body.classList.remove("modal-open");
+        //  
 
         // Table cleaning
         this.container = document.getElementById("table-list");
@@ -920,11 +1000,21 @@ class invoiceList {
         buttonsPage.forEach((btn) => {
             
             btn.addEventListener("click", async (event) => {
+                // Loading GIF appear and scroll off
+                this.loadingGif.style.display = "flex";
+                document.body.classList.add("modal-open");
+                //  
+
                 let currentEvent = +(event.target.textContent);
 
                 let listNumber = ((currentEvent*10)-10);
 
                 this.nextList = await this.getInvoices(listNumber, this.filter, this.firstCreat, this.secondCreat, this.firstRec, this.secondRec);
+
+                // Loading GIF remove and scroll off
+                this.loadingGif.style.display = "none";
+                document.body.classList.remove("modal-open");
+                //  
                 
                 this.container = document.getElementById("table-list");
                 this.container.innerHTML = "";
@@ -1054,18 +1144,20 @@ class invoiceList {
     }
 
     loadInvoices = (Arr) => {
-        // Loading gif
+        // Loading gif and modal scroll
         this.loadingGif.style.display = "none";
+        document.body.classList.remove("modal-open");
 
         this.container = document.getElementById("table-list");
         Arr.forEach((item) => {
             var currency = ""; item.currency === "EUR" ? currency = "€" : currency = "$";
             var color = "";
             var emptyImg = `<img src="img/img_3975.png" alt="empty" width="20px" height="10px">`;
-            item.status === "Approved" ? color = "green" : "";
+            item.status === "Approved" ? color = "approved" : "";
             item.status === "Declined" ? color = "red" : "";
             item.status === "Received" ? color = "blue" : "";
             item.status === "Sent" ? color = "yellow" : "";
+            item.status === "Available" ? color = "green" : "";
 
             var docs = "documents" in item;
 
@@ -1153,6 +1245,7 @@ class invoiceList {
 
         this.requestedBtn.addEventListener("click", this.requestedStatus);
         this.sentBtn.addEventListener("click", this.sentStatus);
+        this.receivedBtn.addEventListener("click", this.receivedStatus);
     }
 };
 

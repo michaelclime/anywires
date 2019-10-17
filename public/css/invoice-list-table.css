@@ -81,6 +81,10 @@ tbody tr {
   color: red;
 }
 
+.approved {
+  color: #12C7B2;
+}
+
 .column1 {
   width: 100px;
   padding-left: 20px;
