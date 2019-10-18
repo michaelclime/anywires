@@ -21,7 +21,7 @@ let InvoiceSchema = new mongoose.Schema({
     },
     documents: Object,
     created_by: Object,
-    commissions: String,
+    commissions: Array,
     comments: Array
 });
 
