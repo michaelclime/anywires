@@ -178,7 +178,7 @@
             <div class="SettleTransfersWindow-content">
                 <button class="SettleTransfersWindow-close">&times;</button>
                 <h1 class="SettleTransfersWindow-h1">Please mark Available for Settlement invoices to include them to settlement.</h1>
-                <form action="#">
+                <form action="/creatSettle/<%= currentUser._id %>" method="POST">
                     <table id="ttable">
                         <thead>
                             <tr class="ttable-head">
@@ -191,10 +191,10 @@
                         <tbody class="ttableList"></tbody>
                     </table>
 
-                    <span class="totalSum"></span>
+                    <span class="totalSum" name="amount"></span>
                     
                    <div class="footBox">
-                        <select class="walletList">
+                        <select class="walletList" name="wallets" required>
                             <option value="">Wallet for Settlement:</option>
                         </select>
                         <input type="submit" value="Request" class="requestBtn">
@@ -208,46 +208,34 @@
             <div class="MerchantPayWindow-content">
                 <button class="MerchantPayWindow-close">&times;</button>
                 <h1 class="MerchantPayWindow-header">Payment from your AW Wallet</h1>
-                <div class="main-form MerchantPayWindow-form">
-                    <h3>Your AW Balance is:</h3>
-                    <form  action="#" class="MerchantPayWindow-form">
-                        <input type="number" class="amountPayment" placeholder="0">
-                        <select name="wallet" class="wallet">
-                            <option value="">Choose your wallet</option>
-                        </select>
-                        <input type="text" class="paymentPurpose" placeholder="Payment Purpose">
-                    <input type="submit" class="paymentBtn  popup-btn" value="Make a payment request">
-                    <button class="createWalletBtn popup-btn">Create new Wallet</button>
-                    </form>
-                </div>
-            </div>
-    </div>
-    <!-- Create Wallet Window -->
-    <div class="createWalletWindow">
-            <div class="createWalletWindow-content">
-                <button class="createWalletWindow-close">&times;</button>
-                <h1 class="createWalletWindow-header">Create new wallet for payments</h1>
-                <div class="main-form createWalletWindow-form">
-                    <form  action="#" class="createWalletWindow-form">
-                        <input type="text" class="inpt walletName" placeholder="Wallet Name">
-                        <input type="text" class="inpt beneficiaryName" placeholder="Beneficiary name">
-                        <input type="text" class="inpt beneficiaryAddress" placeholder="Beneficiary address">
-                        <input type="text" class="inpt bankName" placeholder="Bank name">
-                        <input type="text" class="inpt bankAddress" placeholder="Bank Address">
-                        <input type="text" class="inpt IBAN" placeholder="IBAN">
-                        <input type="text" class="inpt BICSWIFT" placeholder="BIC/SWIFT">
-                        <select name="walletType" class="walletType">
-                            <option value="">Choose Wallet Type</option>
-                            <option value="Wire">Wire</option>
-                            <option value="BTC">BTC</option>
-                            <option value="ATMWithdrawal">ATM Withdrawal</option>
-                        </select>
-                        <input type="submit" class="creatingWalletBtn  popup-btn" value="Create">
-                    </form>
-                </div>
-            </div>
-    </div>
+                <div class="payFromAwWalletCont">
+                    <div class="main-form MerchantPayWindow-form">
+                        <h3 class="AWBalance-title">Your AW Balance is: <span class="AWBalance"></span></h3>
+                        <form  action="#" class="MerchantPayWindow-form">
+                            <input type="number" class="amountPayment" placeholder="0">
+                            <select name="wallet" class="walletPayFrom" required>
+                                <option value="">Choose your wallet</option>
+                            </select>
+                            <input type="text" class="paymentPurpose" placeholder="Payment Purpose">
+                            <input type="submit" class="paymentBtn  popup-btn" value="Make a payment request">
+                        </form>
+                    </div>
 
+                    <div class="walletDetInfo">
+                        <select name="inside_wallet" class="inside_wallet">
+                            
+                        </select>
+                        <p><strong>Beneficiary Name:</strong>  <span class="beneficiaryName"></span></p>
+                        <p><strong>Beneficiary Address:</strong> <span class="beneficiaryAddress"></span></p>
+                        <p><strong>Bank Name:</strong> <span class="bankName"></span></p>
+                        <p><strong>Bank Address:</strong> <span class="bankAddress"></span></p>
+                        <p><strong>IBAN:</strong> <span class="iban"></span></p>
+                        <p><strong>SWIFT:</strong> <span class="swift"></span></p>
+                    </div>
+                </div>
+            </div>
+    </div>
+    
     <!-- Popup window View Invoice -->
 		
     <div class="filter">
@@ -360,7 +348,21 @@
 
         </div>
     </div>
-
+    <!-- Modal Action Window -->
+    <% if(error && error.length > 0) {%>
+        <div class="alert" role="alert">
+            <div class="alertContent">
+                <h3>  <%= error %> </h3>
+            </div>
+        </div>
+    <% } %>
+    <% if(success && success.length > 0) {%>
+        <div class="alert" role="alert">
+            <div class="alertContent">
+                <h3>  <%= success %> </h3>
+            </div>
+        </div>
+    <% } %>
     <script type="text/javascript" src="js/sweetalert2.js"></script>
     <script src="js/classie.js"></script>
     <script src="js/gnmenu.js"></script>

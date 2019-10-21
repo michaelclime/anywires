@@ -9,6 +9,9 @@ let express = require("express"),
     LocalStrategy = require('passport-local'),
     User = require('./modules/user'),
     Invoice = require('./modules/invoice'),
+    Merchant = require('./modules/merchant'),
+    Wallet = require('./modules/wallet'),
+    Settlement = require('./modules/settlement'),
     nodemailer = require('nodemailer'),
     fs = require('fs'),
     flash = require('connect-flash'),
@@ -1449,30 +1452,75 @@ app.get('/getWallet/:merchant', function(req, res, next) {
 //    SETTLEMENTS
 ///////////////////////////////
 
-app.get('/availableInvs/:merchant', function(req, res, next) {
+app.get('/availableInvs/:merchant', async function(req, res, next) {
     let INVOIECES = [];
-    mongo.connect(url, function(err, db) {
-        assert.equal(null, err);
-        var cursor = db.collection('invoices').find({ 'status': 'Available',
-                                                      'merchant': req.params.merchant  } );
-        cursor.forEach(function(doc, err) {
-            assert.equal(null, err);
-            INVOIECES.push(doc);
-        }, function() {
-            db.close();
-            res.send(INVOIECES);
-        });
+     mongo.connect(url, function(err, db) {
+        db.collection('merchants').findOne(objectId(req.params.merchant)).then(
+            (result) => {
+                mongo.connect(url, function(err, db) {
+                    assert.equal(null, err);
+                    var cursor = db.collection('invoices').find({ 'status': 'Available',
+                                                                'merchant': result.name  } );
+                    cursor.forEach(function(doc, err) {
+                        assert.equal(null, err);
+                        INVOIECES.push(doc);
+                    }, function() {
+                        db.close();
+                        res.send(INVOIECES);
+                    });
+                });
+            });
     });
 });
 
-app.get("/getWalletsList", (req, res) => {
-    mongo.connect(url, (err, db) =>{
-        db.collection("wallets").find({}).toArray(function(err, wallets){
-            if(err) return console.log("Error with upload wallets!", err);
-            db.close();
-            res.send(wallets);
-        })
-    });
+app.get("/getWalletsList/:id", async (req, res) => {
+
+    const merchant = await Merchant.findById(req.params.id);
+    
+    const getList = async () => {
+        let walletList =[];
+
+        // merchant.wallets.forEach(async (i) => {
+        //     let wallet = await Wallet.findById(i);
+        //     walletList.push(wallet);
+        // });
+
+        for (let i = 0; i < merchant.wallets.length; i += 1) {
+            let wallet = await Wallet.findById( merchant.wallets[i] );
+            walletList.push(wallet);
+        }
+
+        return walletList;
+    };
+
+    getList().then( (result) => {
+        res.status(200).send(result);
+    }).catch((err) =>{
+        res.status(400).send(err);
+        console.log(err);
+    })
+});
+
+app.get("/getInside_walletsList/:id", async (req, res) => {
+
+    const merchant = await Merchant.findById(req.params.id);
+   
+    const getList = async () => {
+        let walletList =[];
+
+        for (let i = 0; i < merchant.inside_wallets.length; i += 1) {
+            let wallet = await Wallet.findById( merchant.inside_wallets[i] );
+            walletList.push(wallet);
+        }
+        return walletList;
+    };
+
+    getList().then( (result) => {
+        res.status(200).send(result);
+    }).catch((err) =>{
+        res.status(400).send(err);
+        console.log(err);
+    })
 });
 
 app.get("/getSettlementsList", (req, res) => {
@@ -1498,6 +1546,13 @@ app.get("/getSettlementsList", (req, res) => {
                     localField: 'commissions',    // field in the settlements collection
                     foreignField: "_id",  // field in the commissions  collection
                     as: "commissionsList"
+                }
+            }, {
+                $lookup: {
+                    from: "merchants",
+                    localField: 'merchant',    // field in the settlements collection
+                    foreignField: "_id",  // field in the commissions  collection
+                    as: "mercName"
                 }
             }
         ]).toArray(function(err, settlements) {
@@ -1616,6 +1671,60 @@ app.post("/uploadSettleDoc", upload.single("file"), jsonParser, (req, res) => {
             });
         })
     });
+});
+
+app.post('/creatSettle/:id', async (req, res) => {
+
+    let amounts = [];
+    let invoices = [];
+    let currency, merchantID;
+    if (Array.isArray(req.body.invoices)) {
+        req.body.invoices.forEach((i) => {
+            let infoArr = i.split('/');
+            amounts.push(infoArr[0]);
+            invoices.push( objectId(infoArr[2]) );
+            currency = infoArr[1];
+            merchantID = infoArr[3];
+        });
+    } else {
+        let infoArr = req.body.invoices.split('/');
+            amounts.push(infoArr[0]);
+            invoices.push( objectId(infoArr[2]) );
+            currency = infoArr[1];
+            merchantID = infoArr[3];
+    }
+    
+
+    const reducer = (accumulator, currentValue) => +accumulator + +currentValue;
+    let totalSumInv = amounts.reduce(reducer);
+    let newSettle = {
+        dates: {
+            creation_date: new Date()
+        },
+        amount: totalSumInv,
+        currency:  currency,
+        merchant: objectId(merchantID),
+        status: 'Requested',
+        invoices: invoices,
+        type: 'Wire',
+        created_by: objectId(req.params.id),
+        wallets: [
+            objectId(req.body.wallets)
+        ]
+    }
+
+    const settlement = new Settlement(newSettle);
+
+    try {
+        await settlement.save();
+        req.flash('success', 'Settlement successfully created!');
+        res.status(201).redirect("/settlements.html");
+    } catch (err) {
+        res.status(400).send(err);
+        console.log(err);
+    }
+
+   
 });
 
 // Running server

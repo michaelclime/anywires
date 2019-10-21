@@ -10,7 +10,7 @@ let SettlementSchema = new mongoose.Schema({
     },
     amount: Number,
     currency: String,
-    merchant: String,
+    merchant: Object,
     status: String,
     invoices: Array,
     comments: Array,
@@ -18,7 +18,7 @@ let SettlementSchema = new mongoose.Schema({
     commissions: Array,
     type: String,
     documents: Array,
-    created_by: ObjectId
+    created_by: Object
 });
 
 SettlementSchema.plugin(passportLocalMongoose);
