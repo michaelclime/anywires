@@ -1,5 +1,3 @@
-
-
 class invoiceList {
     constructor(){
         this.currentTr = "";
@@ -30,10 +28,103 @@ class invoiceList {
         this.clickToDownload = document.querySelector("#uploadDocs");
         this.requestedBtn = document.querySelector("#requested");
         this.currentInvoice = [];
+        this.currentBank = [];
         this.currentUserRole = document.querySelector(".curentUserRole");
         this.sentBtn = document.querySelector("#sent");
         this.loadingGif = document.querySelector("#loadingGif");
+        this.receivedBtn = document.querySelector("#received");
+        this.receivedBtnSubmit = document.querySelector("#receive_Submit");
+        this.filterReceive = document.querySelector(".receive_Filter");
         this.render();
+    }
+
+    receivedInvoiceStatus = async (invNumber, typedAmount, amountAfter, createdBy) => {
+        return  await fetch("http://18.216.223.81:3000/receivedStatus", {
+            // return  await fetch("http://18.216.223.81:3000/receivedStatus", {
+                method: "POST",
+                body: JSON.stringify({
+                    invNumber,
+                    typedAmount,
+                    amountAfter,
+                    createdBy
+                }),
+                headers:{'Content-Type': 'application/json'}
+            })
+            .then(res => {
+                return res.text();
+            }) 
+            .catch(err => {
+                console.log(err);
+            });
+    }
+
+    receiveStatus = async () => {
+        if (this.currentInvoice[0].status === "Sent") {
+            // Loading GIF appear
+            this.loadingGif.style.display = "flex";
+            
+            // Some counting 
+            var typedAmount = document.querySelector("#receive_input").value;
+            var IncFee = (this.currentBank[0].incoming_fee * 100);
+            var amountAfter = typedAmount - ((typedAmount / 100) * IncFee);
+            var creator = this.currentUser.textContent.trim();
+            var currency = "";
+            this.currentInvoice[0].currency === "USD" ? currency = "$" : currency = "€";
+
+            // Add comment about action
+            await this.addComment(`Transfer for ${currency}${typedAmount} was Received!`);
+
+            // Loading GIF OFF
+            this.loadingGif.style.display = "none";
+
+            // Request for status "Received" 
+            this.receivedInvoiceStatus(this.curNumber, typedAmount, amountAfter, creator);
+
+            // Change status, received date, amount received for currentInvoice and create new field received_after_commision
+            this.currentInvoice[0].status = "Received";
+            this.currentInvoice[0].dates.received_date = new Date();
+            this.currentInvoice[0].amount.amount_received = +(typedAmount);
+            this.currentInvoice[0].amount.received_after_commision = +(amountAfter);
+
+            // Change table information
+            this.currentTr.children[8].innerHTML = `<strong>Received</strong>`;
+            this.currentTr.children[8].style.color = "rgb(85, 140, 223)";
+            this.currentTr.children[5].children[0].children[0].textContent = `${currency}${typedAmount}`;
+            this.currentTr.children[5].children[0].children[1].textContent = `${this.checkDate(new Date())}`;
+
+            // Change style for popUp
+            document.querySelector(".currentStatus").textContent = "Received";
+            document.querySelector(".currentStatus").style.color = "rgb(85, 140, 223)";
+
+            // Hide PopUp
+            this.filterReceive.style.display = "none";
+        } else {
+            alert("You can't do this!");
+        }
+    }
+
+    initialReceivedStatus = async () => {
+        if (this.currentInvoice[0].status === "Sent") {
+            // Filter for background
+            this.filterReceive.style.display = "flex";
+            this.filterReceive.addEventListener("click", (event) => {
+                event.target === this.filterReceive ? this.filterReceive.style.display = "none" : "";
+            });
+
+            // Counting proccess
+            var amountSent = this.currentInvoice[0].amount.amount_sent;
+            var IncFee = (this.currentBank[0].incoming_fee * 100);
+
+            // PopUp render Info
+            var currency = "";
+            this.currentInvoice[0].currency === "USD" ? currency = "$" : currency = "€";
+            document.querySelector(".receive_InvoiceNumber").innerHTML = `invoice #${this.curNumber}`;
+            document.querySelector(".receive_SentAmount").innerHTML = `${amountSent}${currency}`
+            document.querySelector("#receive_input").value = `${amountSent}`;
+            document.querySelector(".receive_BankFee").innerHTML = `${IncFee}%`;
+        } else {
+            alert("You can't do this!");
+        }
     }
 
     sentInvoiceStatus = async (invNumber, amountSent) => {
@@ -55,6 +146,8 @@ class invoiceList {
     }
 
     sentStatus = async () => {
+        
+
         var requested = this.currentInvoice[0].amount.amount_requested;
         var currency = "";
         this.currentInvoice[0].currency === "USD" ? currency = "$" : currency = "€";
@@ -66,6 +159,9 @@ class invoiceList {
 
         // If Current User has access
         if (result && this.currentInvoice[0].status !== "Sent") {
+            // Loading GIF appear
+            this.loadingGif.style.display = "flex";
+
             // Request for status "Sent" 
             this.sentInvoiceStatus(this.curNumber, requested);
 
@@ -84,8 +180,11 @@ class invoiceList {
             document.querySelector(".currentStatus").textContent = "Sent";
             document.querySelector(".currentStatus").style.color = "rgb(255, 187, 51)";
 
-            // // Add new comment
+            // Add new comment
             await this.addComment(`Transfer for ${currency}${requested} was Sent!`);
+
+            // Loading GIF appear
+            this.loadingGif.style.display = "none";
             
         } else {
             alert("You can't do this!");
@@ -118,6 +217,9 @@ class invoiceList {
 
         // If user CRM admin and Status is Sent
         if (this.currentInvoice[0].status === "Sent" && role === "CrmAdmin") { 
+            // Loading GIF appear
+            this.loadingGif.style.display = "flex";
+
             // Request for status "Requested"
             this.requestedInvoiceStatus(this.curNumber, bankName, reqAmount);
 
@@ -138,6 +240,9 @@ class invoiceList {
             
             // this.changeInvoiceStatus("Requested", this.curNumber);
             await this.addComment("Status was changed from Sent to Requested!");
+
+            // Loading GIF appear
+            this.loadingGif.style.display = "none";
 
         } else {
             alert("You can't do this!");
@@ -165,6 +270,9 @@ class invoiceList {
     }
 
     docsBad = async () => {
+        // Loading GIF appear
+        this.loadingGif.style.display = "flex";
+
         var filename = event.target.closest("tr").children[4].textContent.trim();
         var status = "Declined";
         var type = event.target.closest("tr").children[1].textContent.trim();
@@ -172,9 +280,15 @@ class invoiceList {
         
         await this.changeDocsStatus(filename, status, this.curNumber, type);
         this.addComment(`${type} was Declined!`);
+
+        // Loading GIF appear
+        this.loadingGif.style.display = "none";
     }
 
     docsGood = async () => {
+        // Loading GIF appear
+        this.loadingGif.style.display = "flex";
+
         var filename = event.target.closest("tr").children[4].textContent.trim();
         var status = "Approved";
         var type = event.target.closest("tr").children[1].textContent.trim();
@@ -182,6 +296,9 @@ class invoiceList {
         
         await this.changeDocsStatus(filename, status, this.curNumber, type);
         this.addComment(`${type} was Approved!`);
+
+        // Loading GIF appear
+        this.loadingGif.style.display = "none";
     }
 
     openDocsImage = (event) => {
@@ -205,6 +322,9 @@ class invoiceList {
     }
 
     initialUpload = async (event) => {
+        // Loading GIF appear
+        this.loadingGif.style.display = "flex";
+
         event.preventDefault();
 
         var type = document.querySelector("#docsSelect").value.trim();
@@ -223,21 +343,32 @@ class invoiceList {
             await this.postFile(fd);
 
             // Add comment about action
-            await this.addComment(`${type} was Uploaded!`);
+            this.addComment(`${type} was Uploaded!`);
      
              // Update Modal Window View
              this.currentInvoice = await this.getInvoices(0, {"number": this.curNumber} ); 
-             this.renderViewInvoice(this.currentInvoice);
+
+             // Check and render docs
+            document.querySelector("#table-docs").innerHTML = "";
+            this.tableDocsRender(this.currentInvoice[0].documents.id);
+            this.tableDocsRender(this.currentInvoice[0].documents.payment_proof);
+            this.tableDocsRender(this.currentInvoice[0].documents.utility_bill);
+            this.tableDocsRender(this.currentInvoice[0].documents.declaration);
+
 
             //  Cleanning Click to Upload Input
              document.querySelector("#uploadDocs").value = "";
              document.querySelector("#docsSelect").value = "";
              document.querySelector(".fileName").innerHTML = "Click to upload Document";
+
             //  Restore style for File Wrapper
              this.fileWrapper.style.backgroundColor = "white";
              this.fileWrapper.style.color = "black";
              this.fileWrapper.style.border = "1px solid rgb(159, 159, 159)";
              this.fileWrapper.style.fontWeight = "normal";
+
+             // Loading GIF appear
+            this.loadingGif.style.display = "none";
         } else {
             alert("Please choose the file!");
         }
@@ -270,6 +401,9 @@ class invoiceList {
     }
 
     saveEditedInvoice = async () => {
+        // Loading GIF appear
+        this.loadingGif.style.display = "flex";
+
         var sepa = false;
         this.editData[5].checked ? sepa = true : sepa = false;
 
@@ -307,7 +441,7 @@ class invoiceList {
         // If something was changed then ->
         if (comment){
             await this.postEditedInvoice(this.curNumber, newInvoice);
-            await this.addComment(comment);
+            this.addComment(comment);
             // Update Modal Window View
             this.currentInvoice = await this.getInvoices(0, {"number": this.curNumber} ); 
             this.renderViewInvoice(this.currentInvoice);
@@ -317,6 +451,9 @@ class invoiceList {
         this.editData.forEach((item) => item.value = "");
         this.editData[5].removeAttribute("checked", "checked");
         this.filterEdit.style.display = "none";
+
+        // Loading GIF appear
+        this.loadingGif.style.display = "none";
     }
 
     postEditedInvoice = async (number, newInvoice) => {
@@ -402,7 +539,7 @@ class invoiceList {
         this.filter.style.display = "flex";
         this.filter.addEventListener("click", (event) => {
             if(event.target === this.filter){
-                // Off overflow for BODY
+                // "On" overflow for BODY
                 document.body.classList.remove("modal-open");
                 // Hide Modal Window
                 this.filter.style.display = "none";
@@ -449,6 +586,28 @@ class invoiceList {
 
         // Off overflow for BODY
         document.body.classList.add("modal-open");
+
+        // Get Current Bank
+        var bankName = obj[0].bank;
+        this.currentBank = await this.getCurrentBank(0, {"name": bankName});
+    }
+
+    getCurrentBank = async (number, filter ) => {
+        return  await fetch("http://18.216.223.81:3000/getPart-Banks", {
+            //  return  await fetch("http://18.216.223.81:3000/getPart-Banks", {
+                method: "POST",
+                body: JSON.stringify({
+                    number,
+                    filter
+                }),
+                headers:{'Content-Type': 'application/json'}
+            })
+            .then(res => {
+                return res.json();
+            }) 
+            .catch(err => {
+                console.log(err);
+            });
     }
 
     postCommet = async (number, data, create_by) => {
@@ -488,20 +647,6 @@ class invoiceList {
             this.currentInvoice = await this.getInvoices(0, {"number": this.curNumber} ); 
             this.tableComments = document.querySelector("#tableTbody-comments").innerHTML = "";
             this.tableCommentsRender(this.currentInvoice[0].comments);
-
-            // // Render without post request
-            // this.tableComments = document.querySelector("#tableTbody-comments");
-            // var tableTr = document.createElement("tr");
-            // tableTr.innerHTML = `
-            //     <td class="comCol1">
-            //         <div>
-            //             <div>${created_by}</div>
-            //             <div class="comentsDate">${moment(new Date()).format('lll')}</div>
-            //         </div>
-            //     </td>
-            //     <td>${data}</td>
-            // `;
-            // this.tableComments.appendChild(tableTr);
         }
         document.querySelector("#commentText").value = "";
     }
@@ -581,6 +726,9 @@ class invoiceList {
         this.tableTd.forEach((td) => {
 
             td.addEventListener("click", async () => {
+                // Loading GIF appear and scroll off
+                this.loadingGif.style.display = "flex";
+                document.body.classList.add("modal-open");
                 // Take current Tr for future changed
                 this.currentTr = td.parentElement;
                 // Remove all filters
@@ -589,6 +737,8 @@ class invoiceList {
                 this.number = td.parentElement.children[0].children[0].children[0].children[0].textContent.split("#")[1];
                 // Get invoice
                 this.currentInvoice = await this.getInvoices(0, {"number": this.number} ); 
+                // Loading GIF hide
+                this.loadingGif.style.display = "none";
                 // Render popup window
                 this.renderViewInvoice(this.currentInvoice);
             });
@@ -705,6 +855,11 @@ class invoiceList {
     }
 
     filterList = async () => {
+        // Loading GIF appear and scroll off
+        this.loadingGif.style.display = "flex";
+        document.body.classList.add("modal-open");
+        //  
+
         this.filter = {};
         this.status = document.querySelector("#filterStatus").value;
         this.bank = this.bankFilter.value;
@@ -780,6 +935,11 @@ class invoiceList {
 
         const lengthInvoice = await this.getNumberOfinvoices(this.filter, this.firstCreat, this.secondCreat, this.firstRec, this.secondRec);
         const filterList = await this.getInvoices(0, this.filter, this.firstCreat, this.secondCreat, this.firstRec, this.secondRec);
+
+        // Loading GIF appear and scroll off
+        this.loadingGif.style.display = "none";
+        document.body.classList.remove("modal-open");
+        //  
 
         // Table cleaning
         this.container = document.getElementById("table-list");
@@ -920,11 +1080,21 @@ class invoiceList {
         buttonsPage.forEach((btn) => {
             
             btn.addEventListener("click", async (event) => {
+                // Loading GIF appear and scroll off
+                this.loadingGif.style.display = "flex";
+                document.body.classList.add("modal-open");
+                //  
+
                 let currentEvent = +(event.target.textContent);
 
                 let listNumber = ((currentEvent*10)-10);
 
                 this.nextList = await this.getInvoices(listNumber, this.filter, this.firstCreat, this.secondCreat, this.firstRec, this.secondRec);
+
+                // Loading GIF remove and scroll off
+                this.loadingGif.style.display = "none";
+                document.body.classList.remove("modal-open");
+                //  
                 
                 this.container = document.getElementById("table-list");
                 this.container.innerHTML = "";
@@ -1054,18 +1224,20 @@ class invoiceList {
     }
 
     loadInvoices = (Arr) => {
-        // Loading gif
+        // Loading gif and modal scroll
         this.loadingGif.style.display = "none";
+        document.body.classList.remove("modal-open");
 
         this.container = document.getElementById("table-list");
         Arr.forEach((item) => {
             var currency = ""; item.currency === "EUR" ? currency = "€" : currency = "$";
             var color = "";
             var emptyImg = `<img src="img/img_3975.png" alt="empty" width="20px" height="10px">`;
-            item.status === "Approved" ? color = "green" : "";
+            item.status === "Approved" ? color = "approved" : "";
             item.status === "Declined" ? color = "red" : "";
             item.status === "Received" ? color = "blue" : "";
             item.status === "Sent" ? color = "yellow" : "";
+            item.status === "Available" ? color = "green" : "";
 
             var docs = "documents" in item;
 
@@ -1088,7 +1260,7 @@ class invoiceList {
                             <p class="yellow smallBoldText">${this.checkDate(item.dates.sent_date)}</p>
                         </div>
                     </td> 
-                    <td class="column5 view">${item.commissions}</td>
+                    <td class="column5 view">${""}</td>
                     <td class="column6 view">
                         <div>
                             <p>${currency}${item.amount.amount_received}</p>
@@ -1153,6 +1325,8 @@ class invoiceList {
 
         this.requestedBtn.addEventListener("click", this.requestedStatus);
         this.sentBtn.addEventListener("click", this.sentStatus);
+        this.receivedBtn.addEventListener("click", this.initialReceivedStatus);
+        this.receivedBtnSubmit.addEventListener("click", this.receiveStatus);
     }
 };
 

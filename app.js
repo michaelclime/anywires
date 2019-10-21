@@ -146,6 +146,8 @@ app.get('/merchantReport.html', isLoggedIn, function(req, res) {
 // Invoice generation process
 
 app.post("/invoices/:fullname/:_id/:merchant", function(req, res, next) {
+    var currency = "";
+    req.body.currency === "USD" ? currency = "$" : currency = "€";
 
     mongo.connect(url, function(err, db) {
         assert.equal(null, err);
@@ -198,7 +200,7 @@ app.post("/invoices/:fullname/:_id/:merchant", function(req, res, next) {
                         {
                             created_by:  req.params.fullname,
                             creation_date: new Date(),
-                            message: `Invoice ${count + 1} for ${req.body.amount} ${req.body.currency} was Requested!`
+                            message: `Invoice #${count + 1}. Transfer for ${currency}${req.body.amount} was Requested!`
                         }
                     ]
                 };
@@ -295,7 +297,7 @@ app.post("/invoices/:fullname/:_id/:merchant", function(req, res, next) {
                                                     {
                                                         created_by:  req.params.fullname,
                                                         creation_date: new Date(),
-                                                        message: `Invoice ${count + 1} for ${req.body.amount} ${req.body.currency} was Requested!`
+                                                        message: `Invoice #${count + 1}. Transfer for ${currency}${req.body.amount} was Requested!`
                                                     }
                                                 ]
                                             };
@@ -374,7 +376,7 @@ app.post("/invoices/:fullname/:_id/:merchant", function(req, res, next) {
                                                     {
                                                         created_by:  req.params.fullname,
                                                         creation_date: new Date(),
-                                                        message: `Invoice ${count + 1} for ${req.body.amount} ${req.body.currency} was Requested!`
+                                                        message: `Invoice #${count + 1}. Transfer for ${currency}${req.body.amount} was Requested!`
                                                     }
                                                 ]
                                             };
@@ -467,10 +469,10 @@ app.post("/postMerchant",jsonParser, (req, res) => {
 
 app.get("/getBanks", (req, res) => {
     mongo.connect(url, (err, db) =>{
-        db.collection("banks").find({}).sort({"name": 1}).toArray(function(err, merchants){
+        db.collection("banks").find({}).sort({"name": 1}).toArray(function(err, bank){
             if(err) return console.log("Error with upload Banks!", err);
             db.close();
-            res.send(merchants);
+            res.send(bank);
         })
     });
 });
@@ -835,7 +837,8 @@ app.post("/sentStatus", jsonParser, (req, res) => {
             
             mongo.connect(url, (err, db) => {
                 if (err) return console.log(err, "Can't connect to database!");
-                db.collection("banks").updateOne({"name": bankName}, {$inc: {"balance_sent": amountSent} }, {returnOriginal: false}, (err, result) => {
+                db.collection("banks").updateOne({"name": bankName}, {$inc: {"balance_sent": amountSent, "balance_requested": -amountSent} }, 
+                {returnOriginal: false}, (err, result) => {
                     if(err) return console.log(err, "Error with change balance at Bank!");
                     res.send("Sent status has been set successfully!");
                 });
@@ -854,18 +857,25 @@ app.post("/requestStatus", jsonParser, (req, res) => {
     var bankName = '';
     mongo.connect(url, (err, db) => {
         if (err) return console.log(err, "Can't connect to database!");
-        db.collection("invoices").findOneAndUpdate({"number": invoiceNum}, {$set: {
-            "status":"Requested", 
-            "dates.sent_date": "", 
-            "amount.amount_sent":0 
-        }}, {returnOriginal: false}, (err, result) => {
+        db.collection("invoices").findOneAndUpdate({"number": invoiceNum}, {
+            $set: {
+                "status":"Requested", 
+                "dates.sent_date": "", 
+                "amount.amount_sent": 0 
+                }
+            }, {returnOriginal: false}, (err, result) => {
             if(err) return console.log(err, "Error with change status to Requested!");
             reqAmount = result.value.amount.amount_requested;
             bankName = result.value.bank;
 
             mongo.connect(url, (err, db) => {
                 if (err) return console.log(err, "Can't connect to database!");
-                db.collection("banks").findOneAndUpdate({"name": bankName}, {$inc: {"balance_sent": -reqAmount}}, {returnOriginal: false}, (err, bank) => {
+                db.collection("banks").findOneAndUpdate({"name": bankName}, {
+                    $inc: {
+                        "balance_sent": -reqAmount, 
+                        "balance_requested": reqAmount
+                    }
+                }, {returnOriginal: false}, (err, bank) => {
                     if(err) return console.log(err, "Error with change bank balance!");
                     res.send("Requested status has been set successfully!");
                 });
@@ -874,6 +884,70 @@ app.post("/requestStatus", jsonParser, (req, res) => {
         });
     });
 });
+
+
+// @route POST /receivedStatus
+// @desc Change all data to received
+app.post("/receivedStatus", jsonParser, (req, res) => {
+    var invNumber = req.body.invNumber;
+    var typedAmount = +(req.body.typedAmount);
+    var amountAfter = +(req.body.amountAfter);
+    var createdBy = req.body.createdBy;
+
+    // Change Invoice status, amounts and date
+    mongo.connect(url, (err, db) => {
+        if (err) return console.log(err, "Can't connect to database!");
+        db.collection("invoices").findOneAndUpdate({"number": invNumber}, {$set: {
+            "status": "Received", 
+            "amount.amount_received": typedAmount, 
+            "dates.received_date": new Date(),
+            "amount.received_after_commision": amountAfter
+        }}, {returnOriginal: false}, (err, inv) => {
+            if(err) return console.log(err, "Error with change invoice to received status!");
+            var bankName = inv.value.bank;
+            var amountSent = +(inv.value.amount.amount_sent);
+
+            // Change Bank Balance and take some value from Bank
+            mongo.connect(url, (err, db) => {
+                if (err) return console.log(err, "Can't connect to database!");
+                db.collection("banks").findOneAndUpdate({"name": bankName}, {$inc: {
+                    "balance_received": typedAmount, 
+                    "balance_sent": -amountSent}},
+                {returnOriginal: false}, (err, bank) => {
+                    if(err) return console.log(err, "Error with change bank received details!");
+                    var bankCommission = bank.value.incoming_fee;
+
+                    // Inserted new commission
+                    mongo.connect(url, (err, db) => {
+                        if (err) return console.log(err, "Can't connect to database!");
+                        var amountCommission = +(typedAmount - amountAfter);
+                        var newComment = {
+                            "created_by": createdBy,
+                            "amount": amountCommission,
+                            "type": "Incoming Solution Commission",
+                            "percentage": bankCommission
+                        };
+                        db.collection("commissions").insertOne(newComment, (err) => {
+                            if(err) return console.log(err, "Error with add commission!");
+                            var commissionId = new objectId(newComment._id);
+
+                            // Insert Commission ID into Invoice 
+                            mongo.connect(url, (err, db) => {
+                                if (err) return console.log(err, "Can't connect to database!");
+                                db.collection("invoices").updateOne({"number": invNumber}, {$push:{"commissions": commissionId}}, 
+                                {returnOriginal:false}, (err, result) => {
+                                    if(err) return console.log(err, "Error with pushing commission to Invoice!");
+                                    res.send("Received status has been set successfully!")
+                                });
+                            });
+                        });
+                    });
+
+                });
+            });
+        });
+    });
+}); 
 
 
 //////////////////////////////
