@@ -167,7 +167,9 @@ $(document).ready(function(){
             event.preventDefault();
 
             let currentWallet = wallets.filter(item => item._id == walletPayFrom.value); 
-            
+            document.querySelector('.hide-currency').innerHTML =  `<input name="currency" value=${currentWallet[0].currency}>`;
+            document.querySelector('.hide-type').innerHTML =  `<input name="type" value="${currentWallet[0].type}">`;
+
             document.querySelector('.beneficiaryName').innerHTML = `${currentWallet[0].requisites.beneficiary_name}`;
             document.querySelector('.beneficiaryAddress').innerHTML = `${currentWallet[0].requisites.beneficiary_address}`;
             document.querySelector('.bankName').innerHTML = `${currentWallet[0].requisites.bank_name}`;
@@ -264,6 +266,14 @@ fetchPromise.then(response => {
         };
 
     const a = new MerchantOptoinList(merchants);
+
+    let merchantList = document.querySelector('.merchantList');
+
+    merchantList.addEventListener('change', (event) => {
+        event.preventDefault();
+        let currentMerchant =  merchants.filter(item => item._id == merchantList.value);
+        document.querySelector('.hide-merchantID').innerHTML =  `<input name="merchantID" value=${currentMerchant[0]._id}>`;
+    });
 });
 
 // SETTLEMENTS LIST 
@@ -307,7 +317,7 @@ async function loadSettleList()  {
                 $('.filter').css('display', 'flex');
                 
                 this.merchName = document.querySelector('#settleMerchant');
-                this.merchName.innerHTML = `${item.merchant}`
+                this.merchName.innerHTML = `${item.mercName[0].name}`
                
                 document.querySelector('.settleInfoTitle').innerHTML = `Settlement to <strong>${item.wallet[0].name}</strong> made on  
                      <strong>${new Date(item.dates.creation_date).getDate() + '/' + (new Date(item.dates.creation_date).getMonth()+ 1) + '/' +   new Date(item.dates.creation_date).getFullYear()}</strong> for <strong>${formatStr(item.amount)} ${item.currency}</strong> - <span class="currentStatus">${item.status}</span>`;

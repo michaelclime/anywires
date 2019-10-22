@@ -208,17 +208,20 @@
             <div class="MerchantPayWindow-content">
                 <button class="MerchantPayWindow-close">&times;</button>
                 <h1 class="MerchantPayWindow-header">Payment from your AW Wallet</h1>
-                <div class="payFromAwWalletCont">
+                <div>
+                    <form action="/creatSettleFromAwWallet/<%= currentUser._id %>" method="POST"  class="payFromAwWalletCont">
                     <div class="main-form MerchantPayWindow-form">
                         <h3 class="AWBalance-title">Your AW Balance is: <span class="AWBalance"></span></h3>
-                        <form  action="#" class="MerchantPayWindow-form">
-                            <input type="number" class="amountPayment" placeholder="0">
+                            <div class="hide hide-currency"></div>
+                            <div class="hide hide-type"></div>
+                            <div class="hide hide-merchantID"></div>
+                            <input type="number" class="amountPayment" placeholder="0" name="amountPaymentfromAW">
                             <select name="wallet" class="walletPayFrom" required>
                                 <option value="">Choose your wallet</option>
                             </select>
-                            <input type="text" class="paymentPurpose" placeholder="Payment Purpose">
+                            <input type="text" class="paymentPurpose" placeholder="Payment Purpose" name="paymentPurpose">
                             <input type="submit" class="paymentBtn  popup-btn" value="Make a payment request">
-                        </form>
+                       
                     </div>
 
                     <div class="walletDetInfo">
@@ -232,6 +235,7 @@
                         <p><strong>IBAN:</strong> <span class="iban"></span></p>
                         <p><strong>SWIFT:</strong> <span class="swift"></span></p>
                     </div>
+                </form>    
                 </div>
             </div>
     </div>

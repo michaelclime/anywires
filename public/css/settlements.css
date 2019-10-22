@@ -277,8 +277,7 @@ table {
 }
 
 .inside_wallet {
-    margin-top: 20px;
-    margin-bottom: 35px;
+    margin: 20px 0;
 }
 
 .walletDetInfo p {

@@ -202,7 +202,8 @@ app.post("/invoices/:fullname/:_id/:merchant", function(req, res, next) {
                             creation_date: new Date(),
                             message: `Invoice #${count + 1}. Transfer for ${currency}${req.body.amount} was Requested!`
                         }
-                    ]
+                    ],
+                    settleSelectedStatus: false
                 };
 
                 Invoice.create(newInvoice, function(err, newlyCreated){
@@ -299,7 +300,8 @@ app.post("/invoices/:fullname/:_id/:merchant", function(req, res, next) {
                                                         creation_date: new Date(),
                                                         message: `Invoice #${count + 1}. Transfer for ${currency}${req.body.amount} was Requested!`
                                                     }
-                                                ]
+                                                ],
+                                                settleSelectedStatus: false
                                             };
                             
                                             Invoice.create(newInvoice, function(err, newlyCreated){
@@ -378,7 +380,8 @@ app.post("/invoices/:fullname/:_id/:merchant", function(req, res, next) {
                                                         creation_date: new Date(),
                                                         message: `Invoice #${count + 1}. Transfer for ${currency}${req.body.amount} was Requested!`
                                                     }
-                                                ]
+                                                ],
+                                                settleSelectedStatus: false
                                             };
                             
                                             Invoice.create(newInvoice, function(err, newlyCreated){
@@ -1534,7 +1537,8 @@ app.get('/availableInvs/:merchant', async function(req, res, next) {
                 mongo.connect(url, function(err, db) {
                     assert.equal(null, err);
                     var cursor = db.collection('invoices').find({ 'status': 'Available',
-                                                                'merchant': result.name  } );
+                                                                'merchant': result.name,
+                                                                settleSelectedStatus: false } );
                     cursor.forEach(function(doc, err) {
                         assert.equal(null, err);
                         INVOIECES.push(doc);
@@ -1768,6 +1772,7 @@ app.post('/creatSettle/:id', async (req, res) => {
             merchantID = infoArr[3];
     }
     
+    let wallet = await Wallet.findById(req.body.wallets);
 
     const reducer = (accumulator, currentValue) => +accumulator + +currentValue;
     let totalSumInv = amounts.reduce(reducer);
@@ -1780,10 +1785,48 @@ app.post('/creatSettle/:id', async (req, res) => {
         merchant: objectId(merchantID),
         status: 'Requested',
         invoices: invoices,
-        type: 'Wire',
+        type: wallet.type,
         created_by: objectId(req.params.id),
         wallets: [
             objectId(req.body.wallets)
+        ]
+    }
+
+    const settlement = new Settlement(newSettle);
+
+    for (let i = 0; i < invoices.length; i += 1) {
+        let newStatusInv = await Invoice.findByIdAndUpdate(invoices[i], {
+            settleSelectedStatus: true
+        });
+    }
+
+    try {
+        await settlement.save();
+        req.flash('success', 'Settlement successfully created!');
+        res.status(201).redirect("/settlements.html");
+    } catch (err) {
+        res.status(400).send(err);
+        console.log(err);
+    }
+
+   
+});
+
+app.post('/creatSettleFromAwWallet/:id', async (req, res) => {
+
+    let newSettle = {
+        dates: {
+            creation_date: new Date()
+        },
+        amount: req.body.amountPaymentfromAW,
+        currency:  req.body.currency,
+        merchant: objectId(req.body.merchantID),
+        status: 'Requested',
+        invoices: [],
+        type: req.body.type,
+        created_by: objectId(req.params.id),
+        wallets: [
+            objectId(req.body.wallet)
         ]
     }
 
