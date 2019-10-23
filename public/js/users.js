@@ -200,7 +200,7 @@ class UsersList {
 
     getUsers = async (number, filter, startLog, endLog) => {
         // return  await fetch("http://18.216.223.81:3000/getPart-Users", {
-        return  await fetch("http://localhost:3000/getPart-Users", {
+        return  await fetch("http://18.216.223.81:3000/getPart-Users", {
             method: "POST",
             body: JSON.stringify({
                 number, 
@@ -220,7 +220,7 @@ class UsersList {
 
     getUsers_Number = async (filter, startLog, endLog) => {
         // return  await fetch("http://18.216.223.81:3000/getNumber-Users", {
-        return  await fetch("http://localhost:3000/getNumber-Users", {
+        return  await fetch("http://18.216.223.81:3000/getNumber-Users", {
             method: "POST",
             body: JSON.stringify({
                 filter,
