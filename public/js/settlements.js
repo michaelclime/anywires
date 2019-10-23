@@ -4,9 +4,12 @@
 $(document).ready(function(){
     $('.settleTransfBtn').on('click', function(event){
       event.preventDefault();
+      let merchantName = document.querySelector('.merchantList').value;
+      if (!merchantName) {
+          return Swal.fire("Please, choose the merchant");
+      }
       $('.SettleTransfersWindow').fadeIn();
-        let merchantName = document.querySelector('.merchantList').value;
-        document.querySelector(".ttableList").innerHTML = '';
+      
         document.querySelector(".walletList").innerHTML = '<option value="">Wallet for Settlement:</option>';
         //let availableInvs  = fetch('http://18.216.223.81:3000/getList');
         let availableInvs  = fetch(`http://localhost:3000/availableInvs/${merchantName}`);
@@ -22,11 +25,12 @@ $(document).ready(function(){
             
                 loadInvoice(list) {
                     this.container = document.querySelector(".ttableList");
+                    this.container.innerHTML = '';
                     list.slice(0, list.length).forEach((item, i) => {
                         this.invsList = document.createElement("tr");
                         this.invsList.className = `tr${i}`;
                             this.invsList.innerHTML =  `
-                            <td class="column column0">  <input class="check" type="checkbox" name=${item.amount.amount_approved + '/' + item.currency}> ${item.client_details.full_name}</td> 
+                            <td class="column column0">  <input class="check" type="checkbox" name='invoices' value=${item.amount.amount_approved + '/' + item.currency + '/' + item._id + '/' + merchantName}> ${item.client_details.full_name}</td> 
                             <td class="column column1"> ${formatStr(item.amount.amount_received)} ${item.currency}</td> 
                             <td class="column column2">${formatStr(item.commissions)} ${item.currency}</td> 
                             <td class="column column3">${formatStr(item.amount.amount_approved)} ${item.currency}</td> 
@@ -41,8 +45,8 @@ $(document).ready(function(){
                     checkBoxes.forEach((i) => {
                         i.addEventListener('click', (e) => {
                             let spanSum = document.querySelector(".totalSum");
-                            let currencyarr = e.target.name.split('/');
-                            let selectedSum = parseFloat(e.target.name);
+                            let currencyarr = e.target.value.split('/');
+                            let selectedSum = parseFloat(e.target.value);
                             let classesList = e.target.className.split(' ');
                             
                             if (classesList.includes("selected")) {
@@ -78,8 +82,8 @@ $(document).ready(function(){
             const a = new InvoicesList(invoices);
         });
 
-        //let walletsList  = fetch('http://18.216.223.81:3000/getWalletsList');
-        let walletsList  = fetch('http://localhost:3000/getWalletsList');
+         //let walletsList  = fetch(`http://18.216.223.81:3000/getWalletsList/${merchantName}`);
+       let walletsList  = fetch(`http://localhost:3000/getWalletsList/${merchantName}`);
         walletsList.then(response => {
             return response.json();
             }).then(wallets => {
@@ -95,7 +99,7 @@ $(document).ready(function(){
                         list.slice(0, list.length).forEach((item, i) => {
                             if ( this.container) {
                             this.option = document.createElement("option");
-                            this.option.value = item.name;
+                            this.option.value = item._id;
                             this.option.innerHTML =  item.name;   
                             this.container.append(this.option);
                             }
@@ -120,38 +124,116 @@ $(document).ready(function(){
 $(document).ready(function(){
     $('.payFromAwWalletBtn').on('click', function(event){
       event.preventDefault();
+      let merchantName = document.querySelector('.merchantList').value;
+      if (!merchantName) {
+         return Swal.fire("Please, choose the merchant");
+      }
       $('.MerchantPayWindow').fadeIn();
+      document.querySelector(".walletPayFrom").innerHTML = '<option value="">Choose your wallet:</option>';
+      document.querySelector(".inside_wallet").innerHTML = '';
+       //let walletsList  = fetch(`http://18.216.223.81:3000/getWalletsList/${merchantName}`);
+       let walletsList  = fetch(`http://localhost:3000/getWalletsList/${merchantName}`);
+       walletsList.then(response => {
+           return response.json();
+           }).then(wallets => {
+       
+               class WalletOptoinList {
+                   constructor(){
+                       this.list = wallets;
+                       this.render();
+                   }
+               
+                   loadWalllet(list) {
+                       this.container = document.querySelector('.walletPayFrom');
+                       list.slice(0, list.length).forEach((item, i) => {
+                           if ( this.container) {
+                           this.option = document.createElement("option");
+                           this.option.value = item._id;
+                           this.option.innerHTML =  item.name;   
+                           this.container.append(this.option);
+                           }
+                       });
+                   }
+                   render(){
+                       this.loadWalllet(this.list);
+                   }
+               };
+       
+           const a = new WalletOptoinList(wallets);
+
+           let walletPayFrom = document.querySelector('.walletPayFrom');
+
+           walletPayFrom.addEventListener('change', (event) => {
+            event.preventDefault();
+
+            let currentWallet = wallets.filter(item => item._id == walletPayFrom.value); 
+            document.querySelector('.hide-currency').innerHTML =  `<input name="currency" value=${currentWallet[0].currency}>`;
+            document.querySelector('.hide-type').innerHTML =  `<input name="type" value="${currentWallet[0].type}">`;
+
+            document.querySelector('.beneficiaryName').innerHTML = `${currentWallet[0].requisites.beneficiary_name}`;
+            document.querySelector('.beneficiaryAddress').innerHTML = `${currentWallet[0].requisites.beneficiary_address}`;
+            document.querySelector('.bankName').innerHTML = `${currentWallet[0].requisites.bank_name}`;
+            document.querySelector('.bankAddress').innerHTML = `${currentWallet[0].requisites.bank_address}`;
+            document.querySelector('.iban').innerHTML = `${currentWallet[0].requisites.iban}`;
+            document.querySelector('.swift').innerHTML = `${currentWallet[0].requisites.swift}`;
+       });
+
+       //let inside_walletsList  = fetch(`http://18.216.223.81:3000/getInside_walletsList/${merchantName}`);
+       let inside_walletsList  = fetch(`http://localhost:3000/getInside_walletsList/${merchantName}`);
+       inside_walletsList.then(response => {
+           return response.json();
+           }).then(wallets => {
+               class Inside_WalletOptoinList {
+                   constructor(){
+                       this.list = wallets;
+                       this.render();
+                   }
+               
+                   loadWalllet(list) {
+                       this.container = document.querySelector('.inside_wallet');
+                       this.inside_walletValance = document.querySelector('.AWBalance');
+                       list.slice(0, list.length).forEach((item, i) => {
+                           if ( this.container) {
+                           this.option = document.createElement("option");
+                           this.option.value = item._id;
+                           this.option.innerHTML =  item.name;   
+                           this.container.append(this.option);
+                           };
+                        this.inside_walletValance.innerHTML = `${list[0].balance} ${list[0].currency}`
+                       });
+                   }
+                   render(){
+                       this.loadWalllet(this.list);
+                   }
+               };
+           const p = new Inside_WalletOptoinList(wallets);
+
+            let insideWallet =  document.querySelector('.inside_wallet');
+
+            insideWallet.addEventListener('change', (event) => {
+                event.preventDefault();
+                let currentInsideWallet = wallets.filter(item => item._id == insideWallet.value);
+                document.querySelector('.AWBalance').innerHTML =  `${currentInsideWallet[0].balance} ${currentInsideWallet[0].currency}`;
+            });
+       });
+    
+      
     });
+    });
+
+    
     $('.MerchantPayWindow-close').on('click', function(event){
       event.preventDefault();
       $('.MerchantPayWindow').fadeOut();
+            document.querySelector('.beneficiaryName').innerHTML = '';
+            document.querySelector('.beneficiaryAddress').innerHTML ='';
+            document.querySelector('.bankName').innerHTML = '';
+            document.querySelector('.bankAddress').innerHTML = '';
+            document.querySelector('.iban').innerHTML = '';
+            document.querySelector('.swift').innerHTML = '';
     });
 });
 
-// CREATE WALLET
-
-$(document).ready(function(){
-    $('.createWalletBtn').on('click', function(event){
-      event.preventDefault();
-      $('.MerchantPayWindow').fadeOut();
-      $('.createWalletWindow').fadeIn();
-    });
-    $('.createWalletWindow-close').on('click', function(event){
-      event.preventDefault();
-      $('.createWalletWindow').fadeOut();
-      $('.MerchantPayWindow').fadeIn();
-    });
-});
-
-
-$(document).ready(function(){
-    $('.creatingWalletBtn').on('click', function(event){
-      event.preventDefault();
-      $('.createWalletWindow').fadeOut();
-      $('.wallet').append(`<option>${$('.walletName').val()}</option>`);
-      $('.MerchantPayWindow').fadeIn();
-    });
-});
 
 // Generate merchants list for selected menu
 
@@ -172,7 +254,7 @@ fetchPromise.then(response => {
                 list.slice(0, list.length).forEach((item, i) => {
                     if ( this.container) {
                     this.option = document.createElement("option");
-                    this.option.value = item.name;
+                    this.option.value = item._id;
                     this.option.innerHTML =  item.name;   
                     this.container.append(this.option);
                     }
@@ -184,13 +266,21 @@ fetchPromise.then(response => {
         };
 
     const a = new MerchantOptoinList(merchants);
+
+    let merchantList = document.querySelector('.merchantList');
+
+    merchantList.addEventListener('change', (event) => {
+        event.preventDefault();
+        let currentMerchant =  merchants.filter(item => item._id == merchantList.value);
+        document.querySelector('.hide-merchantID').innerHTML =  `<input name="merchantID" value=${currentMerchant[0]._id}>`;
+    });
 });
 
 // SETTLEMENTS LIST 
 
 // Show settlements list
 
-(async () => {
+async function loadSettleList()  {
     //let settleList = await  fetch('http://18.216.223.81:3000/getSettlementsList');
     let settleList = await  fetch('http://localhost:3000/getSettlementsList');
     let SETTLEMENTS = await settleList.json();
@@ -204,12 +294,12 @@ fetchPromise.then(response => {
     
         loadSettle(list) {
             this.container = document.querySelector(".tableList");
+            document.querySelector(".tableList").innerHTML = '';
             list.slice(0, list.length).forEach((item, i) => {
                 this.settleList = document.createElement("tr");
                 this.settleList.className = `tr${i}`;
-                 
                     this.settleList.innerHTML =  `
-                    <td class="col column0">${item.merchant}</td> 
+                    <td class="col column0">${item.mercName[0].name}</td> 
                     <td class="col column1">${new Date(item.dates.creation_date).getDate() + '/' + (new Date(item.dates.creation_date).getMonth()+ 1) + '/' +   new Date(item.dates.creation_date).getFullYear()}</td> 
                     <td class="col column2">${formatStr(item.amount)} ${item.currency}</td> 
                     <td class="col column3">${item.type}</td> 
@@ -227,7 +317,7 @@ fetchPromise.then(response => {
                 $('.filter').css('display', 'flex');
                 
                 this.merchName = document.querySelector('#settleMerchant');
-                this.merchName.innerHTML = `${item.merchant}`
+                this.merchName.innerHTML = `${item.mercName[0].name}`
                
                 document.querySelector('.settleInfoTitle').innerHTML = `Settlement to <strong>${item.wallet[0].name}</strong> made on  
                      <strong>${new Date(item.dates.creation_date).getDate() + '/' + (new Date(item.dates.creation_date).getMonth()+ 1) + '/' +   new Date(item.dates.creation_date).getFullYear()}</strong> for <strong>${formatStr(item.amount)} ${item.currency}</strong> - <span class="currentStatus">${item.status}</span>`;
@@ -385,7 +475,7 @@ fetchPromise.then(response => {
                             headers:{'Accept': 'application/json'}
                         })
                         .then(res => {
-                            return res.text();
+                            if (res.status == 200) Swal.fire("Document successfully has been uploaded!");
                         }) 
                         .catch(err => {
                             console.log(err);
@@ -458,7 +548,7 @@ fetchPromise.then(response => {
                     e.preventDefault();
                     this.userName = document.querySelector('.userName').textContent;
                     this.commisType =  document.querySelector('.commissionType').value;
-                    this.commisAmount =  document.querySelector('.commissionAmount').value;
+                    this.commisAmount =  +document.querySelector('.commissionAmount').value;
 
                     this.commisstTable =  document.querySelector('#tableTbody-commissions');
                     this.commisTR = document.createElement("tr");
@@ -485,7 +575,9 @@ fetchPromise.then(response => {
 
                 document.querySelector('.settlementDetails-close').addEventListener('click', (e) => {
                     $('.filter').css('display', 'none');
-                    //location.reload(true);
+                    location.reload(true);
+                    // document.querySelector(".tableList").innerHTML = `<div class="loadAnimationWrapp"><img class="loadAnimation" src="img/Gear-2.5s-200px.gif"><span>Loading...</span></div>`;
+                    // loadSettleList();
                 });
             });   
             this.container.appendChild(this.settleList);
@@ -609,7 +701,9 @@ const settlementsList1 = new SettlementsList();
         const filterList = new FilterList();
     });
 
-})();
+};
+document.querySelector(".tableList").innerHTML = `<div class="loadAnimationWrapp"><img class="loadAnimation" src="img/Gear-2.5s-200px.gif"><span>Loading...</span></div>`;
+loadSettleList();
 
 // SETTLEMENT PREVIEW 
 
@@ -655,4 +749,13 @@ function openDocsImage (event) {
     var filename = event.target.closest("tr").children[3].textContent.trim();
     window.open(`http://localhost:3000/upload/${filename}`, '_blank');
     //window.open(`http://18.216.223.81:3000/upload/${filename}`, '_blank');
+}
+
+
+// Alert modal window
+const alertWindow = document.querySelector('.alert');
+if (alertWindow) {
+  alertWindow.addEventListener("click", (event) => {
+      event.target === alertWindow ? alertWindow.style.display = "none" : "";
+  });
 }

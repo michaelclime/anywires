@@ -8,7 +8,7 @@ let InvoiceSchema = new mongoose.Schema({
     status: String,
     amount: Object,
     currency: String,
-    sepa: String,
+    sepa: Boolean,
     merchant: String,
     bank: String,
     dates: {
@@ -21,8 +21,9 @@ let InvoiceSchema = new mongoose.Schema({
     },
     documents: Object,
     created_by: Object,
-    commissions: String,
-    comments: Array
+    commissions: Array,
+    comments: Array,
+    settleSelectedStatus: Boolean
 });
 
 InvoiceSchema.plugin(passportLocalMongoose);

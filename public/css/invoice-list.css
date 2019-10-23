@@ -84,7 +84,7 @@ main {
     flex-direction: column;
     align-items: center;
     width: 100%;
-    min-height: 800px;
+    min-height: 1000px;
     background-color: rgb(255, 255, 255);
     padding-top: 30px;
     margin-top: 2px;
@@ -354,6 +354,10 @@ label {
     display: flex;
     justify-content: space-between;
     width: 100%;
+}
+
+#invoiceCurrency, #requestFee {
+    font-weight: bold;
 }
 
 .transfer-block {
@@ -704,8 +708,37 @@ label {
     filter: grayscale(50%) invert(70%);
 }
 
-
 /* Popup Window View End */
+
+
+/* Loading GIF */
+#loadingGif {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgb(0, 0, 0);
+    opacity: .7;
+    z-index: 1000;
+}
+
+#loadingGif img {
+    width: 50px;
+    height: 50px;
+}
+
+#loadingGif div {
+    font-size: 24px;
+    color: white;
+}
+
+
+
 
 /* Animations */
 @keyframes slideInTop{
@@ -732,7 +765,6 @@ label {
     position: fixed;
     top: 0; bottom: 0; left: 0; right: 0;
     z-index: 130;
-    
 }
 
 .modalEdit-block {
@@ -812,6 +844,89 @@ label {
     text-align: center;
 }
 
+
+/* Modal window Received Status */
+.receive_Filter {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.8);
+    position: fixed;
+    top: 0; bottom: 0; left: 0; right: 0;
+    z-index: 150;
+}
+
+.receive_Wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 350px;
+    background-color: white;
+    padding: 20px;
+    z-index: 160;
+}
+
+.receive_InvoiceNumber {
+    color: rgb(129, 128, 128);
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.receive_Sent-block {
+    width: 100%;
+    justify-content: space-between;
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.receive_BankFee, .receive_SentAmount {
+    font-weight: bold;
+}
+
+.receive_amount-label {
+    margin: 0 auto;
+    color: green;
+}
+
+.receive_Amount {
+    font-weight: bold;
+    color: rgb(24, 209, 24);
+}
+
+#receive_input {
+    border: 1px solid rgb(122, 122, 122);
+    width: 240px;
+    height: 40px;
+    border-radius: 3px;
+    padding: 5px;
+    font-family: 'Frank Ruhl Libre', serif;
+    text-indent: 0px;
+    margin: 5px auto 5px auto;
+}
+
+.receive_Remainder {
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 10px;
+    font-size: 13px;
+    color: rgb(88, 88, 88);
+}
+
+#receive_Submit {
+    width: 120px;
+    height: 40px;
+    background-color: #12C7B2;
+    color: white;
+    margin: 0 auto;
+}
+
+#receive_Submit:hover {
+    background-color: #4D4D4D;
+}
+
+#receive_Submit:active {
+    background-color: #12C7B2;
+}
 
 /* Media */
 @media screen and (max-width: 1125px) {

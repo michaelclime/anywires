@@ -12,217 +12,28 @@
     <script src="https://wchat.freshchat.com/js/widget.js"></script>
 </head>
 <body>
-    <!-- HEADER -->
-    <header>
-        <div class="block_logo">
-            <div>
-                <a href="index.html"></a><img src="img/logocompany.png" alt="logo"></a>
-            </div>
-            <div>
-                <a href="#Solutions" class="navLink">Solutions</a>
-                <a href="#onBoard" class="navLink">OnBoard</a>
-                <a href="howItWorks.html" class="navLink">How it works</a>
-            </div>
-        </div>
-        <div class="block_contacts">
-            <div class="block_contactsType">
-                <span><i class="fas fa-phone"></i> +44 748 002 2455</span>
-                <span><i class="far fa-envelope"></i>m@anywires.com</span>
-            </div>
-            <button  class="login loginWindow-btn">Merchant Login</button>
-        </div>
-    </header>
+    
    <!-- Modal Action Window -->
-   <% if(error && error.length > 0) {%>
-    <div class="alert" role="alert">
-        <div class="alertContent">
-            <h3>  <%= error %> </h3>
-        </div>
-    </div>
-    <% } %>
-    <% if(success && success.length > 0) {%>
-        <div class="alert" role="alert">
-            <div class="alertContent">
-                <h3>  <%= success %> </h3>
+        <% if(error && error.length > 0) {%>
+            <div class="alert" role="alert">
+                <div class="alertContent">
+                    <h3>  <%= error %> </h3>
+                </div>
             </div>
-        </div>
-    <% } %>
-    <!-- CONTENT -->
-    <main>
-        <div class="firstBlock">
-            <h1 class="bigTitile">Take your transfers under Control</h1>
-            <h3 class="smallTitile">Unique, cutting edge international wire transfer
-                 solutions</h3>
-            <button class="start popup-btn">Let's start</button>
-        </div>
-
-        <div class="secondBlock">
-                <a name="Solutions"></a>
-                <h1 class="secondBlockBigTitile">What we Do</h1>
-                <h2 class="secondBlockSmallTitile">Services we provide to our customers</h2>
-            <div class="secondBlock-container">
-                <div class="services">
-                    <div class=""><i class="serviceImg fas fa-laptop"></i></div>
-                    <h4 class="serviceTitle">E-Wallet management</h4>
-                    <p class="serviceText">With our solution you can easily see your balance, transactions 
-                        d their statuses, make settlement requests and outgoing payments
-                         for your affiliates and merchants directly from your merchant 
-                         account.</p>
+        <% } %>
+        <% if(success && success.length > 0) {%>
+            <div class="alert" role="alert">
+                <div class="alertContent">
+                    <h3>  <%= success %> </h3>
                 </div>
-                <div class="services">
-                    <div class=""><i class="serviceImg fas fa-landmark"></i></div>
-                    <h4 class="serviceTitle">EACP (automated clearing procedure)</h4>
-                    <p class="serviceText">This Service enables you to electronically
-                         collect payments without any clearing procedures and issues.</p>
-                </div>
-                <div class="services">
-                    <div class=""><i class=" serviceImg fas fa-spinner"></i></div>
-                    <h4 class="serviceTitle">Swift and SEPA transfers</h4>
-                    <p class="serviceText">Use all the benefits of world wide SWIFT 
-                        transfers and fastest in a market SEPA transfers from your
-                         EU clients which could be credited within 1 business day 
-                         after wire sent.</p>
-                </div>
-                <div class="services">
-                    <div class=""><i class="serviceImg fas fa-globe-americas"></i></div>
-                    <h4 class="serviceTitle">Advanced Easy and Fast API</h4>
-                    <p class="serviceText">Technical side of on-boarding process is as 
-                        fast as 24 hours after required tech data provided. Suits to 
-                        any sites and platforms including mobile versions.</p>
-                </div>
-                <div class="services">
-                    <div class=""><i class="serviceImg fas fa-credit-card"></i></div>
-                    <h4 class="serviceTitle">Credit Card and direct Crypto deposits</h4>
-                    <p class="serviceText">Accept Credit Card and direct Crypto payments 
-                        from your customers through our crypto exchange platform.</p>
-                </div>
-                <div class="services">
-                    <div class=""><i class="serviceImg fas fa-spinner"></i></div>
-                    <h4 class="serviceTitle">International terminal cash withdrawal</h4>
-                    <p class="serviceText">Withdraw funds from your merchant account
-                         in cash in wide range of countries all over the world.</p>
-                </div>
-            </div>    
-        </div>
-
-        <div class="thirdBlock">
-            <div class="thirdBlock-cotainer">
-                <h1 class="bigTitile">Control your transfers on your <br> fingertips</h1>
-                <button class="start popup-btn">Let's start</button>
             </div>
-        </div>
-
-        <div class="fourthBlock">
-            <div class="videoYoutube">
-                <iframe width="100%" height="100%" 
-                src="https://www.youtube.com/embed/_Tll_r0NFIs?controls=0" 
-                frameborder="0" 
-                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
-                allowfullscreen></iframe>
-            </div>
-        </div>
-
-        <div class="fifthBlock">
-            <div class="fifthBlock-cotainer">
-                <h1 class="bigTitile">Get started Today, and receive your first
-                     transfer <br> in a 3 business days!</h1>
-            </div>
-            <button class="start popup-btn">Let's do it</button>
-        </div>
-
-        <div class="sixthBlock">
-                <a name="onBoard"></a>
-                <h1 class="secondBlockBigTitile">On-boarding Process</h1>
-                <h2 class="secondBlockSmallTitile">7 steps to become a partner.</h2>
-            <div class="steps">
-                <ul>
-                    <li class="step1">
-                        <button class="stepBtn1">Step 1</button>
-                        <div class="dropdown1">
-                            <h3 class="stepTitle">Become a Merchant</h3>
-                            <p class="stepText">Fill the application form</p>
-                            <button class="start popup-btn">Open form</button>
-                        </div>
-                    </li>
-                    <li class="step2">
-                        <button class="stepBtn2">Step 2</button>
-                        <div class="dropdown2">
-                            <h3 class="stepTitle">Provide us with basic information 
-                                    <br> about your company</h3>
-                            <p class="stepText">Standard company documents package. <br>
-                                    Your site and identity. <br>
-                                    Your financial and tech contacts. <br>
-                                    Settlement account info.</p> 
-                        </div>
-                    </li>
-                    <li class="step3">
-                        <button class="stepBtn3">Step 3</button>
-                        <div class="dropdown3">
-                            <h3 class="stepTitle">Verification of your documents.</h3>
-                            <p class="stepText">We'll do fast and simplified Compliance and get 
-                                back to you  <br> with an approval within 2 business days.</p>
-                        </div>
-                    </li>
-                    <li class="step4">
-                        <button class="stepBtn4">Step 4</button>
-                        <div class="dropdown4">
-                            <h3 class="stepTitle">Signing an agreement.</h3>
-                            <p class="stepText">You'll receive and email from 
-                                us with an agreement and rates to sign.</p>
-                        </div>
-                    </li>
-                    <li class="step5">
-                        <button class="stepBtn5">Step 5</button>
-                        <div class="dropdown5">
-                            <h3 class="stepTitle">Video and personal tutorial
-                                 for your <br> accounting employee.</h3>
-                            <p class="stepText">We believe that our solutions is as 
-                                simple as beautiful, <br> still we need to be sure your 
-                                accountant understand all of it clearly.</p>
-                        </div>
-                    </li>
-                    <li class="step6">
-                        <button class="stepBtn6">Step 6</button>
-                        <div class="dropdown6">
-                            <h3 class="stepTitle">FAST Integration.</h3>
-                            <p class="stepText">It's an HTML, jQuerry based forms 
-                                which can be integrated in a few clicks.</p>
-                        </div>
-                    </li>
-                    <li class="step7">
-                        <button class="stepBtn7">Step 7</button>
-                        <div class="dropdown7">
-                            <h3 class="stepTitle">You are Good to Go!</h3>
-                            <p class="stepText">Let's start our journey!</p>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-        </div>        
-    </main>
-    <!-- FOOTER -->
-    <footer>
-        <div class="footer-container">
-            <img src="img/logocompany.png" alt="Anywires logo" class="logo">
-            <span class="contactDetails">SIA VNV GROUP, Latvia, Riga, Malienas iela 74 - 1 LV-1064
-                Reg #: 40103916489</span>
-            <section class="contactDetails">
-                <span class="mobileNumber"><i class="fas fa-mobile-alt"></i>+44 748 002 2455</span>
-                <span class="mailAddress"><i class="fas fa-envelope"></i>m@anywires.com</span>
-            </section>
-        </div>
-        <div class="developer">
-            <span class="rights">Copyright © 2018 AnyWires. All rights reserved</span>
-            <span class="creator"><a href="https://fintech-dev.com/">created with Finology</a></span>
-        </div>
-    </footer>
+        <% } %>
 
     <!-- Modal windows -->
     <!-- Merchant Login Window -->
     <div class="loginWindow">
         <div class="loginWindow-dialog">
             <div class="loginWindow-content">
-                <button class="loginWindow-close">&times;</button>
                 <h1 class="loginWindow-header">Log in to CRM</h1>
                 <div class="main-form loginWindow-form">
                     <form  action="/login" class="loginWindow-form" method="POST">
@@ -298,11 +109,5 @@
         </div>
     </div>
     <script src="js/modalWindow.js"></script>
-    <script>
-        window.fcWidget.init({
-          token: "3c9c57a6-554b-43e5-b492-8b53bc8e9ed0",
-          host: "https://wchat.freshchat.com"
-        });
-    </script>
 </body>
 </html>

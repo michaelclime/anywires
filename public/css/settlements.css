@@ -220,9 +220,9 @@ table {
     font-weight: 700;
 }
 
-/* Merchant Login Window  */
+/* Merchant Pay From Aw Wallet Window  */
 
-.MerchantPayWindow, .createWalletWindow, .SettleTransfersWindow {
+.MerchantPayWindow, .SettleTransfersWindow {
 	display: none;
 	position: fixed;
 	top: 0;
@@ -244,19 +244,53 @@ table {
 	padding: 40px 60px;
 }
 
+.MerchantPayWindow-header {
+    font-size: 24px;
+}
+
+.AWBalance-title {
+    margin: 20px 0;
+    font-size: 20px;
+}
+
+.AWBalance {
+    margin-left: 20px;
+}
+
+.payFromAwWalletCont {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 20px;
+}
+
 .MerchantPayWindow-form {
-    width: 100%;
-	margin-top: 30px;
-    padding: 0 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
     
 }
 
+.walletDetInfo {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.inside_wallet {
+    margin: 20px 0;
+}
+
+.walletDetInfo p {
+    margin: 10px 0;
+}
+
+.walletDetInfo span {
+    margin-left: 5px;
+}
+
 .amountPayment, .wallet, .paymentPurpose {
-    margin: 10px;
-    height: 30px;
+    margin: 15px 10px;
+    height: 50px;
     width: 100%;
     border-style: ridge;
     border-radius: 5px;
@@ -264,7 +298,7 @@ table {
     outline: none;
 }
 
-.MerchantPayWindow-close, .createWalletWindow-close, .settlementDetails-close, .SettleTransfersWindow-close {
+.MerchantPayWindow-close, .settlementDetails-close, .SettleTransfersWindow-close {
 	position: absolute;
 	top: -15px;
 	right: -40px;
@@ -278,7 +312,7 @@ table {
     outline: none;
 }
 
-.MerchantPayWindow-close:hover, .createWalletWindow-close:hover, .settlementDetails-close:hover, .SettleTransfersWindow-close:hover {
+.MerchantPayWindow-close:hover, .settlementDetails-close:hover, .SettleTransfersWindow-close:hover {
     transform: scale(1.5);
 }
 
@@ -297,44 +331,6 @@ table {
 
 .popup-btn:hover {
     background: #20a5f7;
-}
-
-/* CREAT NEW WALLET WINDOW */
-
-.createWalletWindow-content {
-	position: fixed;
-	text-align: center;
-	left: 50%;
-	top: 10%;
-	transform: translateX(-50%);
-	background-color: #fff;
-    padding: 30px;
-}
-
-.createWalletWindow-header {
-    font-size: 28px;
-}
-
-.createWalletWindow-form {
-    padding: 0;
-    margin-top: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.inpt, .walletType {
-    margin: 10px;
-    height: 30px;
-    width: 100%;
-    border-style: ridge;
-    border-radius: 5px;
-    padding-left: 10px;
-    outline: none;
-}
-
-.creatWalletBtn {
-    width: 100%;
 }
 
 /*  Settlement Details Window */
@@ -1094,10 +1090,6 @@ label {
         padding: 40px 60px;
     }
 
-    .MerchantPayWindow-header {
-        font-size: 24px;
-    }
-
     .MerchantPayWindow-form {
         margin-top: 30px;
         padding: 0 20px;
@@ -1115,16 +1107,6 @@ label {
         font-size: 14px;
     }
 
-    /* CREAT NEW WALLET WINDOW */
-
-    .createWalletWindow-header {
-        font-size: 20px;
-    }
-
-    .inpt, .walletType {
-        margin: 10px;
-        height: 30px;
-    }
 
 }
 
@@ -1291,18 +1273,6 @@ label {
         padding: 10px 20px;
         font-size: 14px;
     }
-
-    /* CREAT NEW WALLET WINDOW */
-
-    .createWalletWindow-header {
-        font-size: 18px;
-    }
-
-    .inpt, .walletType {
-        margin: 10px;
-        height: 20px;
-    }
-
 }
 
 @media (max-width: 500px) {
@@ -1570,3 +1540,70 @@ label {
     }
 }
 
+
+/* Loading Animation */
+.loadAnimationWrapp {
+    display: flex;
+    flex-direction: column;
+	position: fixed;
+	top: 0;
+	right: 0;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 9;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.loadAnimationWrapp span {
+    text-align: center;
+    color: #FFF;
+    font-size: 20px;
+    position: fixed;
+	text-align: center;
+	left: 50%;
+	top: 55%;
+	transform: translateX(-50%) translatey(-50%);
+}
+.loadAnimation {
+    width: 50px;
+    height: 50px;
+	position: fixed;
+	text-align: center;
+	left: 50%;
+	top: 50%;
+	transform: translateX(-50%) translatey(-50%); 
+}
+
+/* Modal Window for Actions */
+.alert {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    letter-spacing: 1.2px;
+    position: fixed;
+	top: 0;
+	right: 0;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	height: 100%;
+    z-index: 9;
+    background-color: rgba(0, 0, 0, 0.5);
+    font-family: Helvetica, Arial, serif;
+    font-size: 20px;
+    font-weight: 700;
+    color:  rgb(51, 51, 51);
+}
+
+.alertContent {
+    position: fixed;
+	text-align: center;
+	left: 50%;
+	top: 10%;
+	transform: translateX(-50%);
+	background-color: #fff;
+    padding: 40px 60px;
+}
