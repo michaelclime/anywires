@@ -64,10 +64,6 @@ app.use(merchantsRouter);
 app.use(banksRouter);
 app.use(invoiceListRouter);
 
-app.get('/howItWorks.html', function(req, res) {
-    res.render("howItWorks.html");
-});
-
 app.get('/personal-area.html', isLoggedIn, function(req, res) {
     res.render("personal-area.html");
 });
