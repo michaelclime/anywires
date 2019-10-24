@@ -96,7 +96,7 @@ class InvoicePreview {
 
     getMerchant = async (merchantName) => {
         return  await fetch("http://18.216.223.81:3000/get-merchantByName", {
-        // return fetch("http://localhost:3000/get-merchantByName", {
+        // return fetch("http://18.216.223.81:3000/get-merchantByName", {
                 method: "POST",
                 body: JSON.stringify({"name" : merchantName}),
                 headers:{'Content-Type': 'application/json'}
@@ -111,7 +111,7 @@ class InvoicePreview {
 
     getBank = async (bankName) => {
         return  await fetch("http://18.216.223.81:3000/get-bankByName", {
-        // return fetch("http://localhost:3000/get-bankByName", {
+        // return fetch("http://18.216.223.81:3000/get-bankByName", {
                 method: "POST",
                 body: JSON.stringify({"name" : bankName}),
                 headers:{'Content-Type': 'application/json'}
@@ -126,7 +126,7 @@ class InvoicePreview {
 
     getInvoices = async (number) => {
         return  await fetch("http://18.216.223.81:3000/get-invoiceByNumber", {
-        // return fetch("http://localhost:3000/get-invoiceByNumber", {
+        // return fetch("http://18.216.223.81:3000/get-invoiceByNumber", {
                 method: "POST",
                 body: JSON.stringify({"number" : number}),
                 headers:{'Content-Type': 'application/json'}

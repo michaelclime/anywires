@@ -2,7 +2,10 @@ const express = require('express'),
     router = new express.Router(),
     mongo = require('mongodb'),
     jsonParser = express.json(),
-    multer = require("multer");
+    multer = require("multer"),
+    fs = require('fs'),
+    objectId = require("mongodb").ObjectID;
+
  
 const url = 'mongodb://18.216.223.81:27017/anywires';
 
@@ -226,7 +229,7 @@ var checkTypeOfDocument = (type, filePath, res) => {
 // @desc Open file from PATH /upload
 router.get("/upload/:filename", (req, res) => {
     const filename = req.params.filename;
-    var filePath = `/uploads/${filename}`;
+    var filePath = `/../uploads/${filename}`;
 
     mongo.connect(url, (err, db) => {
         if (err) return console.log(err, "Can't connect to database!");
