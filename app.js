@@ -2,7 +2,6 @@ let express = require("express"),
     app = express(),
     path = require('path'),
     bodyParser = require('body-parser'),
-    fs = require('fs'),
     mongoose = require('mongoose'),
     flash = require('connect-flash'),
     passport = require('passport'),
@@ -78,15 +77,6 @@ app.get('/affiliateReport.html', isLoggedIn, function(req, res) {
 
 app.get('/Dashboard-how-it-works.html', isLoggedIn, function(req, res) {
     res.render("Dashboard-how-it-works.html");
-});
-
-app.get('/how-it-works-dok', isLoggedIn, function(req, res) {
-    var filePath = "docs/DOP.pdf";
-
-    fs.readFile(__dirname + filePath , function (err,data){
-        res.contentType("application/pdf");
-        res.send(data);
-    });
 });
 
 function isLoggedIn(req, res, next) {
