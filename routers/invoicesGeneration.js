@@ -2,6 +2,7 @@ const express = require('express'),
     router = new express.Router(),
     mongo = require('mongodb'),
     Invoice = require('../modules/invoice'),
+    Bank = require('../modules/bank'),
     assert = require('assert'),
     objectId = require("mongodb").ObjectID;
 
@@ -72,13 +73,17 @@ router.post("/invoices/:fullname/:_id/:merchant", function(req, res, next) {
                     settleSelectedStatus: false
                 };
 
-                Invoice.create(newInvoice, function(err, newlyCreated){
+                Invoice.create(newInvoice, async function(err, newlyCreated){
                     if(err){
                         console.log(err);
                     } else {
                         console.log('Item inserted');
-                        req.flash('success', 'Invoice successfully created!');
-                        res.redirect("/invoice-list.html");
+                        if (req.body.currency == 'EUR') {
+                            await Bank.findOneAndUpdate(req.body.bank, { $inc: { "balance_EUR.balance_requested": +req.body.amount }});
+                        } else if (req.body.currency == 'USD') {
+                            await Bank.findOneAndUpdate(req.body.bank,  {$inc: { "balance_USD.balance_requested": +req.body.amount}});
+                        }
+                        res.redirect('/invoice-list.html');
                     }
                 });
                 } else {
@@ -170,13 +175,18 @@ router.post("/invoices/:fullname/:_id/:merchant", function(req, res, next) {
                                                 settleSelectedStatus: false
                                             };
                             
-                                            Invoice.create(newInvoice, function(err, newlyCreated){
+                                            Invoice.create(newInvoice, async function(err, newlyCreated){
                                                 if(err){
                                                     console.log(err);
                                                 } else {
                                                     console.log('Item inserted');
                                                     req.flash('success', 'Invoice successfully created!');
-                                                    res.redirect("/invoice-list.html");
+                                                    if (req.body.currency == 'EUR') {
+                                                        await Bank.findOneAndUpdate(availableBank, { $inc: { "balance_EUR.balance_requested": +req.body.amount }});
+                                                    } else if (req.body.currency == 'USD') {
+                                                        await Bank.findOneAndUpdate(availableBank,  {$inc: { "balance_USD.balance_requested": +req.body.amount}});
+                                                    }
+                                                    res.redirect('/invoice-list.html');
                                                 }
                                             });
                                         }
@@ -250,13 +260,18 @@ router.post("/invoices/:fullname/:_id/:merchant", function(req, res, next) {
                                                 settleSelectedStatus: false
                                             };
                             
-                                            Invoice.create(newInvoice, function(err, newlyCreated){
+                                            Invoice.create(newInvoice, async function(err, newlyCreated){
                                                 if(err){
                                                     console.log(err);
                                                 } else {
                                                     console.log('Item inserted');
                                                     req.flash('success', 'Invoice successfully created!');
-                                                    res.redirect("/invoice-list.html");
+                                                    if (req.body.currency == 'EUR') {
+                                                        await Bank.findOneAndUpdate(availableBank, { $inc: { "balance_EUR.balance_requested": +req.body.amount }});
+                                                    } else if (req.body.currency == 'USD') {
+                                                        await Bank.findOneAndUpdate(availableBank,  {$inc: { "balance_USD.balance_requested": +req.body.amount}});
+                                                    }
+                                                    res.redirect('/invoice-list.html');
                                                 }
                                             });
                                         }
@@ -268,6 +283,11 @@ router.post("/invoices/:fullname/:_id/:merchant", function(req, res, next) {
             };
         });
     });
+});
+
+router.get('/getInvNumber', isLoggedIn, async function(req, res) {
+    let number = await Invoice.countDocuments();
+    res.send(JSON.stringify(number));
 });
 
 function isLoggedIn(req, res, next) {

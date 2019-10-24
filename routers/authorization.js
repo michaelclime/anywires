@@ -3,7 +3,8 @@ const express = require('express'),
     passport = require('passport'),
     User = require('../modules/user'),
     crypto = require('crypto'),
-    nodemailer = require('nodemailer');
+    nodemailer = require('nodemailer'),
+    async = require('async');
 
 router.get('/', function(req, res) {
     res.render("index.html");
