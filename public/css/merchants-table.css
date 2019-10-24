@@ -61,29 +61,36 @@ tbody tr {
 
 .column1 {
   width: 200px;
-  padding-left: 20px;
+  padding-left: 40px;
 }
 
 .column2 {
-  width: 160px;
+  width: 250px;
 }
 
 .column3 {
-  width: 90px;
+  width: 80px;
+  padding-left: 40px;
 }
 
 .column4 {
-  width: 110px;
-  text-align: right;
+  width: 160px;
+  padding-left: 40px;
+  text-align: left;
 }
 
 .column5 {
   width: 212px;
-  text-align: right;
-  padding-right: 40px;
+  text-align: left;
+  padding-left: 40px;
 }
 
-.column6 {
+.column6{
+  text-align: left;
+  width: 215px;
+}
+
+.column7 {
   width: 200px;
 }
 

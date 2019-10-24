@@ -1,1051 +1,1287 @@
 *{
-margin:0;
-padding:0;
-border:0;
-}
-
-
-/* Scroll Bar */
-/* width */
-::-webkit-scrollbar {
-width: 10px;
-}
-/* Track */
-::-webkit-scrollbar-track {
-background: #f1f1f1;
-}
-/* Handle */
-::-webkit-scrollbar-thumb {
-background: #888;
-}
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-background: #555;
-}
-
-
-body {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: #F1F4F6;
-    font-family: 'Frank Ruhl Libre', serif;
-}
-
-body button {
-    cursor: pointer;
-    border: none;
-    text-align: center;
-    line-height: 1;
-    border-radius: 3px;
-    outline: none;
-    transition: .35s;
-    font-family: 'Frank Ruhl Libre', serif;
-}
-
-#burgerMenu {
-    display: flex;
-    width: 100%;
-    background-color: rgb(255, 255, 255);
-
-}
-
-
-/* Wrapper */
-#wrapper {
-    width: 100%;
-}
-
-.opacityWrapper {
-    opacity: .2;
-}
-
-
-/* Header */
-header {
-    display: flex;
-    width: 100%;
-    align-items: center;
-    background-color: rgb(255, 255, 255);
-    padding: 30px 0 30px 0px;
-    padding-left: 65px;
-    margin-top: 2px;
-}
-header img {
-    margin-right: 15px;
-    width: 45px;
-    height: 45px;
-}
-
-
-/* Main */
-main {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    min-height: 1000px;
-    background-color: rgb(255, 255, 255);
-    padding-top: 30px;
-    margin-top: 2px;
-}
-
-
-/* Table, list of Users */
-#table-block {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    align-items: center;
-    padding: 10px 0;
-    padding-bottom: 100px;
-}
-
-.table-line {
-    margin: 10px 0;
-    width: 90%;
-    height: 2px;
-    background-color: rgb(102, 102, 102);
-}
-
-.invoiceTable {
-    width: 90%;
-}
-
-
-/* Filter Block First START*/
-.dateForm {
-    width: 100%;
-    height: 40px;
-    border: 1px solid rgb(189, 189, 189);
-    cursor: pointer;
-    border-radius: 3px;
-    font-size: 15px;
-    font-family: 'Frank Ruhl Libre', serif;
-    text-align: center;
-    margin-top: 5px;
-}
-
-select{
-    width: 100%;
-    height: 40px;
-    border: 1px solid rgb(189, 189, 189);
-    cursor: pointer;
-    border-radius: 3px;
-    font-size: 15px;
-    font-family: 'Frank Ruhl Libre', serif;
-    background-color: #F5F5F5;
-    margin-top: 5px;
-    text-indent: 15px;
-}
-
-option {
-    font-size: 16px;
-    background-color: rgb(255, 255, 255);
-}
-
-label {
-    font-weight: bold;
-}
-
-.filterBlock-first {
-    width: 90%;
-    display: flex;
-    align-items: flex-end;
-}
-
-.byCreation-block {
-    display: flex;
-    flex-direction: column;
-    width: 240px;
-    margin-right: 20px;
-}
-
-.filterStatus-block {
-    width: 240px;
-    margin-right: 20px;
-}
-
-.filterBank-block {
-    width: 240px;
-}
-/* Filter Block First END*/
-
-
-/* Filter Block Second START */
-.filterBlock-second {
-    width: 90%;
-    display: flex;
-    align-items: flex-end;
-    margin: 20px 0;
-}
-
-.byReceive-block {
-    width: 240px;
-    margin-right: 20px;
-}
-
-.filterMerchant-block {
-    width: 240px;
-    margin-right: 20px;
-}
-
-.filterDocuments-block {
-    width: 240px;
-}
-/* Filter Block Second END */
-
-
-/* Search Block START*/
-.input-search {
-    width: 220px;
-    height: 40px;
-    background-color: #4D4D4D;
-    border-radius: 3px 0 0 3px;
-    font-size: 16px;
-    padding: 5px 15px;
-    transition: .3s;
-    outline: none;
-    border: none;
-    color: #FFF;
-    font-family: 'Frank Ruhl Libre', serif;
-}
-
-.input-search::placeholder {
-    color: rgb(224, 224, 224);
-}
-
-.input-search:focus {
-    box-shadow: 0px 0px 6px 0px rgba(68, 68, 68, 0.75);
-    background-color: rgb(110, 110, 110);
-}
-
-.search-btn {
-    width: 40px;
-    height: 40px;
-    padding: 12px;
-    background-color: rgb(54, 54, 54);
-    cursor: pointer;
-    border-radius: 0px 3px 3px 0px;
-    transition: .3s;
-}
-
-.search-btn:hover {
-    background-color: rgb(0, 0, 0);
-}
-.search-btn:active {
-    background-color: rgb(139, 139, 139);
-}
-
-
-.showClear-block {
-    width: 90%;
-    margin: 10px 0; 
-    display: flex;
-    justify-content: space-between;
-}
-
-.showClear-block button {
-    width: 115px;
-    height: 40px;
-    background-color: rgb(77, 77, 77);
-    color: white;
-    margin-right: 6px;
-}
-
-#showBtn:hover, #clearFilterBtn:hover {
-    background-color: #888;
-}
-
-#showBtn:active, #clearFilterBtn:active {
-    background-color: #12C7B2;
-}
-
-.searchBlock {
-    display: flex;
-}
-
-.downloadXls-block {
-    width: 90%;
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 10px;
-}
-
-#dowloadXls {
-    cursor: pointer;
-}
-#dowloadXls:hover{
-    filter: invert(75%);
-}
-#dowloadXls:active{
-    filter: invert(95%);
-}
-/* Search Block  END*/
-
-
-/* Next Page Block */
-
-.nextPage-block {
-    width: 90%;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    margin-top: 20px;
-}
-
-.nextPage-btn {
-    width: 30px;
-    height: 30px;
-    background-color: inherit;
-    border: 1px solid #20A5F7;
-    border-radius: 0;
-    margin-right: 2px;
-}
-
-.nextPage-btn:hover {
-    background-color: #20A5F7;
-    color: white;
-}
-
-.dotts {
-    display: flex;
-    justify-content: center;
-    width: 30px;
-    height: 30px;
-    font-size: 30px;
-    line-height: 40px;
-    color: #4D4D4D;
-}
-
-.highlight {
-    background-color: #20A5F7;
-    color: white;
-}
-
-/* Popup Window View Start */
-.modal-open {
-    overflow: hidden;
-}
-
-.filter {
-    display: none;
-    justify-content: center;
-    align-items: center;
-    background-color: rgba(0, 0, 0, 0.6);
-    position: fixed;
-    top: 0; bottom: 0; left: 0; right: 0;
-    z-index: 100;
-}
-
-.modalView-block {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 900px;
-    background-color: white;
-    padding: 20px;
-    z-index: 120;
-}
-
-.invoiceNum-block {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-}
-
-#invoiceCurrency, #requestFee {
-    font-weight: bold;
-}
-
-.transfer-block {
-    margin: 10px 0;
-    width: 100%;
-}
-
-.remainder {
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
-}
-
-.remainder p {
-    font-size: 14px;
-    color: rgb(255, 51, 51);
-}
-
-.documentsP {
-    text-align: left;
-    width: 100%;
-}
-
-.buttonBlock {
-    width: 100%;
-    margin: 20px 0;
-    display: flex;
-    justify-content: space-between;
-}
-
-.buttonBlock button {
-    width: 100px;
-    height: 35px;
-    color: black;
-    transition: .2s;
-    font-size: 15px;
-}
-
-#requested {
-    margin-right: 10px;
-    background-color: #DEDEDE;
-}
-
-#sent {
-    margin-right: 10px;
-    background-color: #FFBB33;
-}
-
-#received {
-    margin-right: 10px;
-    background-color: #7491F2;
-}
-
-#approved {
-    margin-right: 10px;
-    background-color: #83C9A0;
-}
-
-#available {
-    background-color: #00C851;
-}
-
-#requested:hover, #sent:hover, #received:hover, #approved:hover, #available:hover, #editBtn:hover, 
-#settledBtn:hover, #declinedBtn:hover, #frozenBtn:hover, #recallBtn:hover{
-    background-color: #12C7B2;
-    box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.75);
-}
-
-#requested:active, #sent:active, #received:active, #approved:active, #available:active, #editBtn:active, 
-#settledBtn:active, #declinedBtn:active, #frozenBtn:active, #recallBtn:active{
-    background-color: #888;
-}
-
-.currentStatus{
-    font-weight: bold;
-    color: #20A5F7;
-    font-size: 18px;
-}
-
-.actions-block {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    margin-top: 10px;
-    margin-bottom: 20px;
-}
-
-.docs-block {
-    display: flex;
-    width: 90%;
-}
-
-.restButton-block {
-    display: flex;
-    flex-direction: column;
-}
-
-.restButton-block button {
-    width: 100px;
-    height: 35px;
-    margin-bottom: 10px;
-}
-
-.docTable-block {
-    width: 70%;
-    overflow: scroll;
-    overflow-x:hidden;
-    height: 165px; 
-}
-
-.docsUpload-block {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 25%;
-}
-
-#docsTable {
-    width: 100%;
-}
-
-#docsTable tr, #table-comments tr {
-    height: 30px;
-}
-
-#docsTable th, #table-comments th  {
-    background-color: #20A5F7;
-    color: white;
-}
-
-.docsInside-block {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-end;
-    width: 100%;
-    margin-top: 10px;
-    height: 100%;
-}
-
-#docsSelect {
-    width: 140px;
-    height: 35px; 
-    margin: 7px 0;  
-}
-
-#uploadForm {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-
-.docPreview:hover {
-    background-color: #555;
-}
-
-.docPreview:active {
-    background-color: #20A5F7;
-}
-
-#currentUser, .curentUserRole {
-    display: none;
-}
-
-
-
-#uploadBtn {
-    width: 140px;
-    height: 35px;  
-    background-color: #4D4D4D;
-    color: white;
-    transition: .2s;
-}
-
-#uploadBtn:hover, #addCommentBtn:hover {
-    background-color: #12C7B2;
-}
-
-#uploadBtn:active, #addCommentBtn:active {
-    background-color: rgb(93, 93, 93);
-}
-
-
-#editBtn{
-    background-color: #FFBB33;
-    color: white;
-    transition: .2s;
-}
-
-.hide {
-    display: none;
-}
-
-.fileWrapper {
-    width: 140px;
-    height: 70px;
-    text-align: center;
-    font-size: 14px;
-    border: 1px solid rgb(159, 159, 159);
-    border-radius: 3px;
-    cursor: pointer;
-    padding-top: 15px;
-    overflow: hidden;
-    position: relative;
-    transition: .3s;
-}
-.fileWrapper:hover {
-    background-color: #20A5F7;
-    color: white;
-}
-
-#uploadDocs {
-    width: 100%;
-    height: 100%;
-    background: inherit;
-    cursor: pointer;
-    opacity: 0;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-}
-
-#settledBtn{
-    background-color: #23A158;
-    color: white;
-    width: 110px;
-    height: 35px;
-    transition: .2s;
-}
-#declinedBtn{
-    background-color: rgb(255, 0, 0);
-    color: white;
-    transition: .2s;
-}
-#frozenBtn{
-    background-color: #20A5F7;
-    color: white;
-    transition: .2s;
-}
-#recallBtn{
-    background-color: #4D4D4D;
-    color: white;
-    transition: .2s;
-}
-
-.docPreview {
-    width: 100%;
-    height: 30px;
-    background-color: #12C7B2;
-    color: white;
-    margin: 4px 0 0 0;
-}
-
-.comments-block {
-    width: 100%;
-    margin-top: 10px;
-    display: flex;
-    justify-content: space-between;
-}
-
-#table-comments {
-    width: 100%;
-}
-
-#table-comments tbody tr {
-    height: 40px;
-  }
-
-#table-comments tbody tr, #docsTable tbody tr, #docsTable tbody td {
-    font-size: 14px;
-    font-weight: normal;
-}
-
-#table-comments th, #docsTable th {
-    font-size: 14px;
+    margin:0;
+    padding:0;
+    border:0;
+    }
     
-}
-
-.tableComments-block {
-    width: 62%;
-    overflow: scroll;
-    overflow-x:hidden;
-    height: 165px; 
-}
-
-.commentsInside-block {
-    width: 35%;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    align-items: center;
-}
-
-#commentText {
-    width: 100%;
-    height: 125px;
-    border: 1px solid rgb(135, 133, 133);
-    border-radius: 3px;
-    padding: 5px;
-    font-family: 'Frank Ruhl Libre', serif;
-}
-
-#addCommentBtn {
-    width: 100%;
-    height: 35px;
-    margin-top: 5px;
-    background-color: #4D4D4D;
-    color: white;
-    transition: .2s;
-}
-
-#docGood, #docBad{
-    cursor: pointer;
-    user-select: none;
-}
-
-#docGood:hover, #docBad:hover{
-    opacity: .4;
-}
-
-#docGood:active, #docBad:active{
-    filter: grayscale(12%) invert(100%);
-}
-
-.comentsDate {
-    color: #20A5F7;
-    font-size: 12px;
-    margin-top: 3px;
-}
-
-.firstPage-block {
-    width: 90%;
-    display: none;
-    align-items: flex-start;
-}
-
-.firstPage-block img {
-    width: 30px;
-    height: 30px;
-    cursor: pointer;
-}
-
-.firstPage-block img:hover {
-    filter: grayscale(50%) invert(70%);
-}
-
-/* Popup Window View End */
-
-
-/* Loading GIF */
-#loadingGif {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: rgb(0, 0, 0);
-    opacity: .7;
-    z-index: 1000;
-}
-
-#loadingGif img {
-    width: 50px;
-    height: 50px;
-}
-
-#loadingGif div {
-    font-size: 24px;
-    color: white;
-}
-
-
-
-
-/* Animations */
-@keyframes slideInTop{
-    0%{
-        transform: translateY(-100%);
+    
+    /* Scroll Bar */
+    /* width */
+    ::-webkit-scrollbar {
+    width: 10px;
     }
-    100%{
-        transform: translateY(0, 0);
+    /* Track */
+    ::-webkit-scrollbar-track {
+    background: #f1f1f1;
     }
-}
-.slide-top{
-    animation: .5s slideInTop ease-in-out 1;
-}
-
-
-
-
-/* Edit Invoice Modal Windo */
-.filterEditIvoice {
-    display: none;
-    justify-content: center;
-    align-items: center;
-    background-color: rgba(0, 0, 0, 0.6);
-    position: fixed;
-    top: 0; bottom: 0; left: 0; right: 0;
-    z-index: 130;
-}
-
-.modalEdit-block {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 900px;
-    background-color: white;
-    padding: 20px;
-    z-index: 140;
-}
-
-.editDetails-block {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    margin: 15px 0;
-}
-
-.invoceDeatails, .clientDetails {
-    width: 45%;
-}
-
-.invoceDeatails div, .clientDetails div {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
-}
-
-.detailsInputs {
-    border: 1px solid rgb(122, 122, 122);
-    width: 240px;
-    height: 40px;
-    border-radius: 3px;
-    padding: 5px;
-    font-family: 'Frank Ruhl Libre', serif;
-    font-size: 14px;
-}
-
-#editMerhcnat, #editCurrency, #editBank {
-    border: 1px solid rgb(122, 122, 122);
-    width: 240px;
-    height: 40px;
-    border-radius: 3px;
-    padding: 5px;
-    font-family: 'Frank Ruhl Libre', serif;
-    text-indent: 0px;
-}
-
-#sepaEdit {
-    margin-right: auto;
-    margin-left: 110px;
-    height: 20px;
-    width: 20px;
-}
-
-#saveEditedInvoice-btn {
-    width: 140px;
-    height: 45px;
-    background-color: #12C7B2;
-    color: white;
-}
-
-#saveEditedInvoice-btn:hover {
-    background-color: #4D4D4D;
-}
-
-#saveEditedInvoice-btn:active {
-    background-color: #12C7B2;
-}
-
-.editDetails-block h3{
-    margin-bottom: 15px;
-    text-align: center;
-}
-
-
-/* Modal window Received Status */
-.receive_Filter {
-    display: none;
-    justify-content: center;
-    align-items: center;
-    background-color: rgba(0, 0, 0, 0.8);
-    position: fixed;
-    top: 0; bottom: 0; left: 0; right: 0;
-    z-index: 150;
-}
-
-.receive_Wrapper {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    width: 350px;
-    background-color: white;
-    padding: 20px;
-    z-index: 160;
-}
-
-.receive_InvoiceNumber {
-    color: rgb(129, 128, 128);
-    font-size: 14px;
-    margin-bottom: 10px;
-}
-
-.receive_Sent-block {
-    width: 100%;
-    justify-content: space-between;
-    display: flex;
-    margin-bottom: 10px;
-}
-
-.receive_BankFee, .receive_SentAmount {
-    font-weight: bold;
-}
-
-.receive_amount-label {
-    margin: 0 auto;
-    color: green;
-}
-
-.receive_Amount {
-    font-weight: bold;
-    color: rgb(24, 209, 24);
-}
-
-#receive_input {
-    border: 1px solid rgb(122, 122, 122);
-    width: 240px;
-    height: 40px;
-    border-radius: 3px;
-    padding: 5px;
-    font-family: 'Frank Ruhl Libre', serif;
-    text-indent: 0px;
-    margin: 5px auto 5px auto;
-}
-
-.receive_Remainder {
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 10px;
-    font-size: 13px;
-    color: rgb(88, 88, 88);
-}
-
-#receive_Submit {
-    width: 120px;
-    height: 40px;
-    background-color: #12C7B2;
-    color: white;
-    margin: 0 auto;
-}
-
-#receive_Submit:hover {
-    background-color: #4D4D4D;
-}
-
-#receive_Submit:active {
-    background-color: #12C7B2;
-}
-
-/* Media */
-@media screen and (max-width: 1125px) {
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+    background: #888;
+    }
+    /* Handle on hover */
+    ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+    }
+    
+    
+    body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background-color: #F1F4F6;
+        font-family: 'Frank Ruhl Libre', serif;
+    }
+    
+    body button {
+        cursor: pointer;
+        border: none;
+        text-align: center;
+        line-height: 1;
+        border-radius: 3px;
+        outline: none;
+        transition: .35s;
+        font-family: 'Frank Ruhl Libre', serif;
+    }
+    
+    #burgerMenu {
+        display: flex;
+        width: 100%;
+        background-color: rgb(255, 255, 255);
+    
+    }
+    
+    
+    /* Wrapper */
+    #wrapper {
+        width: 100%;
+    }
+    
+    .opacityWrapper {
+        opacity: .2;
+    }
+    
+    
+    /* Header */
     header {
-        padding: 20px 0 20px 60px;
+        display: flex;
+        width: 100%;
+        align-items: center;
+        background-color: rgb(255, 255, 255);
+        padding: 30px 0 30px 0px;
+        padding-left: 65px;
+        margin-top: 2px;
     }
-
-    header h1 {
-        font-size: 28px;
-    }
-
-    .byCreation-block, .filterStatus-block, .filterBank-block, .byReceive-block, .filterMerchant-block, .filterDocuments-block {
-        width: 160px;
-    }
-
-    select {
-        height: 35px;
-    }
-
-    .dateForm {
-        font-size: 12px;
-        padding: 2px;
-        height: 35px;
-    }
-
-    .input-search {
-        width: 180px;
-        height: 35px;
-    }
-
-    .search-btn {
-        height: 35px;
-        width: 35px;
-        padding: 10px;
-    }
-
-    #clearFilterBtn, #showBtn {
-        width: 100px;
-        height: 35px;
-    }
-}
-
-
-@media screen and (max-width: 578px) {
-    header {
-        padding: 20px 0 20px 30px;
-    }
-
-    header h1 {
-        font-size: 25px;
-    }
-
     header img {
-        width: 30px;
-        height: 30px;
+        margin-right: 15px;
+        width: 45px;
+        height: 45px;
     }
-
-    .filterBlock-first, .filterBlock-second {
+    
+    
+    /* Main */
+    main {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        min-height: 1000px;
+        background-color: rgb(255, 255, 255);
+        padding-top: 30px;
+        margin-top: 2px;
+    }
+    
+    
+    /* Table, list of Users */
+    #table-block {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+        padding: 10px 0;
+        padding-bottom: 100px;
+    }
+    
+    .table-line {
+        margin: 10px 0;
+        width: 90%;
+        height: 2px;
+        background-color: rgb(102, 102, 102);
+    }
+    
+    .invoiceTable {
+        width: 90%;
+    }
+    
+    
+    /* Filter Block First START*/
+    .dateForm {
+        width: 100%;
+        height: 40px;
+        border: 1px solid rgb(189, 189, 189);
+        cursor: pointer;
+        border-radius: 3px;
+        font-size: 15px;
+        font-family: 'Frank Ruhl Libre', serif;
+        text-align: center;
+        margin-top: 5px;
+    }
+    
+    select{
+        width: 100%;
+        height: 40px;
+        border: 1px solid rgb(189, 189, 189);
+        cursor: pointer;
+        border-radius: 3px;
+        font-size: 15px;
+        font-family: 'Frank Ruhl Libre', serif;
+        background-color: #F5F5F5;
+        margin-top: 5px;
+        text-indent: 15px;
+    }
+    
+    option {
+        font-size: 16px;
+        background-color: rgb(255, 255, 255);
+    }
+    
+    label {
+        font-weight: bold;
+    }
+    
+    .filterBlock-first {
+        width: 90%;
+        display: flex;
+        align-items: flex-end;
+    }
+    
+    .byCreation-block {
+        display: flex;
+        flex-direction: column;
+        width: 240px;
+        margin-right: 20px;
+    }
+    
+    .filterStatus-block {
+        width: 240px;
+        margin-right: 20px;
+    }
+    
+    .filterBank-block {
+        width: 240px;
+    }
+    /* Filter Block First END*/
+    
+    
+    /* Filter Block Second START */
+    .filterBlock-second {
+        width: 90%;
+        display: flex;
+        align-items: flex-end;
+        margin: 20px 0;
+    }
+    
+    .byReceive-block {
+        width: 240px;
+        margin-right: 20px;
+    }
+    
+    .filterMerchant-block {
+        width: 240px;
+        margin-right: 20px;
+    }
+    
+    .filterDocuments-block {
+        width: 240px;
+    }
+    /* Filter Block Second END */
+    
+    
+    /* Search Block START*/
+    .input-search {
+        width: 220px;
+        height: 40px;
+        background-color: #4D4D4D;
+        border-radius: 3px 0 0 3px;
+        font-size: 16px;
+        padding: 5px 15px;
+        transition: .3s;
+        outline: none;
+        border: none;
+        color: #FFF;
+        font-family: 'Frank Ruhl Libre', serif;
+    }
+    
+    .input-search::placeholder {
+        color: rgb(224, 224, 224);
+    }
+    
+    .input-search:focus {
+        box-shadow: 0px 0px 6px 0px rgba(68, 68, 68, 0.75);
+        background-color: rgb(110, 110, 110);
+    }
+    
+    .search-btn {
+        width: 40px;
+        height: 40px;
+        padding: 12px;
+        background-color: rgb(54, 54, 54);
+        cursor: pointer;
+        border-radius: 0px 3px 3px 0px;
+        transition: .3s;
+    }
+    
+    .search-btn:hover {
+        background-color: rgb(0, 0, 0);
+    }
+    .search-btn:active {
+        background-color: rgb(139, 139, 139);
+    }
+    
+    
+    .showClear-block {
+        width: 90%;
+        margin: 10px 0; 
+        display: flex;
         justify-content: space-between;
     }
-
-    .byCreation-block, .filterStatus-block, .filterBank-block, .byReceive-block, .filterMerchant-block, .filterDocuments-block {
-        width: 140px;
-        margin-right: 0;
+    
+    .showClear-block button {
+        width: 115px;
+        height: 40px;
+        background-color: rgb(77, 77, 77);
+        color: white;
+        margin-right: 6px;
     }
-
-    select, .dateForm {
-        height: 32px;
-        font-size: 14px;
+    
+    #showBtn:hover, #clearFilterBtn:hover {
+        background-color: #888;
     }
-
-    .input-search {
-        width: 140px;
-        height: 32px;
-        font-size: 14px;
+    
+    #showBtn:active, #clearFilterBtn:active {
+        background-color: #12C7B2;
     }
-
-    .search-btn {
-        height: 32px;
-        width: 32px;
-        padding: 9px;
-    }
-
-    #clearFilterBtn, #showBtn {
-        width: 90px;
-        height: 32px;
-        font-size: 14px;
-    }
-
-    label {
-        font-size: 14px;
-    }
-}
-
-@media screen and (max-width: 490px) {
-    .filterBlock-first, .filterBlock-second {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .byCreation-block, .filterStatus-block, .filterBank-block, .byReceive-block, .filterMerchant-block, .filterDocuments-block {
-        width: 210px;
-        margin-right: 0;
-    }
-
-    .showClear-block {
-        flex-direction: column;
-        align-items: center;
-    }
-
+    
     .searchBlock {
+        display: flex;
+    }
+    
+    .downloadXls-block {
+        width: 90%;
+        display: flex;
+        justify-content: flex-end;
         margin-top: 10px;
     }
-
-    .input-search {
-        width: 158px;
+    
+    #dowloadXls {
+        cursor: pointer;
     }
-
-    #clearFilterBtn {
-        margin-right: 0;
+    #dowloadXls:hover{
+        filter: invert(75%);
     }
-}
+    #dowloadXls:active{
+        filter: invert(95%);
+    }
+    /* Search Block  END*/
+    
+    
+    /* Next Page Block */
+    
+    .nextPage-block {
+        width: 90%;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        margin-top: 20px;
+    }
+    
+    .nextPage-btn {
+        width: 30px;
+        height: 30px;
+        background-color: inherit;
+        border: 1px solid #20A5F7;
+        border-radius: 0;
+        margin-right: 2px;
+    }
+    
+    .nextPage-btn:hover {
+        background-color: #20A5F7;
+        color: white;
+    }
+    
+    .dotts {
+        display: flex;
+        justify-content: center;
+        width: 30px;
+        height: 30px;
+        font-size: 30px;
+        line-height: 40px;
+        color: #4D4D4D;
+    }
+    
+    .highlight {
+        background-color: #20A5F7;
+        color: white;
+    }
+    
+    /* Popup Window View Start */
+    .modal-open {
+        overflow: hidden;
+    }
+    
+    .filter {
+        display: none;
+        justify-content: center;
+        align-items: center;
+        background-color: rgba(0, 0, 0, 0.6);
+        position: fixed;
+        top: 0; bottom: 0; left: 0; right: 0;
+        z-index: 100;
+    }
+    
+    .modalView-block {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 900px;
+        background-color: white;
+        padding: 20px;
+        z-index: 120;
+    }
+    
+    .invoiceNum-block {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+    }
+    
+    #invoiceCurrency, #requestFee {
+        font-weight: bold;
+    }
+    
+    .transfer-block {
+        margin: 10px 0;
+        width: 100%;
+    }
+    
+    .remainder {
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .remainder p {
+        font-size: 14px;
+        color: rgb(255, 51, 51);
+    }
+    
+    .documentsP {
+        text-align: left;
+        width: 100%;
+    }
+    
+    .buttonBlock {
+        width: 100%;
+        margin: 20px 0;
+        display: flex;
+        justify-content: space-between;
+    }
+    
+    .buttonBlock button {
+        width: 100px;
+        height: 35px;
+        color: black;
+        transition: .2s;
+        font-size: 15px;
+    }
+    
+    #requested {
+        margin-right: 10px;
+        background-color: rgb(168, 167, 167);
+        color: white;
+    }
+    
+    #sent {
+        margin-right: 10px;
+        background-color: #FFBB33;
+        color: white;
+    }
+    
+    #received {
+        margin-right: 10px;
+        background-color: #7491F2;
+        color: white;
+    }
+    
+    #approved {
+        margin-right: 10px;
+        background-color: #0B9E8D;
+        color: white;
+    }
+    
+    #available {
+        background-color: #00C851;
+        color: white;
+    }
+    
+    #requested:hover, #sent:hover, #received:hover, #approved:hover, #available:hover, #editBtn:hover, 
+    #settledBtn:hover, #declinedBtn:hover, #frozenBtn:hover, #recallBtn:hover{
+        background-color: #12C7B2;
+        box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.75);
+    }
+    
+    #requested:active, #sent:active, #received:active, #approved:active, #available:active, #editBtn:active, 
+    #settledBtn:active, #declinedBtn:active, #frozenBtn:active, #recallBtn:active{
+        background-color: #888;
+    }
+    
+    .currentStatus{
+        font-weight: bold;
+        color: #20A5F7;
+        font-size: 18px;
+    }
+    
+    .actions-block {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        margin-top: 10px;
+        margin-bottom: 20px;
+    }
+    
+    .docs-block {
+        display: flex;
+        width: 90%;
+    }
+    
+    .restButton-block {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .restButton-block button {
+        width: 100px;
+        height: 35px;
+        margin-bottom: 10px;
+    }
+    
+    .docTable-block {
+        width: 70%;
+        overflow: scroll;
+        overflow-x:hidden;
+        height: 165px; 
+    }
+    
+    .docsUpload-block {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 25%;
+    }
+    
+    #docsTable {
+        width: 100%;
+    }
+    
+    #docsTable tr, #table-comments tr {
+        height: 30px;
+    }
+    
+    #docsTable th, #table-comments th  {
+        background-color: #20A5F7;
+        color: white;
+    }
+    
+    .docsInside-block {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-end;
+        width: 100%;
+        margin-top: 10px;
+        height: 100%;
+    }
+    
+    #docsSelect {
+        width: 140px;
+        height: 35px; 
+        margin: 7px 0;  
+    }
+    
+    #uploadForm {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    
+    .docPreview:hover {
+        background-color: #555;
+    }
+    
+    .docPreview:active {
+        background-color: #20A5F7;
+    }
+    
+    #currentUser, .curentUserRole {
+        display: none;
+    }
+    
+    
+    
+    #uploadBtn {
+        width: 140px;
+        height: 35px;  
+        background-color: #4D4D4D;
+        color: white;
+        transition: .2s;
+    }
+    
+    #uploadBtn:hover, #addCommentBtn:hover {
+        background-color: #12C7B2;
+    }
+    
+    #uploadBtn:active, #addCommentBtn:active {
+        background-color: rgb(93, 93, 93);
+    }
+    
+    
+    #editBtn{
+        background-color: #FFBB33;
+        color: white;
+        transition: .2s;
+    }
+    
+    .hide {
+        display: none;
+    }
+    
+    .fileWrapper {
+        width: 140px;
+        height: 70px;
+        text-align: center;
+        font-size: 14px;
+        border: 1px solid rgb(159, 159, 159);
+        border-radius: 3px;
+        cursor: pointer;
+        padding-top: 15px;
+        overflow: hidden;
+        position: relative;
+        transition: .3s;
+    }
+    .fileWrapper:hover {
+        background-color: #20A5F7;
+        color: white;
+    }
+    
+    #uploadDocs {
+        width: 100%;
+        height: 100%;
+        background: inherit;
+        cursor: pointer;
+        opacity: 0;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+    }
+    
+    #settledBtn{
+        background-color: #23A158;
+        color: white;
+        width: 110px;
+        height: 35px;
+        transition: .2s;
+    }
+    #declinedBtn{
+        background-color: rgb(255, 0, 0);
+        color: white;
+        transition: .2s;
+    }
+    #frozenBtn{
+        background-color: #20A5F7;
+        color: white;
+        transition: .2s;
+    }
+    #recallBtn{
+        background-color: #4D4D4D;
+        color: white;
+        transition: .2s;
+    }
+    
+    .docPreview {
+        width: 100%;
+        height: 30px;
+        background-color: #12C7B2;
+        color: white;
+        margin: 4px 0 0 0;
+    }
+    
+    .comments-block {
+        width: 100%;
+        margin-top: 10px;
+        display: flex;
+        justify-content: space-between;
+    }
+    
+    #table-comments {
+        width: 100%;
+    }
+    
+    #table-comments tbody tr {
+        height: 40px;
+      }
+    
+    #table-comments tbody tr, #docsTable tbody tr, #docsTable tbody td {
+        font-size: 14px;
+        font-weight: normal;
+    }
+    
+    #table-comments th, #docsTable th {
+        font-size: 14px;
+        
+    }
+    
+    .tableComments-block {
+        width: 62%;
+        overflow: scroll;
+        overflow-x:hidden;
+        height: 165px; 
+    }
+    
+    .commentsInside-block {
+        width: 35%;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        align-items: center;
+    }
+    
+    #commentText {
+        width: 100%;
+        height: 125px;
+        border: 1px solid rgb(135, 133, 133);
+        border-radius: 3px;
+        padding: 5px;
+        font-family: 'Frank Ruhl Libre', serif;
+    }
+    
+    #addCommentBtn {
+        width: 100%;
+        height: 35px;
+        margin-top: 5px;
+        background-color: #4D4D4D;
+        color: white;
+        transition: .2s;
+    }
+    
+    #docGood, #docBad{
+        cursor: pointer;
+        user-select: none;
+    }
+    
+    #docGood:hover, #docBad:hover{
+        opacity: .4;
+    }
+    
+    #docGood:active, #docBad:active{
+        filter: grayscale(12%) invert(100%);
+    }
+    
+    .comentsDate {
+        color: #20A5F7;
+        font-size: 12px;
+        margin-top: 3px;
+    }
+    
+    .firstPage-block {
+        width: 90%;
+        display: none;
+        align-items: flex-start;
+    }
+    
+    .firstPage-block img {
+        width: 30px;
+        height: 30px;
+        cursor: pointer;
+    }
+    
+    .firstPage-block img:hover {
+        filter: grayscale(50%) invert(70%);
+    }
+    
+    /* Popup Window View End */
+    
+    
+    /* Loading GIF */
+    #loadingGif {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: rgb(0, 0, 0);
+        opacity: .7;
+        z-index: 1000;
+    }
+    
+    #loadingGif img {
+        width: 50px;
+        height: 50px;
+    }
+    
+    #loadingGif div {
+        font-size: 24px;
+        color: white;
+    }
+    
+    
+    
+    
+    
+    /* Animations */
+    @keyframes slideInTop{
+        0%{
+            transform: translateY(-100%);
+        }
+        100%{
+            transform: translateY(0, 0);
+        }
+    }
+    .slide-top{
+        animation: .5s slideInTop ease-in-out 1;
+    }
+    
+    
+    
+    
+    /* Edit Invoice Modal Windo */
+    .filterEditIvoice {
+        display: none;
+        justify-content: center;
+        align-items: center;
+        background-color: rgba(0, 0, 0, 0.6);
+        position: fixed;
+        top: 0; bottom: 0; left: 0; right: 0;
+        z-index: 130;
+    }
+    
+    .modalEdit-block {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 900px;
+        background-color: white;
+        padding: 20px;
+        z-index: 140;
+    }
+    
+    .editDetails-block {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        margin: 15px 0;
+    }
+    
+    .invoceDeatails, .clientDetails {
+        width: 45%;
+    }
+    
+    .invoceDeatails div, .clientDetails div {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+    
+    .detailsInputs {
+        border: 1px solid rgb(122, 122, 122);
+        width: 240px;
+        height: 40px;
+        border-radius: 3px;
+        padding: 5px;
+        font-family: 'Frank Ruhl Libre', serif;
+        font-size: 14px;
+    }
+    
+    #editMerhcnat, #editCurrency, #editBank {
+        border: 1px solid rgb(122, 122, 122);
+        width: 240px;
+        height: 40px;
+        border-radius: 3px;
+        padding: 5px;
+        font-family: 'Frank Ruhl Libre', serif;
+        text-indent: 0px;
+    }
+    
+    #sepaEdit {
+        margin-right: auto;
+        margin-left: 110px;
+        height: 20px;
+        width: 20px;
+    }
+    
+    #saveEditedInvoice-btn {
+        width: 140px;
+        height: 45px;
+        background-color: #12C7B2;
+        color: white;
+    }
+    
+    #saveEditedInvoice-btn:hover {
+        background-color: #4D4D4D;
+    }
+    
+    #saveEditedInvoice-btn:active {
+        background-color: #12C7B2;
+    }
+    
+    .editDetails-block h3{
+        margin-bottom: 15px;
+        text-align: center;
+    }
+    
+    
+    /* Modal Window Sent */
+    .sent_Filter {
+        display: none;
+        justify-content: center;
+        align-items: center;
+        background-color: rgba(0, 0, 0, 0.8);
+        position: fixed;
+        top: 0; bottom: 0; left: 0; right: 0;
+        z-index: 150;
+    }
+    
+    .sent_Wrapper {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        width: 320px;
+        background-color: white;
+        padding: 20px;
+        z-index: 160;
+    }
+    
+    .sent_Wrapper label {
+        margin: 0 auto;
+    }
+    
+    #sent_input {
+        border: 1px solid rgb(122, 122, 122);
+        width: 200px;
+        height: 35px;
+        border-radius: 3px;
+        padding: 5px;
+        font-family: 'Frank Ruhl Libre', serif;
+        text-indent: 0px;
+        margin: 10px auto;
+    }
+    
+    #sent_submitBtn {
+        width: 120px;
+        height: 35px;
+        background-color: #12C7B2;
+        color: white;
+        margin: 0px auto;
+    }
+    
+    #sent_submitBtn:hover {
+        background-color: #4D4D4D;
+    }
+    
+    #sent_submitBtn:active {
+        background-color: #12C7B2;
+    }
+    /* Modal Window Sent End */
+    
+    
+    /* Modal window Received Status */
+    .receive_Filter {
+        display: none;
+        justify-content: center;
+        align-items: center;
+        background-color: rgba(0, 0, 0, 0.8);
+        position: fixed;
+        top: 0; bottom: 0; left: 0; right: 0;
+        z-index: 170;
+    }
+    
+    .receive_Wrapper {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        width: 350px;
+        background-color: white;
+        padding: 20px;
+        z-index: 180;
+    }
+    
+    .receive_InvoiceNumber {
+        color: rgb(129, 128, 128);
+        font-size: 14px;
+    }
+    
+    .receive_Sent-block {
+        width: 100%;
+        justify-content: space-between;
+        display: flex;
+        margin-bottom: 10px;
+    }
+    
+    .receive_SentAmount {
+        font-weight: bold;
+    }
+    
+    .receive_amount-label {
+        margin: 0 auto;
+        color: green;
+    }
+    
+    .receive_Amount {
+        font-weight: bold;
+        color: rgb(24, 209, 24);
+    }
+    
+    #receive_input {
+        border: 1px solid rgb(122, 122, 122);
+        width: 240px;
+        height: 40px;
+        border-radius: 3px;
+        padding: 5px;
+        font-family: 'Frank Ruhl Libre', serif;
+        text-indent: 0px;
+        margin: 5px auto 5px auto;
+    }
+    
+    .receive_Remainder {
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: 10px;
+        font-size: 13px;
+        color: rgb(88, 88, 88);
+    }
+    
+    #receive_Submit {
+        width: 120px;
+        height: 40px;
+        background-color: #12C7B2;
+        color: white;
+        margin: 0 auto;
+    }
+    
+    #receive_Submit:hover {
+        background-color: #4D4D4D;
+    }
+    
+    #receive_Submit:active {
+        background-color: #12C7B2;
+    }
+    
+    
+    /* PopUp Window for Approved */
+    .approved_Filter {
+        display: none;
+        justify-content: center;
+        align-items: center;
+        background-color: rgba(0, 0, 0, 0.8);
+        position: fixed;
+        top: 0; bottom: 0; left: 0; right: 0;
+        z-index: 190;
+    }
+    
+    .approved_Wrapper {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        width: 550px;
+        background-color: white;
+        padding: 20px;
+        z-index: 200;
+    }
+    
+    .approved_comm_wrapper {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        margin-bottom: 25px;
+    }
+    
+    .approved_comm_block1, .approved_comm_block2 {
+        width: 50%;
+    }
+    
+    .approved_comm_block2 {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+    }
+    
+    .approved_comm_block2 div, .approved_comm_block1 div {
+        margin-top: 10px;
+    }
+    
+    .approved_comm_block2 div {
+        font-weight: bold;
+        color: rgb(58, 58, 58);
+    }
+    
+    .approved_comm_label {
+        text-align: right;
+        font-size: 18px;
+        margin-bottom: 5px;
+        font-weight: normal;
+    }
+    
+    .approved_comm_line {
+        position: absolute;
+        right: 140px;
+        width: 3px;
+        height: 124px;
+        background-color: #0B9E8D;
+    }
+    
+    #inputAdditionalFee {
+        border-bottom: 1.5px solid #0B9E8D;
+        text-align: center;
+        width: 50px;
+        height: 15px;
+        padding: 5px;
+        font-family: 'Frank Ruhl Libre', serif;
+        outline: none;
+        margin-left: 10px;
+        font-size: 16px;
+    }
+    
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        /* display: none; <- Crashes Chrome on hover */
+        -webkit-appearance: none;
+        margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+    }
+    
+    #approved_total_comm {
+        font-size: 18px;
+    }
+    
+    #approved_button {
+        width: 120px;
+        height: 40px;
+        background-color: #12C7B2;
+        color: white;
+        margin: 15px auto 0 auto;
+    }
+    
+    #approved_button:hover {
+        background-color: #4D4D4D;
+    }
+    
+    #approved_button:active {
+        background-color: #12C7B2;
+    }
+    
+    #approved_amount {
+        border-bottom: 3px solid #0B9E8D;
+        font-family: 'Frank Ruhl Libre', serif;
+        margin-left: 5px;
+        font-weight: bold;
+        font-size: 18px;
+        color: rgb(6, 82, 73);
+    }
+    
+    .approved_invoiceAmount_block {
+        margin: 5px auto 0 auto;
+    }
+    
+    #approved_receivedAmount {
+        font-weight: bold;
+    }
+    
+    .solution_line {
+        width: 100%;
+        height: 2px;
+        background-color: #0B9E8D;
+        margin-top: 15px;
+    }
+    
+    .label_solution {
+        text-align: center;
+        margin-top: 20px;
+        margin-bottom: 10px;
+    }
+    
+    .solution_Wrapper{
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+    }
+    
+    .solution_item_block1, .solution_item_block2 {
+        width: 46%;
+    }
+    
+    .solution_item_block2 {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+    }
+    
+    .solution_item_block1 input, .solution_item_block2 input{
+        border-bottom: 1.5px solid #0B9E8D;
+        text-align: center;
+        width: 50px;
+        height: 15px;
+        padding: 5px;
+        font-family: 'Frank Ruhl Libre', serif;
+        outline: none;
+        margin-left: 5px;
+        font-size: 16px;
+    }
+    
+    .solution_item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 10px;
+    }
+    
+    #totalSolution, #leftFromTransfer {
+        border-bottom: 1.5px solid #0B9E8D;
+        min-width: 50px;
+        text-align: center;
+        margin-bottom: 4px;
+        user-select: none;
+    }
+    /* PopUp Window for Approved  End */
+    
+    
+    /* Media */
+    @media screen and (max-width: 1125px) {
+        header {
+            padding: 20px 0 20px 60px;
+        }
+    
+        header h1 {
+            font-size: 28px;
+        }
+    
+        .byCreation-block, .filterStatus-block, .filterBank-block, .byReceive-block, .filterMerchant-block, .filterDocuments-block {
+            width: 160px;
+        }
+    
+        select {
+            height: 35px;
+        }
+    
+        .dateForm {
+            font-size: 12px;
+            padding: 2px;
+            height: 35px;
+        }
+    
+        .input-search {
+            width: 180px;
+            height: 35px;
+        }
+    
+        .search-btn {
+            height: 35px;
+            width: 35px;
+            padding: 10px;
+        }
+    
+        #clearFilterBtn, #showBtn {
+            width: 100px;
+            height: 35px;
+        }
+    }
+    
+    
+    @media screen and (max-width: 578px) {
+        header {
+            padding: 20px 0 20px 30px;
+        }
+    
+        header h1 {
+            font-size: 25px;
+        }
+    
+        header img {
+            width: 30px;
+            height: 30px;
+        }
+    
+        .filterBlock-first, .filterBlock-second {
+            justify-content: space-between;
+        }
+    
+        .byCreation-block, .filterStatus-block, .filterBank-block, .byReceive-block, .filterMerchant-block, .filterDocuments-block {
+            width: 140px;
+            margin-right: 0;
+        }
+    
+        select, .dateForm {
+            height: 32px;
+            font-size: 14px;
+        }
+    
+        .input-search {
+            width: 140px;
+            height: 32px;
+            font-size: 14px;
+        }
+    
+        .search-btn {
+            height: 32px;
+            width: 32px;
+            padding: 9px;
+        }
+    
+        #clearFilterBtn, #showBtn {
+            width: 90px;
+            height: 32px;
+            font-size: 14px;
+        }
+    
+        label {
+            font-size: 14px;
+        }
+    }
+    
+    @media screen and (max-width: 490px) {
+        .filterBlock-first, .filterBlock-second {
+            flex-direction: column;
+            align-items: center;
+        }
+    
+        .byCreation-block, .filterStatus-block, .filterBank-block, .byReceive-block, .filterMerchant-block, .filterDocuments-block {
+            width: 210px;
+            margin-right: 0;
+        }
+    
+        .showClear-block {
+            flex-direction: column;
+            align-items: center;
+        }
+    
+        .searchBlock {
+            margin-top: 10px;
+        }
+    
+        .input-search {
+            width: 158px;
+        }
+    
+        #clearFilterBtn {
+            margin-right: 0;
+        }
+    }

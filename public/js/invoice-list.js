@@ -29,23 +29,127 @@ class invoiceList {
         this.requestedBtn = document.querySelector("#requested");
         this.currentInvoice = [];
         this.currentBank = [];
+        this.currentMerhcant = [];
         this.currentUserRole = document.querySelector(".curentUserRole");
         this.sentBtn = document.querySelector("#sent");
+        this.sentFilter = document.querySelector(".sent_Filter");
+        this.sentSubmitBtn = document.querySelector("#sent_submitBtn");
         this.loadingGif = document.querySelector("#loadingGif");
         this.receivedBtn = document.querySelector("#received");
         this.receivedBtnSubmit = document.querySelector("#receive_Submit");
         this.filterReceive = document.querySelector(".receive_Filter");
+        this.approvedBtn = document.querySelector("#approved");
+        this.filterApproved = document.querySelector(".approved_Filter");
+        
         this.render();
     }
 
-    receivedInvoiceStatus = async (invNumber, typedAmount, amountAfter, createdBy) => {
+    approvedStatus = async () => {
+        if (this.currentInvoice[0].status === "Received") {
+            // Loading GIF appear
+            this.loadingGif.style.display = "flex";
+
+            // Filter for background
+            this.filterApproved.style.display = "flex";
+            this.filterApproved.addEventListener("click", (event) => {
+                event.target === this.filterApproved ? this.filterApproved.style.display = "none" : "";
+            });
+
+            // Get Current Merchant
+            this.currentMerhcant = await this.getCurrentMerchant(0, {"name": this.currentInvoice[0].merchant});
+            // Get Current Bank
+            this.currentBank = await this.getCurrentBank(0, {"name": this.currentInvoice[0].bank});
+
+            // Check type of Invoice c2b or b2b
+            var anyFeePercent = this.currentMerhcant[0].fees.in_c2b.percent;
+            var anyFeeFlat = this.currentMerhcant[0].fees.in_c2b.flat;
+            var solutionCommPercent = this.currentBank[0].solution_fees.in_c2b.percent;
+            var solutionCommFlat = this.currentBank[0].solution_fees.in_c2b.flat;
+            if (this.currentInvoice[0].type === "b2b") {
+                anyFeePercent = this.currentMerhcant[0].fees.in_b2b.percent;
+                anyFeeFlat = this.currentMerhcant[0].fees.in_b2b.flat;
+                solutionCommPercent = this.currentBank[0].solution_fees.in_b2b.percent;
+                solutionCommFlat = this.currentBank[0].solution_fees.in_b2b.flat;
+            }
+
+            // Check if this $
+            if (this.currentInvoice[0].currency === "USD") {
+                var currencyInv = await this.getEURexchange("EUR", "USD");
+                anyFeeFlat = Math.round(anyFeeFlat * currencyInv.rates.USD);
+                solutionCommFlat = Math.round(solutionCommFlat * currencyInv.rates.USD);
+            }
+
+            // Counting process
+            var amountReceived = this.currentInvoice[0].amount.amount_received;
+            var currency = "";
+            this.currentInvoice[0].currency === "USD" ? currency = "$" : currency = "€";
+            var anyFeePercentRes = (amountReceived/100)*anyFeePercent;
+            var totalAny = anyFeePercentRes + anyFeeFlat;
+
+            // Render PopUp Window
+            document.querySelector("#approved_receivedAmount").innerHTML = `${amountReceived}${currency}`;
+            document.querySelector("#anyFeePercent").innerHTML = `${anyFeePercent}`;
+            document.querySelector("#anyFeeSymbol").innerHTML = `${currency}`;
+            document.querySelector("#approved_anyFeePercent").innerHTML = `${anyFeePercentRes}${currency}`;
+            document.querySelector("#approved_anyFeeFlat").innerHTML = `${anyFeeFlat}${currency}`;
+            document.querySelector("#approved_total_comm").innerHTML = `${totalAny}${currency}`;
+            document.querySelector("#approved_amount").innerHTML = `${amountReceived-totalAny}${currency}`;
+            document.querySelector("#inputAdditionalFee").value = "";
+
+            // Event for input Additiona fee
+            document.querySelector("#inputAdditionalFee").addEventListener("keyup", () => {
+                var addFeeInputValue = Number(document.querySelector("#inputAdditionalFee").value);
+                totalAny = anyFeePercentRes + anyFeeFlat + addFeeInputValue;
+                document.querySelector("#aprroved_additionalFee").innerHTML = `${addFeeInputValue}${currency}`;
+                document.querySelector("#approved_total_comm").innerHTML = `${totalAny}${currency}`;
+                document.querySelector("#approved_amount").innerHTML = `${amountReceived-totalAny}${currency}`;
+            });
+
+            // Solution Commission Counting
+            var solutionCountPercent = (amountReceived/100) * solutionCommPercent;
+            var totalSolution = solutionCommFlat + solutionCountPercent;
+            document.querySelector("#solutionCommPercent").value = solutionCommPercent;
+            document.querySelector("#solutionCommFlat").value = solutionCommFlat;
+            document.querySelector("#totalSolution").innerHTML = `${totalSolution}${currency}`;
+            document.querySelector("#leftFromTransfer").innerHTML = `${amountReceived - totalSolution}${currency}`;
+
+            var solutionInputs = document.querySelectorAll(".solutionInputs").forEach((inpt) => inpt.addEventListener("keyup", () => {
+                var bankComm = Number(document.querySelector("#bankCommission").value);
+                var solComPerInpt = Number(document.querySelector("#solutionCommPercent").value);
+                var solComPerInptRes = (amountReceived/100) * solComPerInpt;
+                var solComFlat = Number(document.querySelector("#solutionCommFlat").value);
+                var totalSolComm = bankComm + solComPerInptRes + solComFlat;
+                var leftFromTransferComm = amountReceived - totalSolComm;
+                document.querySelector("#totalSolution").innerHTML = `${totalSolComm}${currency}`;
+                document.querySelector("#leftFromTransfer").innerHTML = `${leftFromTransferComm}${currency}`;
+            }));
+
+            // Loading GIF appear
+            this.loadingGif.style.display = "none";
+        } else {
+            alert("You can't do that!");
+        }
+    }
+
+    getEURexchange = async (base, symbols) => {
+        return  await fetch(`https://api.exchangeratesapi.io/latest?base=${base}&symbols=${symbols}`)
+         .then(res => {
+             return res.json();
+         }) 
+         .catch(err => {
+             console.log(err);
+         });
+    }
+
+    receivedInvoiceStatus = async (invNumber, typedAmount, amountCommission, percentCommission, createdBy) => {
         return  await fetch("http://18.216.223.81:3000/receivedStatus", {
             // return  await fetch("http://18.216.223.81:3000/receivedStatus", {
                 method: "POST",
                 body: JSON.stringify({
                     invNumber,
                     typedAmount,
-                    amountAfter,
+                    amountCommission,
+                    percentCommission,
                     createdBy
                 }),
                 headers:{'Content-Type': 'application/json'}
@@ -60,16 +164,25 @@ class invoiceList {
 
     receiveStatus = async () => {
         if (this.currentInvoice[0].status === "Sent") {
+            // Get Current Bank
+            this.currentBank = await this.getCurrentBank(0, {"name": this.currentInvoice[0].bank});
+
             // Loading GIF appear
             this.loadingGif.style.display = "flex";
-            
-            // Some counting 
+
             var typedAmount = document.querySelector("#receive_input").value;
-            var IncFee = (this.currentBank[0].incoming_fee * 100);
-            var amountAfter = typedAmount - ((typedAmount / 100) * IncFee);
+            var amountSent = this.currentInvoice[0].amount.amount_sent;
             var creator = this.currentUser.textContent.trim();
             var currency = "";
             this.currentInvoice[0].currency === "USD" ? currency = "$" : currency = "€";
+
+            // Counting proccess for Commission
+            var amountCommission = 0;
+            var percentCommission = 0;
+            if (+typedAmount !== amountSent) {
+                amountCommission = amountSent - typedAmount;
+                percentCommission = (100*amountCommission)/amountSent;
+            }
 
             // Add comment about action
             await this.addComment(`Transfer for ${currency}${typedAmount} was Received!`);
@@ -78,13 +191,12 @@ class invoiceList {
             this.loadingGif.style.display = "none";
 
             // Request for status "Received" 
-            this.receivedInvoiceStatus(this.curNumber, typedAmount, amountAfter, creator);
+            this.receivedInvoiceStatus(this.curNumber, typedAmount, amountCommission, percentCommission, creator);
 
             // Change status, received date, amount received for currentInvoice and create new field received_after_commision
             this.currentInvoice[0].status = "Received";
             this.currentInvoice[0].dates.received_date = new Date();
             this.currentInvoice[0].amount.amount_received = +(typedAmount);
-            this.currentInvoice[0].amount.received_after_commision = +(amountAfter);
 
             // Change table information
             this.currentTr.children[8].innerHTML = `<strong>Received</strong>`;
@@ -105,6 +217,9 @@ class invoiceList {
 
     initialReceivedStatus = async () => {
         if (this.currentInvoice[0].status === "Sent") {
+            // Get Current Bank
+            this.currentBank = await this.getCurrentBank(0, {"name": this.currentInvoice[0].bank});
+
             // Filter for background
             this.filterReceive.style.display = "flex";
             this.filterReceive.addEventListener("click", (event) => {
@@ -113,7 +228,6 @@ class invoiceList {
 
             // Counting proccess
             var amountSent = this.currentInvoice[0].amount.amount_sent;
-            var IncFee = (this.currentBank[0].incoming_fee * 100);
 
             // PopUp render Info
             var currency = "";
@@ -121,7 +235,6 @@ class invoiceList {
             document.querySelector(".receive_InvoiceNumber").innerHTML = `invoice #${this.curNumber}`;
             document.querySelector(".receive_SentAmount").innerHTML = `${amountSent}${currency}`
             document.querySelector("#receive_input").value = `${amountSent}`;
-            document.querySelector(".receive_BankFee").innerHTML = `${IncFee}%`;
         } else {
             alert("You can't do this!");
         }
@@ -145,58 +258,83 @@ class invoiceList {
             });
     }
 
-    sentStatus = async () => {
-        
-
-        var requested = this.currentInvoice[0].amount.amount_requested;
-        var currency = "";
-        this.currentInvoice[0].currency === "USD" ? currency = "$" : currency = "€";
-
+    initialSentStatus = async () => {
         // Checking role of Current User
         var role = this.currentUserRole.textContent.trim();
         var accessRole = ["CrmFinanceManager", "CrmInvoiceManager", "CrmSuccessManager", "CrmAdmin"];
         var result = accessRole.some((item) => item === role);
-
+        
         // If Current User has access
-        if (result && this.currentInvoice[0].status !== "Sent") {
-            // Loading GIF appear
+        if (result && this.currentInvoice[0].status === "Requested") {
+            // Loading GIF On
             this.loadingGif.style.display = "flex";
-
-            // Request for status "Sent" 
-            this.sentInvoiceStatus(this.curNumber, requested);
-
-            // Change status, sent date, amount sent for currentInvoice
-            this.currentInvoice[0].status = "Sent";
-            this.currentInvoice[0].dates.sent_date = new Date();
-            this.currentInvoice[0].amount.amount_sent = requested;
-
-            // Change table information
-            this.currentTr.children[8].innerHTML = `<strong>Sent</strong>`;
-            this.currentTr.children[8].style.color = "rgb(255, 187, 51)";
-            this.currentTr.children[3].children[0].children[0].textContent = `${currency}${requested}`;
-            this.currentTr.children[3].children[0].children[1].innerHTML = `${this.checkDate(new Date())}`;
-
-            // Change style for popUp
-            document.querySelector(".currentStatus").textContent = "Sent";
-            document.querySelector(".currentStatus").style.color = "rgb(255, 187, 51)";
-
-            // Add new comment
-            await this.addComment(`Transfer for ${currency}${requested} was Sent!`);
-
-            // Loading GIF appear
-            this.loadingGif.style.display = "none";
             
+            // Get Current Bank
+            this.currentBank = await this.getCurrentBank(0, {"name": this.currentInvoice[0].bank});
+
+            // Loading GIF Off
+            this.loadingGif.style.display = "none";
+
+            // Open Modal Sent
+            this.sentFilter.style.display = "flex";
+            this.sentFilter.style.display = "flex";
+            this.sentFilter.addEventListener("click", (event) => {
+                event.target === this.sentFilter ? this.sentFilter.style.display = "none" : "";
+            });
+
+            // Render PopUp info
+            document.querySelector("#sent_input").value = this.currentInvoice[0].amount.amount_requested;
+
+            // Event For button Submit Sent
+            this.sentSubmitBtn.addEventListener("click", this.sentStatus);
+
         } else {
             alert("You can't do this!");
         }
     }
 
-    requestedInvoiceStatus = async (invoiceNum) => {
+    sentStatus = async () => {
+        var sent = document.querySelector("#sent_input").value;
+        var currency = "";
+        this.currentInvoice[0].currency === "USD" ? currency = "$" : currency = "€";
+
+        // Loading GIF appear
+        this.loadingGif.style.display = "flex";
+
+        // Request for status "Sent" 
+        this.sentInvoiceStatus(this.curNumber, +sent);
+
+        // Change status, sent date, amount sent for currentInvoice
+        this.currentInvoice[0].status = "Sent";
+        this.currentInvoice[0].dates.sent_date = new Date();
+        this.currentInvoice[0].amount.amount_sent = +sent;
+
+        // Change table information
+        this.currentTr.children[8].innerHTML = `<strong>Sent</strong>`;
+        this.currentTr.children[8].style.color = "rgb(255, 187, 51)";
+        this.currentTr.children[3].children[0].children[0].textContent = `${currency}${+sent}`;
+        this.currentTr.children[3].children[0].children[1].innerHTML = `${this.checkDate(new Date())}`;
+
+        // Change style for popUp
+        document.querySelector(".currentStatus").textContent = "Sent";
+        document.querySelector(".currentStatus").style.color = "rgb(255, 187, 51)";
+
+        // Add new comment
+        await this.addComment(`Transfer for ${currency}${+sent} was Sent!`);
+
+        // Loading GIF appear
+        this.loadingGif.style.display = "none";
+        // Hide Modal Window
+        this.sentFilter.style.display = "none";
+    }
+
+    requestedInvoiceStatus = async (invoiceNum, sentAmount) => {
         return  await fetch("http://18.216.223.81:3000/requestStatus", {
             // return  await fetch("http://18.216.223.81:3000/requestStatus", {
                 method: "POST",
                 body: JSON.stringify({
-                    invoiceNum
+                    invoiceNum,
+                    sentAmount
                 }),
                 headers:{'Content-Type': 'application/json'}
             })
@@ -209,9 +347,11 @@ class invoiceList {
     }
 
     requestedStatus = async () => {
+        // Get Current Bank
+        this.currentBank = await this.getCurrentBank(0, {"name": this.currentInvoice[0].bank});
+
+        // Get current Invoice
         var role = this.currentUserRole.textContent.trim();
-        var bankName = this.currentInvoice[0].bank;
-        var reqAmount = this.currentInvoice[0].amount.amount_requested;
         var currency = "";
         this.currentInvoice[0].currency === "USD" ? currency = "$" : currency = "€";
 
@@ -221,7 +361,7 @@ class invoiceList {
             this.loadingGif.style.display = "flex";
 
             // Request for status "Requested"
-            this.requestedInvoiceStatus(this.curNumber, bankName, reqAmount);
+            this.requestedInvoiceStatus(this.curNumber, this.currentInvoice[0].amount.amount_sent);
 
             // Change status, sent date, amount sent for currentInvoice
             this.currentInvoice[0].status = "Requested";
@@ -586,13 +726,27 @@ class invoiceList {
 
         // Off overflow for BODY
         document.body.classList.add("modal-open");
-
-        // Get Current Bank
-        var bankName = obj[0].bank;
-        this.currentBank = await this.getCurrentBank(0, {"name": bankName});
     }
 
-    getCurrentBank = async (number, filter ) => {
+    getCurrentMerchant = async (number, filter) => {
+        return  await fetch("http://18.216.223.81:3000/getPart-Merchants", {
+            //  return  await fetch("http://18.216.223.81:3000/getPart-Merchants", {
+                method: "POST",
+                body: JSON.stringify({
+                    number,
+                    filter
+                }),
+                headers:{'Content-Type': 'application/json'}
+            })
+            .then(res => {
+                return res.json();
+            }) 
+            .catch(err => {
+                console.log(err);
+            });
+    }
+
+    getCurrentBank = async (number, filter) => {
         return  await fetch("http://18.216.223.81:3000/getPart-Banks", {
             //  return  await fetch("http://18.216.223.81:3000/getPart-Banks", {
                 method: "POST",
@@ -1324,9 +1478,10 @@ class invoiceList {
         });
 
         this.requestedBtn.addEventListener("click", this.requestedStatus);
-        this.sentBtn.addEventListener("click", this.sentStatus);
+        this.sentBtn.addEventListener("click", this.initialSentStatus);
         this.receivedBtn.addEventListener("click", this.initialReceivedStatus);
         this.receivedBtnSubmit.addEventListener("click", this.receiveStatus);
+        this.approvedBtn.addEventListener("click", this.approvedStatus);
     }
 };
 

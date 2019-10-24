@@ -6,6 +6,8 @@ class MerchantList {
         this.btnExel = document.querySelector("#dowloadXls");
         this.buttonSearch = document.getElementById("search-button");
         this.containerPages = document.querySelector(".nextPage-block");
+        this.loadingGif = document.querySelector("#loadingGif");
+        this.modalAdd_merchant = document.querySelector("#modalCreate-btn");
         this.render();
     }
 
@@ -19,10 +21,15 @@ class MerchantList {
     }
 
     initCreate_Merchant = () => {
+        // Loading GIF ON
+        this.loadingGif.style.display = "flex";
+        document.body.classList.add("modal-open");
+
         this.data = document.querySelectorAll(".allData");
         this.b2bCheckBox = document.querySelector("#b2b");
         this.feesData = document.querySelectorAll(".feesData");
         this.b2bCheckBox.checked ? this.valueB2B = true : this.valueB2B = false;
+        var createdBy = document.querySelector(".currentUser").textContent.trim();
         this.newMerchant = {
             "name": this.data[0].value,
             "b2b" : this.valueB2B,
@@ -55,7 +62,7 @@ class MerchantList {
             },
             "wallets" : [],
             "available_banks" : [],
-            "created_by": ""
+            "created_by": createdBy
         };
 
         var checkEmpty = '';
@@ -96,9 +103,8 @@ class MerchantList {
         if (checkEmpty === true) {
             alert("Please fill put all required fields!");
         } else {
-            alert("OK!");
             fetch("http://18.216.223.81:3000/postMerchant", {
-            // fetch("http://localhost:3000/postMerchant", {
+            // fetch("http://18.216.223.81:3000/postMerchant", {
                 method: "POST",
                 body: JSON.stringify(this.newMerchant),
                 headers:{'Content-Type': 'application/json'}
@@ -136,15 +142,14 @@ class MerchantList {
             event.target === this.filterFees ? this.filterFees.style.display = "none" : "";
         });
 
-
         this.btn_Back = document.querySelector("#modalBack");
         this.btn_Back.addEventListener("click", () => {
             this.filterFees.style.display = "none";
             this.createMerchant();
         });
 
-        this.modalAdd_merchant = document.querySelector("#modalCreate-btn");
-        this.modalAdd_merchant.addEventListener("click", this.initCreate_Merchant);
+        
+        
     }
 
     createMerchant = () => {
@@ -196,6 +201,10 @@ class MerchantList {
     }
 
     searchFunction = async () => {
+        // Loading GIF ON
+        this.loadingGif.style.display = "flex";
+        document.body.classList.add("modal-open");
+
         var phrase = document.getElementById('search-input').value;
 
         this.filter = { $text: { $search: phrase } };
@@ -211,6 +220,9 @@ class MerchantList {
 
             this.countNextPage(filterList, lengthInvoice.numbers);
           }
+          // Loading GIF ON
+            this.loadingGif.style.display = "none";
+            document.body.classList.remove("modal-open");
     }
 
     countNextPage = (arr, numbersOfpages) => {
@@ -237,10 +249,18 @@ class MerchantList {
         buttonsPage.forEach((btn) => {
             btn.addEventListener("click", async (event) => {
 
+                // Loading GIF ON
+                this.loadingGif.style.display = "flex";
+                document.body.classList.add("modal-open");
+
                 this.currentEvent = +(event.target.textContent);
                 this.listNumber = ((this.currentEvent*10)-10);
 
                 this.nextList = await this.getMerchants(this.listNumber, this.filter);
+
+                // Loading GIF OFF
+                this.loadingGif.style.display = "none";
+                document.body.classList.remove("modal-open");
 
                 this.container = document.getElementById("table-list");
                 this.container.innerHTML = "";
@@ -302,7 +322,7 @@ class MerchantList {
 
     getMerchants = async (number, filter) => {
         return  await fetch("http://18.216.223.81:3000/getPart-Merchants", {
-        // return  await fetch("http://localhost:3000/getPart-Merchants", {
+        // return  await fetch("http://18.216.223.81:3000/getPart-Merchants", {
             method: "POST",
             body: JSON.stringify({
                 number, 
@@ -320,7 +340,7 @@ class MerchantList {
 
     getNumber_Merchants = async (filter) => {
         return  await fetch("http://18.216.223.81:3000/getNumber-Merchants", {
-        // return  await fetch("http://localhost:3000/getNumber-Merchants", {
+        // return  await fetch("http://18.216.223.81:3000/getNumber-Merchants", {
             method: "POST",
             body: JSON.stringify({
                 filter
@@ -346,17 +366,20 @@ class MerchantList {
                     <td class="column3">${item.promo_code}</td> 
                     <td class="column4">${item.users.affiliate}</td> 
                     <td class="column5">${(item.fees.incoming_transfer_percent)*100}</td>
-                    <td class="column5">${""}</td>
-                    <td class="column6"> 
+                    <td class="column6">${""}</td>
+                    <td class="column7"> 
                         <div id="merchantButtons">
                             <button class="buttonView">View</button> 
                             <button class="buttonAddSettle">Add Settle</button>
                         </div>
                     </td>
-               
             `;
         this.container.appendChild(this.userList);
-        })
+        });
+
+        // Loading GIF OFF after rendering all table
+        this.loadingGif.style.display = "none";
+        document.body.classList.remove("modal-open");
     }
 
     render(){
@@ -364,48 +387,8 @@ class MerchantList {
         this.buttonSearch.addEventListener("click", this.searchFunction);
         this.btnExel.addEventListener("click", this.saveXls);
         this.buttonCreate_merchant.addEventListener("click", this.createMerchant);
+        this.modalAdd_merchant.addEventListener("click", this.initCreate_Merchant);
     }
 };
 
 const userList = new MerchantList();
-
-
-
-// { 
-//     "_id" : ObjectId("5d7752ba79d4255064ff3e1f"), 
-//     "name" : "Merchant 1", 
-//     "b2b" : false, 
-//     "fees" : { 
-//         "setup_fee" : 1000, 
-//         "wire_recall" : 100, 
-//         "settlement_fee_flat" : 100, 
-//         "monthly_fee" : 50, 
-//         "incoming_transfer" : 10, 
-//         "incoming_wire" : NumberDecimal("0.05"), 
-//         "settlement_fee_percent" : NumberDecimal("0"), 
-//         "settlement_return" : NumberDecimal("0.2"), 
-//         "refund_fee_flat" : 20, 
-//         "refund_fee_percent" : NumberDecimal("0.02") 
-//             }, 
-//     "specifications" : { 
-//         "background" : "#FFFFFF", 
-//         "first_color" : "#1f7be2", 
-//         "second_color" : "#67d1a5", 
-//         "logo" : "", 
-//         "tagline" : "We are the champions!" 
-//             }, 
-//     "support_email" : "info@merchant1.com", 
-//     "promo_code" : "001", 
-//     "users" : [ "user@gmail.com", "user2@gmail.com", "vlad@gmail.com", "bogdan@gmail.com", "michael@gmail.com" ], 
-//     "wallets" : [ 
-//         ObjectId("5d77601479d4255064ff3e20"), 
-//         ObjectId("5d77603579d4255064ff3e21") ], 
-//     "available_banks" : [ ObjectId("5d77605679d4255064ff3e22"), ObjectId("5d77605c79d4255064ff3e23") ], 
-//     "specifications_b2b" : { 
-//         "beneficiary_name" : "", 
-//         "beneficiary_address" : "", 
-//         "bank_name" : "", 
-//         "bank_address" : "", 
-//         "iban" : "", "swift" : "" 
-//         } 
-//     }

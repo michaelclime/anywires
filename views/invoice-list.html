@@ -373,10 +373,9 @@
 		<!-- PopUp Window fot Received Status -->
 		<div class="receive_Filter">
 			<div class="receive_Wrapper">
-				<div class="receive_InvoiceNumber">invoice #77</div>
 				<div class="receive_Sent-block">
+					<div class="receive_InvoiceNumber">invoice #77</div>
 					<div>Sent Amount: <span class="receive_SentAmount">1000$</span> </div>
-					<div>Bank fee: <span class="receive_BankFee">5%</span> </div>
 				</div>
 
 				<label class="receive_amount-label" for="receive_input">Received amount:</label>
@@ -384,6 +383,54 @@
 				
 				<div class="receive_Remainder">Change amount here, if needed.</div>
 				<button id="receive_Submit">Submit</button>
+			</div>
+		</div>
+
+		<div class="sent_Filter">
+			<div class="sent_Wrapper">
+				<label for="">Amount Sent:</label>
+				<input type="number" id="sent_input">
+				<button id="sent_submitBtn">Submit</button>
+			</div>
+		</div>
+
+		<!-- PopUp Window fot Approved Status -->
+		<div class="approved_Filter">
+			<div class="approved_Wrapper">
+				<div>Invoice Received: <span id="approved_receivedAmount">0€</span> </div>
+				<label class="approved_comm_label">Commissions</label>
+				<div class="approved_comm_wrapper">
+					<div class="approved_comm_block1">
+						<div>Anywires fee, <span id="anyFeePercent">0</span>%:</div>
+						<div>Anywires fee, <span id="anyFeeSymbol">€</span>:</div>
+						<div>Additional fee: <input type="number" id="inputAdditionalFee" placeholder="0"></div>
+						<div>Total:</div>
+					</div>
+					<div class="approved_comm_line"></div>
+					<div class="approved_comm_block2">
+						<div id="approved_anyFeePercent">0€</div>
+						<div id="approved_anyFeeFlat">0€</div>
+						<div id="aprroved_additionalFee">0€</div>
+						<div id="approved_total_comm">0€</div>
+					</div>
+				</div>
+				<div class="approved_invoiceAmount_block">Invoice approved amount will be: <span id="approved_amount">0€</span> </div> 
+				<button id="approved_button">Approved</button>
+
+				<div class="solution_line"></div>
+
+				<label class="label_solution">Solution Commission</label>
+				<div class="solution_Wrapper">
+					<div class="solution_item_block1">
+						<div class="solution_item">Bank commission: <input type="number" class="solutionInputs" id="bankCommission" placeholder="0"></div>
+						<div class="solution_item">Solution commission, %: <input type="number" class="solutionInputs" id="solutionCommPercent" placeholder="0"></div>
+						<div class="solution_item">Solution commission, <span id="anyFeeSymbol">€:</span> <input type="number" class="solutionInputs" id="solutionCommFlat" placeholder="0"></div>
+					</div>
+					<div class="solution_item_block2">
+						<div class="solution_item">Total solution comm: <span id="totalSolution">0</span> </div>
+						<div class="solution_item">Left from transfer: <span id="leftFromTransfer">0</span> </div>
+					</div>
+				</div>
 			</div>
 		</div>
 
