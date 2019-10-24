@@ -29,10 +29,10 @@ router.post("/getPart-Merchants", jsonParser, (req, res) => {
     var filter = req.body.filter;
 
         db.collection("merchants")
-        .find(filter, { score: { $meta: "textScore" } })
+        .find(filter)
+        .sort({_id:-1})
         .skip(number)
         .limit(10)
-        .sort({ score: { $meta: "textScore" } })
         .toArray(function(err, merchants){
             if(err) return console.log("Error with upload Merchants!", err);
             db.close();
