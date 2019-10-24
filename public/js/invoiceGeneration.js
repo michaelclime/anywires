@@ -1,8 +1,8 @@
 
  // Generate merchants list for selected menu
 
-//let fetchPromise  = fetch('http://18.216.223.81:3000/getMerchants');
-let fetchPromise  = fetch('http://localhost:3000/getMerchants');
+let fetchPromise  = fetch('http://18.216.223.81:3000/getMerchants');
+//let fetchPromise  = fetch('http://localhost:3000/getMerchants');
 fetchPromise.then(response => {
     return response.json();
     }).then(merchants => {
@@ -34,8 +34,8 @@ fetchPromise.then(response => {
 
 // Generate banks list for selected menu
 
-//let fetchPromise  = fetch('http://18.216.223.81:3000/getBanks');
-let fetchPromise2  = fetch('http://localhost:3000/getBanks');
+let fetchPromise2  = fetch('http://18.216.223.81:3000/getBanks');
+//let fetchPromise2  = fetch('http://localhost:3000/getBanks');
 fetchPromise2.then(response => {
     return response.json();
     }).then(banks => {
