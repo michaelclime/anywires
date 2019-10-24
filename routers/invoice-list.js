@@ -4,7 +4,8 @@ const express = require('express'),
     jsonParser = express.json(),
     multer = require("multer"),
     objectId = require("mongodb").ObjectID,
-    fs = require("fs");
+    fs = require("fs"),
+    Invoice = require("../modules/invoice");
  
 const url = 'mongodb://18.216.223.81:27017/anywires';
 
@@ -212,7 +213,7 @@ router.post("/upload", upload.single("file"), jsonParser, (req, res) => {
 
 // Checking if type is supported for open in browser
 var checkTypeOfDocument = (type, filePath, res) => {
-    if(type !== "routerlication/pdf" && type !== "image/jpeg" && type !== "image/png"){
+    if(type !== "application/pdf" && type !== "image/jpeg" && type !== "image/png"){
         res.send("File type is not supported!");
     } else {
         fs.readFile(__dirname + filePath , (err, data) => {
@@ -314,10 +315,16 @@ router.post("/sentStatus", jsonParser, (req, res) => {
             if(err) return console.log(err, "Error with change status to Sent!");
             const bankName = inv.value.bank;
             const reqAmount = inv.value.amount.amount_requested;
+
+            // Check currency of Invoice
+            var obj = {"balance_EUR.balance_sent": amountSent, "balance_EUR.balance_requested": -reqAmount};
+            if(inv.value.currency === "USD"){
+                obj = {"balance_USD.balance_sent": amountSent, "balance_USD.balance_requested": -reqAmount};
+            }
             
             mongo.connect(url, (err, db) => {
                 if (err) return console.log(err, "Can't connect to database!");
-                db.collection("banks").updateOne({"name": bankName}, {$inc: {"balance_sent": amountSent, "balance_requested": -reqAmount} }, 
+                db.collection("banks").updateOne({"name": bankName}, {$inc: obj}, 
                 {returnOriginal: false}, (err, result) => {
                     if(err) return console.log(err, "Error with change balance at Bank!");
                     res.send("Sent status has been set successfully!");
@@ -349,14 +356,17 @@ router.post("/requestStatus", jsonParser, (req, res) => {
             reqAmount = result.value.amount.amount_requested;
             bankName = result.value.bank;
 
+            // Check if Invoice currency USD
+            var obj = {"balance_EUR.balance_sent": -sentAmount, "balance_EUR.balance_requested": reqAmount};
+            if(result.value.currency === "USD"){
+                obj = {"balance_USD.balance_sent": -sentAmount, "balance_USD.balance_requested": reqAmount};
+            }
+
             mongo.connect(url, (err, db) => {
                 if (err) return console.log(err, "Can't connect to database!");
-                db.collection("banks").findOneAndUpdate({"name": bankName}, {
-                    $inc: {
-                        "balance_sent": -sentAmount, 
-                        "balance_requested": reqAmount
-                    }
-                }, {returnOriginal: false}, (err, bank) => {
+
+                db.collection("banks").findOneAndUpdate({"name": bankName}, {$inc: obj}, 
+                {returnOriginal: false}, (err, bank) => {
                     if(err) return console.log(err, "Error with change bank balance!");
                     res.send("Requested status has been set successfully!");
                 });
@@ -375,6 +385,7 @@ router.post("/receivedStatus", jsonParser, (req, res) => {
     var createdBy = req.body.createdBy;
     var amountCommission = req.body.amountCommission;
     var percentCommission = req.body.percentCommission;
+    var currency = req.body.currency;
 
     // Change Invoice status, amounts and date
     mongo.connect(url, (err, db) => {
@@ -388,12 +399,16 @@ router.post("/receivedStatus", jsonParser, (req, res) => {
             var bankName = inv.value.bank;
             var amountSent = +(inv.value.amount.amount_sent);
 
+            // Check if Invoice currency USD
+            var obj = {"balance_EUR.balance_received": typedAmount, "balance_EUR.balance_sent": -amountSent};
+            if(currency === "USD"){
+                obj = {"balance_USD.balance_received": typedAmount, "balance_USD.balance_sent": -amountSent};
+            }
+
             // Change Bank Balance
             mongo.connect(url, (err, db) => {
                 if (err) return console.log(err, "Can't connect to database!");
-                db.collection("banks").findOneAndUpdate({"name": bankName}, {$inc: {
-                    "balance_received": typedAmount, 
-                    "balance_sent": -amountSent}},
+                db.collection("banks").findOneAndUpdate({"name": bankName}, {$inc: obj },
                 {returnOriginal: false}, (err, bank) => {
                     if(err) return console.log(err, "Error with change bank received details!");
 
@@ -429,6 +444,30 @@ router.post("/receivedStatus", jsonParser, (req, res) => {
         });
     });
 }); 
+
+
+// @route POST /approvedStatus
+// @desc Change all data to approved
+router.post("/approvedStatus", jsonParser, (req, res) => {
+    const invNumber = req.body.invNumber;
+    const createBy = req.body.createBy;
+    const amountApproved = req.body.amountApproved;
+    const currency = req.body.currency;
+    Invoice.findOneAndUpdate({"number": invNumber}, {$set:{
+        "status": "Approved", 
+        "dates.approved_date": new Date(), 
+        "amount.amount_approved": +amountApproved,
+    }, $push: {comments: { 
+        "created_by": createBy, 
+        "creation_date": new Date(), 
+        "message": `Invoice #${invNumber}. Transfer for ${currency}${amountApproved} was Approved!` 
+    }}}, 
+    {returnOriginal: false}, (err, inv) => {
+        var bankName = inv.bank;
+        var receivedAmount = inv.amount.amount_received;
+        
+    });
+});
 
 
 //////////////////////////////
