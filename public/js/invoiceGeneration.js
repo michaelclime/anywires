@@ -82,6 +82,7 @@ document.querySelector('.invoiceBtn').addEventListener('click', () => {
             }).then(number => {
                 console.log(number);
                 window.open("/invoice-preview?&" + (number+1), '_blank');
+                return false;
             });
     };
     setTimeout(pdfWindow(), 1000);
