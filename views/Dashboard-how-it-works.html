@@ -15,6 +15,7 @@
         <script src="js/modernizr.custom.js"></script>
         <script src="https://kit.fontawesome.com/5355902e87.js"></script>
         <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+        <script src="https://kit.fontawesome.com/5355902e87.js"></script>
 </head>
 <body>
     <header>
@@ -49,7 +50,28 @@
                             </nav>
                         </li>
                     </ul>
-                </div>       
+                </div> 
+                
+            <div class="authorizationMenu">
+                <span> 
+                    <span class="userName"> <%= currentUser.fullname %></span>
+                    <span class="userLogo"><i class="far fa-user-circle"></i></span>
+                </span>
+                <ul class="dropMenu">
+                    <li class="profile">
+                        <span class="liLogo"><i class="fas fa-user-alt"></i></span>
+                        <a href="personal-area.html">Profile</a>
+                    </li>
+                    <li class="merchant">
+                        <span class="liLogo"><i class="fab fa-chromecast"></i></span>
+                        <a href="merchants.html">Merchant</a>
+                    </li>
+                    <li class="logOut">
+                        <span class="liLogo"><i class="fas fa-sign-out-alt"></i></span>
+                        <a href="/logout">LogOut</a>
+                    </li>
+                </ul>
+            </div>
     </header>
         <div class ="pageTitle">
             <img src="img/information.png">
@@ -129,7 +151,7 @@
 			new gnMenu( document.getElementById( 'gn-menu' ) );
         </script>
         <script src="js/how-it-works.js"></script>
-       
+        <script src="js/authorizationMenu.js"></script>
        
 </body>
 </html>

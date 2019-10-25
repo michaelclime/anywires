@@ -309,7 +309,7 @@ router.post('/creatSettle/:id', async (req, res) => {
 });
 
 router.post('/creatSettleFromAwWallet/:id', async (req, res) => {
-
+   
     let newSettle = {
         dates: {
             creation_date: new Date()
@@ -324,7 +324,7 @@ router.post('/creatSettleFromAwWallet/:id', async (req, res) => {
         wallets: [
             objectId(req.body.wallet)
         ]
-    }
+    };
 
     const settlement = new Settlement(newSettle);
 
