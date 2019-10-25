@@ -5,7 +5,9 @@ const express = require('express'),
     multer = require("multer"),
     objectId = require("mongodb").ObjectID,
     fs = require("fs"),
-    Invoice = require("../modules/invoice");
+    Invoice = require("../modules/invoice"),
+    Bank = require("../modules/bank"),
+    Commission = require("../modules/commission");
  
 const url = 'mongodb://18.216.223.81:27017/anywires';
 
@@ -452,7 +454,8 @@ router.post("/approvedStatus", jsonParser, (req, res) => {
     const invNumber = req.body.invNumber;
     const createBy = req.body.createBy;
     const amountApproved = req.body.amountApproved;
-    const currency = req.body.currency;
+
+    // || 1.Change Invoice info to Approved ||
     Invoice.findOneAndUpdate({"number": invNumber}, {$set:{
         "status": "Approved", 
         "dates.approved_date": new Date(), 
@@ -460,12 +463,70 @@ router.post("/approvedStatus", jsonParser, (req, res) => {
     }, $push: {comments: { 
         "created_by": createBy, 
         "creation_date": new Date(), 
-        "message": `Invoice #${invNumber}. Transfer for ${currency}${amountApproved} was Approved!` 
+        "message": `Invoice #${invNumber}. Transfer for ${req.body.currency}${amountApproved} was Approved!` 
     }}}, 
     {returnOriginal: false}, (err, inv) => {
+        if(err) return console.log(err, "Error with changing Invoice to Approved!");
+        //  || 2. Change Bank Balance for Approved ||
         var bankName = inv.bank;
-        var receivedAmount = inv.amount.amount_received;
-        
+        var amountReceived = inv.amount.amount_received;
+
+        // Check if Invoice currency USD
+        var obj = {"balance_EUR.balance_approved": amountApproved, "balance_EUR.balance_received": -amountReceived};
+        if(inv.currency === "USD"){
+            obj = {"balance_USD.balance_approved": amountApproved, "balance_USD.balance_received": -amountReceived};
+        }
+
+        Bank.updateOne({"name": bankName}, {$inc: obj}, {returnOriginal: false}, async (err, bank) => {
+            if(err) return console.log(err, "Error with changing Bank to Balance to Approved!");
+
+            //  || 3. Add new Commission to collection ||
+            const comm = new Commission({
+                // AnyWires Commission
+                    "created_by": createBy,
+                    "amount": +req.body.totalAny,
+                    "currency": inv.currency,
+                    "type": "Anywires commission",
+                    "percentage": +req.body.anywiresPercent,
+                    "flat": +req.body.anyFeeFlat,
+                    "additional": +req.body.AdditionaFee,
+                    "creation_date": new Date(),
+                });
+            try {
+                await comm.save();
+                var commId1 = new objectId(comm._id);
+            } catch (error) {
+                console.log("Err with first commission!", err);
+            }
+            
+            const comm2 = new Commission({
+                // Solution Commission
+                    "created_by": createBy,
+                    "amount": +req.body.totalSolution,
+                    "currency": inv.currency,
+                    "type": "Incoming solution commission",
+                    "percentage": +req.body.solutionPercent,
+                    "flat": +req.body.solutionFlat,
+                    "additional": 0,
+                    "creation_date": new Date(),
+                    "bank_commision": +req.body.bankCommission,
+                    "left_from_transfer": +req.body.leftFromTransfer
+            });
+            try {
+                await comm2.save();
+                var commId2 = new objectId(comm2._id);
+            } catch (error) {
+                console.log("Error with second commission!", err);
+            }
+
+            // || 4. Add new CommissionID to Invoice ||
+            Invoice.updateOne({"number": invNumber}, {$push: {"commissions":{$each: [commId1, commId2]} }}, 
+            {returnOriginal: false}, (err, result) => {
+                if(err) return console.log("Err with pushing commissions to invoice");
+                res.send("Approved status has been set successfully!")
+            });
+            
+        });
     });
 });
 
