@@ -73,17 +73,18 @@ if (alertWindow) {
   });
 }
 
-document.querySelector('.invoiceBtn').addEventListener('click', () => {
-    const pdfWindow = () => {
-        let fetchPromise3  =  fetch('http://18.216.223.81:3000/getInvNumber');
+// Open Invoice Preview
+let fetchPromise3  = fetch('http://18.216.223.81:3000/getInvNumber');
 
-        fetchPromise3.then(response => {
-            return response.json();
-            }).then(number => {
-                console.log(number);
-                window.open("/invoice-preview?&" + (number+1), '_blank');
-                return false;
-            });
-    };
-    setTimeout(pdfWindow(), 1000);
-});
+fetchPromise3.then(response => {
+    return response.json();
+    }).then(number => {
+        jQuery(".invoiceBtn").click(function(){
+            var win = window.open();
+            win.location = "/invoice-preview?&" + (number + 1);
+            win.opener = null;
+            win.blur();
+            window.focus();
+        });
+    });
+
