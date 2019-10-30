@@ -16,7 +16,7 @@ table thead tr {
   background: #20a5f7;
 }
 table tbody tr {
-  height: 125px;
+  height: 95px;
 }
 table tbody tr:last-child {
   border: 0;
@@ -63,10 +63,6 @@ tbody tr {
 
 .green {
   color: rgb(24, 209, 24);
-}
-
-.fiolet {
-  color: #841eaf;
 }
 
 .blue {
@@ -241,6 +237,10 @@ tbody tr {
 
 .comCol2 {
   width: 350px;
+}
+
+.marginTop5 {
+  margin-top: 5px;
 }
 
 

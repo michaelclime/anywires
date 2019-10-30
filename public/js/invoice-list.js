@@ -1,7 +1,7 @@
 class invoiceList {
     constructor(){
+        this.currency = "";
         this.currentTr = "";
-        this.curNumber = "";
         this.ArrayLIst = [];
         this.ArrayBanks = [];
         this.ArrayMerchants = []; 
@@ -41,7 +41,128 @@ class invoiceList {
         this.approvedBtn = document.querySelector("#approved");
         this.filterApproved = document.querySelector(".approved_Filter");
         this.approvedBtnSubmit = document.querySelector("#approved_button");
+        this.availableBtn = document.querySelector("#available");
+        this.declinedBtn = document.querySelector("#declinedBtn");
         this.render();
+    }
+
+    declinedInvoiceStatus = async (data) => {
+        return  await fetch("http://18.216.223.81:3000/declinedStatus", {
+                method: "POST",
+                body: JSON.stringify({data}),
+                headers:{'Content-Type': 'application/json'}
+            })
+            .then(res => {
+                return res.text();
+            }) 
+            .catch(err => {
+                console.log(err);
+            });
+    }
+
+    declinedStatus = async () => {
+        if (this.currentInvoice[0].status === "Sent" || this.currentInvoice[0].status === "Requested") {
+            // Loading GIF ON
+            this.loadingGif.style.display = "flex";
+
+            var amountDeclined = this.currentInvoice[0].amount.amount_requested;
+            this.currentInvoice[0].status === "Sent" ? amountDeclined = this.currentInvoice[0].amount.amount_sent : "";
+            var createdBy = this.currentUser.textContent.trim();
+
+            var data = {
+                "invNumber": this.currentInvoice[0].number,
+                "invStatus": this.currentInvoice[0].status,
+                "amountDeclined": +amountDeclined,
+                "createdBy": createdBy,
+                "currency" : this.currency
+            };
+            await this.declinedInvoiceStatus(data);
+
+            // Change status, Declined date and Status for currentInvoice
+            this.currentInvoice[0].status = "Declined";
+            this.currentInvoice[0].dates.declined_date = new Date();
+
+            // Change table info for current Invoice
+            this.currentTr.children[8].innerHTML = `<strong>Declined</strong>`;
+            this.currentTr.children[8].style.color = "red";
+            document.querySelector(".currentStatus").innerHTML = "Declined";
+            document.querySelector(".currentStatus").style.color = "red";
+
+            // Update Comment Area for this.currentInvoce Obj
+            this.tableComments = document.querySelector("#tableTbody-comments").innerHTML = "";
+            this.currentInvoice[0].comments.unshift({
+                "created_by": createdBy,
+                "creation_date": new Date(),
+                "message": `Invoice #${this.currentInvoice[0].number}. Transfer for ${this.currency}${amountDeclined} was Declined!`
+            });
+            this.tableCommentsRender(this.currentInvoice[0].comments);
+
+            // Loading GIF OFF
+            this.loadingGif.style.display = "none";
+
+        } else {
+            alert("You can't do this!");
+        }
+    }
+
+    availableInvoiceStatus = async (invNumber, amountAvailable, createBy, currency) => {
+        return  await fetch("http://18.216.223.81:3000/availableStatus", {
+                method: "POST",
+                body: JSON.stringify({
+                    invNumber,
+                    amountAvailable,
+                    createBy,
+                    currency
+                }),
+                headers:{'Content-Type': 'application/json'}
+            })
+            .then(res => {
+                return res.text();
+            }) 
+            .catch(err => {
+                console.log(err);
+            });
+    }
+
+    availableStatus = async () => {
+        // Check if status Approved
+        if (this.currentInvoice[0].status === "Approved"){
+            var creator = this.currentUser.textContent.trim();
+
+            // Loading GIF ON
+            this.loadingGif.style.display = "flex";
+
+            // Change status, Available date, amount Available for currentInvoice
+            this.currentInvoice[0].status = "Available";
+            this.currentInvoice[0].dates.available_date = new Date();
+            this.currentInvoice[0].amount.amount_available = this.currentInvoice[0].amount.amount_approved;
+
+            // Change table info for current Invoice
+            this.currentTr.children[8].innerHTML = `<strong>Available</strong>`;
+            this.currentTr.children[8].style.color = "rgb(24, 209, 24)";
+            this.currentTr.children[7].children[0].innerHTML = `${this.currency}${this.currentInvoice[0].amount.amount_available}`;
+            this.currentTr.children[7].children[1].innerHTML = `${this.checkDate(new Date())}`;
+            document.querySelector(".currentStatus").innerHTML = "Available";
+            document.querySelector(".currentStatus").style.color = "rgb(24, 209, 24)";
+
+            // Request
+            await this.availableInvoiceStatus(this.currentInvoice[0].number, this.currentInvoice[0].amount.amount_approved, creator, this.currency);
+
+            // Update Comment Area for this.currentInvoce Obj
+            this.tableComments = document.querySelector("#tableTbody-comments").innerHTML = "";
+            this.currentInvoice[0].comments.unshift({
+                "created_by": creator,
+                "creation_date": new Date(),
+                "message": `Invoice #${this.currentInvoice[0].number}. Transfer for ${this.currency}${this.currentInvoice[0].amount.amount_approved} was Available!`
+            });
+            this.tableCommentsRender(this.currentInvoice[0].comments);
+
+            // Loading GIF OFF
+            this.loadingGif.style.display = "none";
+
+        } else {
+            alert("You can't do this!");
+        }
     }
 
     approvedInvoiceStatus = async (data) => {
@@ -73,18 +194,16 @@ class invoiceList {
             var anywiresPercent = anyFeePercent;
 
             // Check if this $
+            var currencyInv = "";
             if (this.currentInvoice[0].currency === "USD") {
                 var currencyInv = await this.getEURexchange("EUR", "USD");
                 anyFeeFlat = Math.round(anyFeeFlat * currencyInv.rates.USD);
             }
-            
 
             anyFeePercent = (amountReceive/100)*anyFeePercent;
             AdditionaFee < 0 ? AdditionaFee = 0 : "";
             var amountApproved = amountReceive - anyFeePercent - anyFeeFlat - AdditionaFee;
             var createBy = this.currentUser.textContent.trim();
-            var currency = "";
-            this.currentInvoice[0].currency === "USD" ? currency = "$" : currency = "€";
             var totalAny = anyFeePercent + anyFeeFlat + AdditionaFee;
 
             ////////  Solution Commission  //////
@@ -94,11 +213,9 @@ class invoiceList {
             solutionPercent < 0 ? solutionPercent = 0 : "";
             var solutionFlat = Number(document.querySelector("#solutionCommFlat").value);
             solutionFlat < 0 ? solutionFlat = 0 : "";
-            console.log(solutionFlat);
 
             // Check if this $
             if (this.currentInvoice[0].currency === "USD") {
-                var currencyInv = await this.getEURexchange("EUR", "USD");
                 solutionFlat = Math.round(solutionFlat * currencyInv.rates.USD);
             }
 
@@ -110,7 +227,7 @@ class invoiceList {
                 // ANYWIRES_FEES
                 "invNumber": this.currentInvoice[0].number,
                 "createBy": createBy,
-                "currency": currency,
+                "currency": this.currency,
                 "amountApproved": amountApproved,
                 "AdditionaFee": AdditionaFee,
                 "totalAny": totalAny,
@@ -126,11 +243,32 @@ class invoiceList {
             // Loading GIF appear
             this.loadingGif.style.display = "flex";
 
-            this.approvedInvoiceStatus(data);
+            await this.approvedInvoiceStatus(data);
 
+            // Change Table info for current Invoice
+            document.querySelector(".currentStatus").innerHTML = "Approved";
+            document.querySelector(".currentStatus").style.color = "#12C7B2";
+            this.currentTr.children[8].innerHTML = `<strong>Approved</strong>`;
+            this.currentTr.children[8].style.color = "#12C7B2";
+
+            // Change this.currentInvoce Obj
+            this.currentInvoice[0].status = "Approved";
+            this.currentInvoice[0].dates.approved_date = new Date();
+            this.currentInvoice[0].amount.amount_approved = +amountApproved;
+
+            // Update Comment Area for this.currentInvoce Obj
+            this.tableComments = document.querySelector("#tableTbody-comments").innerHTML = "";
+            this.currentInvoice[0].comments.unshift({
+                "created_by": createBy,
+                "creation_date": new Date(),
+                "message": `Invoice #${this.currentInvoice[0].number}. Transfer for ${this.currency}${amountApproved} was Approved!`
+            });
+            this.tableCommentsRender(this.currentInvoice[0].comments);
+
+            // Loading GIF off
             this.filterApproved.style.display = "none";
-            // Loading GIF appear
             this.loadingGif.style.display = "none";
+
         } else {
             alert("You can't do this!");
         }
@@ -205,7 +343,7 @@ class invoiceList {
             document.querySelector("#totalSolution").innerHTML = `${totalSolution}${currency}`;
             document.querySelector("#leftFromTransfer").innerHTML = `${amountReceived - totalSolution}${currency}`;
 
-            var solutionInputs = document.querySelectorAll(".solutionInputs").forEach((inpt) => inpt.addEventListener("keyup", () => {
+            document.querySelectorAll(".solutionInputs").forEach((inpt) => inpt.addEventListener("keyup", () => {
                 var bankComm = Number(document.querySelector("#bankCommission").value);
                 var solComPerInpt = Number(document.querySelector("#solutionCommPercent").value);
                 var solComPerInptRes = (amountReceived/100) * solComPerInpt;
@@ -263,8 +401,6 @@ class invoiceList {
             var typedAmount = document.querySelector("#receive_input").value;
             var amountSent = this.currentInvoice[0].amount.amount_sent;
             var creator = this.currentUser.textContent.trim();
-            var currency = "";
-            this.currentInvoice[0].currency === "USD" ? currency = "$" : currency = "€";
 
             // Counting proccess for Commission
             var amountCommission = 0;
@@ -274,14 +410,8 @@ class invoiceList {
                 percentCommission = (100*amountCommission)/amountSent;
             }
 
-            // Add comment about action
-            await this.addComment(`Transfer for ${currency}${typedAmount} was Received!`);
-
-            // Loading GIF OFF
-            this.loadingGif.style.display = "none";
-
             // Request for status "Received" 
-            this.receivedInvoiceStatus(this.curNumber, typedAmount, amountCommission, percentCommission, creator, this.currentInvoice[0].currency);
+            await this.receivedInvoiceStatus(this.currentInvoice[0].number, typedAmount, amountCommission, percentCommission, creator, this.currentInvoice[0].currency);
 
             // Change status, received date, amount received for currentInvoice and create new field received_after_commision
             this.currentInvoice[0].status = "Received";
@@ -291,15 +421,28 @@ class invoiceList {
             // Change table information
             this.currentTr.children[8].innerHTML = `<strong>Received</strong>`;
             this.currentTr.children[8].style.color = "rgb(85, 140, 223)";
-            this.currentTr.children[5].children[0].children[0].textContent = `${currency}${typedAmount}`;
+            this.currentTr.children[5].children[0].children[0].textContent = `${this.currency}${typedAmount}`;
             this.currentTr.children[5].children[0].children[1].textContent = `${this.checkDate(new Date())}`;
 
             // Change style for popUp
             document.querySelector(".currentStatus").textContent = "Received";
             document.querySelector(".currentStatus").style.color = "rgb(85, 140, 223)";
 
+            // Update Comment Area for this.currentInvoce Obj
+            this.tableComments = document.querySelector("#tableTbody-comments").innerHTML = "";
+            this.currentInvoice[0].comments.unshift({
+                "created_by": creator,
+                "creation_date": new Date(),
+                "message": `Invoice #${this.currentInvoice[0].number}. Transfer for ${this.currency}${+typedAmount} was Received!`
+            });
+            this.tableCommentsRender(this.currentInvoice[0].comments);
+
             // Hide PopUp
             this.filterReceive.style.display = "none";
+
+            // Loading GIF OFF
+            this.loadingGif.style.display = "none";
+
         } else {
             alert("You can't do this!");
         }
@@ -318,22 +461,22 @@ class invoiceList {
             var amountSent = this.currentInvoice[0].amount.amount_sent;
 
             // PopUp render Info
-            var currency = "";
-            this.currentInvoice[0].currency === "USD" ? currency = "$" : currency = "€";
-            document.querySelector(".receive_InvoiceNumber").innerHTML = `invoice #${this.curNumber}`;
-            document.querySelector(".receive_SentAmount").innerHTML = `${amountSent}${currency}`
+            document.querySelector(".receive_InvoiceNumber").innerHTML = `invoice #${this.currentInvoice[0].number}`;
+            document.querySelector(".receive_SentAmount").innerHTML = `${amountSent}${this.currency}`
             document.querySelector("#receive_input").value = `${amountSent}`;
         } else {
             alert("You can't do this!");
         }
     }
 
-    sentInvoiceStatus = async (invNumber, amountSent) => {
+    sentInvoiceStatus = async (invNumber, amountSent, currency, creator) => {
         return  await fetch("http://18.216.223.81:3000/sentStatus", {
                 method: "POST",
                 body: JSON.stringify({
                     invNumber,
-                    amountSent
+                    amountSent,
+                    currency,
+                    creator
                 }),
                 headers:{'Content-Type': 'application/json'}
             })
@@ -379,14 +522,13 @@ class invoiceList {
 
     sentStatus = async () => {
         var sent = document.querySelector("#sent_input").value;
-        var currency = "";
-        this.currentInvoice[0].currency === "USD" ? currency = "$" : currency = "€";
+        var creator = this.currentUser.textContent.trim();
 
         // Loading GIF appear
         this.loadingGif.style.display = "flex";
 
         // Request for status "Sent" 
-        this.sentInvoiceStatus(this.curNumber, +sent);
+        await this.sentInvoiceStatus(this.currentInvoice[0].number, +sent, this.currency, creator);
 
         // Change status, sent date, amount sent for currentInvoice
         this.currentInvoice[0].status = "Sent";
@@ -396,28 +538,39 @@ class invoiceList {
         // Change table information
         this.currentTr.children[8].innerHTML = `<strong>Sent</strong>`;
         this.currentTr.children[8].style.color = "rgb(255, 187, 51)";
-        this.currentTr.children[3].children[0].children[0].textContent = `${currency}${+sent}`;
+        this.currentTr.children[3].children[0].children[0].textContent = `${this.currency}${+sent}`;
         this.currentTr.children[3].children[0].children[1].innerHTML = `${this.checkDate(new Date())}`;
 
         // Change style for popUp
         document.querySelector(".currentStatus").textContent = "Sent";
         document.querySelector(".currentStatus").style.color = "rgb(255, 187, 51)";
 
-        // Add new comment
-        await this.addComment(`Transfer for ${currency}${+sent} was Sent!`);
+         // Update Comment Area for this.currentInvoce Obj
+         this.tableComments = document.querySelector("#tableTbody-comments").innerHTML = "";
+         this.currentInvoice[0].comments.unshift({
+             "created_by": creator,
+             "creation_date": new Date(),
+             "message": `Invoice #${this.currentInvoice[0].number}. Transfer for ${this.currency}${+sent} was Sent!`
+         });
+         this.tableCommentsRender(this.currentInvoice[0].comments);
 
-        // Loading GIF appear
+        // Loading GIF OFF
         this.loadingGif.style.display = "none";
+        
+
         // Hide Modal Window
         this.sentFilter.style.display = "none";
     }
 
-    requestedInvoiceStatus = async (invoiceNum, sentAmount) => {
+    requestedInvoiceStatus = async (invoiceNum, sentAmount, currency, amountRequested, creator) => {
         return  await fetch("http://18.216.223.81:3000/requestStatus", {
                 method: "POST",
                 body: JSON.stringify({
                     invoiceNum,
-                    sentAmount
+                    sentAmount,
+                    currency,
+                    amountRequested,
+                    creator
                 }),
                 headers:{'Content-Type': 'application/json'}
             })
@@ -433,8 +586,7 @@ class invoiceList {
 
         // Get current Invoice
         var role = this.currentUserRole.textContent.trim();
-        var currency = "";
-        this.currentInvoice[0].currency === "USD" ? currency = "$" : currency = "€";
+        var creator = this.currentUser.textContent.trim();
 
         // If user CRM admin and Status is Sent
         if (this.currentInvoice[0].status === "Sent" && role === "CrmAdmin") { 
@@ -442,7 +594,7 @@ class invoiceList {
             this.loadingGif.style.display = "flex";
 
             // Request for status "Requested"
-            this.requestedInvoiceStatus(this.curNumber, this.currentInvoice[0].amount.amount_sent);
+            await this.requestedInvoiceStatus(this.currentInvoice[0].number, this.currentInvoice[0].amount.amount_sent, this.currency, this.currentInvoice[0].amount.amount_requested, creator);
 
             // Change status, sent date, amount sent for currentInvoice
             this.currentInvoice[0].status = "Requested";
@@ -456,28 +608,37 @@ class invoiceList {
             // Change table info
             this.currentTr.children[8].innerHTML = `<strong>Requested</strong>`;
             this.currentTr.children[8].style.color = "rgb(104, 103, 103)";
-            this.currentTr.children[3].children[0].children[0].textContent = `${currency}0`;
+            this.currentTr.children[3].children[0].children[0].textContent = `${this.currency}0`;
             this.currentTr.children[3].children[0].children[1].innerHTML = `mm/dd/yyyy`;
             
-            // this.changeInvoiceStatus("Requested", this.curNumber);
-            await this.addComment("Status was changed from Sent to Requested!");
+            // Update Comment Area for this.currentInvoce Obj
+            this.tableComments = document.querySelector("#tableTbody-comments").innerHTML = "";
+            this.currentInvoice[0].comments.unshift({
+                "created_by": creator,
+                "creation_date": new Date(),
+                "message": `Invoice #${this.currentInvoice[0].number}. Transfer for ${this.currency}${this.currentInvoice[0].amount.amount_requested} was Requested!`
+            });
+            this.tableCommentsRender(this.currentInvoice[0].comments);
 
-            // Loading GIF appear
+            // Loading GIF OFF
             this.loadingGif.style.display = "none";
+            
+            
 
         } else {
             alert("You can't do this!");
         }
     }
 
-    changeDocsStatus = async (filename, status, number, type) => {
+    changeDocsStatus = async (filename, status, number, type, createdBy) => {
         return  await fetch("http://18.216.223.81:3000/changeDocStatus", {
                 method: "POST",
                 body: JSON.stringify({
                     filename,
                     status, 
                     number, 
-                    type
+                    type,
+                    createdBy
                 }),
                 headers:{'Content-Type': 'application/json'}
             })
@@ -497,9 +658,18 @@ class invoiceList {
         var status = "Declined";
         var type = event.target.closest("tr").children[1].textContent.trim();
         var statusTd = event.target.closest("tr").children[2].innerHTML = status;
+        var createdBy = this.currentUser.textContent.trim();
         
-        await this.changeDocsStatus(filename, status, this.curNumber, type);
-        this.addComment(`${type} was Declined!`);
+        await this.changeDocsStatus(filename, status, this.currentInvoice[0].number, type, createdBy);
+
+        // Update Comment Area for this.currentInvoce Obj
+        this.tableComments = document.querySelector("#tableTbody-comments").innerHTML = "";
+        this.currentInvoice[0].comments.unshift({
+            "created_by": createdBy,
+            "creation_date": new Date(),
+            "message": `Invoice #${this.currentInvoice[0].number}. ${type} was ${status}!`
+        });
+        this.tableCommentsRender(this.currentInvoice[0].comments);
 
         // Loading GIF appear
         this.loadingGif.style.display = "none";
@@ -513,9 +683,18 @@ class invoiceList {
         var status = "Approved";
         var type = event.target.closest("tr").children[1].textContent.trim();
         var statusTd = event.target.closest("tr").children[2].innerHTML = status;
+        var createdBy = this.currentUser.textContent.trim();
         
-        await this.changeDocsStatus(filename, status, this.curNumber, type);
-        this.addComment(`${type} was Approved!`);
+        await this.changeDocsStatus(filename, status, this.currentInvoice[0].number, type, createdBy);
+
+        // Update Comment Area for this.currentInvoce Obj
+        this.tableComments = document.querySelector("#tableTbody-comments").innerHTML = "";
+        this.currentInvoice[0].comments.unshift({
+            "created_by": createdBy,
+            "creation_date": new Date(),
+            "message": `Invoice #${this.currentInvoice[0].number}. ${type} was ${status}!`
+        });
+        this.tableCommentsRender(this.currentInvoice[0].comments);
 
         // Loading GIF appear
         this.loadingGif.style.display = "none";
@@ -541,31 +720,29 @@ class invoiceList {
     }
 
     initialUpload = async (event) => {
-        // Loading GIF appear
-        this.loadingGif.style.display = "flex";
 
         event.preventDefault();
 
         var type = document.querySelector("#docsSelect").value.trim();
-        var number = this.curNumber;
+        var number = this.currentInvoice[0].number;
         var file = document.querySelector("#uploadDocs").files[0];
         var creator = this.currentUser.textContent.trim();
         var emptyFile = this.checkIsEmptyObj(file);
         
         // If File exist and Type too than send req
         if(!emptyFile && type){
+            // Loading GIF appear
+            this.loadingGif.style.display = "flex";
+
             var fd = new FormData();
             fd.append("file", file);
             fd.append("number", number);
             fd.append("type", type);
             fd.append("creator", creator);
             await this.postFile(fd);
-
-            // Add comment about action
-            this.addComment(`${type} was Uploaded!`);
      
              // Update Modal Window View
-             this.currentInvoice = await this.getInvoices(0, {"number": this.curNumber} ); 
+             this.currentInvoice = await this.getInvoices(0, {"number": this.currentInvoice[0].number} ); 
 
              // Check and render docs
             document.querySelector("#table-docs").innerHTML = "";
@@ -574,6 +751,9 @@ class invoiceList {
             this.tableDocsRender(this.currentInvoice[0].documents.utility_bill);
             this.tableDocsRender(this.currentInvoice[0].documents.declaration);
 
+            // Update Comment Area for this.currentInvoce Obj
+            this.tableComments = document.querySelector("#tableTbody-comments").innerHTML = "";
+            this.tableCommentsRender(this.currentInvoice[0].comments.reverse());
 
             //  Cleanning Click to Upload Input
              document.querySelector("#uploadDocs").value = "";
@@ -608,12 +788,15 @@ class invoiceList {
             });
     }
 
-    checkChangesOfEditedInvoice = (current, newData, name) => {
+    checkChangesOfEditedInvoice = (current, newData, name, currency) => {
         var comment = ``;
         current = current.toString().trim();
         newData = newData.toString().trim();
-        if (current !== newData) {
+        if (current !== newData && name !== "amount requested" && name !== "amount sent") {
             comment = `${comment} ${name} changed from ${current} to ${newData};`;
+
+        } else if(current !== newData && name === "amount requested" || current !== newData && name === "amount sent"){
+            comment = `${comment} ${name} changed from ${currency}${current} to ${currency}${newData};`;
         }
         return comment;
     }
@@ -623,63 +806,83 @@ class invoiceList {
         this.loadingGif.style.display = "flex";
 
         var sepa = false;
-        this.editData[5].checked ? sepa = true : sepa = false;
+        this.editData[6].checked ? sepa = true : sepa = false;
 
         var newInvoice = {
             "amount.amount_requested": +(this.editData[0].value),
-            "type": this.editData[1].value,
-            "currency": this.editData[2].value,
-            "bank": this.editData[3].value,
-            "merchant": this.editData[4].value,
+            "amount.amount_sent": +(this.editData[1].value),
+            "type": this.editData[2].value,
+            "currency": this.editData[3].value,
+            "bank": this.editData[4].value,
+            "merchant": this.editData[5].value,
             "sepa": sepa,
-            "client_details.full_name": this.editData[6].value,
-            "client_details.email": this.editData[7].value,
-            "client_details.phone": this.editData[8].value,
-            "client_details.country": this.editData[9].value,
-            "client_details.address": this.editData[10].value,
-            "client_details.id_number": this.editData[11].value
+            "client_details.full_name": this.editData[7].value,
+            "client_details.email": this.editData[8].value,
+            "client_details.phone": this.editData[9].value,
+            "client_details.country": this.editData[10].value,
+            "client_details.address": this.editData[11].value,
+            "client_details.id_number": this.editData[12].value
         };
 
         // Add comment about action - "save changes to Invoice".
         var comment = ``;
-        var reqNew = this.checkChangesOfEditedInvoice(this.currentInvoice[0].amount.amount_requested, this.editData[0].value, "amount requested");
-        var typeNew = this.checkChangesOfEditedInvoice(this.currentInvoice[0].type, this.editData[1].value, "type");
-        var currNew = this.checkChangesOfEditedInvoice(this.currentInvoice[0].currency, this.editData[2].value, "currency");
-        var bankNew = this.checkChangesOfEditedInvoice(this.currentInvoice[0].bank, this.editData[3].value, "bank");
-        var merchNew = this.checkChangesOfEditedInvoice(this.currentInvoice[0].merchant, this.editData[4].value, "merchant");
-        var nameNew = this.checkChangesOfEditedInvoice(this.currentInvoice[0].client_details.full_name, this.editData[6].value, "client's name");
-        var emailNew = this.checkChangesOfEditedInvoice(this.currentInvoice[0].client_details.email, this.editData[7].value, "client's email");
-        var phNew = this.checkChangesOfEditedInvoice(this.currentInvoice[0].client_details.phone, this.editData[8].value, "client's phone");
-        var countryNew = this.checkChangesOfEditedInvoice(this.currentInvoice[0].client_details.country, this.editData[9].value, "client's country");
-        var addrNew = this.checkChangesOfEditedInvoice(this.currentInvoice[0].client_details.address, this.editData[10].value, "client's address");
-        var idNew = this.checkChangesOfEditedInvoice(this.currentInvoice[0].client_details.id_number, this.editData[11].value, "client's id number");
+        var reqNew = this.checkChangesOfEditedInvoice(this.currentInvoice[0].amount.amount_requested, this.editData[0].value, "amount requested", this.currency);
+        var sentNew = this.checkChangesOfEditedInvoice(this.currentInvoice[0].amount.amount_sent, this.editData[1].value, "amount sent", this.currency);
+        var typeNew = this.checkChangesOfEditedInvoice(this.currentInvoice[0].type, this.editData[2].value, "type");
+        var currNew = this.checkChangesOfEditedInvoice(this.currentInvoice[0].currency, this.editData[3].value, "currency");
+        var bankNew = this.checkChangesOfEditedInvoice(this.currentInvoice[0].bank, this.editData[4].value, "bank");
+        var merchNew = this.checkChangesOfEditedInvoice(this.currentInvoice[0].merchant, this.editData[5].value, "merchant");
+        var nameNew = this.checkChangesOfEditedInvoice(this.currentInvoice[0].client_details.full_name, this.editData[7].value, "client's name");
+        var emailNew = this.checkChangesOfEditedInvoice(this.currentInvoice[0].client_details.email, this.editData[8].value, "client's email");
+        var phNew = this.checkChangesOfEditedInvoice(this.currentInvoice[0].client_details.phone, this.editData[9].value, "client's phone");
+        var countryNew = this.checkChangesOfEditedInvoice(this.currentInvoice[0].client_details.country, this.editData[10].value, "client's country");
+        var addrNew = this.checkChangesOfEditedInvoice(this.currentInvoice[0].client_details.address, this.editData[11].value, "client's address");
+        var idNew = this.checkChangesOfEditedInvoice(this.currentInvoice[0].client_details.id_number, this.editData[12].value, "client's id number");
 
-        comment = reqNew + typeNew + currNew + bankNew + merchNew + nameNew + emailNew + phNew + countryNew + addrNew + idNew;
+        comment = reqNew + sentNew + typeNew + currNew + bankNew + merchNew + nameNew + emailNew + phNew + countryNew + addrNew + idNew;
+
 
         // If something was changed then ->
         if (comment){
-            await this.postEditedInvoice(this.curNumber, newInvoice);
-            this.addComment(comment);
+            var createdBy = this.currentUser.textContent.trim();
+            var currecyChanged = this.currentInvoice[0].currency !== this.editData[3].value;
+            var chnagedAmountReq = this.currentInvoice[0].amount.amount_requested !== +this.editData[0].value;
+            var amountReqOld = this.currentInvoice[0].amount.amount_requested;
+            var chnagedAmountSent = this.currentInvoice[0].amount.amount_sent !== +this.editData[1].value;
+            var amountSentOld = this.currentInvoice[0].amount.amount_sent;
+            var changedBank = this.currentInvoice[0].bank !== this.editData[4].value;
+            var oldBank = this.currentInvoice[0].bank;
+
+            await this.postEditedInvoice(this.currentInvoice[0].number, newInvoice, comment, createdBy, currecyChanged, chnagedAmountReq, amountReqOld, chnagedAmountSent, amountSentOld, changedBank, oldBank);
             // Update Modal Window View
-            this.currentInvoice = await this.getInvoices(0, {"number": this.curNumber} ); 
+            this.currentInvoice = await this.getInvoices(0, {"number": this.currentInvoice[0].number} ); 
             this.renderViewInvoice(this.currentInvoice);
         } 
 
         // Cleanning edit Modal Window Edit
         this.editData.forEach((item) => item.value = "");
-        this.editData[5].removeAttribute("checked", "checked");
+        this.editData[6].removeAttribute("checked", "checked");
         this.filterEdit.style.display = "none";
 
         // Loading GIF appear
         this.loadingGif.style.display = "none";
     }
 
-    postEditedInvoice = async (number, newInvoice) => {
+    postEditedInvoice = async (number, newInvoice, comment, createdBy, currecyChanged, chnagedAmountReq, amountReqOld, chnagedAmountSent, amountSentOld, changedBank, oldBank) => {
     return  await fetch("http://18.216.223.81:3000/postEditedInvoice", {
             method: "POST",
             body: JSON.stringify({
                 number,
-                newInvoice
+                newInvoice,
+                comment,
+                createdBy,
+                currecyChanged,
+                chnagedAmountReq,
+                amountReqOld,
+                chnagedAmountSent,
+                amountSentOld,
+                changedBank,
+                oldBank
             }),
             headers:{'Content-Type': 'application/json'}
         })
@@ -691,9 +894,11 @@ class invoiceList {
         });
     }
 
-    renderOptionFromArray = (obj, value, select) => {
+    renderOptionFromArray = (obj, value, select, current) => {
         obj.forEach((item) => {
-            this.renderOption(select, item[value]);
+            if (current !== item[value]) {
+                this.renderOption(select, item[value]);
+            }
         });
     }
 
@@ -706,7 +911,7 @@ class invoiceList {
     }
 
     editInvoice = () => {
-        this.invoceNumber = document.querySelector(".invoceNumber").innerHTML = this.curNumber;
+        this.invoceNumber = document.querySelector(".invoceNumber").innerHTML = this.currentInvoice[0].number;
         // If click on filter - close
         this.filterEdit = document.querySelector(".filterEditIvoice");
         this.filterEdit.style.display = "flex";
@@ -716,39 +921,79 @@ class invoiceList {
 
         // Rendering Current Data Objecs
         this.editData[0].value = this.currentInvoice[0].amount.amount_requested;
-        this.editData[1].value = this.currentInvoice[0].type;
-        this.editData[6].value = this.currentInvoice[0].client_details.full_name;
-        this.editData[7].value = this.currentInvoice[0].client_details.email;
-        this.editData[8].value = this.currentInvoice[0].client_details.phone;
-        this.editData[9].value = this.currentInvoice[0].client_details.country;
-        this.editData[10].value = this.currentInvoice[0].client_details.address;
-        this.editData[11].value = this.currentInvoice[0].client_details.id_number;
+        this.editData[1].value = this.currentInvoice[0].amount.amount_sent;
+        this.editData[2].value = this.currentInvoice[0].type;
+        this.editData[7].value = this.currentInvoice[0].client_details.full_name;
+        this.editData[8].value = this.currentInvoice[0].client_details.email;
+        this.editData[9].value = this.currentInvoice[0].client_details.phone;
+        this.editData[10].value = this.currentInvoice[0].client_details.country;
+        this.editData[11].value = this.currentInvoice[0].client_details.address;
+        this.editData[12].value = this.currentInvoice[0].client_details.id_number;
+
+        // Check currency
+        this.editData[3].innerHTML = "";
+        if(this.currentInvoice[0].currency === "EUR"){
+            this.renderAndSelectOption(this.editData[3], this.currentInvoice[0].currency);
+            this.renderOption(this.editData[3], "USD");
+        } else {
+            this.renderAndSelectOption(this.editData[3], this.currentInvoice[0].currency);
+            this.renderOption(this.editData[3], "EUR");
+        }
 
         // Render Merchant and Banks in select
-        this.editData[3].innerHTML = "";
-        this.renderOptionFromArray(this.ArrayBanks, "name", this.editData[3]);
-        this.renderAndSelectOption(this.editData[3], this.currentInvoice[0].bank);
-
         this.editData[4].innerHTML = "";
-        this.renderOptionFromArray(this.ArrayMerchants, "name", this.editData[4]);
-        this.renderAndSelectOption(this.editData[4], this.currentInvoice[0].merchant);
+        this.renderAndSelectOption(this.editData[4], this.currentInvoice[0].bank);
+        this.renderOptionFromArray(this.ArrayBanks, "name", this.editData[4], this.currentInvoice[0].bank);
+
+        this.editData[5].innerHTML = "";
+        this.renderAndSelectOption(this.editData[5], this.currentInvoice[0].merchant);
+        this.renderOptionFromArray(this.ArrayMerchants, "name", this.editData[5], this.currentInvoice[0].merchant);
 
         // Check Sepa
         if(this.currentInvoice[0].sepa){
-            this.editData[5].setAttribute("checked", "checked");
+            this.editData[6].setAttribute("checked", "checked");
         } else {
-            this.editData[5].removeAttribute("checked", "checked");
+            this.editData[6].removeAttribute("checked", "checked");
         }
 
-        // Check currency
-        this.editData[2].innerHTML = "";
-        if(this.currentInvoice[0].currency === "EUR"){
-            this.renderAndSelectOption(this.editData[2], this.currentInvoice[0].currency);
-            this.renderOption(this.editData[2], "USD");
+        // Checking Invoice Status 
+        if (this.currentInvoice[0].status !== "Sent" && this.currentInvoice[0].status !== "Requested") {
+            this.editData[0].setAttribute("disabled", "disabled");
+            this.editData[1].setAttribute("disabled", "disabled");
+            this.editData[2].setAttribute("disabled", "disabled");
+            this.editData[3].setAttribute("disabled", "disabled");
+            this.editData[4].setAttribute("disabled", "disabled");
+            this.editData[5].setAttribute("disabled", "disabled");
+            this.editData[6].setAttribute("disabled", "disabled");
+
+        } else if (this.currentInvoice[0].status === "Sent") {
+            this.editData[0].setAttribute("disabled", "disabled");
+            this.editData[1].removeAttribute("disabled", "disabled");
+            this.editData[2].removeAttribute("disabled", "disabled");
+            this.editData[3].removeAttribute("disabled", "disabled");
+            this.editData[4].removeAttribute("disabled", "disabled");
+            this.editData[5].removeAttribute("disabled", "disabled");
+            this.editData[6].removeAttribute("disabled", "disabled");
+
+        } else if (this.currentInvoice[0].status === "Requested") {
+            this.editData[1].setAttribute("disabled", "disabled");
+            this.editData[0].removeAttribute("disabled", "disabled");
+            this.editData[2].removeAttribute("disabled", "disabled");
+            this.editData[3].removeAttribute("disabled", "disabled");
+            this.editData[4].removeAttribute("disabled", "disabled");
+            this.editData[5].removeAttribute("disabled", "disabled");
+            this.editData[6].removeAttribute("disabled", "disabled");
+            
         } else {
-            this.renderAndSelectOption(this.editData[2], this.currentInvoice[0].currency);
-            this.renderOption(this.editData[2], "EUR");
+            this.editData[0].removeAttribute("disabled", "disabled");
+            this.editData[1].removeAttribute("disabled", "disabled");
+            this.editData[2].removeAttribute("disabled", "disabled");
+            this.editData[3].removeAttribute("disabled", "disabled");
+            this.editData[4].removeAttribute("disabled", "disabled");
+            this.editData[5].removeAttribute("disabled", "disabled");
+            this.editData[6].removeAttribute("disabled", "disabled");
         }
+        
     }
 
     renderViewInvoice = async (obj) => {
@@ -769,6 +1014,7 @@ class invoiceList {
         if(obj[0].status === "Received") statusColor = "#7491F2";
         if(obj[0].status === "Approved") statusColor = "#83C9A0";
         if(obj[0].status === "Available") statusColor = "#00C851";
+        if(obj[0].status === "Declined") statusColor = "red";
 
         this.invoiceNumber = document.querySelector("#invoiceNumber").innerHTML = obj[0].number;
         this.currentStatus = document.querySelector(".currentStatus");
@@ -779,7 +1025,7 @@ class invoiceList {
         this.invoiceBank = document.querySelector("#invoiceBank").innerHTML = obj[0].bank;
         this.clientName = document.querySelector("#clientFullName").innerHTML = obj[0].client_details.full_name;
 
-        this.requestFee = document.querySelector("#requestFee").innerHTML = obj[0].amount.amount_requested;
+        document.querySelector("#requestFee").innerHTML = obj[0].amount.amount_requested;
 
         var currency = "";
         obj[0].currency === "EUR" ? currency = "€" : currency = "$";
@@ -796,10 +1042,7 @@ class invoiceList {
         this.tableDocsRender(obj[0].documents.declaration);
 
         // Render all Comments
-        this.tableCommentsRender(obj[0].comments);
-
-        // Number of Current Invoice
-        this.curNumber = obj[0].number;
+        this.tableCommentsRender(obj[0].comments.reverse());
 
         // Off overflow for BODY
         document.body.classList.add("modal-open");
@@ -864,15 +1107,15 @@ class invoiceList {
     }
 
     addComment = async (data) => {
-        data = `Invoice #${this.curNumber}. ${data}`;
+        data = `Invoice #${this.currentInvoice[0].number}. ${data}`;
         // If not empty than
         if (data) {
             // Get current User
             var created_by = this.currentUser.textContent.trim();
             // Post new comment
-            await this.postCommet(this.curNumber, data, created_by);
+            await this.postCommet(this.currentInvoice[0].number, data, created_by);
 
-            this.currentInvoice = await this.getInvoices(0, {"number": this.curNumber} ); 
+            this.currentInvoice = await this.getInvoices(0, {"number": this.currentInvoice[0].number} ); 
             this.tableComments = document.querySelector("#tableTbody-comments").innerHTML = "";
             this.tableCommentsRender(this.currentInvoice[0].comments);
         }
@@ -885,7 +1128,7 @@ class invoiceList {
         // Check if empty
         var ifEmpty = this.checkIsEmptyObj(arr);
         if(!ifEmpty){
-            arr.reverse().forEach((item) => {
+            arr.forEach((item) => {
                 var tableTr = document.createElement("tr");
                 tableTr.innerHTML = `
                     <td class="comCol1">
@@ -968,6 +1211,8 @@ class invoiceList {
                 this.loadingGif.style.display = "none";
                 // Render popup window
                 this.renderViewInvoice(this.currentInvoice);
+                // Set currency of Current Invoice
+                this.currentInvoice[0].currency === "USD" ? this.currency = "$" : this.currency = "€";
             });
 
         });
@@ -1000,6 +1245,9 @@ class invoiceList {
     }
 
     searchFunction = async () => {
+        // Loading GIF appear
+        this.loadingGif.style.display = "flex";
+
         var check = this.inputSearch.value;
 
         const filter = { $text: { $search: check } };
@@ -1014,6 +1262,9 @@ class invoiceList {
             this.containerPages.innerHTML = "";
 
             this.countNextPage(filterList, lengthInvoice.numbers);
+
+            // Loading GIF off
+            this.loadingGif.style.display = "none";
           }
 
     }
@@ -1491,13 +1742,13 @@ class invoiceList {
                     </td>
                     <td class="column7 view">${item.bank}</td>
                     <td class="column8 view">
-                        <p>${currency}${0}</p>
-                        <p class="fiolet smallBoldText">${this.checkDate(item.dates.available_date)}</p>
+                        <p>${currency}${item.amount.amount_available}</p>
+                        <p class="green smallBoldText">${this.checkDate(item.dates.available_date)}</p>
                     </td>
                     <td class="column9 ${color} view"><strong>${item.status}</strong></td>
                     <td class="column10">
                         <div class="documentsIcon">
-                            <div>ID: ${docs === false ? emptyImg : this.checkDocuments(item.documents.id)}</div>
+                            <div class="marginTop5">ID: ${docs === false ? emptyImg : this.checkDocuments(item.documents.id)}</div>
                             <div>Utility Bill: ${docs === false ? emptyImg : this.checkDocuments(item.documents.utility_bill)}</div>
                             <div>Payment proof: ${docs === false ? emptyImg : this.checkDocuments(item.documents.payment_proof)}</div>
                             <div>Declaration: ${docs === false ? emptyImg : this.checkDocuments(item.documents.declaration)}</div>
@@ -1551,6 +1802,8 @@ class invoiceList {
         this.receivedBtnSubmit.addEventListener("click", this.receiveStatus);
         this.approvedBtn.addEventListener("click", this.approvedStatus);
         this.approvedBtnSubmit.addEventListener("click", this.approvedStatusInit);
+        this.availableBtn.addEventListener("click", this.availableStatus);
+        this.declinedBtn.addEventListener("click", this.declinedStatus);
     }
 };
 
