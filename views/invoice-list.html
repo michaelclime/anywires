@@ -424,7 +424,7 @@
 					<div class="approved_comm_block1">
 						<div>Anywires fee, <span id="anyFeePercent">0</span>%:</div>
 						<div>Anywires fee, <span id="anyFeeSymbol">€</span>:</div>
-						<div>Additional fee: <input type="number" id="inputAdditionalFee" placeholder="0"></div>
+						<div>Additional fee: <input type="number" min=0 id="inputAdditionalFee" placeholder="0"></div>
 						<div>Total:</div>
 					</div>
 					<div class="approved_comm_line"></div>
@@ -443,8 +443,8 @@
 				<label class="label_solution">Solution Commission</label>
 				<div class="solution_Wrapper">
 					<div class="solution_item_block1">
-						<div class="solution_item">Bank commission: <input type="number" class="solutionInputs" id="bankCommission" placeholder="0"></div>
-						<div class="solution_item">Solution commission, %: <input type="number" class="solutionInputs" id="solutionCommPercent" placeholder="0"></div>
+						<div class="solution_item">Bank commission: <input type="number" min=0 class="solutionInputs" id="bankCommission" placeholder="0"></div>
+						<div class="solution_item">Solution commission, %: <input type="number" min=0 class="solutionInputs" id="solutionCommPercent" placeholder="0"></div>
 						<div class="solution_item">Solution commission, <span id="anyFeeSymbol">€:</span> <input type="number" class="solutionInputs" id="solutionCommFlat" placeholder="0"></div>
 					</div>
 					<div class="solution_item_block2">

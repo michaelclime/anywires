@@ -62,7 +62,7 @@ router.post("/invoices/:fullname/:_id/:merchant", function(req, res, next) {
                         id: objectId(req.params._id),
                         name: req.params.fullname
                     },
-                    commissions: '',
+                    commissions: [],
                     comments: [
                         {
                             created_by:  req.params.fullname,
@@ -164,7 +164,7 @@ router.post("/invoices/:fullname/:_id/:merchant", function(req, res, next) {
                                                     id: objectId(req.params._id),
                                                     name: req.params.fullname
                                                 },
-                                                commissions: '',
+                                                commissions: [],
                                                 comments: [
                                                     {
                                                         created_by:  req.params.fullname,
@@ -249,7 +249,7 @@ router.post("/invoices/:fullname/:_id/:merchant", function(req, res, next) {
                                                     id: objectId(req.params._id),
                                                     name: req.params.fullname
                                                 },
-                                                commissions: '',
+                                                commissions: [],
                                                 comments: [
                                                     {
                                                         created_by:  req.params.fullname,

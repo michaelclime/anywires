@@ -44,15 +44,10 @@ class invoiceList {
         this.render();
     }
 
-    approvedInvoiceStatus = async(invNumber, createBy, currency, amountApproved) => {
+    approvedInvoiceStatus = async (data) => {
         return  await fetch("http://18.216.223.81:3000/approvedStatus", {
                 method: "POST",
-                body: JSON.stringify({
-                    invNumber,
-                    createBy,
-                    currency,
-                    amountApproved
-                }),
+                body: JSON.stringify(data),
                 headers:{'Content-Type': 'application/json'}
             })
             .then(res => {
@@ -65,7 +60,7 @@ class invoiceList {
 
     approvedStatusInit = async () => {
         if (this.currentInvoice[0].status === "Received") {
-            // Approved amount will be ->
+            //////  AnyWires Commissions  //////
             var amountReceive = this.currentInvoice[0].amount.amount_received;
             var anyFeePercent = this.currentMerhcant[0].fees.in_c2b.percent;
             var anyFeeFlat = this.currentMerhcant[0].fees.in_c2b.flat;
@@ -75,6 +70,14 @@ class invoiceList {
                 anyFeePercent = this.currentMerhcant[0].fees.in_b2b.percent;
                 anyFeeFlat = this.currentMerhcant[0].fees.in_b2b.flat;
             }
+            var anywiresPercent = anyFeePercent;
+
+            // Check if this $
+            if (this.currentInvoice[0].currency === "USD") {
+                var currencyInv = await this.getEURexchange("EUR", "USD");
+                anyFeeFlat = Math.round(anyFeeFlat * currencyInv.rates.USD);
+            }
+            
 
             anyFeePercent = (amountReceive/100)*anyFeePercent;
             AdditionaFee < 0 ? AdditionaFee = 0 : "";
@@ -82,8 +85,52 @@ class invoiceList {
             var createBy = this.currentUser.textContent.trim();
             var currency = "";
             this.currentInvoice[0].currency === "USD" ? currency = "$" : currency = "€";
+            var totalAny = anyFeePercent + anyFeeFlat + AdditionaFee;
+
+            ////////  Solution Commission  //////
+            var bankCommission = Number(document.querySelector("#bankCommission").value);
+            bankCommission < 0 ? bankCommission = 0 : "";
+            var solutionPercent = Number(document.querySelector("#solutionCommPercent").value);
+            solutionPercent < 0 ? solutionPercent = 0 : "";
+            var solutionFlat = Number(document.querySelector("#solutionCommFlat").value);
+            solutionFlat < 0 ? solutionFlat = 0 : "";
+            console.log(solutionFlat);
+
+            // Check if this $
+            if (this.currentInvoice[0].currency === "USD") {
+                var currencyInv = await this.getEURexchange("EUR", "USD");
+                solutionFlat = Math.round(solutionFlat * currencyInv.rates.USD);
+            }
+
+            var totalSolution = +bankCommission + ((amountReceive/100) * solutionPercent) + solutionFlat;
+            var leftFromTransfer = amountReceive - totalSolution;
+             
             // Request to Server for changes
-            this.approvedInvoiceStatus(this.currentInvoice[0].number, createBy, currency, amountApproved);
+            var data = {
+                // ANYWIRES_FEES
+                "invNumber": this.currentInvoice[0].number,
+                "createBy": createBy,
+                "currency": currency,
+                "amountApproved": amountApproved,
+                "AdditionaFee": AdditionaFee,
+                "totalAny": totalAny,
+                "anywiresPercent": anywiresPercent,
+                "anyFeeFlat": anyFeeFlat,
+                // SOLUTION_FEES
+                "bankCommission": +bankCommission,
+                "solutionPercent": solutionPercent,
+                "solutionFlat": solutionFlat,
+                "totalSolution": +totalSolution,
+                "leftFromTransfer": leftFromTransfer
+            };
+            // Loading GIF appear
+            this.loadingGif.style.display = "flex";
+
+            this.approvedInvoiceStatus(data);
+
+            this.filterApproved.style.display = "none";
+            // Loading GIF appear
+            this.loadingGif.style.display = "none";
         } else {
             alert("You can't do this!");
         }
@@ -547,18 +594,18 @@ class invoiceList {
     }
 
     postFile = async (fd) => {
-    return  await fetch("http://18.216.223.81:3000/upload", {
-            method: "POST",
-            body: fd,
-            mode: "no-cors",
-            headers:{'Accept': 'application/json'}
-        })
-        .then(res => {
-            return res.text();
-        }) 
-        .catch(err => {
-            console.log(err);
-        });
+        return  await fetch("http://18.216.223.81:3000/upload", {
+                method: "POST",
+                body: fd,
+                mode: "no-cors",
+                headers:{'Accept': 'application/json'}
+            })
+            .then(res => {
+                return res.text();
+            }) 
+            .catch(err => {
+                console.log(err);
+            });
     }
 
     checkChangesOfEditedInvoice = (current, newData, name) => {
