@@ -14,9 +14,12 @@
 </head>
 
 <body>
-    
+    <button class="downloadPDFbtn" onclick="HTMLtoPDF()">Download PDF</button>
+<div id="HTMLtoPDF">   
     <div class="header">
+
         <img src="img/logocompany.png" alt="AnyWires logo company" class="logo">
+
         <div class="settleInfo">
             <h1 class="mainTitle">Settlement</h1>
             <span class="settleDate"><strong>Settlement date:</strong> Apr 19, 2019</span>
@@ -115,16 +118,21 @@
                 </tr>
             </tbody>
         </table>
-</div>
+    </div>
 
     <footer>
         <hr>
         <p class="footerInfo">
             AnyWires <br>
-            +44 787 144 1243<br>
-            wire@anywires.com<br>
+            +44 787 144 1243<br>wire@anywires.com<br>
             42b Haymarket Terrace, Edinburgh, EH12 5LA, United Kingdom
         </p>
     </footer>
+</div>
+
+    <script src="js/jquery-2.1.3.js"></script>
+    <script src="js/jspdf.js"></script>
+    <script src="js/pdfFromHTML.js"></script>
+    
 </body>
 </html>

@@ -27,6 +27,21 @@
     }
 
     /* HEADER */
+.downloadPDFbtn {
+    margin: 30px 0;
+    margin-left: 75%;
+    padding: 8px;
+    font-size: 18px;
+    background: rgb(77, 77, 77);
+    color: #FFF;
+    border: none;
+    border-radius: 5px;
+    outline: none;
+}
+
+.downloadPDFbtn:hover {
+    background: #20a5f7;
+}
 
 .header {
     display: grid;
@@ -40,8 +55,8 @@
 }
 
 .logo {
-    width: 90%;
-    height: 60%;
+    width: 75%;
+    height: 50%;
 }
 
 .settleInfo, .settleRecInfo {

@@ -79,9 +79,9 @@ router.post("/invoices/:fullname/:_id/:merchant", function(req, res, next) {
                     } else {
                         console.log('Item inserted');
                         if (req.body.currency == 'EUR') {
-                            await Bank.findOneAndUpdate(req.body.bank, { $inc: { "balance_EUR.balance_requested": +req.body.amount }});
+                            await Bank.findOneAndUpdate({name: req.body.bank}, { $inc: { "balance_EUR.balance_requested": +req.body.amount }});
                         } else if (req.body.currency == 'USD') {
-                            await Bank.findOneAndUpdate(req.body.bank,  {$inc: { "balance_USD.balance_requested": +req.body.amount}});
+                            await Bank.findOneAndUpdate({name: req.body.bank},  {$inc: { "balance_USD.balance_requested": +req.body.amount}});
                         }
                         res.redirect('/invoice-list.html');
                     }
@@ -182,9 +182,9 @@ router.post("/invoices/:fullname/:_id/:merchant", function(req, res, next) {
                                                     console.log('Item inserted');
                                                     req.flash('success', 'Invoice successfully created!');
                                                     if (req.body.currency == 'EUR') {
-                                                        await Bank.findOneAndUpdate(availableBank, { $inc: { "balance_EUR.balance_requested": +req.body.amount }});
+                                                        await Bank.findOneAndUpdate({name: availableBank}, { $inc: { "balance_EUR.balance_requested": +req.body.amount }});
                                                     } else if (req.body.currency == 'USD') {
-                                                        await Bank.findOneAndUpdate(availableBank,  {$inc: { "balance_USD.balance_requested": +req.body.amount}});
+                                                        await Bank.findOneAndUpdate({name: availableBank},  {$inc: { "balance_USD.balance_requested": +req.body.amount}});
                                                     }
                                                     res.redirect('/invoice-list.html');
                                                 }
@@ -267,9 +267,9 @@ router.post("/invoices/:fullname/:_id/:merchant", function(req, res, next) {
                                                     console.log('Item inserted');
                                                     req.flash('success', 'Invoice successfully created!');
                                                     if (req.body.currency == 'EUR') {
-                                                        await Bank.findOneAndUpdate(availableBank, { $inc: { "balance_EUR.balance_requested": +req.body.amount }});
+                                                        await Bank.findOneAndUpdate({name: availableBank}, { $inc: { "balance_EUR.balance_requested": +req.body.amount }});
                                                     } else if (req.body.currency == 'USD') {
-                                                        await Bank.findOneAndUpdate(availableBank,  {$inc: { "balance_USD.balance_requested": +req.body.amount}});
+                                                        await Bank.findOneAndUpdate({name: availableBank},  {$inc: { "balance_USD.balance_requested": +req.body.amount}});
                                                     }
                                                     res.redirect('/invoice-list.html');
                                                 }
