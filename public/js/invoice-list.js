@@ -557,7 +557,7 @@ class invoiceList {
     initialSentStatus = async () => {
         // Checking role of Current User
         var role = this.currentUserRole.textContent.trim();
-        var accessRole = ["CrmFinanceManager", "CrmInvoiceManager", "CrmSuccessManager", "CrmAdmin"];
+        var accessRole = ["Crm FinanceManager", "Crm InvoiceManager", "Crm SuccessManager", "Crm Admin"];
         var result = accessRole.some((item) => item === role);
         
         // If Current User has access
