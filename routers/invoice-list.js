@@ -942,6 +942,45 @@ router.post("/declinedStatus", jsonParser, (req, res) => {
 });
 
 
+// @route POST /settledStatus
+// @desc Change all data to Settled
+router.post("/settledStatus", jsonParser, (req, res) => {
+    const invNumber = req.body.invNumber;
+    const createdBy = req.body.createdBy;
+    const currencySymbol = req.body.currencySymbol;
+    const amountSettled = req.body.amountSettled;
+
+    // Change Invoice date to Settled
+    Invoice.findOneAndUpdate({"number": invNumber}, {
+        $set: {
+            "status": "Settled", 
+            "settleSelectedStatus": true, 
+            "dates.settled_date": new Date()
+        },
+        $push: {"comments": {
+            "created_by": createdBy, 
+            "creation_date": new Date(), 
+            "message": `Invoice #${invNumber}. Transfer for ${currencySymbol}${amountSettled} was Settled!`
+        }}
+    }, 
+    {returnOriginal: false}, (err, inv) => {
+        if(err) return console.log("Error with changing Invoice data to Settled!");
+        const oldInvStatus = req.body.oldInvStatus;
+        var invCurrency = `balance_${inv.currency.toUpperCase()}`;
+        var invAmount = `balance_${oldInvStatus.toLowerCase()}`;
+        var result = `${invCurrency}.${invAmount}`;
+        var obj = {};
+        obj[result] = -amountSettled;
+
+        Bank.updateOne({"name": inv.bank}, {$inc: obj}, {returnOriginal: false}, (err, bank) => {
+            if(err) return console.log("Error with changing Bank data to Settled!");
+            res.send("Settled status has been set successfully!");
+        });
+    });
+    
+});
+
+
 //////////////////////////////
 //                          //
 // Invoice Preview Proccess //

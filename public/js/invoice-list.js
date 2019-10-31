@@ -43,8 +43,74 @@ class invoiceList {
         this.approvedBtnSubmit = document.querySelector("#approved_button");
         this.availableBtn = document.querySelector("#available");
         this.declinedBtn = document.querySelector("#declinedBtn");
+        this.settledBtn = document.querySelector("#settledBtn");
         this.render();
     }
+
+    alertWindow = (text) => {
+        var filter =  document.querySelector(".alert_filter");
+        filter.style.display = "flex";
+        document.querySelector("#alert_body_text").innerHTML = text;
+        document.querySelector("#alert_button").onclick = () => filter.style.display = "none";
+    }
+
+    settledInvoiceStatus = async (data) => {
+        return  await fetch("http://18.216.223.81:3000/settledStatus", {
+                method: "POST",
+                body: JSON.stringify(data),
+                headers:{'Content-Type': 'application/json'}
+            })
+            .then(res => {
+                return res.text();
+            }) 
+            .catch(err => {
+                console.log(err);
+            });
+    }
+
+    settledStatus = async () => {
+        if (this.currentInvoice[0].status !== "Declined" && this.currentInvoice[0].status !== "Settled") {
+            // Loading GIF ON
+            this.loadingGif.style.display = "flex";
+
+            var amountSettled = `amount_${this.currentInvoice[0].status.toLowerCase()}`;
+            var createdBy = this.currentUser.textContent.trim();
+            var data = {
+                "invNumber": this.currentInvoice[0].number,
+                "createdBy": createdBy,
+                "currencySymbol": this.currency,
+                "amountSettled": this.currentInvoice[0].amount[amountSettled],
+                "oldInvStatus": this.currentInvoice[0].status
+            };
+            await this.settledInvoiceStatus(data);
+
+            // Change status, Declined date and Status for currentInvoice
+            this.currentInvoice[0].status = "Settled";
+            this.currentInvoice[0].dates.settled_date = new Date();
+            this.currentInvoice[0].settleSelectedStatus = true;
+
+            // Change table info for current Invoice
+            this.currentTr.children[8].innerHTML = `<strong>Settled</strong>`;
+            this.currentTr.children[8].style.color = "black";
+            document.querySelector(".currentStatus").innerHTML = "Settled";
+            document.querySelector(".currentStatus").style.color = "black";
+
+            // Update Comment Area for this.currentInvoce Obj
+            this.tableComments = document.querySelector("#tableTbody-comments").innerHTML = "";
+            this.currentInvoice[0].comments.unshift({
+                "created_by": createdBy,
+                "creation_date": new Date(),
+                "message": `Invoice #${this.currentInvoice[0].number}. Transfer for ${this.currency}${this.currentInvoice[0].amount[amountSettled]} was Settled!!`
+            });
+            this.tableCommentsRender(this.currentInvoice[0].comments);
+
+            // Loading GIF OFF
+            this.loadingGif.style.display = "none";
+
+        } else {
+            this.alertWindow("You can't do that!");
+        } 
+    }    
 
     declinedInvoiceStatus = async (data) => {
         return  await fetch("http://18.216.223.81:3000/declinedStatus", {
@@ -101,7 +167,7 @@ class invoiceList {
             this.loadingGif.style.display = "none";
 
         } else {
-            alert("You can't do this!");
+            this.alertWindow("You can't do that!");
         }
     }
 
@@ -161,7 +227,7 @@ class invoiceList {
             this.loadingGif.style.display = "none";
 
         } else {
-            alert("You can't do this!");
+            this.alertWindow("You can't do that!");
         }
     }
 
@@ -270,7 +336,7 @@ class invoiceList {
             this.loadingGif.style.display = "none";
 
         } else {
-            alert("You can't do this!");
+            this.alertWindow("You can't do that!");
         }
     }
 
@@ -357,7 +423,7 @@ class invoiceList {
             // Loading GIF appear
             this.loadingGif.style.display = "none";
         } else {
-            alert("You can't do that!");
+            this.alertWindow("You can't do that!");
         }
     }
 
@@ -444,7 +510,7 @@ class invoiceList {
             this.loadingGif.style.display = "none";
 
         } else {
-            alert("You can't do this!");
+            this.alertWindow("You can't do that!");
         }
     }
 
@@ -465,7 +531,7 @@ class invoiceList {
             document.querySelector(".receive_SentAmount").innerHTML = `${amountSent}${this.currency}`
             document.querySelector("#receive_input").value = `${amountSent}`;
         } else {
-            alert("You can't do this!");
+            this.alertWindow("You can't do that!");
         }
     }
 
@@ -516,7 +582,7 @@ class invoiceList {
             this.sentSubmitBtn.addEventListener("click", this.sentStatus);
 
         } else {
-            alert("You can't do this!");
+            this.alertWindow("You can't do that!");
         }
     }
 
@@ -626,7 +692,7 @@ class invoiceList {
             
 
         } else {
-            alert("You can't do this!");
+            this.alertWindow("You can't do that!");
         }
     }
 
@@ -769,7 +835,7 @@ class invoiceList {
              // Loading GIF appear
             this.loadingGif.style.display = "none";
         } else {
-            alert("Please choose the file!");
+            this.alertWindow("Please select the file first!");
         }
     }
 
@@ -1015,6 +1081,7 @@ class invoiceList {
         if(obj[0].status === "Approved") statusColor = "#83C9A0";
         if(obj[0].status === "Available") statusColor = "#00C851";
         if(obj[0].status === "Declined") statusColor = "red";
+        if(obj[0].status === "Settled") statusColor = "black";
 
         this.invoiceNumber = document.querySelector("#invoiceNumber").innerHTML = obj[0].number;
         this.currentStatus = document.querySelector(".currentStatus");
@@ -1711,6 +1778,7 @@ class invoiceList {
             item.status === "Received" ? color = "blue" : "";
             item.status === "Sent" ? color = "yellow" : "";
             item.status === "Available" ? color = "green" : "";
+            item.status === "Settled" ? color = "black" : "";
 
             var docs = "documents" in item;
 
@@ -1804,6 +1872,7 @@ class invoiceList {
         this.approvedBtnSubmit.addEventListener("click", this.approvedStatusInit);
         this.availableBtn.addEventListener("click", this.availableStatus);
         this.declinedBtn.addEventListener("click", this.declinedStatus);
+        this.settledBtn.addEventListener("click", this.settledStatus);
     }
 };
 

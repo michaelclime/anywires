@@ -81,6 +81,10 @@ tbody tr {
   color: #12C7B2;
 }
 
+.black {
+  color: #000000;
+}
+
 .column1 {
   width: 100px;
   padding-left: 20px;

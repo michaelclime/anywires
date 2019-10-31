@@ -1208,6 +1208,78 @@
         user-select: none;
     }
     /* PopUp Window for Approved  End */
+
+
+    /* PopUp Alert START */
+    .alert_filter {
+        display: none;
+        justify-content: center;
+        align-items: center;
+        background-color: rgba(0, 0, 0, 0.8);
+        position: fixed;
+        top: 0; bottom: 0; left: 0; right: 0;
+        z-index: 500;
+    }
+
+    .alert_wrapper {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        width: 550px;
+        background-color: white;
+        padding: 20px;
+        z-index: 510;
+        border-radius: 5px;;
+    }
+
+    .alert_head {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 20px;
+    }
+
+    #alert_image {
+        width: 100px;
+        height: 100px;
+    }
+
+    .alert_body {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 20px;
+    }
+
+    #alert_body_text {
+        margin-top: 20px;
+        font-size: 20px;
+        color: #555;
+    }
+
+    .alert_footer {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 20px;
+    }
+
+    #alert_button {
+        width: 100px;
+        height: 45px;
+        background-color: #12C7B2;
+        color: white;
+        font-size: 18px;
+    }
+
+    #alert_button:hover{
+        background-color: #4D4D4D;
+
+    }
+    /* PopUp Alert End */
     
     
     /* Media */
