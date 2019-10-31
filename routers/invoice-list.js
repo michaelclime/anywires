@@ -129,6 +129,7 @@ router.post("/getDocs", jsonParser, (req, res) => {
     });
 });
 
+
 router.post("/postComment", jsonParser, (req, res) => {
     mongo.connect(url, (err, db) => {
         const number = req.body.number;
@@ -144,16 +145,304 @@ router.post("/postComment", jsonParser, (req, res) => {
     });
 });
 
+
 router.post("/postEditedInvoice", jsonParser, (req, res) => {
     mongo.connect(url, (err, db) => {
         const number = req.body.number;
         const data = req.body.newInvoice;
+        const comment = req.body.comment;
+        const createdBy = req.body.createdBy;
 
-        db.collection("invoices").updateOne({"number": number}, {$set: data },
-        {returnOriginal: false },function(err, result){
-           if(err) return console.log(err);     
-           const invoice = result.value;
-           res.send(invoice);
+        /////////////////////////////////////////////////////
+        //// 1. Change Invoice details and push Comment ////
+        ///////////////////////////////////////////////////
+        db.collection("invoices").findOneAndUpdate({"number": number}, {
+            $set: data,
+            $push: {
+                "comments": {
+                    "created_by": createdBy, 
+                    "creation_date": new Date(), 
+                    "message": `Invoice #${number}. ${comment}`
+                }
+            }
+        },
+        {returnOriginal: false },function(err, inv){
+           if(err) return console.log(err);  
+        
+            const currecyChanged = req.body.currecyChanged;
+            const chnagedAmountReq = req.body.chnagedAmountReq;
+            const amountReqOld = req.body.amountReqOld;
+            const chnagedAmountSent = req.body.chnagedAmountSent;
+            const amountSentOld = req.body.amountSentOld;
+            const changedBank = req.body.changedBank;
+            const oldBank = req.body.oldBank;
+
+            //////////////////////////////////////////////////////////
+            //// 2. If only currency has been changed than ...   ////
+            ////////////////////////////////////////////////////////
+            if (currecyChanged && !chnagedAmountReq && !chnagedAmountSent && !changedBank) {
+                var newBalance = {};
+
+                // If Status Sent
+                if (inv.value.status === "Sent"){
+                   if (inv.value.currency === "USD"){ // If status Sent and currency USD
+                        newBalance = {"balance_EUR.balance_sent": -inv.value.amount.amount_sent, "balance_USD.balance_sent": +inv.value.amount.amount_sent};
+                   } else if (inv.value.currency === "EUR"){ // If status Sent and currency EUR
+                        newBalance = {"balance_USD.balance_sent": -inv.value.amount.amount_sent, "balance_EUR.balance_sent": +inv.value.amount.amount_sent};
+                   }
+                }
+
+                // If Status Requested
+                if (inv.value.status === "Requested"){
+                    if (inv.value.currency === "USD"){ // If status Requested and currency USD
+                        newBalance = {"balance_EUR.balance_requested": -inv.value.amount.amount_requested, "balance_USD.balance_requested": +inv.value.amount.amount_requested};
+                   } else if (inv.value.currency === "EUR"){ // If status Requested and currency EUR
+                        newBalance = {"balance_USD.balance_requested": -inv.value.amount.amount_requested, "balance_EUR.balance_requested": +inv.value.amount.amount_requested};
+                   }
+                }
+
+                Bank.updateOne({"name": inv.value.bank}, {$inc: newBalance}, 
+                {returnOriginal: false}, (err, bank) => {
+                    if(err) return console.log(err, "Error with changing Invoice currency for Bank!"); 
+                });
+            }
+
+            /////////////////////////////////////////////////////////////////////////////
+            ////  3. If amount Requested was changed, AND currency has been changed  ///
+            ///////////////////////////////////////////////////////////////////////////
+            if (chnagedAmountReq && currecyChanged && !changedBank) {
+                var newBalance = {};
+                if (inv.value.currency === "USD"){ 
+                    newBalance = {"balance_EUR.balance_requested": -amountReqOld, "balance_USD.balance_requested": +inv.value.amount.amount_requested};
+
+                } else  if (inv.value.currency === "EUR"){ 
+                    newBalance = {"balance_USD.balance_requested": -amountReqOld, "balance_EUR.balance_requested": +inv.value.amount.amount_requested};
+                }
+
+                Bank.updateOne({"name": inv.value.bank}, {$inc: newBalance}, 
+                {returnOriginal: false}, (err, bank) => {
+                    if(err) return console.log(err, "Error with changing Invoice currency and amount Requested for Bank!"); 
+                });
+            }
+
+            /////////////////////////////////////////////////////////////////////////////
+            ////  4. If amount Sent was changed, AND currency has been changed  ////////
+            ///////////////////////////////////////////////////////////////////////////
+            if (chnagedAmountSent && currecyChanged && !changedBank) {
+                var newBalance = {};
+                if (inv.value.currency === "USD"){ 
+                    newBalance = {"balance_EUR.balance_sent": -amountSentOld, "balance_USD.balance_sent": +inv.value.amount.amount_sent};
+
+                } else  if (inv.value.currency === "EUR"){ 
+                    newBalance = {"balance_USD.balance_sent": -amountSentOld, "balance_EUR.balance_sent": +inv.value.amount.amount_sent};
+                }
+
+                Bank.updateOne({"name": inv.value.bank}, {$inc: newBalance}, 
+                {returnOriginal: false}, (err, bank) => {
+                    if(err) return console.log(err, "Error with changing Invoice currency and amount Sent for Bank!"); 
+                });
+            }
+
+            //////////////////////////////////////////////
+            ////  5. If ONLY amount Sent was changed  ///
+            ////////////////////////////////////////////
+            if (chnagedAmountSent && !currecyChanged && !chnagedAmountReq && !changedBank) {
+                var newBalance = {};
+                var finalySum = amountSentOld - +(inv.value.amount.amount_sent);
+                if (inv.value.currency === "USD"){
+                    newBalance = {"balance_USD.balance_sent": -finalySum};
+                } else if (inv.value.currency === "EUR") {
+                    newBalance = {"balance_EUR.balance_sent": -finalySum};
+                }
+
+                Bank.updateOne({"name": inv.value.bank}, {$inc: newBalance}, 
+                {returnOriginal: false}, (err, bank) => {
+                    if(err) return console.log(err, "Error with changing Invoice amount Sent for Bank!"); 
+                });
+            }
+
+            ///////////////////////////////////////////////////
+            ////  6. If ONLY amount Requested was changed  ///
+            /////////////////////////////////////////////////
+            if (chnagedAmountReq && !chnagedAmountSent && !currecyChanged && !changedBank) {
+                var newBalance = {};
+                var finalySum = amountReqOld - +(inv.value.amount.amount_requested);
+                if (inv.value.currency === "USD"){
+                    newBalance = {"balance_USD.balance_requested": -finalySum};
+                } else if (inv.value.currency === "EUR") {
+                    newBalance = {"balance_EUR.balance_requested": -finalySum};
+                }
+
+                Bank.updateOne({"name": inv.value.bank}, {$inc: newBalance}, 
+                {returnOriginal: false}, (err, bank) => {
+                    if(err) return console.log(err, "Error with changing Invoice amount Requested for Bank!"); 
+                });
+            }
+
+            ///////////////////////////////////////
+            ////  7. If ONLY Bank was changed  ///
+            /////////////////////////////////////
+            if (changedBank && !chnagedAmountReq && !chnagedAmountSent && !currecyChanged) {
+                var oldBalance = {};
+                var newBalance = {};
+
+                // If Status Requested
+                if (inv.value.status === "Requested") {
+                    if (inv.value.currency === "USD") {
+                        oldBalance = {"balance_USD.balance_requested": -inv.value.amount.amount_requested};
+                        newBalance = {"balance_USD.balance_requested": +inv.value.amount.amount_requested};
+                    } 
+                    if (inv.value.currency === "EUR") {
+                        oldBalance = {"balance_EUR.balance_requested": -inv.value.amount.amount_requested};
+                        newBalance = {"balance_EUR.balance_requested": +inv.value.amount.amount_requested}
+                    }
+                }
+
+                // If Status Sent
+                if (inv.value.status === "Sent") {
+                    if (inv.value.currency === "USD") {
+                        oldBalance = {"balance_USD.balance_sent": -inv.value.amount.amount_sent};
+                        newBalance = {"balance_USD.balance_sent": +inv.value.amount.amount_sent};
+                    } 
+                    if (inv.value.currency === "EUR") {
+                        oldBalance = {"balance_EUR.balance_sent": -inv.value.amount.amount_sent};
+                        newBalance = {"balance_EUR.balance_sent": +inv.value.amount.amount_sent};
+                    }
+                }
+
+                Bank.updateOne({"name": oldBank}, {$inc: oldBalance}, 
+                {returnOriginal: false}, (err, Oldbank) => {
+                    if(err) return console.log(err, "Error with changing old Bank in Invoice!"); 
+                });
+
+                Bank.updateOne({"name": inv.value.bank}, {$inc: newBalance}, 
+                {returnOriginal: false}, (err, newBank) => {
+                    if(err) return console.log(err, "Error with changing new Bank in Invoice!"); 
+                });
+            }
+
+            ////////////////////////////////////////////////////////////////////////////////
+            ////  8. If Bank, Currency and Amount Requested or Amount Sent was changed  ///
+            //////////////////////////////////////////////////////////////////////////////
+            if (changedBank && currecyChanged && chnagedAmountReq || changedBank && currecyChanged && chnagedAmountSent) {
+                var oldBalance = {};
+                var newBalance = {};
+
+                // If Status Requested
+                if (inv.value.status === "Requested") {
+                    if (inv.value.currency === "USD") {
+                        oldBalance = {"balance_EUR.balance_requested": -amountReqOld};
+                        newBalance = {"balance_USD.balance_requested": +inv.value.amount.amount_requested};
+                    }
+                    if (inv.value.currency === "EUR") {
+                        oldBalance = {"balance_USD.balance_requested": -amountReqOld};
+                        newBalance = {"balance_EUR.balance_requested": +inv.value.amount.amount_requested};
+                    }
+                }
+
+                // If Status Sent
+                if (inv.value.status === "Sent") {
+                    if (inv.value.currency === "USD") {
+                        oldBalance = {"balance_EUR.balance_sent": -amountSentOld};
+                        newBalance = {"balance_USD.balance_sent": +inv.value.amount.amount_sent};
+                    }
+                    if (inv.value.currency === "EUR") {
+                        oldBalance = {"balance_USD.balance_sent": -amountSentOld};
+                        newBalance = {"balance_EUR.balance_sent": +inv.value.amount.amount_sent};
+                    }
+                }
+                
+                Bank.updateOne({"name": oldBank}, {$inc: oldBalance}, {returnOriginal: false}, (err, oldBank) => {
+                    if(err) return console.log(err, "Error with changing old Bank at Invoice! Changing all!"); 
+                });
+
+                Bank.updateOne({"name": inv.value.bank}, {$inc: newBalance}, {returnOriginal: false}, (err, newBank) => {
+                    if(err) return console.log(err, "Error with changing new Bank at Invoice! Changing all!"); 
+                });
+            }
+
+            ////////////////////////////////////////////////
+            ////  9. If Bank and Currency  was changed  ///
+            //////////////////////////////////////////////
+            if (changedBank && currecyChanged && !chnagedAmountReq && !chnagedAmountSent) {
+                var oldBalance = {};
+                var newBalance = {};
+
+                // If Status Requested
+                if (inv.value.status === "Requested") {
+                    if (inv.value.currency === "USD") {
+                        oldBalance = {"balance_EUR.balance_requested": -inv.value.amount.amount_requested};
+                        newBalance = {"balance_USD.balance_requested": +inv.value.amount.amount_requested};
+                    }
+                    if (inv.value.currency === "EUR") {
+                        oldBalance = {"balance_USD.balance_requested": -inv.value.amount.amount_requested};
+                        newBalance = {"balance_EUR.balance_requested": +inv.value.amount.amount_requested};
+                    }
+                }
+
+                 // If Status Sent
+                 if (inv.value.status === "Sent") {
+                    if (inv.value.currency === "USD") {
+                        oldBalance = {"balance_EUR.balance_sent": -inv.value.amount.amount_sent};
+                        newBalance = {"balance_USD.balance_sent": +inv.value.amount.amount_sent};
+                    }
+                    if (inv.value.currency === "EUR") {
+                        oldBalance = {"balance_USD.balance_sent": -inv.value.amount.amount_sent};
+                        newBalance = {"balance_EUR.balance_sent": +inv.value.amount.amount_sent};
+                    }
+                }
+
+                Bank.updateOne({"name": oldBank}, {$inc: oldBalance}, {returnOriginal: false}, (err, oldBank) => {
+                    if(err) return console.log(err, "Error with changing new old Bank at Invoice! Changing Bank and Currency!"); 
+                });
+
+                Bank.updateOne({"name": inv.value.bank}, {$inc: newBalance}, {returnOriginal: false}, (err, newBank) => {
+                    if(err) return console.log(err, "Error with changing new Bank at Invoice! Changing Bank and Currency!"); 
+                });
+            }
+
+            ////////////////////////////////////////////////////////////////
+            ////  10. If Bank and Amount Sent or Requested was changed  ///
+            //////////////////////////////////////////////////////////////
+            if (chnagedAmountReq && changedBank && !currecyChanged || 
+                chnagedAmountSent && changedBank && !currecyChanged) {
+                var oldBalance = {};
+                var newBalance = {};
+
+                // If Status Requested
+                if (inv.value.status === "Requested") {
+                    if (inv.value.currency === "USD") {
+                        oldBalance = {"balance_USD.balance_requested": -amountReqOld};
+                        newBalance = {"balance_USD.balance_requested": +inv.value.amount.amount_requested};
+                    }
+                    if (inv.value.currency === "EUR") {
+                        oldBalance = {"balance_EUR.balance_requested": -amountReqOld};
+                        newBalance = {"balance_EUR.balance_requested": +inv.value.amount.amount_requested};
+                    }
+                }
+
+                // If Status Sent
+                if (inv.value.status === "Sent") {
+                    if (inv.value.currency === "USD") {
+                        oldBalance = {"balance_USD.balance_sent": -amountSentOld};
+                        newBalance = {"balance_USD.balance_sent": +inv.value.amount.amount_sent};
+                    }
+                    if (inv.value.currency === "EUR") {
+                        oldBalance = {"balance_EUR.balance_sent": -amountSentOld};
+                        newBalance = {"balance_EUR.balance_sent": +inv.value.amount.amount_sent};
+                    }
+                }
+
+                Bank.updateOne({"name": oldBank}, {$inc: oldBalance}, {returnOriginal: false}, (err, oldBank) => {
+                    if(err) return console.log(err, "Error with changing new old Bank at Invoice! Changing Bank and Currency!"); 
+                });
+
+                Bank.updateOne({"name": inv.value.bank}, {$inc: newBalance}, {returnOriginal: false}, (err, newBank) => {
+                    if(err) return console.log(err, "Error with changing new Bank at Invoice! Changing Bank and Currency!"); 
+                });
+            }
+
+            res.send("Invoice has been edited successfully!");
        });
     });
 });
@@ -195,11 +484,18 @@ router.post("/upload", upload.single("file"), jsonParser, (req, res) => {
             type === "Utility Bill" ? obj = {"documents.utility_bill": {"id": docId, "status": "Non-Verified"} } : "";
             type === "Declaration" ? obj = {"documents.declaration": {"id": docId, "status": "Non-Verified"} } : "";
 
+            var comment = {"comments": {
+                "created_by": req.body.creator, 
+                "creation_date": new Date(), 
+                "message": `Invoice #${number}. ${type} was Uploaded!`
+            }};
+
+            Object.assign(obj, comment);
             // Second step is insert new document to Invoice
             mongo.connect(url, (err, db) =>{
                 if(err) return console.log(err);  
         
-                db.collection("invoices").updateOne({"number": number}, {$push: obj},
+                db.collection("invoices").updateOne({"number": number}, {$push: obj}, 
                 {returnOriginal: false }, function(err, result){
         
                    if(err) return console.log(err);   
@@ -261,6 +557,7 @@ router.post("/changeDocStatus", jsonParser, (req, res) => {
             var objDel = {};
             const number = req.body.number;
             const type = req.body.type;
+            const createdBy = req.body.createdBy;
 
             // 2. Second, we need to delete old Document in Invoice.
             type === "ID" ? objDel = {"documents.id": {"id": id} } : "";
@@ -294,6 +591,15 @@ router.post("/changeDocStatus", jsonParser, (req, res) => {
                             "upsert" : true,
                             "collation": {"number": number}
                         }
+                    },
+                    {
+                        // Add new Comment
+                        updateOne: {
+                            "filter": {"number": number},
+                            "update": {"$push": {"comments": {"created_by": createdBy, "creation_date": new Date(), "message": `Invoice #${number}. ${type} was ${status}!` } }},
+                            "upsert" : true,
+                            "collation": {"number": number}
+                        }
                     }
                 ]), {returnOriginal: false}, (err, res) => {
                     if (err) return console.log(err, "Error with changing document status inside Invoice!");
@@ -310,10 +616,21 @@ router.post("/changeDocStatus", jsonParser, (req, res) => {
 router.post("/sentStatus", jsonParser, (req, res) => {
     const invNumber = req.body.invNumber;
     const amountSent = req.body.amountSent;
+    const currency = req.body.currency;
+    const creator = req.body.creator;
     mongo.connect(url, (err, db) => {
         if (err) return console.log(err, "Can't connect to database!");
-        db.collection("invoices").findOneAndUpdate({"number": invNumber}, {$set: {"status":"Sent", "dates.sent_date": new Date(), "amount.amount_sent": amountSent} }, 
-        {returnOriginal: false}, (err, inv) => {
+        db.collection("invoices").findOneAndUpdate({"number": invNumber}, {
+            $set: {
+                "status":"Sent", 
+                "dates.sent_date": new Date(), 
+                "amount.amount_sent": amountSent
+        }, $push: {comments: { 
+                "created_by": creator, 
+                "creation_date": new Date(), 
+                "message": `Invoice #${invNumber}. Transfer for ${currency}${amountSent} was Sent!` 
+
+        }}}, {returnOriginal: false}, (err, inv) => {
             if(err) return console.log(err, "Error with change status to Sent!");
             const bankName = inv.value.bank;
             const reqAmount = inv.value.amount.amount_requested;
@@ -343,25 +660,31 @@ router.post("/sentStatus", jsonParser, (req, res) => {
 router.post("/requestStatus", jsonParser, (req, res) => {
     var invoiceNum = req.body.invoiceNum;
     var sentAmount = req.body.sentAmount;
-    var reqAmount = '';
-    var bankName = '';
+    var currency = req.body.currency;
+    var amountRequested = req.body.amountRequested;
+    var creator = req.body.creator;
+    
     mongo.connect(url, (err, db) => {
         if (err) return console.log(err, "Can't connect to database!");
         db.collection("invoices").findOneAndUpdate({"number": invoiceNum}, {
             $set: {
-                "status":"Requested", 
+                "status": "Requested", 
                 "dates.sent_date": null, 
                 "amount.amount_sent": 0 
-                }
-            }, {returnOriginal: false}, (err, result) => {
+                },
+                $push: {comments: { 
+                    "created_by": creator, 
+                    "creation_date": new Date(), 
+                    "message": `Invoice #${invoiceNum}. Transfer for ${currency}${amountRequested} was Requested!` 
+        
+                }}}, {returnOriginal: false}, (err, result) => {
             if(err) return console.log(err, "Error with change status to Requested!");
-            reqAmount = result.value.amount.amount_requested;
-            bankName = result.value.bank;
+            var bankName = result.value.bank;
 
             // Check if Invoice currency USD
-            var obj = {"balance_EUR.balance_sent": -sentAmount, "balance_EUR.balance_requested": reqAmount};
+            var obj = {"balance_EUR.balance_sent": -sentAmount, "balance_EUR.balance_requested": +amountRequested};
             if(result.value.currency === "USD"){
-                obj = {"balance_USD.balance_sent": -sentAmount, "balance_USD.balance_requested": reqAmount};
+                obj = {"balance_USD.balance_sent": -sentAmount, "balance_USD.balance_requested": +amountRequested};
             }
 
             mongo.connect(url, (err, db) => {
@@ -388,6 +711,8 @@ router.post("/receivedStatus", jsonParser, (req, res) => {
     var amountCommission = req.body.amountCommission;
     var percentCommission = req.body.percentCommission;
     var currency = req.body.currency;
+    var symbol = "";
+    currency === "USD" ? symbol = "$" : symbol =  "€";
 
     // Change Invoice status, amounts and date
     mongo.connect(url, (err, db) => {
@@ -396,7 +721,12 @@ router.post("/receivedStatus", jsonParser, (req, res) => {
             "status": "Received", 
             "amount.amount_received": typedAmount, 
             "dates.received_date": new Date()
-        }}, {returnOriginal: false}, (err, inv) => {
+        }, $push: {comments: { 
+            "created_by": createdBy, 
+            "creation_date": new Date(), 
+            "message": `Invoice #${invNumber}. Transfer for ${symbol}${typedAmount} was Received!` 
+
+        }}},{returnOriginal: false}, (err, inv) => {
             if(err) return console.log(err, "Error with change invoice to received status!");
             var bankName = inv.value.bank;
             var amountSent = +(inv.value.amount.amount_sent);
@@ -528,6 +858,126 @@ router.post("/approvedStatus", jsonParser, (req, res) => {
             
         });
     });
+});
+
+
+// @route POST /availableStatus
+// @desc Change all data to Available
+router.post("/availableStatus", jsonParser, (req, res) => {
+    const invNumber = req.body.invNumber;
+    const amountAvailable = req.body.amountAvailable;
+    const currency = req.body.currency;
+    const createBy = req.body.createBy;
+
+    Invoice.findOneAndUpdate({"number": invNumber}, {$set: {
+        "status": "Available", 
+        "dates.available_date": new Date(), 
+        "amount.amount_available": amountAvailable
+    }, $push: {"comments": { 
+        "created_by": createBy, 
+        "creation_date": new Date(), 
+        "message": `Invoice #${invNumber}. Transfer for ${currency}${amountAvailable} was Available!` 
+
+    }}}, {returnOriginal: false}, (err, inv) => {
+        if(err) return console.log("Err with changing Invoice to Available!");
+        const amountApproved = inv.amount.amount_approved;
+
+        // Check if Invoice currency USD
+        var obj = {"balance_EUR.balance_available": +amountAvailable, "balance_EUR.balance_approved": -amountApproved};
+        if(inv.currency === "USD"){
+            obj = {"balance_USD.balance_available": +amountAvailable, "balance_USD.balance_approved": -amountApproved};
+        }
+
+        Bank.updateOne({"name": inv.bank}, {$inc: obj}, {returnOriginal: false}, (err, result) => {
+            if(err) return console.log("Err with changing Bank Balance to Available!");
+            res.send("Available status has been set successfully!")
+        });
+    });
+});
+
+
+// @route POST /declinedStatus
+// @desc Change all data to Declined
+router.post("/declinedStatus", jsonParser, (req, res) => {
+    const invNumber = req.body.data.invNumber;
+    const amountDeclined = req.body.data.amountDeclined;
+    const currency = req.body.data.currency;
+    const createdBy = req.body.data.createdBy;
+    const invStatus = req.body.data.invStatus;
+
+    // Request for chnaging Invoice to Declined
+    Invoice.findOneAndUpdate({"number": invNumber}, {
+        $set: {
+            "status": "Declined",
+            "dates.declined_date": new Date()
+        },
+        $push: {
+            "comments": {
+                "created_by": createdBy, 
+                "creation_date": new Date(), 
+                "message": `Invoice #${invNumber}. Transfer for ${currency}${amountDeclined} was Declined!` 
+            }
+        }
+    }, {returnOriginal: false}, (err, inv) => {
+        if(err) return console.log("Error with changing Invoice to Declined!");
+
+        // Checking Invoice Status to know wich balance from Bank we need to remove
+        var obj = {};
+        if (invStatus === "Requested"){
+            obj = {"balance_EUR.balance_requested": -inv.amount.amount_requested};
+            inv.currency === "USD" ? obj = {"balance_USD.balance_requested": -inv.amount.amount_requested} : "";
+
+        } else if(invStatus === "Sent"){
+            obj = {"balance_EUR.balance_sent": -inv.amount.amount_sent};
+            inv.currency === "USD" ? obj = {"balance_USD.balance_sent": -inv.amount.amount_sent} : "";
+        }
+
+        // Request for chnaging Bank Balance 
+        Bank.updateOne({"name": inv.bank}, {$inc: obj}, 
+        {returnOriginal: false}, (err, bank) => {
+            if(err) return console.log("Error with changing Bank Balance to Declined!");
+            res.send("Declined status has been set successfully!");
+        });
+    });
+});
+
+
+// @route POST /settledStatus
+// @desc Change all data to Settled
+router.post("/settledStatus", jsonParser, (req, res) => {
+    const invNumber = req.body.invNumber;
+    const createdBy = req.body.createdBy;
+    const currencySymbol = req.body.currencySymbol;
+    const amountSettled = req.body.amountSettled;
+
+    // Change Invoice date to Settled
+    Invoice.findOneAndUpdate({"number": invNumber}, {
+        $set: {
+            "status": "Settled", 
+            "settleSelectedStatus": true, 
+            "dates.settled_date": new Date()
+        },
+        $push: {"comments": {
+            "created_by": createdBy, 
+            "creation_date": new Date(), 
+            "message": `Invoice #${invNumber}. Transfer for ${currencySymbol}${amountSettled} was Settled!`
+        }}
+    }, 
+    {returnOriginal: false}, (err, inv) => {
+        if(err) return console.log("Error with changing Invoice data to Settled!");
+        const oldInvStatus = req.body.oldInvStatus;
+        var invCurrency = `balance_${inv.currency.toUpperCase()}`;
+        var invAmount = `balance_${oldInvStatus.toLowerCase()}`;
+        var result = `${invCurrency}.${invAmount}`;
+        var obj = {};
+        obj[result] = -amountSettled;
+
+        Bank.updateOne({"name": inv.bank}, {$inc: obj}, {returnOriginal: false}, (err, bank) => {
+            if(err) return console.log("Error with changing Bank data to Settled!");
+            res.send("Settled status has been set successfully!");
+        });
+    });
+    
 });
 
 

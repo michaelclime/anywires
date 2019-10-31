@@ -18,6 +18,7 @@ let InvoiceSchema = new mongoose.Schema({
         approved_date: Date,
         available_date: Date,
         declined_date: Date,
+        settled_date: Date
     },
     documents: Object,
     created_by: Object,
