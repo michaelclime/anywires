@@ -11,7 +11,7 @@ router.get('/', function(req, res) {
 });
 
 // Register process
-router.get('/register', function(req, res) {
+router.get('/registerForm', function(req, res) {
     res.render("registerForm.html");
 });
 
@@ -35,10 +35,13 @@ router.post('/register', function(req, res){
             console.log(err);
             res.render('registerForm.html');
         } else {
-            passport.authenticate('local')(req, res, function() {
-                res.redirect('/successfullRegister');
-                console.log('Successfully created user!');
-            });
+            req.flash('success', 'User successfully created!');
+            res.status(201).redirect("users.html");
+            // passport.authenticate('local')(req, res, function() {
+            //     req.flash('success', 'User successfully created!');
+            //     res.status(201).redirect("users.html");
+            //     console.log('Successfully created user!');
+            // });
         }
     });
 });
@@ -47,7 +50,7 @@ router.post('/register', function(req, res){
 
 router.post('/login', passport.authenticate("local",
     {
-        successRedirect: '/dashBoardMainPage.html',
+        successRedirect: '/personal-area.html',
         failureRedirect: '/',
         failureFlash: true 
     }), function(req, res) {

@@ -20,6 +20,49 @@
 </head>
 
 <body>
+    <% if (currentUser.role == 'Invoice Manager') { %>
+        <header>
+                <div class="menu">
+                        <ul id="gn-menu" class="gn-menu-main">
+                            <li class="gn-trigger">
+                                <a class="gn-icon gn-icon-menu"><span>Menu</span></a>
+                                <nav class="gn-menu-wrapper">
+                                    <div class="gn-scroller">
+                                        <ul class="gn-menu">
+                                                <li><a href='personal-area.html'><img class="icon" src="fonts/icons/personal-area.png">Personal Area</a></li>
+												<li><a href="dashBoardMainPage.html"><img class="icon" src="fonts/icons/dashboard.png">Dashboard</a></li>
+												<li><a href='InvoiceGeneration.html'><img class="icon" src="fonts/icons/invoice.png">Invoice generation</a></li>
+												<li><a href='Dashboard-how-it-works.html'><img class="icon" src="fonts/icons/info.png">How it works</a></li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </nav>
+                            </li>
+                        </ul>
+                    </div>
+                <div class="authorizationMenu">
+                    <span> 
+                        <span class="userName"> <%= currentUser.fullname %></span>
+                        <span class="userLogo"><i class="far fa-user-circle"></i></span>
+                    </span>
+                    <ul class="dropMenu">
+                        <li class="profile">
+                            <span class="liLogo"><i class="fas fa-user-alt"></i></span>
+                            <a href="personal-area.html">Profile</a>
+                        </li>
+                        <li class="merchant">
+                            <span class="liLogo"><i class="fab fa-chromecast"></i></span>
+                            <a href="merchants.html">Merchant</a>
+                        </li>
+                        <li class="logOut">
+                            <span class="liLogo"><i class="fas fa-sign-out-alt"></i></span>
+                            <a href="/logout">LogOut</a>
+                        </li>
+                    </ul>
+                </div>
+            </header>
+    <% } else { %>
     <header>
         <div class="menu">
                 <ul id="gn-menu" class="gn-menu-main">
@@ -74,7 +117,7 @@
             </ul>
         </div>
     </header>
-
+    <% } %>
     <main>
         
         <div class="choosePeriod">

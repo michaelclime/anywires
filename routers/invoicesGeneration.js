@@ -2,6 +2,7 @@ const express = require('express'),
     router = new express.Router(),
     mongo = require('mongodb'),
     Invoice = require('../modules/invoice'),
+    User = require('../modules/user'),
     Bank = require('../modules/bank'),
     assert = require('assert'),
     objectId = require("mongodb").ObjectID;
@@ -83,7 +84,13 @@ router.post("/invoices/:fullname/:_id/:merchant", function(req, res, next) {
                         } else if (req.body.currency == 'USD') {
                             await Bank.findOneAndUpdate({name: req.body.bank},  {$inc: { "balance_USD.balance_requested": +req.body.amount}});
                         }
-                        res.redirect('/invoice-list.html');
+                        let userInfo = await User.findOne({ _id: req.params._id});
+                        
+                        if ( userInfo.role == 'Invoice Manager') {
+                                res.redirect('/personal-area.html');
+                        } else {
+                            res.redirect('/invoice-list.html');
+                        }
                     }
                 });
                 } else {
@@ -186,7 +193,13 @@ router.post("/invoices/:fullname/:_id/:merchant", function(req, res, next) {
                                                     } else if (req.body.currency == 'USD') {
                                                         await Bank.findOneAndUpdate({name: availableBank},  {$inc: { "balance_USD.balance_requested": +req.body.amount}});
                                                     }
-                                                    res.redirect('/invoice-list.html');
+                                                    let userInfo = await User.findOne({ _id: req.params._id});
+                                                   
+                                                    if ( userInfo.role == 'Invoice Manager') {
+                                                            res.redirect('/personal-area.html');
+                                                    } else {
+                                                        res.redirect('/invoice-list.html');
+                                                    }
                                                 }
                                             });
                                         }
@@ -271,7 +284,12 @@ router.post("/invoices/:fullname/:_id/:merchant", function(req, res, next) {
                                                     } else if (req.body.currency == 'USD') {
                                                         await Bank.findOneAndUpdate({name: availableBank},  {$inc: { "balance_USD.balance_requested": +req.body.amount}});
                                                     }
-                                                    res.redirect('/invoice-list.html');
+                                                    let userInfo = await User.findOne({ _id: req.params._id});
+                                                    if ( userInfo.role == 'Invoice Manager') {
+                                                            res.redirect('/personal-area.html');
+                                                    } else {
+                                                        res.redirect('/invoice-list.html');
+                                                    }
                                                 }
                                             });
                                         }

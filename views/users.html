@@ -77,7 +77,7 @@
 							</ul>
 						</div>
 					</div><!-- /container -->
-
+				
 		<div id="wrapper">
 
 			<!--Header Page-->
@@ -186,6 +186,191 @@
 		</div>
 
 		<!-- Modal Window "Create User" -->
+		<% if (currentUser.typeClass == 'admin' && currentUser.role == 'Crm Admin') { %>
+			<div class="popup">
+					<div class="popup-dialog">
+						<div class="popup-content">
+							<img src="img/logocompany.png" alt="Anywires logo" class="logo">
+							
+							<div class="main-form popup-form">
+								<form  action="/register" class="popup-form" method="POST">
+									<div class="inputSection">
+										<label for="username">Email</label>
+										<input type="text" name="username" id="username" placeholder="Type here...">
+									</div>
+									<div class="inputSection">
+										<label for="fullname">Full Name</label>
+										<input type="text" name="fullname" id="fullname" placeholder="Type here...">
+									</div>
+									<div class="inputSection">
+										<label for="password">Password</label>
+										<input type="text" name="password" id="password" placeholder="Type here...">
+									</div>
+									<div class="inputSection">
+										<label for="typeClass">Type</label>
+										<select id="typeClass" class="selectMenu"  name="typeClass">
+											<option value=""></option>
+											<option value="admin">Admin</option>
+											<option value="client">Client</option>
+										</select>
+									</div>
+									<div class="inputSection">
+										<label for="role">Role</label>
+										<select id="role" class="selectMenu" name="role">
+												<option value=""></option>
+												<option value="Crm FinanceManager">CRM finance manager</option>
+												<option value="Crm InvoiceManager">CRM invoice manager</option>
+												<option value="Crm SuccessManager">CRM Success manager</option>
+												<option value="Crm Admin">CRM admin</option>
+												<option value="Merchant Manager">Merchant manager</option>
+												<option value="Invoice Manager">Invoice manager</option>
+												<option value="Affiliate">Affiliate</option>
+												<option value="Solution Manager">Solution manager</option>
+											</select>
+									</div>
+									<div class="inputSection">
+										<label for="merchant1">Merchant </label>
+										<select id="merchant1" class="selectMenu" name="merchant">
+											<option value="null"></option>
+										</select>
+									</div>
+									<div class="inputSection">
+										<label for="merchant2">Merchant 2</label>
+										<select id="merchant2" class="selectMenu" name="merchant2">
+											<option value="null"></option>
+										</select>
+									</div>
+									<input type="submit" class="creatUserBtn" value="Creat A New User">
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+		<%} else  if (currentUser.typeClass !== 'client') { %>
+			<div class="popup">
+					<div class="popup-dialog">
+						<div class="popup-content">
+							<img src="img/logocompany.png" alt="Anywires logo" class="logo">
+							
+							<div class="main-form popup-form">
+								<form  action="/register" class="popup-form" method="POST">
+									<div class="inputSection">
+										<label for="username">Email</label>
+										<input type="text" name="username" id="username" placeholder="Type here...">
+									</div>
+									<div class="inputSection">
+										<label for="fullname">Full Name</label>
+										<input type="text" name="fullname" id="fullname" placeholder="Type here...">
+									</div>
+									<div class="inputSection">
+										<label for="password">Password</label>
+										<input type="text" name="password" id="password" placeholder="Type here...">
+									</div>
+									<div class="inputSection hide">
+										<label for="typeClass">Type</label>
+										<select id="typeClass" class="selectMenu"  name="typeClass">
+											<option value="client">Client</option>
+										</select>
+									</div>
+									<div class="inputSection">
+										<label for="role">Role</label>
+										<select id="role" class="selectMenu" name="role">
+												<option value=""></option>
+												<option value="Merchant Manager">Merchant manager</option>
+												<option value="Invoice Manager">Invoice manager</option>
+												<option value="Affiliate">Affiliate</option>
+												<option value="Solution Manager">Solution manager</option>
+											</select>
+									</div>
+									<div class="inputSection">
+										<label for="merchant1">Merchant </label>
+										<select id="merchant1" class="selectMenu" name="merchant">
+											<option value="null"></option>
+										</select>
+									</div>
+									<div class="inputSection">
+										<label for="merchant2">Merchant 2</label>
+										<select id="merchant2" class="selectMenu" name="merchant2">
+											<option value="null"></option>
+										</select>
+									</div>
+									<input type="submit" class="creatUserBtn" value="Creat A New User">
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+		<%} else  if (currentUser.typeClass == 'client') { %>
+			<div class="popup">
+					<div class="popup-dialog">
+						<div class="popup-content">
+							<img src="img/logocompany.png" alt="Anywires logo" class="logo">
+							
+							<div class="main-form popup-form">
+								<form  action="/register" class="popup-form" method="POST">
+									<div class="inputSection">
+										<label for="username">Email</label>
+										<input type="text" name="username" id="username" placeholder="Type here...">
+									</div>
+									<div class="inputSection">
+										<label for="fullname">Full Name</label>
+										<input type="text" name="fullname" id="fullname" placeholder="Type here...">
+									</div>
+									<div class="inputSection">
+										<label for="password">Password</label>
+										<input type="text" name="password" id="password" placeholder="Type here...">
+									</div>
+									<div class="inputSection hide">
+										<label for="typeClass">Type</label>
+										<select id="typeClass" class="selectMenu"  name="typeClass">
+											<option value="client">Client</option>
+										</select>
+									</div>
+									<div class="inputSection">
+										<label for="role">Role</label>
+										<select id="role" class="selectMenu" name="role">
+												<option value=""></option>
+												<option value="Merchant Manager">Merchant manager</option>
+												<option value="Invoice Manager">Invoice manager</option>
+												<option value="Affiliate">Affiliate</option>
+												<option value="Solution Manager">Solution manager</option>
+											</select>
+									</div>
+									<div class="inputSection hide">
+										<label for="merchant1">Merchant </label>
+										<select id="merchant1" class="selectMenu" name="merchant">
+											<option value="<%= currentUser.merchant %>"></option>
+										</select>
+									</div>
+									<div class="inputSection hide">
+										<label for="merchant2">Merchant 2</label>
+										<select id="merchant2" class="selectMenu" name="merchant2">
+											<option value="<%= currentUser.merchant2 %>"></option>
+										</select>
+									</div>
+									<input type="submit" class="creatUserBtn" value="Creat A New User">
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+		<% } %>
+		<!-- Modal Action Window -->
+		<% if(error && error.length > 0) {%>
+			<div class="alert" role="alert">
+				<div class="alertContent">
+					<h3>  <%= error %> </h3>
+				</div>
+			</div>
+		<% } %>
+		<% if(success && success.length > 0) {%>
+			<div class="alert" role="alert">
+				<div class="alertContent">
+					<h3>  <%= success %> </h3>
+				</div>
+			</div>
+		<% } %>
+		<script src="js/registerForm.js"></script>
 		<script src="js/authorizationMenu.js"></script>
 		<script src="./js/users.js"></script>
 		<script src="js/classie.js"></script>

@@ -281,7 +281,6 @@ fetchPromise.then(response => {
 // Show settlements list
 
 async function loadSettleList()  {
-    //let settleList = await  fetch('http://18.216.223.81:3000/getSettlementsList');
     let settleList = await  fetch('http://18.216.223.81:3000/getSettlementsList');
     let SETTLEMENTS = await settleList.json();
 
@@ -334,7 +333,6 @@ async function loadSettleList()  {
                      <strong>${new Date(item.dates.creation_date).getDate() + '/' + (new Date(item.dates.creation_date).getMonth()+ 1) + '/' +   new Date(item.dates.creation_date).getFullYear()}</strong> for <strong>${formatStr(item.amount)} ${item.currency}</strong> - <span class="currentStatus">Sent</span>`;
                     
                     (async () => {
-                        //let addComment = await fetch(`http://18.216.223.81:3000/changeSettleStatus/${item._id}`, {
                         let changeSStatus = await fetch(`http://18.216.223.81:3000/changeSettleStatus/${item._id}`, {
                             method: "POST",
                             body: JSON.stringify({
@@ -352,7 +350,6 @@ async function loadSettleList()  {
                      <strong>${new Date(item.dates.creation_date).getDate() + '/' + (new Date(item.dates.creation_date).getMonth()+ 1) + '/' +   new Date(item.dates.creation_date).getFullYear()}</strong> for <strong>${formatStr(item.amount)} ${item.currency}</strong> - <span class="currentStatus">Received</span>`;
                     
                     (async () => {
-                        //let addComment = await fetch(`http://18.216.223.81:3000/changeSettleStatus/${item._id}`, {
                         let changeSStatus = await fetch(`http://18.216.223.81:3000/changeSettleStatus/${item._id}`, {
                             method: "POST",
                             body: JSON.stringify({
@@ -370,7 +367,6 @@ async function loadSettleList()  {
                      <strong>${new Date(item.dates.creation_date).getDate() + '/' + (new Date(item.dates.creation_date).getMonth()+ 1) + '/' +   new Date(item.dates.creation_date).getFullYear()}</strong> for <strong>${formatStr(item.amount)} ${item.currency}</strong> - <span class="currentStatus"> Declined</span>`;
                     
                      (async () => {
-                        //let addComment = await fetch(`http://18.216.223.81:3000/changeSettleStatus/${item._id}`, {
                         let changeSStatus = await fetch(`http://18.216.223.81:3000/changeSettleStatus/${item._id}`, {
                             method: "POST",
                             body: JSON.stringify({
@@ -468,7 +464,6 @@ async function loadSettleList()  {
                 
                     const postFile = async (fd) => {
                     return  await fetch("http://18.216.223.81:3000/uploadSettleDoc", {
-                        // return  await fetch("http://18.216.223.81:3000/uploadSettleDoc", {
                             method: "POST",
                             body: fd,
                             mode: "no-cors",
@@ -515,7 +510,6 @@ async function loadSettleList()  {
                     this.commentTable.appendChild(this.commentTr);
 
                     (async () => {
-                        //let addComment = await fetch(`http://18.216.223.81:3000/addSettleComment/${item._id}`, {
                         let addComment = await fetch(`http://18.216.223.81:3000/addSettleComment/${item._id}`, {
                             method: "POST",
                             body: JSON.stringify({
@@ -560,7 +554,6 @@ async function loadSettleList()  {
                     this.commisstTable.appendChild(this.commisTR);
 
                     (async () => {
-                        //let addCommision = await fetch(`http://18.216.223.81:3000/addSettleCommision/${item._id}`, {
                         let addCommision = await fetch(`http://18.216.223.81:3000/addSettleCommision/${item._id}`, {
                             method: "POST",
                             body: JSON.stringify({
@@ -748,7 +741,6 @@ function checkIsEmptyObj (obj) {
 function openDocsImage (event) {
     var filename = event.target.closest("tr").children[3].textContent.trim();
     window.open(`http://18.216.223.81:3000/upload/${filename}`, '_blank');
-    //window.open(`http://18.216.223.81:3000/upload/${filename}`, '_blank');
 }
 
 

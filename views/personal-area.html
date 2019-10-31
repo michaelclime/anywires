@@ -19,22 +19,91 @@
 		<script src="https://kit.fontawesome.com/5355902e87.js"></script>
 	</head>
 	<body>
-		<!-- Modal Action Window -->
-		<% if(error && error.length > 0) {%>
-			<div class="alert" role="alert">
-				<div class="alertContent">
-					<h3>  <%= error %> </h3>
-				</div>
-			</div>
-		<% } %>
-		<% if(success && success.length > 0) {%>
-			<div class="alert" role="alert">
-				<div class="alertContent">
-					<h3>  <%= success %> </h3>
-				</div>
-			</div>
-		<% } %>
-
+		
+		<% if (currentUser.role == 'Invoice Manager') { %>
+			<div id="burgerMenu">
+					<div class="menu">
+						<ul id="gn-menu" class="gn-menu-main">
+							<li class="gn-trigger">
+								<a class="gn-icon gn-icon-menu"><span>Menu</span></a>
+								<nav class="gn-menu-wrapper">
+									<div class="gn-scroller">
+										<ul class="gn-menu">
+												<li><a href='personal-area.html'><img class="icon" src="fonts/icons/personal-area.png">Personal Area</a></li>
+												<li><a href="dashBoardMainPage.html"><img class="icon" src="fonts/icons/dashboard.png">Dashboard</a></li>
+												<li><a href='InvoiceGeneration.html'><img class="icon" src="fonts/icons/invoice.png">Invoice generation</a></li>
+												<li><a href='Dashboard-how-it-works.html'><img class="icon" src="fonts/icons/info.png">How it works</a></li>
+												</ul>
+											</li>
+										</ul>
+									</div>
+								</nav>
+							</li>
+						</ul>
+			
+						<div class="authorizationMenu">
+							<span> 
+								<span class="userName"> <%= currentUser.fullname %></span>
+								<span class="userLogo"><i class="far fa-user-circle"></i></span>
+							</span>
+							<ul class="dropMenu">
+								<li class="profile">
+									<span class="liLogo"><i class="fas fa-user-alt"></i></span>
+									<a href="personal-area.html">Profile</a>
+								</li>
+								<li class="merchant">
+									<span class="liLogo"><i class="fab fa-chromecast"></i></span>
+									<a href="merchants.html">Merchant</a>
+								</li>
+								<li class="logOut">
+									<span class="liLogo"><i class="fas fa-sign-out-alt"></i></span>
+									<a href="/logout">LogOut</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+		<% } else if (currentUser.role == 'Solution Manager') { %>
+			<div id="burgerMenu">
+					<div class="menu">
+						<ul id="gn-menu" class="gn-menu-main">
+							<li class="gn-trigger">
+								<a class="gn-icon gn-icon-menu"><span>Menu</span></a>
+								<nav class="gn-menu-wrapper">
+									<div class="gn-scroller">
+										<ul class="gn-menu">
+											<li><a href='personal-area.html'><img class="icon" src="fonts/icons/personal-area.png">Personal Area</a></li>
+											<li><a href='banks.html'><img class="icon" src="fonts/icons/bank.png">Banks</a></li>
+											<li><a href='Dashboard-how-it-works.html'><img class="icon" src="fonts/icons/info.png">How it works</a></li>
+												</ul>
+											</li>
+										</ul>
+									</div>
+								</nav>
+							</li>
+						</ul>
+			
+						<div class="authorizationMenu">
+							<span> 
+								<span class="userName"> <%= currentUser.fullname %></span>
+								<span class="userLogo"><i class="far fa-user-circle"></i></span>
+							</span>
+							<ul class="dropMenu">
+								<li class="profile">
+									<span class="liLogo"><i class="fas fa-user-alt"></i></span>
+									<a href="personal-area.html">Profile</a>
+								</li>
+								<li class="merchant">
+									<span class="liLogo"><i class="fab fa-chromecast"></i></span>
+									<a href="merchants.html">Merchant</a>
+								</li>
+								<li class="logOut">
+									<span class="liLogo"><i class="fas fa-sign-out-alt"></i></span>
+									<a href="/logout">LogOut</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+		<% } else { %>
 		<div id="burgerMenu">
 		<div class="menu">
 			<ul id="gn-menu" class="gn-menu-main">
@@ -89,7 +158,7 @@
 				</ul>
 			</div>
 		</div>
-		
+		<% } %>
 	
 		<div id="wrapper">
 
@@ -171,6 +240,22 @@
 			</footer>
 	
 		</div>
+
+		<!-- Modal Action Window -->
+		<% if(error && error.length > 0) {%>
+			<div class="alert" role="alert">
+				<div class="alertContent">
+					<h3>  <%= error %> </h3>
+				</div>
+			</div>
+		<% } %>
+		<% if(success && success.length > 0) {%>
+			<div class="alert" role="alert">
+				<div class="alertContent">
+					<h3>  <%= success %> </h3>
+				</div>
+			</div>
+		<% } %>
 
 		<script src="js/authorizationMenu.js"></script>
 		<script src="js/presonal-area_main.js"></script>	
