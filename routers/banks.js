@@ -1,6 +1,7 @@
 const express = require('express'),
     router = new express.Router(),
     mongo = require('mongodb'),
+    objectId = require("mongodb").ObjectID,
     jsonParser = express.json();
  
 
@@ -8,6 +9,10 @@ const url = 'mongodb://18.216.223.81:27017/anywires';
 
 router.get('/banks.html', isLoggedIn, function(req, res) {
     res.render("banks.html");
+});
+
+router.get('/create-bank.html', isLoggedIn, function(req, res) {
+    res.render("create-bank.html");
 });
 
 router.get("/getBanks", (req, res) => {
@@ -52,11 +57,11 @@ router.post("/getNumber-Banks", jsonParser, (req, res) => {
     });
 });
 
-router.post("/postBank",jsonParser, (req, res) => {
+router.post("/createBank", jsonParser, (req, res) => {
+    const newBank = req.body.newBank;
     mongo.connect(url, (err, db) => {
-        db.collection("banks").insertOne(req.body, function(err, result) {
+        db.collection("banks").insertOne(newBank, function(err, result) {
             if(err) return console.log("Bad POST Banks request!", err);
-            db.close();
             res.send(req.body);
         });
     });

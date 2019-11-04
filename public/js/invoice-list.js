@@ -108,7 +108,7 @@ class invoiceList {
             this.loadingGif.style.display = "none";
 
         } else {
-            this.alertWindow("You can't do that!");
+            this.alertWindow(`Your current status ${this.currentInvoice[0].status} does't allow this!`);
         } 
     }    
 
@@ -167,7 +167,7 @@ class invoiceList {
             this.loadingGif.style.display = "none";
 
         } else {
-            this.alertWindow("You can't do that!");
+            this.alertWindow(`Your current status ${this.currentInvoice[0].status} does't allow this!`);
         }
     }
 
@@ -227,7 +227,7 @@ class invoiceList {
             this.loadingGif.style.display = "none";
 
         } else {
-            this.alertWindow("You can't do that!");
+            this.alertWindow(`Your current status ${this.currentInvoice[0].status} does't allow this!`);
         }
     }
 
@@ -340,8 +340,25 @@ class invoiceList {
         }
     }
 
+    checkDocsApproved = (arr) => {
+        var res = false;
+        if (arr.length) {
+            arr.forEach((item) => {
+                if (item.status === "Approved"){
+                    return res = true;
+                }
+            });
+        }
+        return res;
+    }
+
     approvedStatus = async () => {
-        if (this.currentInvoice[0].status === "Received") {
+        var ID = this.checkDocsApproved(this.currentInvoice[0].documents.id);
+        var PaymantProof = this.checkDocsApproved(this.currentInvoice[0].documents.payment_proof);
+        var UtilityBill = this.checkDocsApproved(this.currentInvoice[0].documents.utility_bill);
+        var Declaration = this.checkDocsApproved(this.currentInvoice[0].documents.declaration);
+        
+        if (this.currentInvoice[0].status === "Received" && ID && PaymantProof && UtilityBill && Declaration) {
             // Loading GIF appear
             this.loadingGif.style.display = "flex";
 
@@ -422,9 +439,17 @@ class invoiceList {
 
             // Loading GIF appear
             this.loadingGif.style.display = "none";
-        } else {
-            this.alertWindow("You can't do that!");
-        }
+
+            // If not all documents Approved than Alert 
+        } else if (this.currentInvoice[0].status === "Received" && !ID ||
+                this.currentInvoice[0].status === "Received" && !PaymantProof ||
+                this.currentInvoice[0].status === "Received" && !UtilityBill ||
+                this.currentInvoice[0].status === "Received" &&  !Declaration) {
+            this.alertWindow("First you must download all the documents!");
+
+        } else  {
+            this.alertWindow(`Your current status ${this.currentInvoice[0].status} does't allow this!`);
+        }      
     }
 
     getEURexchange = async (base, symbols) => {
@@ -510,7 +535,7 @@ class invoiceList {
             this.loadingGif.style.display = "none";
 
         } else {
-            this.alertWindow("You can't do that!");
+            this.alertWindow(`Your current status ${this.currentInvoice[0].status} does't allow this!`);
         }
     }
 
@@ -531,7 +556,7 @@ class invoiceList {
             document.querySelector(".receive_SentAmount").innerHTML = `${amountSent}${this.currency}`
             document.querySelector("#receive_input").value = `${amountSent}`;
         } else {
-            this.alertWindow("You can't do that!");
+            this.alertWindow(`Your current status ${this.currentInvoice[0].status} does't allow this!`);
         }
     }
 
@@ -582,7 +607,7 @@ class invoiceList {
             this.sentSubmitBtn.addEventListener("click", this.sentStatus);
 
         } else {
-            this.alertWindow("You can't do that!");
+            this.alertWindow(`Your current status ${this.currentInvoice[0].status} does't allow this!`);
         }
     }
 
@@ -688,11 +713,9 @@ class invoiceList {
 
             // Loading GIF OFF
             this.loadingGif.style.display = "none";
-            
-            
 
         } else {
-            this.alertWindow("You can't do that!");
+            this.alertWindow(`Your current status ${this.currentInvoice[0].status} does't allow this!`);
         }
     }
 
@@ -725,7 +748,9 @@ class invoiceList {
         var type = event.target.closest("tr").children[1].textContent.trim();
         var statusTd = event.target.closest("tr").children[2].innerHTML = status;
         var createdBy = this.currentUser.textContent.trim();
-        
+        var docId = event.target.closest("tr").children[5].textContent.trim();
+
+        // Request in MongoDB
         await this.changeDocsStatus(filename, status, this.currentInvoice[0].number, type, createdBy);
 
         // Update Comment Area for this.currentInvoce Obj
@@ -736,6 +761,14 @@ class invoiceList {
             "message": `Invoice #${this.currentInvoice[0].number}. ${type} was ${status}!`
         });
         this.tableCommentsRender(this.currentInvoice[0].comments);
+
+        // Change doc status for current Invoice
+        type === "Payment proof" ? type = "payment_proof" : "";
+        type === "Utility Bill" ? type = "utility_bill" : "";
+        var currentObjType = this.currentInvoice[0].documents[type.toLowerCase()];
+        currentObjType.forEach((doc) =>{
+            doc.id === docId ? doc.status = "Declined" : "";
+        });
 
         // Loading GIF appear
         this.loadingGif.style.display = "none";
@@ -750,7 +783,9 @@ class invoiceList {
         var type = event.target.closest("tr").children[1].textContent.trim();
         var statusTd = event.target.closest("tr").children[2].innerHTML = status;
         var createdBy = this.currentUser.textContent.trim();
+        var docId = event.target.closest("tr").children[5].textContent.trim();
         
+        // Request in MongoDB
         await this.changeDocsStatus(filename, status, this.currentInvoice[0].number, type, createdBy);
 
         // Update Comment Area for this.currentInvoce Obj
@@ -759,6 +794,14 @@ class invoiceList {
             "created_by": createdBy,
             "creation_date": new Date(),
             "message": `Invoice #${this.currentInvoice[0].number}. ${type} was ${status}!`
+        });
+
+        // Change doc status for current Invoice
+        type === "Payment proof" ? type = "payment_proof" : "";
+        type === "Utility Bill" ? type = "utility_bill" : "";
+        var currentObjType = this.currentInvoice[0].documents[type.toLowerCase()];
+        currentObjType.forEach((doc) =>{
+            doc.id === docId ? doc.status = "Approved" : "";
         });
         this.tableCommentsRender(this.currentInvoice[0].comments);
 
@@ -1233,6 +1276,7 @@ class invoiceList {
                             <span id="docBad" onclick="userList.docsBad(event)"><i class="far fa-times-circle"></i></span>
                         </td>
                         <td class="hide">${doc.filename}</td>
+                        <td class="hide">${doc._id}</td>
                         <td> <button class="docPreview" onclick="userList.openDocsImage(event)">Preview</button> </td> 
                     `; 
                     this.tableDocs.appendChild(tableTr);

@@ -4,101 +4,22 @@ class UsersList {
         this.ArrayLIst = [];
         this.banksNumber = [];
         this.container = document.getElementById("table-list");
-        this.createBankBtn = document.querySelector("#createBank-button");
         this.clearFilter = document.querySelector("#clearFilterBtn");
         this.btnShowFilter = document.querySelector("#showBtn");
         this.buttonSearch = document.getElementById("search-button");
         this.buttonExel = document.querySelector("#dowloadPdf");
         this.containerPages = document.querySelector(".nextPage-block");
+        this.openCreatePageBtn = document.querySelector("#createBank-button");
+        this.loadingGIF = document.querySelector("#loadingGif");
         this.render();
     }
 
-    createBank = () => {
-        this.filter = document.querySelector(".filter");
-        this.filter.style.display = "flex";
+    openCreatePage = () => {
+        // Loading GIF Off
+        this.loadingGIF.style.display = "flex";
+        document.body.classList.add("modal-open");
 
-        this.filter.addEventListener("click", (event) => {
-            event.target === this.filter ? this.filter.style.display = "none" : "";
-        });
-
-        this.modalCreateBtn = document.querySelector("#createBankModal-btn");
-        this.modalCreateBtn.addEventListener("click", this.createBankInit);
-    }
-
-    createBankInit = () => {
-        this.data = document.querySelectorAll(".allData");
-            this.data[15].checked ? this.sepa = true : this.sepa = false;
-            this.data[16].checked ? this.b2b = true : this.b2b = false;
-            this.newBank = {
-                "name" : this.data[0].value, 
-                "beneficiary_name" : this.data[1].value, 
-                "solution_name" : this.data[2].value, 
-                "country" : this.data[3].value, 
-                "currency" : this.data[4].value, 
-                "beneficiary address" : this.data[5].value, 
-                "max_wire" : Number(this.data[6].value), 
-                "min_wire" : Number(this.data[7].value), 
-                "iban" : this.data[8].value, 
-                "swift_bic" : this.data[9].value, 
-                "bank_address" : this.data[10].value, 
-                "incoming_fee" : 0.05, 
-                "company_site" : this.data[11].value, 
-                "stop_limit" : Number(this.data[12].value), 
-                "registration_number": this.data[13].value,
-                "sepa" : this.sepa, 
-                "b2b" : this.b2b, 
-                "company_logo" : "", 
-                "balance_requested" : 0, 
-                "balance_sent" : 0, 
-                "balance_received" : 0, 
-                "balance_approved" : 0, 
-                "balance_available" : 0, 
-                "active" : false, 
-                "balance_settlement" : 0, 
-                "description" : this.data[14].value, 
-                "creation_date" : moment().format('LL'), 
-                "created_by" : "Jack Wilson" 
-            };
-            
-            // CheckEmpty start
-            this.requiredFields = document.querySelectorAll(".required");
-            var s = [];
-            this.requiredFields.forEach((item) => {
-                s.push(item.value.replace(/^\s+|\s+$/g, ''));
-            });
-            this.resultCheck = s.some((item) => item === "");
-            // CheckEmpty end
-
-            if(this.resultCheck === true) {
-                alert("Please fill out all empty fields!");
-            } else {
-                alert("OK!");
-                
-                fetch("http://18.216.223.81:3000/postBank", {
-                    // fetch("http://localhost:3000/postBank", {
-                        method: "POST",
-                        body: JSON.stringify(this.newBank),
-                        headers:{'Content-Type': 'application/json'}
-                        })
-                        .then(res => {
-                            res.text();
-                        }) 
-                        .then(async () => {
-                            this.container = document.getElementById("table-list");
-                            this.container.innerHTML = "";
-                            this.ArrayLIst = [];
-                            await this.saveLocalBanks();
-
-                            // Cleaning inputs start
-                            this.data.forEach((item) => item.value = "");
-                            // Cleaning inputs end
-
-                            this.filter.style.display = "none";
-                        })
-                        .catch(err => {
-                            console.log(err);
-                        });
-            }
+        document.location.href = "http://18.216.223.81:3000/create-bank.html";
     }
 
     clearFilters = () => {
@@ -219,7 +140,7 @@ class UsersList {
     }
 
     methodPutEnable = (id, status) => {
-        // fetch("http://localhost:3000/putBank", {
+        // fetch("http://18.216.223.81:3000/putBank", {
         fetch("http://18.216.223.81:3000/putBank", {
                     method: "PUT",
                     body: JSON.stringify({
@@ -373,7 +294,7 @@ class UsersList {
 
     getBanks = async (number, filter) => {
         return  await fetch("http://18.216.223.81:3000/getPart-Banks", {
-        // return  await fetch("http://localhost:3000/getPart-Banks", {
+        // return  await fetch("http://18.216.223.81:3000/getPart-Banks", {
             method: "POST",
             body: JSON.stringify({
                 number, 
@@ -392,7 +313,7 @@ class UsersList {
 
     getBanks_Number = async (filter) => {
         return  await fetch("http://18.216.223.81:3000/getNumber-Banks", {
-        // return  await fetch("http://localhost:3000/getNumber-Banks", {
+        // return  await fetch("http://18.216.223.81:3000/getNumber-Banks", {
             method: "POST",
             body: JSON.stringify({
                 filter
@@ -424,12 +345,49 @@ class UsersList {
             this.userList.innerHTML =  `
                     <td class="column1">${item.name}</td> 
                     <td class="column2">${item.country}</td> 
-                    <td class="column3">${item.currency}</td> 
-                    <td class="column4">${item.balance_requested}</td> 
-                    <td class="column5">${item.balance_sent}</td>
-                    <td class="column6">${item.balance_received}</td> 
-                    <td class="column7">${item.balance_approved}</td> 
-                    <td class="column8">${item.balance_available}</td> 
+
+                    <td class="column3">
+                        <div class="currency_wrapper">
+                            <div class="currency_EUR">EUR</div> 
+                            <div class="currency_USD">USD</div> 
+                        </div>
+                    </td>
+
+                    <td class="column4">
+                        <div class="currency_wrapper">
+                            <div class="currency_EUR">€${item.balance_EUR.balance_requested}</div> 
+                            <div class="currency_USD">$${item.balance_USD.balance_requested}</div> 
+                        </div>
+                    </td> 
+
+                    <td class="column5">
+                        <div class="currency_wrapper">
+                            <div class="currency_EUR">€${item.balance_EUR.balance_sent}</div> 
+                            <div class="currency_USD">$${item.balance_USD.balance_sent}</div> 
+                        </div>
+                    </td> 
+
+                    <td class="column6">
+                        <div class="currency_wrapper">
+                            <div class="currency_EUR">€${item.balance_EUR.balance_received}</div> 
+                            <div class="currency_USD">$${item.balance_USD.balance_received}</div> 
+                        </div>
+                    </td>
+
+                    <td class="column7">
+                        <div class="currency_wrapper">
+                            <div class="currency_EUR">€${item.balance_EUR.balance_approved}</div> 
+                            <div class="currency_USD">$${item.balance_USD.balance_approved}</div> 
+                        </div>
+                    </td>
+
+                    <td class="column8">
+                        <div class="currency_wrapper">
+                            <div class="currency_EUR">€${item.balance_EUR.balance_available}</div> 
+                            <div class="currency_USD">$${item.balance_USD.balance_available}</div> 
+                        </div>
+                    </td>
+
                     <td class="column9">${item.min_wire}</td> 
                     <td class="column10">${item.max_wire}</td> 
                     <td class="column11 statusCheck">${item.sepa}</td> 
@@ -444,6 +402,10 @@ class UsersList {
         this.checkSepa();
         this.checkEnable();
         this.disableEnableCheck();
+
+        // Loading GIF Off
+        this.loadingGIF.style.display = "none";
+        document.body.classList.remove("modal-open");
     }
 
     render(){
@@ -452,39 +414,8 @@ class UsersList {
         this.buttonExel.addEventListener("click", this.downloadExel);
         this.btnShowFilter.addEventListener("click", this.showFilters);
         this.clearFilter.addEventListener("click", this.clearFilters);
-        this.createBankBtn.addEventListener("click", this.createBank);
+        this.openCreatePageBtn.addEventListener("click", this.openCreatePage);
     }
 };
 
 const userList = new UsersList();
-
-
-// const obj = { 
-//     "name" : "Anywires Bank", 
-//     "beneficiary_name" : "Anywires Company", 
-//     "solution_name" : "AW", 
-//     "country" : "Poland", 
-//     "currency" : "EUR", 
-//     "beneficiary address" : "Poland, general street, 49A", 
-//     "max_wire" : 30000, 
-//     "min_wire" : 1000, 
-//     "iban" : "CX087345", 
-//     "swift_bic" : "BIC12124", 
-//     "bank_address" : "Poland, general street, polska 76, bul.", 
-//     "incoming_fee" : "0.005", 
-//     "company_site" : "anywires.com", 
-//     "stop_limit" : 150000, 
-//     "sepa" : true, 
-//     "b2b" : true, 
-//     "company_logo" : "", 
-//     "balance_requested" : 0, 
-//     "balance_sent" : 0, 
-//     "balance_received" : 0, 
-//     "balance_approved" : 0, 
-//     "balance_available" : 0, 
-//     "active" : true, 
-//     "balance_settlement" : 0, 
-//     "description" : "This is test bank description", 
-//     "creation_date" : "2019-12-11", 
-//     "created_by" : "Jack Wilson" 
-// }
