@@ -23,6 +23,17 @@ router.get("/invoice-preview", isLoggedIn, function (req, res) {
     res.render("invoice-preview.html");
 });
 
+router.get("/invoiceContract", isLoggedIn, function (req, res) {
+    res.render("invoiceContract.html");
+});
+router.get("/invoiceDecOfPay", isLoggedIn, function (req, res) {
+    res.render("invoiceDecOfPay.html");
+});
+
+router.get("/invoicePreviewBankVersion", isLoggedIn, function (req, res) {
+    res.render("invoicePreviewBankVersion.html");
+});
+
 // Function for Dates Range START.
 var datesObj = (key, first, second) => {
     var Obj = {};

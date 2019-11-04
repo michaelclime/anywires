@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://fonts.googleapis.com/css?family=Frank+Ruhl+Libre&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" href="img/AnyWiresFavicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="./css/invoicePreviewBankVersion.css">
+    <title>Invoice Preview</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+</head>
+<body>
+        <button class="downloadPDFbtn" onclick="HTMLtoPDF()">Download PDF</button>
+    <div id="wrapper">
+        <div id="HTMLtoPDF">
+        <header>
+            <div class="block-logo">
+                <div class="bank-logo-block">
+                    <img class="bank-logo" src="" alt="bank-logo">
+                </div>
+                <div class="invoice-info">
+                    <h1>Invoice</h1>
+                    <p>Invoice date: <span id="invoiceDate"></span></p>
+                    <p>Invoice num: <span id="invoiceNumber"></span> / <span id="invoiceYear"></span></p>
+                </div>
+            </div>
+
+            <div class="invoice-fromFor-block">
+                <div class="invoice-for-block">
+                    <p><b>Invoice for:</b></p>
+                    <p>Client: <span id="clientName"></span></p>
+                    <p>Email: <span id="clientEmail"></span></p>
+                    <p>Phone: <span id="clientPhone"></span></p>
+                    <p>Address: <span id="clientAddress"></span></p>
+                    <p>Passport No: <span id="clientID"></span></p>
+                </div>
+            </div>
+        </header>
+        <main>
+
+            <table id="tableId">
+                <thead>
+                  <tr>
+                    <th scope="col" class="col1 forBack">Item description</th>
+                    <th scope="col" class="forBack">Quantity</th>
+                    <th scope="col" class="col2 forBack">Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td data-label="Item description" class="col1">Payment for <span class="paymentClass"></span> educational package - <span class="bankSite"></span></td>
+                    <td data-label="Quantity">1</td>
+                    <td data-label="Total" class="table-total col2"><span id="totalSum"></span> <span class="currency"></span></td>
+                  </tr>
+                  <tr>
+                    <td scope="row" data-label="Item description" class="col1">VAT</td>
+                    <td data-label="Quantity">1</td>
+                    <td data-label="Total" class="table-total col2">0 <span id="currency" class="currency"></span></td>
+                  </tr>
+                </tbody>
+              </table>
+
+            <div class="line-under-table"></div>
+
+            <div class="final-sum">
+                <h2><span id="totalLarge"></span> <span class="currency"></span></h2>
+            </div>
+
+            <div class="line-under-sum"></div>
+
+            <div class="invoice-from-block">
+                <p><b>Bank Account Details:</b></p>
+                <p>Beneficiary name: <span id="benefName"></span></p>
+                <p>Beneficiary address: <span id="benefAdress"></span></p>
+                <p>Bank name: <span id="bankName"></span></p>
+                <p>Bank address: <span id="bankAdress"></span></p>
+                <p><span id="IBAN"></span></p>
+                <p>SWIFT: <span id="SWIFT"></span></p>
+            </div>
+
+            <div class="line-under-sum"></div>
+
+           <div class="notesBox">
+                <div class="notes">
+                    <p><b>Notes:</b></p>
+                    <p>Payment should be done within 96 hour after</p>
+                    <p>invoice received.</p>
+                    <p>If not, Invoice should be re-generated.</p>
+                </div>
+                <div class="issue">
+                    <span><strong>Issued by:</strong></span>
+                </div>
+           </div>
+
+        </main>
+    </div>
+</div>
+    <script src="./js/invoicePreviewBankVersion.js"></script>
+    <script src="./js/jquery-2.1.3.js"></script>
+    <script src="./js/jspdf.js"></script>
+    <script src="./js/pdfFromHTML.js"></script>
+</body>
+</html>

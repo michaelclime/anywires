@@ -1334,6 +1334,21 @@ class invoiceList {
         window.open("http://18.216.223.81:3000/invoice-preview?&" + number[1], '_blank');
     }
 
+    invoiceContract = (event) => {
+        var number = event.target.closest("tr").children[0].children[0].children[0].children[0].textContent.split("#");
+        window.open("http://18.216.223.81:3000/invoiceContract?&" + number[1], '_blank');
+    }
+
+    invoiceDecOfPay = (event) => {
+        var number = event.target.closest("tr").children[0].children[0].children[0].children[0].textContent.split("#");
+        window.open("http://18.216.223.81:3000/invoiceDecOfPay?&" + number[1], '_blank');
+    }
+
+    invoicePreviewBankVersion = (event) => {
+        var number = event.target.closest("tr").children[0].children[0].children[0].children[0].textContent.split("#");
+        window.open("http://18.216.223.81:3000/invoicePreviewBankVersion?&" + number[1], '_blank');
+    }
+
     filtersData = () => {
         var merchList = [];
         var bankList = [];
@@ -1881,6 +1896,12 @@ class invoiceList {
         });
         this.buttonsPreview = document.querySelectorAll(".previewBtn");
         this.buttonsPreview.forEach((btn) => btn.addEventListener("click", this.previewInvoice));
+        this.invoiceContractBtn = document.querySelectorAll(".fa-file-signature");
+        this.invoiceContractBtn.forEach((btn) => btn.addEventListener("click", this.invoiceContract));
+        this.invoiceDecOfPayBtn = document.querySelectorAll(".fa-file-invoice-dollar");
+        this.invoiceDecOfPayBtn.forEach((btn) => btn.addEventListener("click", this.invoiceDecOfPay));
+        this.invoicePreviewBankBtn = document.querySelectorAll(".fa-file-alt");
+        this.invoicePreviewBankBtn.forEach((btn) => btn.addEventListener("click", this.invoicePreviewBankVersion));
         this.viewInvoice();
     }
 
