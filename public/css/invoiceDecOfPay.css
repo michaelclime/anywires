@@ -1,0 +1,89 @@
+@import url('https://fonts.googleapis.com/css?family=Frank+Ruhl+Libre&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Frank Ruhl Libre', serif;
+}
+
+/* SCROLL STYLE */
+
+ /* width */
+ ::-webkit-scrollbar {
+    width: 10px;
+}
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888;
+}
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.downloadPDFbtn {
+    margin: 30px 0;
+    margin-left: 75%;
+    padding: 8px;
+    font-size: 14px;
+    background: rgb(77, 77, 77);
+    color: #FFF;
+    border: none;
+    border-radius: 5px;
+    outline: none;
+}
+
+.downloadPDFbtn:hover {
+    background: #20a5f7;
+}
+    
+.content {
+    text-align: center;
+    margin: 0 90px;
+}
+
+.declarationText {
+    margin: 40px 120px;
+}
+
+p {
+    text-align: justify;
+    margin: 20px 0;
+}
+
+.signBox {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin: 50px 90px;
+}
+
+.arrow {
+    font-size: 40px;
+    color: green;
+}
+
+.tableBox {
+    display: flex;
+    justify-content: center;
+    margin: 0 70px;
+    margin-bottom: 100px;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  table, th, td {
+    border: 1px solid black;
+  }
+ 
+th, td {
+    height: 50px;
+}

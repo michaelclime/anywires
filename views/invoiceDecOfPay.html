@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="shortcut icon" href="img/AnyWiresFavicon.png" type="image/x-icon">
+    <title>Declaration of Payment</title>
+    <link rel="stylesheet" type="text/css" href="css/invoiceDecOfPay.css" />
+    <script src="https://kit.fontawesome.com/5355902e87.js"></script>
+</head>
+<body>
+    <button class="downloadPDFbtn" onclick="HTMLtoPDF()">Download PDF</button>
+
+    <div id="HTMLtoPDF">
+        <div class="content">
+            <div class="bank-logo-block">
+                <img class="bank-logo" src="" alt="bank-logo">
+            </div>
+            <h1>Declaration of Payment</h1>
+            <div class="declarationText">
+                <p>I, ________________________, holder of <span class="invClientCountry"></span> 
+                    Passport Number <span class="invClientID">______________</span>  hereby declare that:
+                </p>
+                <p>
+                    ✓ The transactions appearing on the table below were made and authorised by me, and to be cleared on my behalf.
+                </p>
+                <p>
+                    ✓ I also assume personal liability for any claim, loss and/or damage of whatsoever nature that <span class="invBankBenefName"></span> may suffer as a result of accepting the aforesaid payment from me.
+                </p>
+                <p>
+                    ✓ I hereby declare that the amount I will pay to the <span class="invBankBenefName"></span> is through legitimate
+                    sources only and does not involve and is not designed for the purpose of any contravention or
+                    evasion of Anti Money Laundering Policy, worldwide regulatory bodies and banks that are involved.
+                </p>
+                <p>
+                    ✓ I declare that each payment I make, or authorize to be cleared on my behalf will follow with a
+                    Declaration of Payment, and that would be my responsibility to provide.        
+                </p>
+                <p>
+                    ✓ I declare that under no circumstances shall <span class="invBankBenefName"></span> be liable to customer or any other person or entity for any punitive, special, incidental or consequential damages, whether based upon lost goodwill, lost resale profits, work stoppage, service failure, impairment of other services or otherwise and whether in a contract, tort or other action for or arising out of breach of warranty, breach of contract, delay, negligence, strict liability, or otherwise.
+                </p>
+                <p>
+                    ✓ I acknowledge that after the completion of this payment, it cannot be refunded. 
+                </p>
+                <p>
+                    ✓ I certify that the information declared herein is True and Correct. 
+                </p>
+            </div>
+
+            <div class="signBox">
+                <span>Client Signature: ___________________________ <span class="arrow"><i class="fas fa-check"></i></span></span>
+                <span>(Signature is also required for any of the transactions below separately)</span>
+            </div>
+            <div class="tableBox">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Payment Date</th>
+                            <th>Benefactor's bank(customer)</th>
+                            <th>Amount</th>
+                            <th>Currency</th>
+                            <th>Signature</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="invoiceDate"></span></td>
+                            <td><span class="invBankBenefName"></span></td>
+                            <td><span class="invAmount"></span></td>
+                            <td><span class="invoiceCurrency"></span></td>
+                            <td> ___________________<span class="arrow"><i class="fas fa-check"></i></span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/invoiceDecOfPay.js"></script>
+    <script src="./js/jquery-2.1.3.js"></script>
+    <script src="./js/jspdf.js"></script>
+    <script src="./js/pdfFromHTML.js"></script>
+</body>
+</html>
