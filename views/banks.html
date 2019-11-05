@@ -21,7 +21,7 @@
 		<script src="https://kit.fontawesome.com/5355902e87.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
 	</head>
-	<body>
+	<body class="modal-open">
 			<% if (currentUser.role == 'Invoice Manager') { %>
 				<div id="burgerMenu">
 						<div class="menu">
@@ -161,6 +161,13 @@
 				</div>
 			</div><!-- /container -->
 			<% } %>
+
+			<!-- Loading GIF -->
+			<div id="loadingGif">
+				<img src="img/Gear-2.5s-200px.gif" alt="loading GIF"/>
+				<div>Loading...</div>
+			</div>
+			<!-- Loading GIF -->
 		<div id="wrapper">
 
 			<!--Header Page-->
@@ -299,116 +306,7 @@
 				</div>
 			</main>
 		</div>
-		<!-- Modal Window "Create User" -->
-	<div class="filter">
-		<div class="modal-Addbank slide-top">
-			<h2>Create new Bank</h2>
-			<div class="containerModal">
-
-				<div class="firstModal-block">
-					<div class="bankName-block">
-						<label for="bankName-block">Bank name:</label>
-						<input class="allData required" type="text" placeholder="Bank name">
-					</div>
-
-					<div class="beneficiaryName-block">
-						<label for="beneficiaryName-block">Beneficiary name:</label>
-						<input class="allData required" type="text" placeholder="Beneficiary name">
-					</div>
-
-					<div class="solutionName-block">
-						<label for="solutionName-block">Solution name:</label>
-						<input class="allData required" type="text" placeholder="Solution name">
-					</div>
-
-					<div class="bankCountry-block">
-						<label for="bankCountry-block">Bank country:</label>
-						<input class="allData required" type="text" placeholder="Bank country:">
-					</div>
-
-					<div class="bankCurrency-block">
-						<label for="bankCurrency-block">Currency:</label>
-						<select  class="allData required" name="Bank Currency">
-							<option value="" selected></option>
-							<option value="USD">USD</option>
-							<option value="EUR">EUR</option>
-						</select>
-					</div>
-
-					<div class="benefAdress-block">
-						<label for="benefAdress-block">Beneficiary address:</label>
-						<input class="allData required" type="text" placeholder="Beneficiary address">
-					</div>
-
-					<div class="maxWire-block">
-						<label for="maxWire-block">Maximum wire:</label>
-						<input class="allData required" type="number" placeholder="Maximum wire">
-					</div>
-
-					<div class="minWire-block">
-						<label for="minWire-block">Minimum wire:</label>
-						<input class="allData required" type="number" placeholder="Minimum wire">
-					</div>
-
-					<div class="IBAN-block">
-						<label for="IBAN-block">IBAN number:</label>
-						<input class="allData required" type="text" placeholder="IBAN number">
-					</div>
-
-					
-				</div>
-
-				<!-- Second-modal block  -->
-				<div class="secondModal-block">
-					<div class="SWIFT-block">
-						<label for="SWIFT-block">SWIFT/BIC:</label>
-						<input class="secondModal-input allData required" type="text" placeholder="SWIFT/BIC">
-					</div>
-
-					<div class="bankAdress-block">
-						<label for="bankAdress-block">Bank address:</label>
-						<input class="secondModal-input allData required" type="text" placeholder="Bank address">
-					</div>
-
-					<div class="companySite-block">
-						<label for="companySite-block">Bank company site:</label>
-						<input class="secondModal-input allData" type="text" placeholder="Bank company site">
-					</div>
-
-					<div class="stopLimit-block">
-						<label for="stopLimit-block">Stop Limit:</label>
-						<input class="secondModal-input allData" type="number" placeholder="Stop Limit">
-					</div>
-
-					<div class="registrationNo-block">
-						<label for="registrationNo-block">Registration No:</label>
-						<input class="secondModal-input allData required" type="number" placeholder="Registration No">
-					</div>
-
-					<div class="description-block">
-						<label for="description-block">Description:</label>
-						<textarea class="allData" name="Description" placeholder="Description"></textarea>
-					</div>
-
-					<div class="sepaAvailable-block">
-						<label for="sepaAvailable-block">SEPA available:</label>
-						<input type="checkbox" class="sepaCheckbox allData">
-					</div>
-
-					<div class="B2B-block">
-						<label for="B2B-block">B2B:</label>
-						<input type="checkbox" class="b2bcheckbox allData">
-					</div>
-
-					<div class="uploadBank-block">
-						<button id="uploadLogo-btn">Upload Bank Logo</button>
-					</div>
-				</div>
-
-			</div>
-			<button id="createBankModal-btn">Create bank</button>
-		</div>
-	</div>
+		
 		<script src="js/authorizationMenu.js"></script>
 		<script src="./js/banks.js"></script>
 		<script src="js/classie.js"></script>

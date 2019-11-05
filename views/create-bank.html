@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Create bank</title>
+		<meta name="description" content="Anywires" />
+		<meta name="keywords" content="Anywires" />
+		<meta name="author" content="Anywires" />
+        <link rel="shortcut icon" href="./img/AnyWiresFavicon.png" type="image/x-icon">
+        <link rel="stylesheet" type="text/css" href="css/create-bank.css">
+		<link rel="stylesheet" type="text/css" href="css/menu.css" />
+		<link rel="stylesheet" type="text/css" href="css/menu-comp.css" />
+		<link rel="stylesheet" type="text/css" href="css/switchery.css" />
+		<link href="https://fonts.googleapis.com/css?family=Frank+Ruhl+Libre&display=swap" rel="stylesheet">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+		<script src="js/modernizr.custom.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.15.1/xlsx.full.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js"></script>
+		<script src="https://kit.fontawesome.com/5355902e87.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+	</head>
+	<body>
+			<% if (currentUser.role == 'Invoice Manager') { %>
+				<div id="burgerMenu">
+						<div class="menu">
+							<ul id="gn-menu" class="gn-menu-main">
+								<li class="gn-trigger">
+									<a class="gn-icon gn-icon-menu"><span>Menu</span></a>
+									<nav class="gn-menu-wrapper">
+										<div class="gn-scroller">
+											<ul class="gn-menu">
+													<li><a href='personal-area.html'><img class="icon" src="fonts/icons/personal-area.png">Personal Area</a></li>
+													<li><a href="dashBoardMainPage.html"><img class="icon" src="fonts/icons/dashboard.png">Dashboard</a></li>
+													<li><a href='InvoiceGeneration.html'><img class="icon" src="fonts/icons/invoice.png">Invoice generation</a></li>
+													<li><a href='Dashboard-how-it-works.html'><img class="icon" src="fonts/icons/info.png">How it works</a></li>
+													</ul>
+												</li>
+											</ul>
+										</div>
+									</nav>
+								</li>
+							</ul>
+				
+							<div class="authorizationMenu">
+								<span> 
+									<span class="userName"><%= currentUser.fullname %></span>
+									<span class="userLogo"><i class="far fa-user-circle"></i></span>
+								</span>
+								<ul class="dropMenu">
+									<li class="profile">
+										<span class="liLogo"><i class="fas fa-user-alt"></i></span>
+										<a href="personal-area.html">Profile</a>
+									</li>
+									<li class="merchant">
+										<span class="liLogo"><i class="fab fa-chromecast"></i></span>
+										<a href="merchants.html">Merchant</a>
+									</li>
+									<li class="logOut">
+										<span class="liLogo"><i class="fas fa-sign-out-alt"></i></span>
+										<a href="/logout">LogOut</a>
+									</li>
+								</ul>
+							</div>
+						</div>
+			<% } else if (currentUser.role == 'Solution Manager') { %>
+				<div id="burgerMenu">
+						<div class="menu">
+							<ul id="gn-menu" class="gn-menu-main">
+								<li class="gn-trigger">
+									<a class="gn-icon gn-icon-menu"><span>Menu</span></a>
+									<nav class="gn-menu-wrapper">
+										<div class="gn-scroller">
+											<ul class="gn-menu">
+												<li><a href='personal-area.html'><img class="icon" src="fonts/icons/personal-area.png">Personal Area</a></li>
+												<li><a href='banks.html'><img class="icon" src="fonts/icons/bank.png">Banks</a></li>
+												<li><a href='Dashboard-how-it-works.html'><img class="icon" src="fonts/icons/info.png">How it works</a></li>
+													</ul>
+												</li>
+											</ul>
+										</div>
+									</nav>
+								</li>
+							</ul>
+				
+							<div class="authorizationMenu">
+								<span> 
+									<span class="userName"> <%= currentUser.fullname %></span>
+									<span class="userLogo"><i class="far fa-user-circle"></i></span>
+								</span>
+								<ul class="dropMenu">
+									<li class="profile">
+										<span class="liLogo"><i class="fas fa-user-alt"></i></span>
+										<a href="personal-area.html">Profile</a>
+									</li>
+									<li class="merchant">
+										<span class="liLogo"><i class="fab fa-chromecast"></i></span>
+										<a href="merchants.html">Merchant</a>
+									</li>
+									<li class="logOut">
+										<span class="liLogo"><i class="fas fa-sign-out-alt"></i></span>
+										<a href="/logout">LogOut</a>
+									</li>
+								</ul>
+							</div>
+						</div>
+			<% } else { %>
+		<div id="burgerMenu">
+			<div class="menu">
+				<ul id="gn-menu" class="gn-menu-main">
+					<li class="gn-trigger">
+						<a class="gn-icon gn-icon-menu"><span>Menu</span></a>
+						<nav class="gn-menu-wrapper">
+							<div class="gn-scroller">
+								<ul class="gn-menu">
+									<li><a href='personal-area.html'><img class="icon" src="fonts/icons/personal-area.png">Personal Area</a></li>
+									<li><a href="dashBoardMainPage.html"><img class="icon" src="fonts/icons/dashboard.png">Dashboard</a></li>
+									<li><a href='InvoiceGeneration.html'><img class="icon" src="fonts/icons/invoice.png">Invoice generation</a></li>
+									<li><a href="invoice-list.html"><img class="icon" src="fonts/icons/invoice-list.png">Invoice list</a></li>
+									<li><a href="wallets.html"><img class="icon" src="fonts/icons/wallet.png">Wallets</a></li>
+									<li><a href="settlements.html"><img class="icon" src="fonts/icons/settlement.png">Settlements</a></li>
+									<li><a href="merchants.html"><img class="icon" src="fonts/icons/merchant.png">Merchants</a></li>
+									<li><a href='users.html'><img class="icon" src="fonts/icons/users.png">Users</a></li>
+									<li><a href='banks.html'><img class="icon" src="fonts/icons/bank.png">Banks</a></li>
+									<li id="reports"><a><img class="icon" src="fonts/icons/invoice-report.png">Reports</a></li>
+									<ul class="gn-submenu" id="allReports">
+										<li><a href="invoice-report.html"><img class="icon" src="fonts/icons/aff-report.png">Invoices report</a></li>
+										<li><a href="merchantReport.html"><img class="icon" src="fonts/icons/aff-report.png">Merchants report</a></li>
+										<li><a href="settlementReport.html"><img class="icon" src="fonts/icons/aff-report.png">Settlements report</a></li>
+										<li><a href="affiliateReport.html"><img class="icon" src="fonts/icons/aff-report.png">Affiliates report</a></li>
+									</ul>
+									<li><a href='Dashboard-how-it-works.html'><img class="icon" src="fonts/icons/info.png">How it works</a></li>
+										</ul>
+									</li>
+								</ul>
+							</div>
+						</nav>
+					</li>
+				</ul>
+	
+				<div class="authorizationMenu">
+					<span> 
+						<span class="userName"> <%= currentUser.fullname %></span>
+						<span class="userLogo"><i class="far fa-user-circle"></i></span>
+					</span>
+					<ul class="dropMenu">
+						<li class="profile">
+							<span class="liLogo"><i class="fas fa-user-alt"></i></span>
+							<a href="personal-area.html">Profile</a>
+						</li>
+						<li class="merchant">
+							<span class="liLogo"><i class="fab fa-chromecast"></i></span>
+							<a href="merchants.html">Merchant</a>
+						</li>
+						<li class="logOut">
+							<span class="liLogo"><i class="fas fa-sign-out-alt"></i></span>
+							<a href="/logout">LogOut</a>
+						</li>
+					</ul>
+				</div>
+			</div><!-- /container -->
+			<% } %>
+			
+			<!-- Loading GIF -->
+			<div id="loadingGif">
+				<img src="img/Gear-2.5s-200px.gif" alt="loading GIF"/>
+				<div>Loading...</div>
+			</div>
+			<!-- Loading GIF -->
+
+		<div id="wrapper">
+
+			<!--Header Page-->
+			<header> 
+				<img src="./img/bank.png" alt="icon page" width="40px" height="40px"/>
+				<h1>Create bank</h1>
+			</header>
+			
+			<!--Main Page-->
+			<main>
+				<div class="switcher_block">
+					<label class="switchLabel" for="js-switch">Disable:</label>
+					<input id="active" type="checkbox" class="js-switch"/>
+				</div>
+                <h2>Bank Info</h2>
+                <div class="modal-Addbank">
+                        <div class="containerModal">
+                            <div class="firstModal-block">
+                                <div class="bankName-block">
+                                    <label for="bankName-block">Bank name:</label>
+                                    <input id="bankName" class="required" type="text" placeholder="Bank name">
+                                </div>
+            
+                                <div class="beneficiaryName-block">
+                                    <label for="beneficiaryName-block">Beneficiary name:</label>
+                                    <input id="benefName" class="required" type="text" placeholder="Beneficiary name">
+                                </div>
+            
+                                <div class="solutionName-block">
+                                    <label for="solutionName-block">Solution name:</label>
+                                    <input id="solName" class="required" type="text" placeholder="Solution name">
+                                </div>
+            
+                                <div class="bankCountry-block">
+                                    <label for="bankCountry-block">Bank country:</label>
+                                    <input id="bankCountry" class="required" type="text" placeholder="Bank country:">
+                                </div>
+            
+                                <div class="benefAdress-block">
+                                    <label for="benefAdress-block">Beneficiary address:</label>
+                                    <input id="benefAddress" class="required" type="text" placeholder="Beneficiary address">
+                                </div>
+            
+                                <div class="maxWire-block">
+                                    <label for="maxWire-block">Maximum wire:</label>
+                                    <input id="maxWire" class="required" type="number" placeholder="Maximum wire">
+                                </div>
+            
+                                <div class="minWire-block">
+                                    <label for="minWire-block">Minimum wire:</label>
+                                    <input id="minWire" class="required" type="number" placeholder="Minimum wire">
+                                </div>
+
+                                <div class="minWire-block">
+                                        <label for="minWire-block">IBAN EUR:</label>
+                                    <input id="IBAN_EUR" class="required" type="text" placeholder="IBAN EUR">
+                                </div>
+            
+                                <div class="IBAN-block">
+                                    <label for="IBAN-block">IBAN USD:</label>
+                                    <input id="IBAN_USD" class="required" type="text" placeholder="IBAN USD">
+                                </div>
+            
+                                
+                            </div>
+            
+                            <!-- Second-modal block  -->
+                            <div class="secondModal-block">
+
+								<div class="bankAdress-block">
+									<label for="bankAdress-block">SWIFT/BIC:</label>
+									<input id="SWIFT" class="secondModal-input  required" type="text" placeholder="SWIFT/BIC">
+								</div>
+            
+                                <div class="bankAdress-block">
+                                    <label for="bankAdress-block">Bank address:</label>
+                                    <input id="bankAddress" class="secondModal-input  required" type="text" placeholder="Bank address">
+                                </div>
+            
+                                <div class="companySite-block">
+                                    <label for="companySite-block">Bank company site:</label>
+                                    <input id="bankComSite" class="secondModal-input " type="text" placeholder="Bank company site">
+                                </div>
+            
+                                <div class="stopLimit-block">
+                                    <label for="stopLimit-block">Stop Limit:</label>
+                                    <input id="stopLimit" class="secondModal-input required" type="number" placeholder="Stop Limit">
+                                </div>
+            
+                                <div class="registrationNo-block">
+                                    <label for="registrationNo-block">Registration No:</label>
+                                    <input id="regNum" class="secondModal-input  required" type="text" placeholder="Registration No">
+                                </div>
+            
+                                <div class="description-block">
+                                    <label for="description-block">Description:</label>
+                                    <textarea id="description" class="" name="Description" placeholder="Description"></textarea>
+                                </div>
+            
+                                <div class="sepaAvailable-block">
+                                    <label for="sepaAvailable-block">SEPA available:</label>
+                                    <input id="sepa" type="checkbox" class="sepaCheckbox ">
+                                </div>
+            
+                                <div class="B2B-block">
+                                    <label for="B2B-block">B2B:</label>
+                                    <input id="b2b" type="checkbox" class="b2bcheckbox ">
+                                </div>
+            
+                                <div class="uploadBank-block">
+                                    <button id="uploadLogo-btn">Upload Bank Logo</button>
+                                </div>
+                            </div>
+            
+                        </div>
+					</div>
+					
+					<h2>Commissions</h2>
+					<div class="comm_wrapper">
+						<div class="comm_block">
+							<h3 class="comm_title">General fees</h3>
+							
+							<div class="comm_item">
+								<label for="comm_item">In C2B:</label>
+								<div class="comm_inputs">
+									<input class="required" id="in_c2b_per" type="number" placeholder="Percent">
+									<input class="required" id="in_c2b_flat" type="number" placeholder="Flat">
+								</div>
+							</div>
+							
+							<div class="comm_item">
+								<label for="comm_item">In B2B:</label>
+								<div class="comm_inputs">
+									<input class="required" id="in_b2b_per" type="number" placeholder="Percent">
+									<input class="required" id="in_b2b_flat" type="number" placeholder="Flat">
+								</div>
+							</div>
+							
+							<div class="comm_item border_bottom">
+								<label for="comm_item">Transfer:</label>
+								<div class="comm_inputs">
+									<input class="required" id="transfer_per" type="number" placeholder="Percent">
+									<input class="required" id="transfer_flat" type="number" placeholder="Flat">
+								</div>
+							</div>
+							
+							
+							
+						</div>
+
+						<!-- Second Block -->
+						<div class="comm_block">
+							<h3 class="comm_title">Account fees</h3>
+							
+							<div class="comm_item">
+								<label for="comm_item">Fee Account Setup:</label>
+								<div class="comm_inputs">
+									<input class="required" id="feeAccSetup_per" type="number" placeholder="Percent">
+									<input class="required" id="feeAccSetup_flat" type="number" placeholder="Flat">
+								</div>
+							</div>
+							
+							<div class="comm_item">
+								<label for="comm_item">Fee Account Monthly:</label>
+								<div class="comm_inputs">
+									<input class="required" id="feeAccMonthly_per" type="number" placeholder="Percent">
+									<input class="required" id="feeAccMonthly_flat" type="number" placeholder="Flat">
+								</div>
+							</div>
+							
+							<div class="comm_item">
+								<label for="comm_item">Fee Account Additional:</label>
+								<div class="comm_inputs">
+									<input class="required" id="feeAccAdd_per" type="number" placeholder="Percent">
+									<input class="required" id="feeAccAdd_flat" type="number" placeholder="Flat">
+								</div>
+							</div>
+							
+							<div class="comm_item border_bottom">
+								<label for="comm_item">Fee Account Dedicated:</label>
+								<div class="comm_inputs">
+									<input class="required" id="feeAccDed_per" type="number" placeholder="Percent">
+									<input class="required" id="feeAccDed_flat" type="number" placeholder="Flat">
+								</div>
+							</div>
+							
+						</div>
+					</div>
+
+					<!-- Second Block Fees  -->
+					<div class="comm_wrapper">
+						<div class="comm_block">
+							<h3 class="comm_title">Fine attitude fees</h3>
+							
+							<div class="comm_item">
+								<label for="comm_item">Fine Recall:</label>
+								<div class="comm_inputs">
+									<input class="required" id="fineRecall_per" type="number" placeholder="Percent">
+									<input class="required" id="fineRecall_flat" type="number" placeholder="Flat">
+								</div>
+							</div>
+							
+							<div class="comm_item">
+								<label for="comm_item">Fine Attitude Incorrect Payment Purpose:</label>
+								<div class="comm_inputs">
+									<input class="required" id="fineAttIncPp_per" type="number" placeholder="Percent">
+									<input class="required" id="fineAttIncPp_flat" type="number" placeholder="Flat">
+								</div>
+							</div>
+							
+							<div class="comm_item">
+								<label for="comm_item">Fine Attitude Wrong Amount:</label>
+								<div class="comm_inputs">
+									<input class="required" id="fineAttWrongAm_per" type="number" placeholder="Percent">
+									<input class="required" id="fineAttWrongAm_flat" type="number" placeholder="Flat">
+								</div>
+							</div>
+
+							
+							<div class="comm_item">
+								<label for="comm_item">Fine Attitude More then 1 payment:</label>
+								<div class="comm_inputs">
+									<input class="required" id="fineAttMoreThen1Pay_per" type="number" placeholder="Percent">
+									<input class="required" id="fineAttMoreThen1Pay_flat" type="number" placeholder="Flat">
+								</div>
+							</div>
+							
+							<div class="comm_item">
+								<label for="comm_item">Fine Attitude Payment without invoice:</label>
+								<div class="comm_inputs">
+									<input class="required" id="fineAttPayWithInv_per" type="number" placeholder="Percent">
+									<input class="required" id="fineAttPayWithInv_flat" type="number" placeholder="Flat">
+								</div>
+							</div>
+							
+							<div class="comm_item">
+								<label for="comm_item">Fine Attitude Payment from Blocked:</label>
+								<div class="comm_inputs">
+									<input class="required" id="fineAttPayFromBlo_pre" type="number" placeholder="Percent">
+									<input class="required" id="fineAttPayFromBlo_flat" type="number" placeholder="Flat">
+								</div>
+							</div>
+							
+							<div class="comm_item border_bottom">
+								<label for="comm_item">Fine Attitude More then 1% recalls:</label>
+								<div class="comm_inputs">
+									<input class="required" id="fineAttMoreThen1perRecalls_pre" type="number" placeholder="Percent">
+									<input class="required" id="fineAttMoreThen1perRecalls_flat" type="number" placeholder="Flat">
+								</div>
+							</div>
+							
+						</div>
+
+						<!-- Second Block -->
+						<div class="comm_block">
+							<h3 class="comm_title">Settlements fees</h3>
+							
+							<div class="comm_item">
+								<label for="comm_item">Settlement BTC:</label>
+								<div class="comm_inputs">
+									<input class="required" id="settBTC_per" type="number" placeholder="Percent">
+									<input class="required" id="settBTC_flat" type="number" placeholder="Flat">
+								</div>
+							</div>
+							
+							<div class="comm_item">
+								<label for="comm_item">Settlement ATM:</label>
+								<div class="comm_inputs">
+									<input class="required" id="settATM_per" type="number" placeholder="Percent">
+									<input class="required" id="settATM_flat" type="number" placeholder="Flat">
+								</div>
+							</div>
+							
+							<div class="comm_item">
+								<label for="comm_item">Settlement C2B Wire:</label>
+								<div class="comm_inputs">
+									<input class="required" id="settC2Bwire_per" type="number" placeholder="Percent">
+									<input class="required" id="settC2Bwire_flat" type="number" placeholder="Flat">
+								</div>
+							</div>
+							
+							<div class="comm_item">
+								<label for="comm_item">Settlement B2B Wire:</label>
+								<div class="comm_inputs">
+									<input class="required" id="settB2Bwire_per" type="number" placeholder="Percent">
+									<input class="required" id="settB2Bwire_flat" type="number" placeholder="Flat">
+								</div>
+							</div>
+							
+							<div class="comm_item">
+								<label for="comm_item">Settlement Recall:</label>
+								<div class="comm_inputs">
+									<input class="required" id="settRecall_per" type="number" placeholder="Percent">
+									<input class="required" id="settRecall_flat" type="number" placeholder="Flat">
+								</div>
+							</div>
+							
+							<div class="comm_item">
+								<label for="comm_item">Settlement Refund:</label>
+								<div class="comm_inputs">
+									<input class="required" id="settRefund_per" type="number" placeholder="Percent">
+									<input class="required" id="settRefund_flat" type="number" placeholder="Flat">
+								</div>
+							</div>
+							
+							<div class="comm_item border_bottom">
+								<label for="comm_item">Settlement B2C:</label>
+								<div class="comm_inputs">
+									<input class="required" id="settB2C_per" type="number" placeholder="Percent">
+									<input class="required" id="settB2C_flat" type="number" placeholder="Flat">
+								</div>
+							</div>
+							
+						</div>
+					</div>
+					<button id="create_bank">Create</button>
+			</main>
+			
+			<!-- Alert Window -->
+			<div class="alert_filter">
+				<div class="alert_wrapper bounceIn">
+					<div class="alert_head">
+						<img id="alert_image" src="../img/alert_img.png" alt="Alert image">
+					</div>
+					<div class="alert_body">
+						<h2>Oops...</h2>
+						<p id="alert_body_text">You can't do that!</p>
+					</div>
+					<div class="alert_footer">
+						<button id="alert_button">OK</button>
+					</div>
+				</div>
+			</div>
+
+		<script src="js/switchery.js"></script>
+		<script src="js/create-bank.js"></script>
+		<script src="js/authorizationMenu.js"></script>
+		<script src="js/classie.js"></script>
+		<script src="js/gnmenu.js"></script>
+		<script src="js/menu.js"></script>
+		<script>
+			new gnMenu( document.getElementById( 'gn-menu' ) );
+		</script>
+	</body>
+</html>
