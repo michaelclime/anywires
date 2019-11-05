@@ -78,11 +78,14 @@ fetchPromise3.then(response => {
     return response.json();
     }).then(number => {
         jQuery(".invoiceBtn").click(function(){
-            var win = window.open();
-            win.location = "/invoice-preview?&" + (number + 1);
-            win.opener = null;
-            win.blur();
-            window.focus();
+            if (document.querySelector('#merchList').value !== '' && 
+                    document.querySelector('#bankList').value !== '') {
+                var win = window.open();
+                win.location = "/invoice-preview?&" + (number + 1);
+                win.opener = null;
+                win.blur();
+                window.focus();
+            }
         });
     });
 

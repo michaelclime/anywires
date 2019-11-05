@@ -59,13 +59,13 @@
                 <% if (currentUser.typeClass == 'admin') { %>
                     <div class="merchChoose">
                         <label for="merchList">Merch</label>
-                        <select id="merchList"  name="merch">
+                        <select id="merchList"  name="merch" required>
                             <option  value=""></option>
                         </select>
                     </div>
                     <div class="bankChoose">
                         <label for="bankList">Bank</label>
-                        <select id="bankList"  name="bank">
+                        <select id="bankList"  name="bank" required>
                             <option value=""></option>
                         </select>
                     </div>
@@ -73,7 +73,7 @@
                 <% if(currentUser.merchant2 !== 'null' && currentUser.typeClass !== 'admin') { %>
                     <div class="merchChoose">
                         <label for="merchList2">Merch</label>
-                        <select id="merchList2"  name="merch">
+                        <select id="merchList2"  name="merch" required>
                             <option  value=""></option>
                             <option  value="<%= currentUser.merchant %>"><%= currentUser.merchant %></option>
                             <option  value="<%= currentUser.merchant2 %>"><%= currentUser.merchant2 %></option>
