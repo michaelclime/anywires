@@ -392,10 +392,12 @@ document.querySelector('.countryInput').addEventListener('change', () => {
     const text = document.querySelector('.countryInput').value;
     
     if ( !allCountry.includes(text) ) {
+        document.querySelector('.countryInput').value = '';
         Swal.fire('Please, enter correct name of your country!');
     }
 
     if (banedCountry.includes(text)) {
+        document.querySelector('.countryInput').value = '';
         Swal.fire('Sorry, your country isn\'t serviced!');
     }
 });
