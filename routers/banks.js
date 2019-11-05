@@ -2,7 +2,8 @@ const express = require('express'),
     router = new express.Router(),
     mongo = require('mongodb'),
     objectId = require("mongodb").ObjectID,
-    jsonParser = express.json();
+    jsonParser = express.json(),
+    Bank = require("../modules/bank");
  
 
 const url = 'mongodb://18.216.223.81:27017/anywires';
@@ -11,7 +12,7 @@ router.get('/banks.html', isLoggedIn, function(req, res) {
     res.render("banks.html");
 });
 
-router.get('/create-bank.html', isLoggedIn, function(req, res) {
+router.get('/create-bank', isLoggedIn, function(req, res) {
     res.render("create-bank.html");
 });
 
@@ -81,6 +82,19 @@ router.put("/putBank", jsonParser, (req, res) => {
        });
     });
 });
+
+
+// @route POST /editBank
+// @desc Edited one Bank
+router.post("/editBank", jsonParser, (req, res) => {
+    const bankName = req.body.bankName;
+    const newData = req.body.newData;
+    Bank.updateOne({"name": bankName}, {$set: newData}, {returnOriginal: false}, (err, bank) => {
+        if(err) return console.log("Error witch changing Bank Data!", err);  
+        res.send("Bank has been changed successfully!")
+    });
+});
+
 
 function isLoggedIn(req, res, next) {
     if(req.isAuthenticated()) {
