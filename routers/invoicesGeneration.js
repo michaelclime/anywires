@@ -14,6 +14,7 @@ router.get('/InvoiceGeneration.html', isLoggedIn, function(req, res) {
 });
 
 router.post("/invoices/:fullname/:_id/:merchant", function(req, res, next) {
+    
     var currency = "";
     req.body.currency === "USD" ? currency = "$" : currency = "€";
 

@@ -12,6 +12,10 @@
     <link rel="stylesheet" href="css/invoiceGeneration.css">
     <script src="https://kit.fontawesome.com/5355902e87.js"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="css/sweetalert2.css">
 </head>
 <body>
     <!-- Modal Action Window -->
@@ -40,13 +44,13 @@
         <hr>
         <div class="invoiceInfoBlock">
             <form  action="/invoices/<%= currentUser.fullname %>/<%= currentUser._id %>/<%= currentUser.merchant %>" class="invoice-form" method="POST">
-                <input type="text" name="name" placeholder="Client's full name">
-                <input type="text" name="address" placeholder="Client's address">
-                <input type="text" name="country" placeholder="Client's country">
-                <input type="text" name="phone" placeholder="Client's phone">
-                <input type="text" name="email" placeholder="Client's email">
+                <input type="text" name="name" placeholder="Client's full name"  class="nameInput" required>
+                <input type="text" name="address" placeholder="Client's address"  class="addressInput" required>
+                <input type="text" name="country" placeholder="Client's country"  class="countryInput" required>
+                <input type="text" name="phone" placeholder="Client's phone"  class="phoneInput" required>
+                <input type="text" name="email" placeholder="Client's email"  class="emailInput" required>
                 <div class="amountCurrency">
-                    <input class="currencyInput" type="number"  name="amount" placeholder="Amount to Transfer">
+                    <input class="currencyInput" type="number"  name="amount" placeholder="Amount to Transfer" required>
                     <select name="currency" class="currency">
                         <option value="EUR">EUR</option>
                         <option value="USD">USD</option>
@@ -86,5 +90,6 @@
         </div>
     </div>
     <script src="js/invoiceGeneration.js"></script>
+    <script type="text/javascript" src="js/sweetalert2.js"></script>
 </body>
 </html>
