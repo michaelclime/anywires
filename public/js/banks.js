@@ -14,12 +14,22 @@ class UsersList {
         this.render();
     }
 
+    editBank = async () => {
+        var allTd = document.querySelectorAll(".edit");
+        allTd.forEach((td) => {
+            td.addEventListener("click", () => {
+                var bankName = td.parentElement.children[0].textContent;
+                window.open("http://18.216.223.81:3000/create-bank?&" + bankName, '_blank');
+            });
+        });
+    }
+
     openCreatePage = () => {
         // Loading GIF Off
         this.loadingGIF.style.display = "flex";
         document.body.classList.add("modal-open");
 
-        document.location.href = "http://18.216.223.81:3000/create-bank.html";
+        document.location.href = "http://18.216.223.81:3000/create-bank";
     }
 
     clearFilters = () => {
@@ -140,7 +150,6 @@ class UsersList {
     }
 
     methodPutEnable = (id, status) => {
-        // fetch("http://18.216.223.81:3000/putBank", {
         fetch("http://18.216.223.81:3000/putBank", {
                     method: "PUT",
                     body: JSON.stringify({
@@ -294,7 +303,6 @@ class UsersList {
 
     getBanks = async (number, filter) => {
         return  await fetch("http://18.216.223.81:3000/getPart-Banks", {
-        // return  await fetch("http://18.216.223.81:3000/getPart-Banks", {
             method: "POST",
             body: JSON.stringify({
                 number, 
@@ -313,7 +321,6 @@ class UsersList {
 
     getBanks_Number = async (filter) => {
         return  await fetch("http://18.216.223.81:3000/getNumber-Banks", {
-        // return  await fetch("http://18.216.223.81:3000/getNumber-Banks", {
             method: "POST",
             body: JSON.stringify({
                 filter
@@ -343,55 +350,55 @@ class UsersList {
         array.forEach((item) => {
             this.userList = document.createElement("tr");
             this.userList.innerHTML =  `
-                    <td class="column1">${item.name}</td> 
-                    <td class="column2">${item.country}</td> 
+                    <td class="column1 edit">${item.name}</td> 
+                    <td class="column2 edit">${item.country}</td> 
 
-                    <td class="column3">
+                    <td class="column3 edit">
                         <div class="currency_wrapper">
                             <div class="currency_EUR">EUR</div> 
                             <div class="currency_USD">USD</div> 
                         </div>
                     </td>
 
-                    <td class="column4">
+                    <td class="column4 edit">
                         <div class="currency_wrapper">
                             <div class="currency_EUR">€${item.balance_EUR.balance_requested}</div> 
                             <div class="currency_USD">$${item.balance_USD.balance_requested}</div> 
                         </div>
                     </td> 
 
-                    <td class="column5">
+                    <td class="column5 edit">
                         <div class="currency_wrapper">
                             <div class="currency_EUR">€${item.balance_EUR.balance_sent}</div> 
                             <div class="currency_USD">$${item.balance_USD.balance_sent}</div> 
                         </div>
                     </td> 
 
-                    <td class="column6">
+                    <td class="column6 edit">
                         <div class="currency_wrapper">
                             <div class="currency_EUR">€${item.balance_EUR.balance_received}</div> 
                             <div class="currency_USD">$${item.balance_USD.balance_received}</div> 
                         </div>
                     </td>
 
-                    <td class="column7">
+                    <td class="column7 edit">
                         <div class="currency_wrapper">
                             <div class="currency_EUR">€${item.balance_EUR.balance_approved}</div> 
                             <div class="currency_USD">$${item.balance_USD.balance_approved}</div> 
                         </div>
                     </td>
 
-                    <td class="column8">
+                    <td class="column8 edit">
                         <div class="currency_wrapper">
                             <div class="currency_EUR">€${item.balance_EUR.balance_available}</div> 
                             <div class="currency_USD">$${item.balance_USD.balance_available}</div> 
                         </div>
                     </td>
 
-                    <td class="column9">${item.min_wire}</td> 
-                    <td class="column10">${item.max_wire}</td> 
-                    <td class="column11 statusCheck">${item.sepa}</td> 
-                    <td class="column12 enableCheck">${item.active}</td> 
+                    <td class="column edit9">${item.min_wire}</td> 
+                    <td class="column10 edit">${item.max_wire}</td> 
+                    <td class="column11 statusCheck edit">${item.sepa}</td> 
+                    <td class="column12 enableCheck edit">${item.active}</td> 
                     <td class="column13">
                         <button class="btnDisable">Disable</button>
                     </td>
@@ -402,6 +409,7 @@ class UsersList {
         this.checkSepa();
         this.checkEnable();
         this.disableEnableCheck();
+        this.editBank();
 
         // Loading GIF Off
         this.loadingGIF.style.display = "none";
@@ -415,6 +423,7 @@ class UsersList {
         this.btnShowFilter.addEventListener("click", this.showFilters);
         this.clearFilter.addEventListener("click", this.clearFilters);
         this.openCreatePageBtn.addEventListener("click", this.openCreatePage);
+        
     }
 };
 

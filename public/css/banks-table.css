@@ -34,6 +34,10 @@ table td.r, table th.r {
   text-align: center;
 }
 
+table tbody tr:hover{
+  background-color: rgb(197, 247, 241);
+}
+
 
 .table-head th{
   font-size: 18px;
@@ -51,6 +55,7 @@ tbody tr {
   color: #808080;
   line-height: 1.2;
   font-weight: unset;
+  cursor: pointer;
 }
 
 .column1 {
