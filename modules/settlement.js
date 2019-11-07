@@ -18,8 +18,9 @@ let SettlementSchema = new mongoose.Schema({
     commissions: Array,
     type: String,
     documents: Array,
-    created_by: Object,
-    
+    created_by: Object  
+}, {
+    timestamps: true
 });
 
 SettlementSchema.plugin(passportLocalMongoose);

@@ -35,6 +35,8 @@ let InvoiceSchema = new mongoose.Schema({
     comments: Array,
     settleSelectedStatus: Boolean,
     before_freeze: String
+}, {
+    timestamps: true
 });
 
 InvoiceSchema.plugin(passportLocalMongoose);

@@ -33,7 +33,7 @@ class invoiceList {
     }
 
     reCallStatusRequest = async (data) => {
-        return  await fetch("http://localhost:3000/recallStatus", {
+        return  await fetch("http://18.216.223.81:3000/recallStatus", {
                 method: "POST",
                 body: JSON.stringify(data),
                 headers:{'Content-Type': 'application/json'}
@@ -103,7 +103,7 @@ class invoiceList {
     }
 
     unfrozenStatusRequest = async (data) => {
-        return  await fetch("http://localhost:3000/unfrozenStatus", {
+        return  await fetch("http://18.216.223.81:3000/unfrozenStatus", {
                 method: "POST",
                 body: JSON.stringify(data),
                 headers:{'Content-Type': 'application/json'}
@@ -171,7 +171,7 @@ class invoiceList {
     }
 
     frozenStatusRequest = async (data) => {
-        return  await fetch("http://localhost:3000/frozenStatus", {
+        return  await fetch("http://18.216.223.81:3000/frozenStatus", {
                 method: "POST",
                 body: JSON.stringify(data),
                 headers:{'Content-Type': 'application/json'}
@@ -245,7 +245,7 @@ class invoiceList {
     }
 
     settledInvoiceStatus = async (data) => {
-        return  await fetch("http://localhost:3000/settledStatus", {
+        return  await fetch("http://18.216.223.81:3000/settledStatus", {
                 method: "POST",
                 body: JSON.stringify(data),
                 headers:{'Content-Type': 'application/json'}
@@ -303,7 +303,7 @@ class invoiceList {
     }    
 
     declinedInvoiceStatus = async (data) => {
-        return  await fetch("http://localhost:3000/declinedStatus", {
+        return  await fetch("http://18.216.223.81:3000/declinedStatus", {
                 method: "POST",
                 body: JSON.stringify({data}),
                 headers:{'Content-Type': 'application/json'}
@@ -362,7 +362,7 @@ class invoiceList {
     }
 
     availableInvoiceStatus = async (invNumber, amountAvailable, createBy, currency) => {
-        return  await fetch("http://localhost:3000/availableStatus", {
+        return  await fetch("http://18.216.223.81:3000/availableStatus", {
                 method: "POST",
                 body: JSON.stringify({
                     invNumber,
@@ -422,7 +422,7 @@ class invoiceList {
     }
 
     approvedInvoiceStatus = async (data) => {
-        return  await fetch("http://localhost:3000/approvedStatus", {
+        return  await fetch("http://18.216.223.81:3000/approvedStatus", {
                 method: "POST",
                 body: JSON.stringify(data),
                 headers:{'Content-Type': 'application/json'}
@@ -654,7 +654,7 @@ class invoiceList {
     }
 
     receivedInvoiceStatus = async (invNumber, typedAmount, amountCommission, percentCommission, createdBy, currency) => {
-        return  await fetch("http://localhost:3000/receivedStatus", {
+        return  await fetch("http://18.216.223.81:3000/receivedStatus", {
                 method: "POST",
                 body: JSON.stringify({
                     invNumber,
@@ -756,7 +756,7 @@ class invoiceList {
     }
 
     sentInvoiceStatus = async (invNumber, amountSent, currency, creator) => {
-        return  await fetch("http://localhost:3000/sentStatus", {
+        return  await fetch("http://18.216.223.81:3000/sentStatus", {
                 method: "POST",
                 body: JSON.stringify({
                     invNumber,
@@ -850,7 +850,7 @@ class invoiceList {
     }
 
     requestedInvoiceStatus = async (invoiceNum, sentAmount, currency, amountRequested, creator) => {
-        return  await fetch("http://localhost:3000/requestStatus", {
+        return  await fetch("http://18.216.223.81:3000/requestStatus", {
                 method: "POST",
                 body: JSON.stringify({
                     invoiceNum,
@@ -916,7 +916,7 @@ class invoiceList {
     }
 
     changeDocsStatus = async (filename, status, number, type, createdBy) => {
-        return  await fetch("http://localhost:3000/changeDocStatus", {
+        return  await fetch("http://18.216.223.81:3000/changeDocStatus", {
                 method: "POST",
                 body: JSON.stringify({
                     filename,
@@ -1007,7 +1007,7 @@ class invoiceList {
 
     openDocsImage = (event) => {
         var filename = event.target.closest("tr").children[4].textContent.trim();
-        window.open(`http://localhost:3000/upload/${filename}`, '_blank');
+        window.open(`http://18.216.223.81:3000/upload/${filename}`, '_blank');
     }
 
     changeFileClickTo = () => {
@@ -1079,7 +1079,7 @@ class invoiceList {
     }
 
     postFile = async (fd) => {
-        return  await fetch("http://localhost:3000/upload", {
+        return  await fetch("http://18.216.223.81:3000/upload", {
                 method: "POST",
                 body: fd,
                 mode: "no-cors",
@@ -1174,7 +1174,7 @@ class invoiceList {
     }
 
     postEditedInvoice = async (number, newInvoice, comment, createdBy, currecyChanged, chnagedAmountReq, amountReqOld, chnagedAmountSent, amountSentOld, changedBank, oldBank) => {
-    return  await fetch("http://localhost:3000/postEditedInvoice", {
+    return  await fetch("http://18.216.223.81:3000/postEditedInvoice", {
             method: "POST",
             body: JSON.stringify({
                 number,
@@ -1398,7 +1398,7 @@ class invoiceList {
     }
 
     getCurrentMerchant = async (number, filter) => {
-        return  await fetch("http://localhost:3000/getPart-Merchants", {
+        return  await fetch("http://18.216.223.81:3000/getPart-Merchants", {
                 method: "POST",
                 body: JSON.stringify({
                     number,
@@ -1415,7 +1415,7 @@ class invoiceList {
     }
 
     getCurrentBank = async (number, filter) => {
-        return  await fetch("http://localhost:3000/getPart-Banks", {
+        return  await fetch("http://18.216.223.81:3000/getPart-Banks", {
                 method: "POST",
                 body: JSON.stringify({
                     number,
@@ -1432,7 +1432,7 @@ class invoiceList {
     }
 
     postCommet = async (number, data, create_by) => {
-        return  await fetch("http://localhost:3000/postComment", {
+        return  await fetch("http://18.216.223.81:3000/postComment", {
                 method: "POST",
                 body: JSON.stringify({
                     number,
@@ -1525,7 +1525,7 @@ class invoiceList {
     }
 
     getDocs = async (filter, id) => {
-         return  await fetch("http://localhost:3000/getDocs", {
+         return  await fetch("http://18.216.223.81:3000/getDocs", {
                 method: "POST",
                 body: JSON.stringify({
                     filter,
@@ -1570,22 +1570,22 @@ class invoiceList {
 
     previewInvoice = (event) => {
         var number = event.target.closest("tr").children[0].children[0].children[0].children[0].textContent.split("#");
-        window.open("http://localhost:3000/invoice-preview?&" + number[1], '_blank');
+        window.open("http://18.216.223.81:3000/invoice-preview?&" + number[1], '_blank');
     }
 
     invoiceContract = (event) => {
         var number = event.target.closest("tr").children[0].children[0].children[0].children[0].textContent.split("#");
-        window.open("http://localhost:3000/invoiceContract?&" + number[1], '_blank');
+        window.open("http://18.216.223.81:3000/invoiceContract?&" + number[1], '_blank');
     }
 
     invoiceDecOfPay = (event) => {
         var number = event.target.closest("tr").children[0].children[0].children[0].children[0].textContent.split("#");
-        window.open("http://localhost:3000/invoiceDecOfPay?&" + number[1], '_blank');
+        window.open("http://18.216.223.81:3000/invoiceDecOfPay?&" + number[1], '_blank');
     }
 
     invoicePreviewBankVersion = (event) => {
         var number = event.target.closest("tr").children[0].children[0].children[0].children[0].textContent.split("#");
-        window.open("http://localhost:3000/invoicePreviewBankVersion?&" + number[1], '_blank');
+        window.open("http://18.216.223.81:3000/invoicePreviewBankVersion?&" + number[1], '_blank');
     }
 
     filtersData = () => {
@@ -1975,7 +1975,7 @@ class invoiceList {
     }
 
     getMerchants = async () => {
-        return  await fetch("http://localhost:3000/getMerchants")
+        return  await fetch("http://18.216.223.81:3000/getMerchants")
         .then(res => {
             return res.json();
         }) 
@@ -1994,7 +1994,7 @@ class invoiceList {
     }
 
     getBanks = async () => {
-         return  await fetch("http://localhost:3000/getBanks")
+         return  await fetch("http://18.216.223.81:3000/getBanks")
          .then(res => {
              return res.json();
          }) 
@@ -2017,7 +2017,7 @@ class invoiceList {
     }
 
     getInvoices = async (count, filter, firstCr, secondCr, firstRe, secondRe) => {
-        return  await fetch("http://localhost:3000/getPart-Invoices", {
+        return  await fetch("http://18.216.223.81:3000/getPart-Invoices", {
             method: "POST",
             body: JSON.stringify({
                 numbers: count, 
@@ -2038,7 +2038,7 @@ class invoiceList {
     }
 
     getNumberOfinvoices = async (filter, firstCr, secondCr, firstRe, secondRe) => {
-       return  await fetch("http://localhost:3000/getNumber-Invoices", {
+       return  await fetch("http://18.216.223.81:3000/getNumber-Invoices", {
             method: "POST",
             body: JSON.stringify({
                 filter,
