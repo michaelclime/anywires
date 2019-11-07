@@ -404,7 +404,7 @@ document.querySelector('.countryInput').addEventListener('change', () => {
 
  // Generate merchants list for selected menu
 
-let fetchPromise  = fetch('http://localhost:3000/getMerchants');
+let fetchPromise  = fetch('http://18.216.223.81:3000/getMerchants');
 fetchPromise.then(response => {
     return response.json();
     }).then(merchants => {
@@ -436,7 +436,7 @@ fetchPromise.then(response => {
 
 // Generate banks list for selected menu
 
-let fetchPromise2  = fetch('http://localhost:3000/getBanks');
+let fetchPromise2  = fetch('http://18.216.223.81:3000/getActiveBanks');
 fetchPromise2.then(response => {
     return response.json();
     }).then(banks => {
@@ -475,27 +475,48 @@ if (alertWindow) {
 }
 
 // Open Invoice Preview
-let fetchPromise3  = fetch('http://localhost:3000/getInvNumber');
+let fetchPromise3  = fetch('http://18.216.223.81:3000/getInvNumber');
 
 fetchPromise3.then(response => {
     return response.json();
     }).then(number => {
         jQuery(".invoiceBtn").click(function(){
-            if (document.querySelector('#merchList').value !== '' && 
-                    document.querySelector('#bankList').value !== '' &&
-                    document.querySelector('.nameInput').value !== '' &&
-                    document.querySelector('.addressInput').value !== '' &&
-                    document.querySelector('.countryInput').value !== '' &&
-                    document.querySelector('.phoneInput').value !== '' &&
-                    document.querySelector('.emailInput').value !== '' &&
-                    document.querySelector('.currencyInput').value !== ''
-                ) {
-                    var win = window.open();
-                    win.location = "/invoice-preview?&" + (number + 1);
-                    win.opener = null;
-                    win.blur();
-                    window.focus();
+            let bankList = document.querySelector('#bankList');
+            console.log((bankList == null));
+            console.log(document.querySelector('#merchList').value);
+            if (bankList == null) {
+                if ( document.querySelector('#merchList').value !== '' &&
+                        document.querySelector('.nameInput').value !== '' &&
+                        document.querySelector('.addressInput').value !== '' &&
+                        document.querySelector('.countryInput').value !== '' &&
+                        document.querySelector('.phoneInput').value !== '' &&
+                        document.querySelector('.emailInput').value !== '' &&
+                        document.querySelector('.currencyInput').value !== ''
+                    ) {
+                        var win = window.open();
+                        win.location = "/invoice-preview?&" + (number + 1);
+                        win.opener = null;
+                        win.blur();
+                        window.focus();
+                }
+            } else {
+                if ( document.querySelector('#merchList').value !== '' &&
+                        document.querySelector('#bankList').value !== '' &&
+                        document.querySelector('.nameInput').value !== '' &&
+                        document.querySelector('.addressInput').value !== '' &&
+                        document.querySelector('.countryInput').value !== '' &&
+                        document.querySelector('.phoneInput').value !== '' &&
+                        document.querySelector('.emailInput').value !== '' &&
+                        document.querySelector('.currencyInput').value !== ''
+                    ) {
+                        var win = window.open();
+                        win.location = "/invoice-preview?&" + (number + 1);
+                        win.opener = null;
+                        win.blur();
+                        window.focus();
+                }
             }
+            
         });
     });
 

@@ -13,6 +13,8 @@ let UserSchema = new mongoose.Schema({
     dateCreation: Date,
     resetPasswordToken: String,
     resetPasswordExpires: Date
+}, {
+    timestamps: true
 });
 
 UserSchema.plugin(passportLocalMongoose);

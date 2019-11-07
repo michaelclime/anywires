@@ -16,6 +16,7 @@ let BankSchema = new mongoose.Schema({
     bank_address: String,
     company_site: String,
     stop_limit: Number,
+    stop_limit_reached: Boolean,
     sepa: Boolean,
     b2b: Boolean,
     company_logo: String,
@@ -130,6 +131,8 @@ let BankSchema = new mongoose.Schema({
             flat: Number
         }
     }
+}, {
+    timestamps: true
 });
 
 BankSchema.plugin(passportLocalMongoose);

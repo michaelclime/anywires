@@ -24,7 +24,9 @@ let InvoiceSchema = new mongoose.Schema({
     created_by: Object,
     commissions: Array,
     comments: Array,
-    settleSelectedStatus: Boolean
+    settleSelectedStatus: Boolean,
+}, {
+    timestamps: true
 });
 
 InvoiceSchema.plugin(passportLocalMongoose);
