@@ -6,7 +6,13 @@ let InvoiceSchema = new mongoose.Schema({
     client_details: Object,
     type: String,
     status: String,
-    amount: Object,
+    amount: {
+        amount_requested: Number,
+        amount_sent: Number,
+        amount_received: Number,
+        amount_approved: Number,
+        amount_available: Number
+    },
     currency: String,
     sepa: Boolean,
     merchant: String,
@@ -18,13 +24,17 @@ let InvoiceSchema = new mongoose.Schema({
         approved_date: Date,
         available_date: Date,
         declined_date: Date,
-        settled_date: Date
+        settled_date: Date,
+        frozen_date: Date,
+        unfrozen_date: Date,
+        recall_date: Date
     },
     documents: Object,
     created_by: Object,
     commissions: Array,
     comments: Array,
-    settleSelectedStatus: Boolean
+    settleSelectedStatus: Boolean,
+    before_freeze: String
 });
 
 InvoiceSchema.plugin(passportLocalMongoose);

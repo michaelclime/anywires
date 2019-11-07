@@ -23,17 +23,13 @@ let BankSchema = new mongoose.Schema({
         balance_requested: Number,
         balance_sent: Number,
         balance_received: Number,
-        balance_approved: Number,
-        balance_available: Number,
-        balance_settlement: Number
+        balance_frozen: Number
     },
     balance_USD: {
         balance_requested: Number,
         balance_sent: Number,
         balance_received: Number,
-        balance_approved: Number,
-        balance_available: Number,
-        balance_settlement: Number
+        balance_frozen: Number
     },
     active: Boolean,
     balance_settlement: Number,

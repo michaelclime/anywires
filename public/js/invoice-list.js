@@ -16,35 +16,225 @@ class invoiceList {
         this.creationDate = document.querySelector(".creationDate");
         this.receiveDate = document.querySelector(".receiveDate");
         this.currentUser = document.querySelector("#currentUser");
-        this.addCommentBtn = document.querySelector("#addCommentBtn");
         this.textAreaAddComment = document.querySelector("#commentText")
         this.firstPage = document.querySelector(".firstPage-block");
         this.firstPageImg = document.querySelector("#first-img");
-        this.editInvoiceBtn = document.querySelector("#editBtn");
-        this.saveEditedInvoice_btn = document.querySelector("#saveEditedInvoice-btn");
         this.editData = document.querySelectorAll(".editData");
         this.inputSearch = document.querySelector(".input-search");
-        this.uploadBtn = document.querySelector("#uploadBtn");
-        this.clickToDownload = document.querySelector("#uploadDocs");
-        this.requestedBtn = document.querySelector("#requested");
         this.currentInvoice = [];
         this.currentBank = [];
         this.currentMerhcant = [];
         this.currentUserRole = document.querySelector(".curentUserRole");
-        this.sentBtn = document.querySelector("#sent");
         this.sentFilter = document.querySelector(".sent_Filter");
-        this.sentSubmitBtn = document.querySelector("#sent_submitBtn");
         this.loadingGif = document.querySelector("#loadingGif");
-        this.receivedBtn = document.querySelector("#received");
-        this.receivedBtnSubmit = document.querySelector("#receive_Submit");
         this.filterReceive = document.querySelector(".receive_Filter");
-        this.approvedBtn = document.querySelector("#approved");
         this.filterApproved = document.querySelector(".approved_Filter");
-        this.approvedBtnSubmit = document.querySelector("#approved_button");
-        this.availableBtn = document.querySelector("#available");
-        this.declinedBtn = document.querySelector("#declinedBtn");
-        this.settledBtn = document.querySelector("#settledBtn");
         this.render();
+    }
+
+    reCallStatusRequest = async (data) => {
+        return  await fetch("http://localhost:3000/recallStatus", {
+                method: "POST",
+                body: JSON.stringify(data),
+                headers:{'Content-Type': 'application/json'}
+            })
+            .then(res => {
+                return res.text();
+            }) 
+            .catch(err => {
+                console.log(err);
+            });
+    }
+
+    reCallStatus = async () => {
+        var checkStatus = ["Received", "Approved", "Available"].some((item) => item === this.currentInvoice[0].status);
+        if (checkStatus) {
+            // Loading GIF On
+            this.loadingGif.style.display = "flex";
+
+            var createdBy = this.currentUser.textContent.trim();
+            var currentAmount = `amount_${this.currentInvoice[0].status.toLowerCase()}`;
+
+            // If Invoice currency USD
+            var USD = "";
+            if (this.currentInvoice[0].currency === "USD"){
+                var currencyInv = await this.getEURexchange("EUR", "USD");
+                USD = currencyInv.rates.USD;
+            }
+
+            // Recall request
+            var data = {
+                "invNumber": this.currentInvoice[0].number,
+                "createdBy": createdBy,
+                "currencySymbol": this.currency,
+                "amountReceived": this.currentInvoice[0].amount.amount_received,
+                "amountRecall": this.currentInvoice[0].amount[currentAmount],
+                "beforeRecallStatus": this.currentInvoice[0].status,
+                "USD": USD
+            };
+
+            await this.reCallStatusRequest(data);
+
+            // Change status for currentInvoice
+            this.currentInvoice[0].status = "Recall";
+            this.currentInvoice[0].dates.recall_date = new Date();
+
+            // Update Comment Area for this.currentInvoce Obj
+            this.tableComments = document.querySelector("#tableTbody-comments").innerHTML = "";
+            this.currentInvoice[0].comments.unshift({
+                "created_by": createdBy,
+                "creation_date": new Date(),
+                "message": `Invoice #${this.currentInvoice[0].number}. Transfer for ${this.currency}${this.currentInvoice[0].amount[currentAmount]} was Recall!`
+            });
+            this.tableCommentsRender(this.currentInvoice[0].comments);
+
+             // Change table info for current Invoice
+             this.currentTr.children[8].innerHTML = `<strong>Recall</strong>`;
+             this.currentTr.children[8].style.color = `#560795`;
+             document.querySelector(".currentStatus").innerHTML = `Recall`;
+             document.querySelector(".currentStatus").style.color = `#560795`;
+             
+             // Loading GIF Off
+            this.loadingGif.style.display = "none";
+
+        } else {
+            this.alertWindow(`Your current status ${this.currentInvoice[0].status} does't allow this!`);
+        }
+    }
+
+    unfrozenStatusRequest = async (data) => {
+        return  await fetch("http://localhost:3000/unfrozenStatus", {
+                method: "POST",
+                body: JSON.stringify(data),
+                headers:{'Content-Type': 'application/json'}
+            })
+            .then(res => {
+                return res.text();
+            }) 
+            .catch(err => {
+                console.log(err);
+            });
+    }
+
+    unfrozenStatus = async () => {
+        if (this.currentInvoice[0].status === "Frozen") {
+            // Loading GIF On
+            this.loadingGif.style.display = "flex";
+
+            var createdBy = this.currentUser.textContent.trim();
+            var currentAmount = `amount_${this.currentInvoice[0].before_freeze.toLowerCase()}`;
+
+            // Unfrozen request
+            var data = {
+                "invNumber": this.currentInvoice[0].number,
+                "createdBy": createdBy,
+                "currencySymbol": this.currency,
+                "amountUnfrozen": this.currentInvoice[0].amount[currentAmount],
+                "amountReceived": this.currentInvoice[0].amount.amount_received,
+                "beforeFreezeStatus": this.currentInvoice[0].before_freeze
+            };
+            await this.unfrozenStatusRequest(data);
+
+            // Change status for currentInvoice
+            this.currentInvoice[0].status = this.currentInvoice[0].before_freeze;
+            this.currentInvoice[0].before_freeze = "Unfrozen";
+            this.currentInvoice[0].dates.unfrozen_date = new Date();
+
+            // Update Comment Area for this.currentInvoce Obj
+            this.tableComments = document.querySelector("#tableTbody-comments").innerHTML = "";
+            this.currentInvoice[0].comments.unshift({
+                "created_by": createdBy,
+                "creation_date": new Date(),
+                "message": `Invoice #${this.currentInvoice[0].number}. Transfer for ${this.currency}${this.currentInvoice[0].amount[currentAmount]} was Unfrozen!`
+            });
+            this.tableCommentsRender(this.currentInvoice[0].comments);
+
+            // Change table info for current Invoice
+            var color = "rgb(49, 117, 218)";
+            this.currentInvoice[0].status === "Approved" ? color = "rgb(11, 158, 141)" : "";
+            this.currentInvoice[0].status === "Available" ? color = "rgb(0, 200, 81)" : "";
+            this.currentTr.children[8].innerHTML = `<strong>${this.currentInvoice[0].status}</strong>`;
+            this.currentTr.children[8].style.color = `${color}`;
+            document.querySelector(".currentStatus").innerHTML = `${this.currentInvoice[0].status}`;
+            document.querySelector(".currentStatus").style.color = `${color}`;
+
+            // Remove Unfroze btn
+            document.getElementById('frozenWrapper').innerHTML = `<button id="frozenBtn">Frozen</button>`;
+            document.querySelector("#frozenBtn").addEventListener("click", this.frozenStatus);
+
+            // Loading GIF Off
+            this.loadingGif.style.display = "none";
+
+        } else {
+            this.alertWindow(`Your current status ${this.currentInvoice[0].status} does't allow this!`);
+        }
+    }
+
+    frozenStatusRequest = async (data) => {
+        return  await fetch("http://localhost:3000/frozenStatus", {
+                method: "POST",
+                body: JSON.stringify(data),
+                headers:{'Content-Type': 'application/json'}
+            })
+            .then(res => {
+                return res.text();
+            }) 
+            .catch(err => {
+                console.log(err);
+            });
+    }
+
+    frozenStatus = async () => {
+        var checkStatus = ["Received", "Approved", "Available"].some((item) => item === this.currentInvoice[0].status);
+        if (checkStatus) {
+            // Loading GIF On
+            this.loadingGif.style.display = "flex";
+
+            var currentAmount = `amount_${this.currentInvoice[0].status.toLowerCase()}`;
+            var createdBy = this.currentUser.textContent.trim();
+
+            // Frozen request
+            var data = {
+                "invNumber": this.currentInvoice[0].number,
+                "invStatus": this.currentInvoice[0].status,
+                "createdBy": createdBy,
+                "currencySymbol": this.currency,
+                "amountFrozen": this.currentInvoice[0].amount[currentAmount],
+                "amountReceived": this.currentInvoice[0].amount.amount_received
+            };
+            await this.frozenStatusRequest(data);
+
+            // Change status for currentInvoice
+            this.currentInvoice[0].before_freeze = this.currentInvoice[0].status;
+            this.currentInvoice[0].status = "Frozen";
+            this.currentInvoice[0].dates.frozen_date = new Date();
+
+            // Change table info for current Invoice
+            this.currentTr.children[8].innerHTML = `<strong>Frozen</strong>`;
+            this.currentTr.children[8].style.color = "rgb(101, 152, 228)";
+            document.querySelector(".currentStatus").innerHTML = "Frozen";
+            document.querySelector(".currentStatus").style.color = "rgb(101, 152, 228)";
+
+            // Update Comment Area for this.currentInvoce Obj
+            this.tableComments = document.querySelector("#tableTbody-comments").innerHTML = "";
+            this.currentInvoice[0].comments.unshift({
+                "created_by": createdBy,
+                "creation_date": new Date(),
+                "message": `Invoice #${this.currentInvoice[0].number}. Transfer for ${this.currency}${this.currentInvoice[0].amount[currentAmount]} was Frozen!`
+            });
+            this.tableCommentsRender(this.currentInvoice[0].comments);
+
+            // Remove Froze btn
+            document.getElementById('frozenWrapper').innerHTML = `<button id="unFrozenBtn">Unfrozen</button>`;
+            document.querySelector("#unFrozenBtn").addEventListener("click", this.unfrozenStatus);
+
+
+            // Loading GIF OFF
+            this.loadingGif.style.display = "none";
+
+        } else {
+            this.alertWindow(`Your current status ${this.currentInvoice[0].status} does't allow this!`);
+        }
     }
 
     alertWindow = (text) => {
@@ -55,7 +245,7 @@ class invoiceList {
     }
 
     settledInvoiceStatus = async (data) => {
-        return  await fetch("http://18.216.223.81:3000/settledStatus", {
+        return  await fetch("http://localhost:3000/settledStatus", {
                 method: "POST",
                 body: JSON.stringify(data),
                 headers:{'Content-Type': 'application/json'}
@@ -113,7 +303,7 @@ class invoiceList {
     }    
 
     declinedInvoiceStatus = async (data) => {
-        return  await fetch("http://18.216.223.81:3000/declinedStatus", {
+        return  await fetch("http://localhost:3000/declinedStatus", {
                 method: "POST",
                 body: JSON.stringify({data}),
                 headers:{'Content-Type': 'application/json'}
@@ -172,7 +362,7 @@ class invoiceList {
     }
 
     availableInvoiceStatus = async (invNumber, amountAvailable, createBy, currency) => {
-        return  await fetch("http://18.216.223.81:3000/availableStatus", {
+        return  await fetch("http://localhost:3000/availableStatus", {
                 method: "POST",
                 body: JSON.stringify({
                     invNumber,
@@ -232,7 +422,7 @@ class invoiceList {
     }
 
     approvedInvoiceStatus = async (data) => {
-        return  await fetch("http://18.216.223.81:3000/approvedStatus", {
+        return  await fetch("http://localhost:3000/approvedStatus", {
                 method: "POST",
                 body: JSON.stringify(data),
                 headers:{'Content-Type': 'application/json'}
@@ -251,7 +441,7 @@ class invoiceList {
             var amountReceive = this.currentInvoice[0].amount.amount_received;
             var anyFeePercent = this.currentMerhcant[0].fees.in_c2b.percent;
             var anyFeeFlat = this.currentMerhcant[0].fees.in_c2b.flat;
-            var AdditionaFee = Number(document.querySelector("#inputAdditionalFee").value);
+            var AdditionaFee = Math.round(document.querySelector("#inputAdditionalFee").value);
 
             if (this.currentInvoice[0].type === "b2b") {
                 anyFeePercent = this.currentMerhcant[0].fees.in_b2b.percent;
@@ -268,25 +458,21 @@ class invoiceList {
 
             anyFeePercent = (amountReceive/100)*anyFeePercent;
             AdditionaFee < 0 ? AdditionaFee = 0 : "";
-            var amountApproved = amountReceive - anyFeePercent - anyFeeFlat - AdditionaFee;
+            var amountApproved = Math.round(amountReceive - anyFeePercent - anyFeeFlat - AdditionaFee);
             var createBy = this.currentUser.textContent.trim();
-            var totalAny = anyFeePercent + anyFeeFlat + AdditionaFee;
+            var totalAny = Math.round(anyFeePercent + anyFeeFlat + AdditionaFee);
+
 
             ////////  Solution Commission  //////
-            var bankCommission = Number(document.querySelector("#bankCommission").value);
+            var bankCommission = Math.round(document.querySelector("#bankCommission").value);
             bankCommission < 0 ? bankCommission = 0 : "";
-            var solutionPercent = Number(document.querySelector("#solutionCommPercent").value);
+            var solutionPercent = +(document.querySelector("#solutionCommPercent").value);
             solutionPercent < 0 ? solutionPercent = 0 : "";
-            var solutionFlat = Number(document.querySelector("#solutionCommFlat").value);
+            var solutionFlat = Math.round(document.querySelector("#solutionCommFlat").value);
             solutionFlat < 0 ? solutionFlat = 0 : "";
 
-            // Check if this $
-            if (this.currentInvoice[0].currency === "USD") {
-                solutionFlat = Math.round(solutionFlat * currencyInv.rates.USD);
-            }
-
-            var totalSolution = +bankCommission + ((amountReceive/100) * solutionPercent) + solutionFlat;
-            var leftFromTransfer = amountReceive - totalSolution;
+            var totalSolution = Math.round(+bankCommission + ((amountReceive/100) * solutionPercent) + solutionFlat);
+            var leftFromTransfer = Math.round(amountReceive - totalSolution);
              
             // Request to Server for changes
             var data = {
@@ -313,9 +499,9 @@ class invoiceList {
 
             // Change Table info for current Invoice
             document.querySelector(".currentStatus").innerHTML = "Approved";
-            document.querySelector(".currentStatus").style.color = "#12C7B2";
+            document.querySelector(".currentStatus").style.color = "#0B9E8D";
             this.currentTr.children[8].innerHTML = `<strong>Approved</strong>`;
-            this.currentTr.children[8].style.color = "#12C7B2";
+            this.currentTr.children[8].style.color = "#0B9E8D";
 
             // Change this.currentInvoce Obj
             this.currentInvoice[0].status = "Approved";
@@ -359,6 +545,10 @@ class invoiceList {
         var Declaration = this.checkDocsApproved(this.currentInvoice[0].documents.declaration);
         
         if (this.currentInvoice[0].status === "Received" && ID && PaymantProof && UtilityBill && Declaration) {
+            // Event for Button Submit
+            this.approvedBtnSubmit = document.querySelector("#approved_button");
+            this.approvedBtnSubmit.addEventListener("click", this.approvedStatusInit);
+
             // Loading GIF appear
             this.loadingGif.style.display = "flex";
 
@@ -389,15 +579,15 @@ class invoiceList {
             if (this.currentInvoice[0].currency === "USD") {
                 var currencyInv = await this.getEURexchange("EUR", "USD");
                 anyFeeFlat = Math.round(anyFeeFlat * currencyInv.rates.USD);
-                solutionCommFlat = Math.round(solutionCommFlat * currencyInv.rates.USD);
+                solutionCommFlat = Math.round((solutionCommFlat * currencyInv.rates.USD));
             }
 
             // Counting process
             var amountReceived = this.currentInvoice[0].amount.amount_received;
             var currency = "";
             this.currentInvoice[0].currency === "USD" ? currency = "$" : currency = "€";
-            var anyFeePercentRes = (amountReceived/100)*anyFeePercent;
-            var totalAny = anyFeePercentRes + anyFeeFlat;
+            var anyFeePercentRes = Math.round((amountReceived/100)*anyFeePercent);
+            var totalAny = Math.round(anyFeePercentRes + anyFeeFlat);
 
             // Render PopUp Window
             document.querySelector("#approved_receivedAmount").innerHTML = `${amountReceived}${currency}`;
@@ -411,28 +601,29 @@ class invoiceList {
 
             // Event for input Additiona fee
             document.querySelector("#inputAdditionalFee").addEventListener("keyup", () => {
-                var addFeeInputValue = Number(document.querySelector("#inputAdditionalFee").value);
-                totalAny = anyFeePercentRes + anyFeeFlat + addFeeInputValue;
+                var addFeeInputValue = Math.round(document.querySelector("#inputAdditionalFee").value);
+                totalAny = Math.round(anyFeePercentRes + anyFeeFlat + addFeeInputValue);
+
                 document.querySelector("#aprroved_additionalFee").innerHTML = `${addFeeInputValue}${currency}`;
                 document.querySelector("#approved_total_comm").innerHTML = `${totalAny}${currency}`;
-                document.querySelector("#approved_amount").innerHTML = `${amountReceived-totalAny}${currency}`;
+                document.querySelector("#approved_amount").innerHTML = `${Math.round(amountReceived-totalAny)}${currency}`;
             });
 
             // Solution Commission Counting
             var solutionCountPercent = (amountReceived/100) * solutionCommPercent;
-            var totalSolution = solutionCommFlat + solutionCountPercent;
+            var totalSolution = Math.round(solutionCommFlat + solutionCountPercent)
             document.querySelector("#solutionCommPercent").value = solutionCommPercent;
             document.querySelector("#solutionCommFlat").value = solutionCommFlat;
             document.querySelector("#totalSolution").innerHTML = `${totalSolution}${currency}`;
             document.querySelector("#leftFromTransfer").innerHTML = `${amountReceived - totalSolution}${currency}`;
 
             document.querySelectorAll(".solutionInputs").forEach((inpt) => inpt.addEventListener("keyup", () => {
-                var bankComm = Number(document.querySelector("#bankCommission").value);
-                var solComPerInpt = Number(document.querySelector("#solutionCommPercent").value);
+                var bankComm = +(document.querySelector("#bankCommission").value);
+                var solComPerInpt = +(document.querySelector("#solutionCommPercent").value);
                 var solComPerInptRes = (amountReceived/100) * solComPerInpt;
-                var solComFlat = Number(document.querySelector("#solutionCommFlat").value);
-                var totalSolComm = bankComm + solComPerInptRes + solComFlat;
-                var leftFromTransferComm = amountReceived - totalSolComm;
+                var solComFlat = +(document.querySelector("#solutionCommFlat").value);
+                var totalSolComm = Math.round(bankComm + solComPerInptRes + solComFlat);
+                var leftFromTransferComm = Math.round(amountReceived - totalSolComm);
                 document.querySelector("#totalSolution").innerHTML = `${totalSolComm}${currency}`;
                 document.querySelector("#leftFromTransfer").innerHTML = `${leftFromTransferComm}${currency}`;
             }));
@@ -463,7 +654,7 @@ class invoiceList {
     }
 
     receivedInvoiceStatus = async (invNumber, typedAmount, amountCommission, percentCommission, createdBy, currency) => {
-        return  await fetch("http://18.216.223.81:3000/receivedStatus", {
+        return  await fetch("http://localhost:3000/receivedStatus", {
                 method: "POST",
                 body: JSON.stringify({
                     invNumber,
@@ -511,13 +702,13 @@ class invoiceList {
 
             // Change table information
             this.currentTr.children[8].innerHTML = `<strong>Received</strong>`;
-            this.currentTr.children[8].style.color = "rgb(85, 140, 223)";
+            this.currentTr.children[8].style.color = "rgb(49, 117, 218)";
             this.currentTr.children[5].children[0].children[0].textContent = `${this.currency}${typedAmount}`;
             this.currentTr.children[5].children[0].children[1].textContent = `${this.checkDate(new Date())}`;
 
             // Change style for popUp
             document.querySelector(".currentStatus").textContent = "Received";
-            document.querySelector(".currentStatus").style.color = "rgb(85, 140, 223)";
+            document.querySelector(".currentStatus").style.color = "rgb(49, 117, 218)";
 
             // Update Comment Area for this.currentInvoce Obj
             this.tableComments = document.querySelector("#tableTbody-comments").innerHTML = "";
@@ -555,13 +746,17 @@ class invoiceList {
             document.querySelector(".receive_InvoiceNumber").innerHTML = `invoice #${this.currentInvoice[0].number}`;
             document.querySelector(".receive_SentAmount").innerHTML = `${amountSent}${this.currency}`
             document.querySelector("#receive_input").value = `${amountSent}`;
+
+            // Event For button Submit
+            this.receivedBtnSubmit = document.querySelector("#receive_Submit");
+            this.receivedBtnSubmit.addEventListener("click", this.receiveStatus);
         } else {
             this.alertWindow(`Your current status ${this.currentInvoice[0].status} does't allow this!`);
         }
     }
 
     sentInvoiceStatus = async (invNumber, amountSent, currency, creator) => {
-        return  await fetch("http://18.216.223.81:3000/sentStatus", {
+        return  await fetch("http://localhost:3000/sentStatus", {
                 method: "POST",
                 body: JSON.stringify({
                     invNumber,
@@ -604,6 +799,7 @@ class invoiceList {
             document.querySelector("#sent_input").value = this.currentInvoice[0].amount.amount_requested;
 
             // Event For button Submit Sent
+            this.sentSubmitBtn = document.querySelector("#sent_submitBtn");
             this.sentSubmitBtn.addEventListener("click", this.sentStatus);
 
         } else {
@@ -654,7 +850,7 @@ class invoiceList {
     }
 
     requestedInvoiceStatus = async (invoiceNum, sentAmount, currency, amountRequested, creator) => {
-        return  await fetch("http://18.216.223.81:3000/requestStatus", {
+        return  await fetch("http://localhost:3000/requestStatus", {
                 method: "POST",
                 body: JSON.stringify({
                     invoiceNum,
@@ -720,7 +916,7 @@ class invoiceList {
     }
 
     changeDocsStatus = async (filename, status, number, type, createdBy) => {
-        return  await fetch("http://18.216.223.81:3000/changeDocStatus", {
+        return  await fetch("http://localhost:3000/changeDocStatus", {
                 method: "POST",
                 body: JSON.stringify({
                     filename,
@@ -811,7 +1007,7 @@ class invoiceList {
 
     openDocsImage = (event) => {
         var filename = event.target.closest("tr").children[4].textContent.trim();
-        window.open(`http://18.216.223.81:3000/upload/${filename}`, '_blank');
+        window.open(`http://localhost:3000/upload/${filename}`, '_blank');
     }
 
     changeFileClickTo = () => {
@@ -883,7 +1079,7 @@ class invoiceList {
     }
 
     postFile = async (fd) => {
-        return  await fetch("http://18.216.223.81:3000/upload", {
+        return  await fetch("http://localhost:3000/upload", {
                 method: "POST",
                 body: fd,
                 mode: "no-cors",
@@ -978,7 +1174,7 @@ class invoiceList {
     }
 
     postEditedInvoice = async (number, newInvoice, comment, createdBy, currecyChanged, chnagedAmountReq, amountReqOld, chnagedAmountSent, amountSentOld, changedBank, oldBank) => {
-    return  await fetch("http://18.216.223.81:3000/postEditedInvoice", {
+    return  await fetch("http://localhost:3000/postEditedInvoice", {
             method: "POST",
             body: JSON.stringify({
                 number,
@@ -1020,6 +1216,10 @@ class invoiceList {
     }
 
     editInvoice = () => {
+        // Event for button Save
+        this.saveEditedInvoice_btn = document.querySelector("#saveEditedInvoice-btn");
+        this.saveEditedInvoice_btn.addEventListener("click", this.saveEditedInvoice);
+
         this.invoceNumber = document.querySelector(".invoceNumber").innerHTML = this.currentInvoice[0].number;
         // If click on filter - close
         this.filterEdit = document.querySelector(".filterEditIvoice");
@@ -1106,6 +1306,43 @@ class invoiceList {
     }
 
     renderViewInvoice = async (obj) => {
+        // Events Listeners for PopUp View Invoice
+        this.requestedBtn = document.querySelector("#requested");
+        this.requestedBtn.addEventListener("click", this.requestedStatus);
+        this.sentBtn = document.querySelector("#sent");
+        this.sentBtn.addEventListener("click", this.initialSentStatus);
+        this.receivedBtn = document.querySelector("#received");
+        this.receivedBtn.addEventListener("click", this.initialReceivedStatus);
+        this.approvedBtn = document.querySelector("#approved");
+        this.approvedBtn.addEventListener("click", this.approvedStatus);
+        this.availableBtn = document.querySelector("#available");
+        this.availableBtn.addEventListener("click", this.availableStatus);
+        this.editInvoiceBtn = document.querySelector("#editBtn");
+        this.editInvoiceBtn.addEventListener("click", this.editInvoice);
+        // this.settledBtn = document.querySelector("#settledBtn");
+        // this.settledBtn.addEventListener("click", this.settledStatus);
+        // this.declinedBtn = document.querySelector("#declinedBtn");
+        // this.declinedBtn.addEventListener("click", this.declinedStatus);
+        this.frozenBtn = document.querySelector("#frozenBtn");
+        this.frozenBtn.addEventListener("click", this.frozenStatus);
+        this.uploadBtn = document.querySelector("#uploadBtn");
+        this.uploadBtn.addEventListener("click", this.initialUpload);
+        this.addCommentBtn = document.querySelector("#addCommentBtn");
+        this.addCommentBtn.addEventListener("click", this.addCommentForBtn);
+        this.clickToDownload = document.querySelector("#uploadDocs");
+        this.clickToDownload.addEventListener("input", this.changeFileClickTo);
+        this.reCallBtn = document.querySelector("#recallBtn");
+        this.reCallBtn.addEventListener("click", this.reCallStatus);
+
+        // If Frozen status need to change button
+        if (this.currentInvoice[0].status === "Frozen") {
+            document.getElementById('frozenWrapper').innerHTML = `<button id="unFrozenBtn">Unfrozen</button>`;
+            document.querySelector("#unFrozenBtn").addEventListener("click", this.unfrozenStatus);
+        } else {
+            document.getElementById('frozenWrapper').innerHTML = `<button id="frozenBtn">Frozen</button>`;
+            document.querySelector("#frozenBtn").addEventListener("click", this.frozenStatus);
+        }
+
         this.filter = document.querySelector(".filter");
         this.filter.style.display = "flex";
         this.filter.addEventListener("click", (event) => {
@@ -1120,11 +1357,13 @@ class invoiceList {
         var statusColor = "";
         if(obj[0].status === "Sent") statusColor = "#FFBB33";
         if(obj[0].status === "Requested") statusColor = "black";
-        if(obj[0].status === "Received") statusColor = "#7491F2";
-        if(obj[0].status === "Approved") statusColor = "#83C9A0";
+        if(obj[0].status === "Received") statusColor = "rgb(49, 117, 218)";
+        if(obj[0].status === "Approved") statusColor = "rgb(5, 148, 131)";
         if(obj[0].status === "Available") statusColor = "#00C851";
         if(obj[0].status === "Declined") statusColor = "red";
         if(obj[0].status === "Settled") statusColor = "black";
+        if(obj[0].status === "Frozen") statusColor = "rgb(101, 152, 228)";
+        if(obj[0].status === "Recall") statusColor = "#560795";
 
         this.invoiceNumber = document.querySelector("#invoiceNumber").innerHTML = obj[0].number;
         this.currentStatus = document.querySelector(".currentStatus");
@@ -1159,7 +1398,7 @@ class invoiceList {
     }
 
     getCurrentMerchant = async (number, filter) => {
-        return  await fetch("http://18.216.223.81:3000/getPart-Merchants", {
+        return  await fetch("http://localhost:3000/getPart-Merchants", {
                 method: "POST",
                 body: JSON.stringify({
                     number,
@@ -1176,7 +1415,7 @@ class invoiceList {
     }
 
     getCurrentBank = async (number, filter) => {
-        return  await fetch("http://18.216.223.81:3000/getPart-Banks", {
+        return  await fetch("http://localhost:3000/getPart-Banks", {
                 method: "POST",
                 body: JSON.stringify({
                     number,
@@ -1193,7 +1432,7 @@ class invoiceList {
     }
 
     postCommet = async (number, data, create_by) => {
-        return  await fetch("http://18.216.223.81:3000/postComment", {
+        return  await fetch("http://localhost:3000/postComment", {
                 method: "POST",
                 body: JSON.stringify({
                     number,
@@ -1286,7 +1525,7 @@ class invoiceList {
     }
 
     getDocs = async (filter, id) => {
-         return  await fetch("http://18.216.223.81:3000/getDocs", {
+         return  await fetch("http://localhost:3000/getDocs", {
                 method: "POST",
                 body: JSON.stringify({
                     filter,
@@ -1331,22 +1570,22 @@ class invoiceList {
 
     previewInvoice = (event) => {
         var number = event.target.closest("tr").children[0].children[0].children[0].children[0].textContent.split("#");
-        window.open("http://18.216.223.81:3000/invoice-preview?&" + number[1], '_blank');
+        window.open("http://localhost:3000/invoice-preview?&" + number[1], '_blank');
     }
 
     invoiceContract = (event) => {
         var number = event.target.closest("tr").children[0].children[0].children[0].children[0].textContent.split("#");
-        window.open("http://18.216.223.81:3000/invoiceContract?&" + number[1], '_blank');
+        window.open("http://localhost:3000/invoiceContract?&" + number[1], '_blank');
     }
 
     invoiceDecOfPay = (event) => {
         var number = event.target.closest("tr").children[0].children[0].children[0].children[0].textContent.split("#");
-        window.open("http://18.216.223.81:3000/invoiceDecOfPay?&" + number[1], '_blank');
+        window.open("http://localhost:3000/invoiceDecOfPay?&" + number[1], '_blank');
     }
 
     invoicePreviewBankVersion = (event) => {
         var number = event.target.closest("tr").children[0].children[0].children[0].children[0].textContent.split("#");
-        window.open("http://18.216.223.81:3000/invoicePreviewBankVersion?&" + number[1], '_blank');
+        window.open("http://localhost:3000/invoicePreviewBankVersion?&" + number[1], '_blank');
     }
 
     filtersData = () => {
@@ -1736,7 +1975,7 @@ class invoiceList {
     }
 
     getMerchants = async () => {
-        return  await fetch("http://18.216.223.81:3000/getMerchants")
+        return  await fetch("http://localhost:3000/getMerchants")
         .then(res => {
             return res.json();
         }) 
@@ -1755,7 +1994,7 @@ class invoiceList {
     }
 
     getBanks = async () => {
-         return  await fetch("http://18.216.223.81:3000/getBanks")
+         return  await fetch("http://localhost:3000/getBanks")
          .then(res => {
              return res.json();
          }) 
@@ -1778,7 +2017,7 @@ class invoiceList {
     }
 
     getInvoices = async (count, filter, firstCr, secondCr, firstRe, secondRe) => {
-        return  await fetch("http://18.216.223.81:3000/getPart-Invoices", {
+        return  await fetch("http://localhost:3000/getPart-Invoices", {
             method: "POST",
             body: JSON.stringify({
                 numbers: count, 
@@ -1799,7 +2038,7 @@ class invoiceList {
     }
 
     getNumberOfinvoices = async (filter, firstCr, secondCr, firstRe, secondRe) => {
-       return  await fetch("http://18.216.223.81:3000/getNumber-Invoices", {
+       return  await fetch("http://localhost:3000/getNumber-Invoices", {
             method: "POST",
             body: JSON.stringify({
                 filter,
@@ -1838,6 +2077,8 @@ class invoiceList {
             item.status === "Sent" ? color = "yellow" : "";
             item.status === "Available" ? color = "green" : "";
             item.status === "Settled" ? color = "black" : "";
+            item.status === "Frozen" ? color = "frozen" : "";
+            item.status === "Recall" ? color = "recall" : "";
 
             var docs = "documents" in item;
 
@@ -1912,13 +2153,7 @@ class invoiceList {
         this.clearFilterBtn.addEventListener("click", this.clearFilter);
         this.btnExel.addEventListener("click", this.saveXls);
         this.btn_search.addEventListener("click", this.searchFunction);
-        this.addCommentBtn.addEventListener("click", this.addCommentForBtn);
         this.firstPageImg.addEventListener("click", this.clearFilter);
-        this.editInvoiceBtn.addEventListener("click", this.editInvoice);
-        this.saveEditedInvoice_btn.addEventListener("click", this.saveEditedInvoice);
-        this.uploadBtn.addEventListener("click", this.initialUpload);
-        this.clickToDownload.addEventListener("input", this.changeFileClickTo);
-
         this.textAreaAddComment.addEventListener("keyup", () => {
             event.preventDefault();
             event.keyCode === 13 ? this.addCommentForBtn() : "";
@@ -1927,17 +2162,7 @@ class invoiceList {
         this.inputSearch.addEventListener("keyup", () => {
             event.preventDefault();
             event.keyCode === 13 ? this.searchFunction() : "";
-        });
-
-        this.requestedBtn.addEventListener("click", this.requestedStatus);
-        this.sentBtn.addEventListener("click", this.initialSentStatus);
-        this.receivedBtn.addEventListener("click", this.initialReceivedStatus);
-        this.receivedBtnSubmit.addEventListener("click", this.receiveStatus);
-        this.approvedBtn.addEventListener("click", this.approvedStatus);
-        this.approvedBtnSubmit.addEventListener("click", this.approvedStatusInit);
-        this.availableBtn.addEventListener("click", this.availableStatus);
-        this.declinedBtn.addEventListener("click", this.declinedStatus);
-        this.settledBtn.addEventListener("click", this.settledStatus);
+        });  
     }
 };
 

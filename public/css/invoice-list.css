@@ -472,13 +472,13 @@
     }
     
     #requested:hover, #sent:hover, #received:hover, #approved:hover, #available:hover, #editBtn:hover, 
-    #settledBtn:hover, #declinedBtn:hover, #frozenBtn:hover, #recallBtn:hover{
+    #settledBtn:hover, #declinedBtn:hover, #frozenBtn:hover, #recallBtn:hover, #unFrozenBtn:hover{
         background-color: #12C7B2;
         box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.75);
     }
     
     #requested:active, #sent:active, #received:active, #approved:active, #available:active, #editBtn:active, 
-    #settledBtn:active, #declinedBtn:active, #frozenBtn:active, #recallBtn:active{
+    #settledBtn:active, #declinedBtn:active, #frozenBtn:active, #recallBtn:active, #unFrozenBtn:active{
         background-color: #888;
     }
     
@@ -649,6 +649,11 @@
     }
     #frozenBtn{
         background-color: #20A5F7;
+        color: white;
+        transition: .2s;
+    }
+    #unFrozenBtn{
+        background-color: rgb(97, 179, 231);
         color: white;
         transition: .2s;
     }
