@@ -391,7 +391,6 @@ class createBank{
                 },
                 "active" : active, 
                 "description" : document.querySelector("#description").value, 
-                "creation_date" : new Date(), 
                 "created_by" : document.querySelector(".userName").textContent,
                 "solution_fees": {
                     "in_c2b":{

@@ -9,6 +9,10 @@ router.get('/merchants.html', isLoggedIn, function(req, res) {
     res.render("merchants.html");
 });
 
+router.get('/create-merchant', isLoggedIn, function(req, res) {
+    res.render("create-merchant.html");
+});
+
 router.get('/merchantReport.html', isLoggedIn, function(req, res) {
     res.render("merchantReport.html");
 });
@@ -55,12 +59,13 @@ router.post("/getNumber-Merchants", jsonParser, (req, res) => {
     });
 });
 
-router.post("/postMerchant",jsonParser, (req, res) => {
+router.post("/createMerchant", jsonParser, (req, res) => {
+    const newMerchant = req.body.newMerchant;
+    newMerchant["creation_date"] = new Date();
     mongo.connect(url, (err, db) => {
-        db.collection("merchants").insertOne(req.body, function(err, result) {
-            if(err) return console.log("Bad POST Merchants request!", err);
-            db.close();
-            res.send(req.body);
+        db.collection("merchants").insertOne(newMerchant, function(err, result) {
+            if(err) return console.log("Error with creating new Merchant!", err);
+            res.send("Merchant has been created successfully!");
         });
     });
 });
