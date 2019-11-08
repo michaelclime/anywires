@@ -40,8 +40,8 @@ router.post("/invoices/:fullname/:_id/:merchant", function(req, res, next) {
                     status: 'Requested',
                     amount: {
                         amount_requested: +req.body.amount,
-                        amount_received: 0,
                         amount_sent: 0,
+                        amount_received: 0,
                         amount_approved: 0,
                         amount_available: 0
                     },
@@ -246,8 +246,8 @@ router.post("/invoices/:fullname/:_id/:merchant", function(req, res, next) {
                                                 status: 'Requested',
                                                 amount: {
                                                     amount_requested: +req.body.amount,
-                                                    amount_received: 0,
                                                     amount_sent: 0,
+                                                    amount_received: 0,
                                                     amount_approved: 0,
                                                     amount_available: 0
                                                 },

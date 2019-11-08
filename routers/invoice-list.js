@@ -7,6 +7,7 @@ const express = require('express'),
     fs = require("fs"),
     Invoice = require("../modules/invoice"),
     Bank = require("../modules/bank"),
+    Merchant = require("../modules/merchant"),
     Commission = require("../modules/commission");
  
 const url = 'mongodb://18.216.223.81:27017/anywires';
@@ -776,7 +777,18 @@ router.post("/receivedStatus", jsonParser, (req, res) => {
                                 db.collection("invoices").updateOne({"number": invNumber}, {$push:{"commissions": commissionId}}, 
                                 {returnOriginal:false}, (err, result) => {
                                     if(err) return console.log(err, "Error with pushing commission to Invoice!");
-                                    res.send("Received status has been set successfully!")
+
+                                    // Check if Invoice currency
+                                    var objMerch = {"balance_EUR.balance_received": typedAmount};
+                                    if(currency === "USD"){
+                                        objMerch = {"balance_USD.balance_received": typedAmount};
+                                    }
+                                    
+                                    Merchant.updateOne({"name": inv.value.merchant}, {$inc: objMerch}, 
+                                    {returnOriginal: false}, (err, merch) => {
+
+                                        res.send("Received status has been set successfully!")
+                                    });
                                 });
                             });
                         });
@@ -794,7 +806,7 @@ router.post("/receivedStatus", jsonParser, (req, res) => {
 router.post("/approvedStatus", jsonParser, (req, res) => {
     const invNumber = req.body.invNumber;
     const createBy = req.body.createBy;
-    const amountApproved = req.body.amountApproved;
+    const amountApproved = +req.body.amountApproved;
 
     // || 1.Change Invoice info to Approved ||
     Invoice.findOneAndUpdate({"number": invNumber}, {$set:{
@@ -809,8 +821,8 @@ router.post("/approvedStatus", jsonParser, (req, res) => {
     {returnOriginal: false}, (err, inv) => {
         if(err) return console.log(err, "Error with changing Invoice to Approved!");
         //  || 2. Change Bank Balance for Approved ||
-        var bankName = inv.bank;
-        var amountReceived = inv.amount.amount_received;
+        var merchantName = inv.merchant;
+        var amountReceived = +inv.amount.amount_received;
 
         // Check if Invoice currency USD
         var obj = {"balance_EUR.balance_approved": amountApproved, "balance_EUR.balance_received": -amountReceived};
@@ -818,8 +830,8 @@ router.post("/approvedStatus", jsonParser, (req, res) => {
             obj = {"balance_USD.balance_approved": amountApproved, "balance_USD.balance_received": -amountReceived};
         }
 
-        Bank.updateOne({"name": bankName}, {$inc: obj}, {returnOriginal: false}, async (err, bank) => {
-            if(err) return console.log(err, "Error with changing Bank to Balance to Approved!");
+        Merchant.updateOne({"name": merchantName}, {$inc: obj}, {returnOriginal: false}, async (err, bank) => {
+            if(err) return console.log(err, "Error with changing Merhcnant to Balance to Approved!");
 
             //  || 3. Add new Commission to collection ||
             const comm = new Commission({
@@ -899,8 +911,8 @@ router.post("/availableStatus", jsonParser, (req, res) => {
             obj = {"balance_USD.balance_available": +amountAvailable, "balance_USD.balance_approved": -amountApproved};
         }
 
-        Bank.updateOne({"name": inv.bank}, {$inc: obj}, {returnOriginal: false}, (err, result) => {
-            if(err) return console.log("Err with changing Bank Balance to Available!");
+        Merchant.updateOne({"name": inv.merchant}, {$inc: obj}, {returnOriginal: false}, (err, result) => {
+            if(err) return console.log("Err with changing Merchant Balance to Available!");
             res.send("Available status has been set successfully!")
         });
     });
@@ -910,11 +922,11 @@ router.post("/availableStatus", jsonParser, (req, res) => {
 // @route POST /declinedStatus
 // @desc Change all data to Declined
 router.post("/declinedStatus", jsonParser, (req, res) => {
-    const invNumber = req.body.data.invNumber;
-    const amountDeclined = req.body.data.amountDeclined;
-    const currency = req.body.data.currency;
-    const createdBy = req.body.data.createdBy;
-    const invStatus = req.body.data.invStatus;
+    const invNumber = req.body.invNumber;
+    const amountDeclined = req.body.amountDeclined;
+    const currency = req.body.currency;
+    const createdBy = req.body.createdBy;
+    const oldInvStatus = req.body.oldInvStatus;
 
     // Request for chnaging Invoice to Declined
     Invoice.findOneAndUpdate({"number": invNumber}, {
@@ -933,15 +945,11 @@ router.post("/declinedStatus", jsonParser, (req, res) => {
         if(err) return console.log("Error with changing Invoice to Declined!");
 
         // Checking Invoice Status to know wich balance from Bank we need to remove
+        var invCurrency = `balance_${inv.currency.toUpperCase()}`;
+        var invAmount = `balance_${oldInvStatus.toLowerCase()}`;
+        var result = `${invCurrency}.${invAmount}`;
         var obj = {};
-        if (invStatus === "Requested"){
-            obj = {"balance_EUR.balance_requested": -inv.amount.amount_requested};
-            inv.currency === "USD" ? obj = {"balance_USD.balance_requested": -inv.amount.amount_requested} : "";
-
-        } else if(invStatus === "Sent"){
-            obj = {"balance_EUR.balance_sent": -inv.amount.amount_sent};
-            inv.currency === "USD" ? obj = {"balance_USD.balance_sent": -inv.amount.amount_sent} : "";
-        }
+        obj[result] = -amountDeclined;
 
         // Request for chnaging Bank Balance 
         Bank.updateOne({"name": inv.bank}, {$inc: obj}, 
@@ -992,6 +1000,223 @@ router.post("/settledStatus", jsonParser, (req, res) => {
 });
 
 
+// @route POST /frozenStatus
+// @desc Change all data to Frozen
+router.post("/frozenStatus", jsonParser, (req, res) => {
+    const invNumber = req.body.invNumber;
+    const invStatus = req.body.invStatus;
+    const createdBy = req.body.createdBy;
+    const currencySymbol = req.body.currencySymbol;
+    const amountFrozen = req.body.amountFrozen;
+    const amountReceived = req.body.amountReceived;
+
+    // 1. Change Invoice to Frozen
+    Invoice.findOneAndUpdate({"number": invNumber}, {
+        $set: {
+            "status": "Frozen",
+            "dates.frozen_date": new Date(), 
+            "before_freeze": invStatus
+        },
+        $push: { 
+            "comments": {
+                "created_by": createdBy, 
+                "creation_date": new Date(), 
+                "message": `Invoice #${invNumber}. Transfer for ${currencySymbol}${amountFrozen} was Frozen!`
+            }
+        }}, {returnOriginal: false}, (err, inv) => {
+            if(err) return console.log("Error with changing Invoice data to Frozen!", err);
+
+            // Check if Invoice currency USD
+            var objBank = {"balance_EUR.balance_frozen": +amountReceived, "balance_EUR.balance_received": -amountReceived};
+            if(inv.currency === "USD"){
+                objBank = {"balance_USD.balance_frozen": +amountReceived, "balance_USD.balance_received": -amountReceived};
+            }
+
+            // 2. Change Bank balance to Frozen
+            Bank.updateOne({"name": inv.bank}, {$inc: objBank}, {returnOriginal: false}, (err, bank) => {
+                if(err) return console.log("Error with changing bank balance to Frozen!", err);
+
+                // Check if Invoice currency USD
+                var invCurrency = `balance_${inv.currency.toUpperCase()}`;
+                var invAmount = `balance_${invStatus.toLowerCase()}`;
+                var result = `${invCurrency}.${invAmount}`;
+
+                var objMerch = {"balance_EUR.balance_frozen": +amountFrozen};
+                if(inv.currency === "USD"){
+                    objMerch = {"balance_USD.balance_frozen": +amountFrozen};
+                }
+                objMerch[result] = -amountFrozen;
+
+                // 3. Change Merchant balance to Frozen
+                Merchant.updateOne({"name": inv.merchant}, {$inc: objMerch}, {returnOriginal: false}, (err, merch) => {
+                    if(err) return console.log("Error with changing merchant balance to Frozen!");
+                    res.send("Frozen status has been set successfully!");
+                });
+
+            });
+    });
+});
+
+
+// @route POST /unfrozenStatus
+// @desc Change all data to Unfrozen
+router.post("/unfrozenStatus", jsonParser, (req, res) => {
+    const invNumber = req.body.invNumber;
+    const createdBy = req.body.createdBy;
+    const currencySymbol = req.body.currencySymbol;
+    const amountUnfrozen = req.body.amountUnfrozen;
+    const beforeFreezeStatus = req.body.beforeFreezeStatus;
+    const amountReceived = req.body.amountReceived;
+    
+    // 1. Change Invoice to Unfrozen
+    Invoice.findOneAndUpdate({"number": invNumber}, {
+        $set: {
+            "status": beforeFreezeStatus,
+            "dates.unfrozen_date": new Date(), 
+            "before_freeze": "Unfrozen"
+        },
+        $push: {
+            "comments":{
+                "created_by": createdBy, 
+                "creation_date": new Date(), 
+                "message": `Invoice #${invNumber}. Transfer for ${currencySymbol}${amountUnfrozen} was Unfrozen!`
+            }
+        }
+    }, 
+    {returnOriginal: false}, (err, inv) => {
+        if(err) return console.log("Error with changing Invoice data to Unfrozen!", err);
+
+        // Check if Invoice currency USD
+        var objBank = {"balance_EUR.balance_frozen": -amountReceived, "balance_EUR.balance_received": +amountReceived};
+        if(inv.currency === "USD"){
+            objBank = {"balance_USD.balance_frozen": -amountReceived, "balance_USD.balance_received": +amountReceived};
+        }
+
+        // 2. Change Bank balance to Unfrozen
+        Bank.updateOne({"name": inv.bank}, {$inc: objBank}, 
+        {returnOriginal: false}, (err, bank) => {
+            if(err) return console.log("Error with changing bank balance to Unfrozen!", err);
+
+            // Check if Invoice currency USD
+            var invCurrency = `balance_${inv.currency.toUpperCase()}`;
+            var invAmount = `balance_${beforeFreezeStatus.toLowerCase()}`;
+            var result = `${invCurrency}.${invAmount}`;
+
+            var objMerch = {"balance_EUR.balance_frozen": -amountUnfrozen};
+            if(inv.currency === "USD"){
+                objMerch = {"balance_USD.balance_frozen": -amountUnfrozen};
+            }
+            objMerch[result] = +amountUnfrozen;
+
+            // 3. Change Merchant balance to Unfrozen
+            Merchant.updateOne({"name": inv.merchant}, {$inc: objMerch}, 
+            {returnOriginal: false}, (err, merch) => {
+                if(err) return console.log("Error with changing merchant balance to Unfrozen!");
+                res.send("Unfrozen status has been set successfully!");
+            });
+        });
+    });
+});
+
+
+// @route POST /recallStatus
+// @desc Change all Invoice Bank and Merchant data to Recall
+router.post("/recallStatus", jsonParser, (req, res) => {
+    const invNumber = req.body.invNumber;
+    const createdBy = req.body.createdBy;
+    const currencySymbol = req.body.currencySymbol;
+    const amountRecall = req.body.amountRecall;
+    const amountReceived = req.body.amountReceived;
+    const beforeRecallStatus = req.body.beforeRecallStatus; 
+    const USD = req.body.USD;
+
+    // 1. Change Invoice to Recall
+    Invoice.findOneAndUpdate({"number": invNumber}, {
+        $set: {
+            "status": "Recall",
+            "dates.recall_date": new Date()
+        },
+        $push: {
+            "comments":{
+                "created_by": createdBy, 
+                "creation_date": new Date(), 
+                "message": `Invoice #${invNumber}. Transfer for ${currencySymbol}${amountRecall} was Recall!`
+            }
+        }
+    }, 
+    {returnOriginal: false}, (err, inv) => {
+        if(err) return console.log("Error with changing Invoice data to Recall!", err);
+
+        // Check if Invoice currency USD
+        var invCurrency = `balance_${inv.currency.toUpperCase()}`;
+        var invAmount = `balance_${beforeRecallStatus.toLowerCase()}`;
+        var result = `${invCurrency}.${invAmount}`;
+
+        var objMerch = {};
+        objMerch[result] = -amountRecall;
+
+        // 3. Change Merchant balance to Recall
+        Merchant.findOneAndUpdate({"name": inv.merchant}, {$inc: objMerch}, 
+        {returnOriginal: false}, (err, merch) => {
+            if(err) return console.log("Error with changing merchant balance to Recall!");
+
+            // 4. Write off the commission from Merchant
+            var percent = merch.fees.fine_recall.percent;
+                percent = (amountReceived * percent)/100;
+            var flat = merch.fees.fine_recall.flat;
+            var add = merch.fees.fine_recall.additional;
+            if (inv.currency === "USD") {
+                flat *= USD;
+                add *= USD;
+            }
+            var total = Math.round(percent + flat + add);
+            var commObj = {};
+            var merchAvailable = `${invCurrency}.balance_available`;
+            commObj[merchAvailable] = -total;
+
+            Merchant.updateOne({"name": inv.merchant}, {$inc: commObj}, 
+            {returnOriginal: false}, (err, merch) => {
+                if(err) return console.log("Error with write off commission from Merchant, Recall!");
+
+                // 5. Change Bank balance to Recall "remove invoice cuurent amount"
+                var objBank = {};
+                var bankAmount = `${invCurrency}.balance_received`;
+                objBank[bankAmount] = -amountReceived;
+                
+                Bank.updateOne({"name": inv.bank}, {$inc: objBank}, 
+                {returnOriginal: false}, (err, bank) => {
+                    if(err) return console.log("Error with changing bank balance to Recall!", err);
+
+                    // 6. Add new Commission to DB
+                    var percentCommission = (100*total)/amountReceived;
+                    var newComm = {
+                        "created_by": createdBy,
+                        "amount": total,
+                        "currency": inv.currency,
+                        "type": "Recall Commission",
+                        "percentage": percentCommission,
+                        "creation_date": new Date()
+                    };
+
+                    Commission.create(newComm, (err, comm) => {
+                        if(err) return console.log(err, "Error with insert commission, Recall!");
+                        var commissionId = new objectId(comm._id);
+
+                        // 7. Pushing new Commission to Invoice
+                        Invoice.updateOne({"number": invNumber}, {$push:{"commissions": commissionId}}, 
+                        {returnOriginal: false}, (err, result) => {
+                            if(err) return console.log(err, "Error with pushing new commission to Invoice, Recall!");
+                            res.send("Recall status has been set successfully!");
+                        });
+                    });
+                });
+            });
+        });
+    });
+
+});
+
+
 //////////////////////////////
 //                          //
 // Invoice Preview Proccess //
@@ -999,7 +1224,7 @@ router.post("/settledStatus", jsonParser, (req, res) => {
 //////////////////////////////
 
 router.post("/get-invoiceByNumber", jsonParser, (req, res) => {
-    mongo.connect(url, (err, db) =>{
+    mongo.connect(url, (err, db) => {
 
         db.collection("invoices").find({number: req.body.number}).toArray(function(err, invoice){
             if(err) return console.log("Error with upload Invoice Preview!", err);

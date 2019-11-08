@@ -5,16 +5,106 @@ let MerchantSchema = new mongoose.Schema({
     name: String,
     b2b: Boolean,
     fees: {
-        setup_fee: Number,
-        wire_recall: Number,
-        settlement_fee_flat: Number,
-        monthly_fee: Number,
-        incoming_transfer: Number,
-        incoming_wire: Number,
-        settlement_fee_percent: Number,
-        settlement_return: Number,
-        refund_fee_flat: Number,
-        refund_fee_percent: Number,
+        in_c2b: {
+            percent: Number,
+            flat: Number,
+            additional: Number
+        },
+        in_b2b: {
+            percent: Number,
+            flat: Number,
+            additional: Number
+        },
+        settlement_btc: {
+            percent: Number,
+            flat: Number,
+            additional: Number
+        },
+        settlement_atm: {
+            percent: Number,
+            flat: Number,
+            additional: Number
+        },
+        settlement_c2b_wire: {
+            percent: Number,
+            flat: Number,
+            additional: Number
+        },
+        settlement_b2b_wire: {
+            percent: Number,
+            flat: Number,
+            additional: Number
+        },
+        settlement_recall: {
+            percent: Number,
+            flat: Number,
+            additional: Number
+        },
+        settlement_refund: {
+            percent: Number,
+            flat: Number,
+            additional: Number
+        },
+        settlement_b2c: {
+            percent: Number,
+            flat: Number,
+            additional: Number
+        },
+        fee_account_setup: {
+            percent: Number,
+            flat: Number,
+            additional: Number
+        },
+        fee_account_mounthly: {
+            percent: Number,
+            flat: Number,
+            additional: Number
+        },
+        fee_account_additional: {
+            percent: Number,
+            flat: Number,
+            additional: Number
+        },
+        fee_account_dedicated: {
+            percent: Number,
+            flat: Number,
+            additional: Number
+        },
+        fine_recall: {
+            percent: Number,
+            flat: Number,
+            additional: Number
+        },
+        fine_attitude_incorrect_payment_purpose: {
+            percent: Number,
+            flat: Number,
+            additional: Number
+        },
+        fine_attitude_wrong_amount: {
+            percent: Number,
+            flat: Number,
+            additional: Number
+        },
+        fine_attitude_more_then_1_payment: {
+            percent: Number,
+            flat: Number,
+            additional: Number
+        },
+        fine_attitude_payment_without_invoice: {
+            percent: Number,
+            flat: Number,
+            additional: Number
+        },
+        fine_attitude_payment_from_blocked: {
+            percent: Number,
+            flat: Number,
+            additional: Number
+        },
+        fine_attitude_more_then_1percent_recalls: {
+            percent: Number,
+            flat: Number,
+            additional: Number
+        }
     },
     specifications: {
         background: String
@@ -27,7 +117,19 @@ let MerchantSchema = new mongoose.Schema({
     specifications_b2b: Object,
     creating_date: Date,
     created_by: Object,
-    inside_wallets: Array
+    inside_wallets: Array,
+    balance_EUR: {
+        balance_received: Number,
+        balance_approved: Number,
+        balance_available: Number,
+        balance_frozen: Number
+    },
+    balance_USD: {
+        balance_received: Number,
+        balance_approved: Number,
+        balance_available: Number,
+        balance_frozen: Number
+    },
 });
 
 MerchantSchema.plugin(passportLocalMongoose);
