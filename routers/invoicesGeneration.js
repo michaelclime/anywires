@@ -78,24 +78,67 @@ router.post("/invoices/:fullname/:_id/:merchant", function(req, res, next) {
                     settleSelectedStatus: false
                 };
 
+                // let bank = await Bank.findOne({name: req.body.bank});
+                // let invoicesByBank = await Invoice.find({bank: req.body.bank});
+                // const url = 'https://api.exchangeratesapi.io/latest';
+
+                // let DollarToEuro = await request.get({url, json: true}, async (error,  {body}) => {
+                //       let coefficient = body.rates.USD;
+                //       let invoicesLimitSum = +req.body.amount * 0.25;
+                //       if (req.body.currency == 'USD') {invoicesLimitSum /= coefficient}
+                //       for (let i = 0; i < invoicesByBank.length; i += 1) {
+                //           if (invoicesByBank[i].currency == 'USD') {
+                //             invoicesLimitSum +=  (invoicesByBank[i].amount.amount_requested / coefficient * 0.25 ) + 
+                //                 (invoicesByBank[i].amount.amount_sent / coefficient * 0.8) + ( invoicesByBank[i].amount.amount_received  / coefficient);
+                //           } else {
+                //             invoicesLimitSum +=  (invoicesByBank[i].amount.amount_requested * 0.25) + 
+                //                 (invoicesByBank[i].amount.amount_sent * 0.8) + ( invoicesByBank[i].amount.amount_received);
+                //           }
+                //         }
+                        
+                //     if (invoicesLimitSum >= bank.stop_limit) {
+                //         let a = invoicesLimitSum - (+req.body.amount * 0.25);
+                //         if ((bank.stop_limit - a) <= 1000) {
+                //             await Bank.findOneAndUpdate({name: req.body.bank}, {active: false, stop_limit_reached: true});
+                //             req.flash('error', 'Sorry, this bank isn\'t available now!');
+                //             res.redirect('/InvoiceGeneration.html');
+                //         } else {
+                //             req.flash('error', 'Sorry, limit bank has reached. Decrease invoice amount or chose another bank!');
+                //             res.redirect('/InvoiceGeneration.html');
+                //         }
+                //     } else {
+                //         Invoice.create(newInvoice, async function(err, newlyCreated){
+                //             if(err){
+                //                 console.log(err);
+                //             } else {
+                //                 console.log('Item inserted');
+                //                 if (req.body.currency == 'EUR') {
+                //                     await Bank.findOneAndUpdate({name: req.body.bank}, { $inc: { "balance_EUR.balance_requested": +req.body.amount }});
+                //                 } else if (req.body.currency == 'USD') {
+                //                     await Bank.findOneAndUpdate({name: req.body.bank},  {$inc: { "balance_USD.balance_requested": +req.body.amount}});
+                //                 }
+                //                 let userInfo = await User.findOne({ _id: req.params._id});
+                                
+                //                 if ( userInfo.role == 'Invoice Manager') {
+                //                         res.redirect('/personal-area.html');
+                //                 } else {
+                //                     res.redirect('/invoice-list.html');
+                //                 }
+                //             }
+                //         });
+                //     }
+                // });
+
                 let bank = await Bank.findOne({name: req.body.bank});
-                let invoicesByBank = await Invoice.find({bank: req.body.bank});
                 const url = 'https://api.exchangeratesapi.io/latest';
 
                 let DollarToEuro = await request.get({url, json: true}, async (error,  {body}) => {
                       let coefficient = body.rates.USD;
                       let invoicesLimitSum = +req.body.amount * 0.25;
-                      if (req.body.currency == 'USD') {invoicesLimitSum /= coefficient}
-                      for (let i = 0; i < invoicesByBank.length; i += 1) {
-                          if (invoicesByBank[i].currency == 'USD') {
-                            invoicesLimitSum +=  (invoicesByBank[i].amount.amount_requested / coefficient * 0.25 ) + 
-                                (invoicesByBank[i].amount.amount_sent / coefficient * 0.8) + ( invoicesByBank[i].amount.amount_received  / coefficient);
-                          } else {
-                            invoicesLimitSum +=  (invoicesByBank[i].amount.amount_requested * 0.25) + 
-                                (invoicesByBank[i].amount.amount_sent * 0.8) + ( invoicesByBank[i].amount.amount_received);
-                          }
-                        }
-                        
+                      if (req.body.currency == 'USD') {invoicesLimitSum /= coefficient;};
+                      
+                      invoicesLimitSum += bank.balance_EUR.balance_requested * 0.25 + bank.balance_EUR.balance_sent * 0.8 +  bank.balance_EUR.balance_received +
+                                            bank.balance_USD.balance_requested / coefficient * 0.25 + bank.balance_USD.balance_sent / coefficient * 0.8 +  bank.balance_USD.balance_received / coefficient;
                     if (invoicesLimitSum >= bank.stop_limit) {
                         let a = invoicesLimitSum - (+req.body.amount * 0.25);
                         if ((bank.stop_limit - a) <= 1000) {
@@ -128,6 +171,7 @@ router.post("/invoices/:fullname/:_id/:merchant", function(req, res, next) {
                         });
                     }
                 });
+
                 } else {
                 
                 mongo.connect(url, async function(err, db) {
@@ -142,22 +186,23 @@ router.post("/invoices/:fullname/:_id/:merchant", function(req, res, next) {
                         if ( (item.sepa == a) && (item.country !== req.body.country) && (+req.body.amount <= +item.max_wire) &&
                         (+req.body.amount >= +item.min_wire) && (item.active) ) {
                             //console.log( chalk.blue.inverse.bold(item.name) );
-                            let invoicesByBank = await Invoice.find({bank: item.name});
+                            //let invoicesByBank = await Invoice.find({bank: item.name});
                            
                             let coefficient = 1.1;
                             let invoicesLimitSum = +req.body.amount * 0.25;
                             if (req.body.currency == 'USD') {invoicesLimitSum /= coefficient;}
-                            for (let i = 0; i < invoicesByBank.length; i += 1) {
-                                if (invoicesByBank[i].currency == 'USD') {
-                                    invoicesLimitSum +=  (invoicesByBank[i].amount.amount_requested / coefficient * 0.25 ) + 
-                                        (invoicesByBank[i].amount.amount_sent / coefficient * 0.8) + ( invoicesByBank[i].amount.amount_received  / coefficient);
-                                } else {
-                                    invoicesLimitSum +=  (invoicesByBank[i].amount.amount_requested * 0.25) + 
-                                        (invoicesByBank[i].amount.amount_sent * 0.8) + ( invoicesByBank[i].amount.amount_received);
-                                }
-                                }
+                            // for (let i = 0; i < invoicesByBank.length; i += 1) {
+                            //     if (invoicesByBank[i].currency == 'USD') {
+                            //         invoicesLimitSum +=  (invoicesByBank[i].amount.amount_requested / coefficient * 0.25 ) + 
+                            //             (invoicesByBank[i].amount.amount_sent / coefficient * 0.8) + ( invoicesByBank[i].amount.amount_received  / coefficient);
+                            //     } else {
+                            //         invoicesLimitSum +=  (invoicesByBank[i].amount.amount_requested * 0.25) + 
+                            //             (invoicesByBank[i].amount.amount_sent * 0.8) + ( invoicesByBank[i].amount.amount_received);
+                            //     }
+                            // }
                                 //console.log( chalk.red.inverse.bold(invoicesLimitSum) );
-
+                            invoicesLimitSum += item.balance_EUR.balance_requested * 0.25 + item.balance_EUR.balance_sent * 0.8 +  item.balance_EUR.balance_received +
+                                                item.balance_USD.balance_requested / coefficient * 0.25 + item.balance_USD.balance_sent / coefficient * 0.8 +  item.balance_USD.balance_received / coefficient;
                             if (invoicesLimitSum >= item.stop_limit) {
                                 let a = invoicesLimitSum - (+req.body.amount * 0.25);
                                 if ((item.stop_limit - a) <= 1000) {
