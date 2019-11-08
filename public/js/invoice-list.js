@@ -265,6 +265,8 @@ class invoiceList {
 
             var amountSettled = `amount_${this.currentInvoice[0].status.toLowerCase()}`;
             var createdBy = this.currentUser.textContent.trim();
+
+            // Settled request
             var data = {
                 "invNumber": this.currentInvoice[0].number,
                 "createdBy": createdBy,
@@ -305,7 +307,7 @@ class invoiceList {
     declinedInvoiceStatus = async (data) => {
         return  await fetch("http://18.216.223.81:3000/declinedStatus", {
                 method: "POST",
-                body: JSON.stringify({data}),
+                body: JSON.stringify(data),
                 headers:{'Content-Type': 'application/json'}
             })
             .then(res => {
@@ -321,14 +323,14 @@ class invoiceList {
             // Loading GIF ON
             this.loadingGif.style.display = "flex";
 
-            var amountDeclined = this.currentInvoice[0].amount.amount_requested;
-            this.currentInvoice[0].status === "Sent" ? amountDeclined = this.currentInvoice[0].amount.amount_sent : "";
+            // Declined request
+            var amountDeclined = `amount_${this.currentInvoice[0].status.toLowerCase()}`;
             var createdBy = this.currentUser.textContent.trim();
 
             var data = {
                 "invNumber": this.currentInvoice[0].number,
-                "invStatus": this.currentInvoice[0].status,
-                "amountDeclined": +amountDeclined,
+                "oldInvStatus": this.currentInvoice[0].status,
+                "amountDeclined": this.currentInvoice[0].amount[amountDeclined],
                 "createdBy": createdBy,
                 "currency" : this.currency
             };
@@ -1321,8 +1323,8 @@ class invoiceList {
         this.editInvoiceBtn.addEventListener("click", this.editInvoice);
         // this.settledBtn = document.querySelector("#settledBtn");
         // this.settledBtn.addEventListener("click", this.settledStatus);
-        // this.declinedBtn = document.querySelector("#declinedBtn");
-        // this.declinedBtn.addEventListener("click", this.declinedStatus);
+        this.declinedBtn = document.querySelector("#declinedBtn");
+        this.declinedBtn.addEventListener("click", this.declinedStatus);
         this.frozenBtn = document.querySelector("#frozenBtn");
         this.frozenBtn.addEventListener("click", this.frozenStatus);
         this.uploadBtn = document.querySelector("#uploadBtn");

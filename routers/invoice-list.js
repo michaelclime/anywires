@@ -922,11 +922,11 @@ router.post("/availableStatus", jsonParser, (req, res) => {
 // @route POST /declinedStatus
 // @desc Change all data to Declined
 router.post("/declinedStatus", jsonParser, (req, res) => {
-    const invNumber = req.body.data.invNumber;
-    const amountDeclined = req.body.data.amountDeclined;
-    const currency = req.body.data.currency;
-    const createdBy = req.body.data.createdBy;
-    const invStatus = req.body.data.invStatus;
+    const invNumber = req.body.invNumber;
+    const amountDeclined = req.body.amountDeclined;
+    const currency = req.body.currency;
+    const createdBy = req.body.createdBy;
+    const oldInvStatus = req.body.oldInvStatus;
 
     // Request for chnaging Invoice to Declined
     Invoice.findOneAndUpdate({"number": invNumber}, {
@@ -945,15 +945,11 @@ router.post("/declinedStatus", jsonParser, (req, res) => {
         if(err) return console.log("Error with changing Invoice to Declined!");
 
         // Checking Invoice Status to know wich balance from Bank we need to remove
+        var invCurrency = `balance_${inv.currency.toUpperCase()}`;
+        var invAmount = `balance_${oldInvStatus.toLowerCase()}`;
+        var result = `${invCurrency}.${invAmount}`;
         var obj = {};
-        if (invStatus === "Requested"){
-            obj = {"balance_EUR.balance_requested": -inv.amount.amount_requested};
-            inv.currency === "USD" ? obj = {"balance_USD.balance_requested": -inv.amount.amount_requested} : "";
-
-        } else if(invStatus === "Sent"){
-            obj = {"balance_EUR.balance_sent": -inv.amount.amount_sent};
-            inv.currency === "USD" ? obj = {"balance_USD.balance_sent": -inv.amount.amount_sent} : "";
-        }
+        obj[result] = -amountDeclined;
 
         // Request for chnaging Bank Balance 
         Bank.updateOne({"name": inv.bank}, {$inc: obj}, 
