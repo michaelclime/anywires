@@ -7,7 +7,6 @@ class MerchantList {
         this.buttonSearch = document.getElementById("search-button");
         this.containerPages = document.querySelector(".nextPage-block");
         this.loadingGif = document.querySelector("#loadingGif");
-        this.modalAdd_merchant = document.querySelector("#modalCreate-btn");
         this.render();
     }
 
@@ -20,159 +19,13 @@ class MerchantList {
         return checkEmpty;
     }
 
-    initCreate_Merchant = () => {
+
+    createMerchant = () => {
         // Loading GIF ON
         this.loadingGif.style.display = "flex";
         document.body.classList.add("modal-open");
 
-        this.data = document.querySelectorAll(".allData");
-        this.b2bCheckBox = document.querySelector("#b2b");
-        this.feesData = document.querySelectorAll(".feesData");
-        this.b2bCheckBox.checked ? this.valueB2B = true : this.valueB2B = false;
-        var createdBy = document.querySelector(".currentUser").textContent.trim();
-        this.newMerchant = {
-            "name": this.data[0].value,
-            "b2b" : this.valueB2B,
-            "fees" : {
-                "setup_units" : Number(this.feesData[0].value),
-                "wire_recall_units" : Number(this.feesData[1].value),
-                "settlement_units" : Number(this.feesData[2].value),
-                "monthly_units" : Number(this.feesData[3].value),
-                "incoming_transfer_units " : Number(this.feesData[4].value),
-                "incoming_transfer_percent" : (this.feesData[5].value)/100,
-                "settlement_percent" : (this.feesData[6].value)/100,
-                "settlement_return" : (this.feesData[7].value)/100,
-                "refund_units" : Number(this.feesData[8].value),
-                "refund_percent" : (this.feesData[9].value)/100
-            },
-            "specifications" : {
-                "background" : this.data[5].value,
-                "first_color" : this.data[6].value,
-                "second_color" : this.data[7].value,
-                "logo" : "",
-                "tagline" : this.data[4].value
-            },
-            "support_email":this.data[3].value,
-            "promo_code": this.data[1].value,
-            "users" : {
-               "affiliate": this.data[2].value,
-               "merchant_manager" : "",
-               "invoice_manager" : "",
-               "solution_manager" : ""
-            },
-            "wallets" : [],
-            "available_banks" : [],
-            "created_by": createdBy
-        };
-
-        var checkEmpty = '';
-
-        // if B2B is True
-        this.dataIfB2B = document.querySelectorAll(".dataIfB2B");
-        this.requiredFields = document.querySelectorAll(".requiredField");
-        if(this.B2B.checked) {
-            this.newObj = {
-                "specifications_b2b": {
-                    "beneficiary_name": this.dataIfB2B[0].value,
-                    "beneficiary_address" : this.dataIfB2B[1].value,
-                    "bank_name" : this.dataIfB2B[2].value,
-                    "bank_address" : this.dataIfB2B[3].value,
-                    "iban" : this.dataIfB2B[4].value,
-                    "swift" :  this.dataIfB2B[5].value
-                }
-            };
-            Object.assign(this.newMerchant, this.newObj);
-            checkEmpty = this.checkEmpty(this.requiredFields); 
-            var checkEmptySecond = this.checkEmpty(this.dataIfB2B);
-            checkEmptySecond === false && checkEmpty === false ? checkEmpty = false : checkEmpty = true;
-        } else if(!this.B2B.checked){
-            this.newObj = {
-                "specifications_b2b": {
-                    "beneficiary_name": "",
-                    "beneficiary_address" : "",
-                    "bank_name" : "",
-                    "bank_address" : "",
-                    "iban" : "",
-                    "swift" :  ""
-                }
-            };
-            Object.assign(this.newMerchant, this.newObj);
-            checkEmpty = this.checkEmpty(this.requiredFields); 
-        }
-
-        if (checkEmpty === true) {
-            alert("Please fill put all required fields!");
-        } else {
-            fetch("http://18.216.223.81:3000/postMerchant", {
-            // fetch("http://18.216.223.81:3000/postMerchant", {
-                method: "POST",
-                body: JSON.stringify(this.newMerchant),
-                headers:{'Content-Type': 'application/json'}
-                })
-                .then(res => {
-                    res.text();
-                }) 
-                .then(async () => {
-                    this.container = document.getElementById("table-list");
-                    this.container.innerHTML = "";
-                    this.ArrayLIst = [];
-                    this.containerPages.innerHTML = "";
-
-                    await this.saveLocalBanks();
-                })
-                .catch(err => {
-                    console.log(err);
-                });
-
-        this.dataIfB2B.forEach((item) => item.value = "");
-        this.data.forEach((item) => item.value = "");
-        this.block = document.querySelector(".if_B2B_true-block");
-        this.block.style.display = "none"; 
-        this.filterFees.style.display = "none";
-        this.B2B.checked = false;
-        }
-    }
-
-    nextArea = () => {
-        this.filter.style.display = "none";
-        this.filterFees = document.querySelector(".filterFess");
-        this.filterFees.style.display = "flex";
-
-        this.filterFees.addEventListener("click", (event) => {
-            event.target === this.filterFees ? this.filterFees.style.display = "none" : "";
-        });
-
-        this.btn_Back = document.querySelector("#modalBack");
-        this.btn_Back.addEventListener("click", () => {
-            this.filterFees.style.display = "none";
-            this.createMerchant();
-        });
-
-        
-        
-    }
-
-    createMerchant = () => {
-        this.filter = document.querySelector(".filter");
-        this.filter.style.display = "flex";
-
-        this.filter.addEventListener("click", (event) => {
-            event.target === this.filter ? this.filter.style.display = "none" : "";
-        });
-
-        // If B2B true
-        this.B2B = document.querySelector("#b2b");
-        this.B2B.addEventListener("click", () => {
-            this.block = document.querySelector(".if_B2B_true-block");
-            if (this.B2B.checked) {
-                this.block.style.display = "flex";
-            } else if (!this.B2B.checked) {
-                this.block.style.display = "none"; 
-            } 
-        });
-        // If B2B true
-        this.nextAreaFees_btn = document.querySelector("#nextModal");
-        this.nextAreaFees_btn.addEventListener("click", this.nextArea);
+        document.location.href = "http://18.216.223.81:3000/create-merchant";
     }
 
     saveXls = () => {
@@ -322,7 +175,6 @@ class MerchantList {
 
     getMerchants = async (number, filter) => {
         return  await fetch("http://18.216.223.81:3000/getPart-Merchants", {
-        // return  await fetch("http://18.216.223.81:3000/getPart-Merchants", {
             method: "POST",
             body: JSON.stringify({
                 number, 
@@ -340,7 +192,6 @@ class MerchantList {
 
     getNumber_Merchants = async (filter) => {
         return  await fetch("http://18.216.223.81:3000/getNumber-Merchants", {
-        // return  await fetch("http://18.216.223.81:3000/getNumber-Merchants", {
             method: "POST",
             body: JSON.stringify({
                 filter
@@ -387,7 +238,6 @@ class MerchantList {
         this.buttonSearch.addEventListener("click", this.searchFunction);
         this.btnExel.addEventListener("click", this.saveXls);
         this.buttonCreate_merchant.addEventListener("click", this.createMerchant);
-        this.modalAdd_merchant.addEventListener("click", this.initCreate_Merchant);
     }
 };
 

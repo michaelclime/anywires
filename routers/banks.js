@@ -60,6 +60,7 @@ router.post("/getNumber-Banks", jsonParser, (req, res) => {
 
 router.post("/createBank", jsonParser, (req, res) => {
     const newBank = req.body.newBank;
+    newBank["creation_date"] = new Date();
     mongo.connect(url, (err, db) => {
         db.collection("banks").insertOne(newBank, function(err, result) {
             if(err) return console.log("Bad POST Banks request!", err);

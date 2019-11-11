@@ -927,6 +927,7 @@ router.post("/declinedStatus", jsonParser, (req, res) => {
     const currency = req.body.currency;
     const createdBy = req.body.createdBy;
     const oldInvStatus = req.body.oldInvStatus;
+    
 
     // Request for chnaging Invoice to Declined
     Invoice.findOneAndUpdate({"number": invNumber}, {
