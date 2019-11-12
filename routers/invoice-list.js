@@ -8,7 +8,8 @@ const express = require('express'),
     Invoice = require("../modules/invoice"),
     Bank = require("../modules/bank"),
     Merchant = require("../modules/merchant"),
-    Commission = require("../modules/commission");
+    Commission = require("../modules/commission"),
+    ejs =  require('ejs');
  
 const url = 'mongodb://18.216.223.81:27017/anywires';
 
@@ -20,18 +21,30 @@ router.get('/invoice-report.html', isLoggedIn, function(req, res) {
     res.render("invoice-report.html");
 });
 
-router.get("/invoice-preview", isLoggedIn, function (req, res) {
+router.get("/invoice-preview", function (req, res) {
     res.render("invoice-preview.html");
 });
 
-router.get("/invoiceContract", isLoggedIn, function (req, res) {
+router.get("/invoiceContract", function (req, res) {
     res.render("invoiceContract.html");
 });
-router.get("/invoiceDecOfPay", isLoggedIn, function (req, res) {
-    res.render("invoiceDecOfPay.html");
+router.get("/invoiceDecOfPay", async function (req, res) {
+    const invoiceNumber = Object.keys(req.query)[0];
+    const invoice = await Invoice.find({number: invoiceNumber});
+    const bank = await Bank.find({name: invoice[0].bank});
+    
+    const bankLogo = bank[0].company_logo;
+    const invClientCountry = invoice[0].client_details.country;
+    const invClientID = invoice[0].client_details.id_number;
+    const invBankBenefName = bank[0].beneficiary_name;
+    const invoiceDate = invoice[0].dates.creation_date;
+    const invAmount = invoice[0].amount.amount_sent;
+    const invoiceCurrency = invoice[0].currency;
+
+    res.render("invoiceDecOfPay.html", {bankLogo, invClientCountry, invClientID, invBankBenefName, invoiceDate, invAmount, invoiceCurrency});
 });
 
-router.get("/invoicePreviewBankVersion", isLoggedIn, function (req, res) {
+router.get("/invoicePreviewBankVersion", function (req, res) {
     res.render("invoicePreviewBankVersion.html");
 });
 

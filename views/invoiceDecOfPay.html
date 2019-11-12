@@ -15,21 +15,21 @@
     <div id="HTMLtoPDF">
         <div class="content">
             <div class="bank-logo-block">
-                <img class="bank-logo" src="" alt="bank-logo">
+                <img class="bank-logo" src="<%= bankLogo %>" alt="bank-logo">
             </div>
             <h1>Declaration of Payment</h1>
             <div class="declarationText">
-                <p>I, ________________________, holder of <span class="invClientCountry"></span> 
-                    Passport Number <span class="invClientID">______________</span>  hereby declare that:
+                <p>I, ________________________, holder of <span class="invClientCountry"><%= invClientCountry %></span> 
+                    Passport Number <span class="invClientID"><% if (invClientID) {%> <%= invClientID%> <% } else {%> ______________ <% } %></span>  hereby declare that:
                 </p>
                 <p>
                     ✓ The transactions appearing on the table below were made and authorised by me, and to be cleared on my behalf.
                 </p>
                 <p>
-                    ✓ I also assume personal liability for any claim, loss and/or damage of whatsoever nature that <span class="invBankBenefName"></span> may suffer as a result of accepting the aforesaid payment from me.
+                    ✓ I also assume personal liability for any claim, loss and/or damage of whatsoever nature that <span class="invBankBenefName"><%= invBankBenefName %></span> may suffer as a result of accepting the aforesaid payment from me.
                 </p>
                 <p>
-                    ✓ I hereby declare that the amount I will pay to the <span class="invBankBenefName"></span> is through legitimate
+                    ✓ I hereby declare that the amount I will pay to the <span class="invBankBenefName"><%= invBankBenefName %></span> is through legitimate
                     sources only and does not involve and is not designed for the purpose of any contravention or
                     evasion of Anti Money Laundering Policy, worldwide regulatory bodies and banks that are involved.
                 </p>
@@ -38,7 +38,7 @@
                     Declaration of Payment, and that would be my responsibility to provide.        
                 </p>
                 <p>
-                    ✓ I declare that under no circumstances shall <span class="invBankBenefName"></span> be liable to customer or any other person or entity for any punitive, special, incidental or consequential damages, whether based upon lost goodwill, lost resale profits, work stoppage, service failure, impairment of other services or otherwise and whether in a contract, tort or other action for or arising out of breach of warranty, breach of contract, delay, negligence, strict liability, or otherwise.
+                    ✓ I declare that under no circumstances shall <span class="invBankBenefName"><%= invBankBenefName %></span> be liable to customer or any other person or entity for any punitive, special, incidental or consequential damages, whether based upon lost goodwill, lost resale profits, work stoppage, service failure, impairment of other services or otherwise and whether in a contract, tort or other action for or arising out of breach of warranty, breach of contract, delay, negligence, strict liability, or otherwise.
                 </p>
                 <p>
                     ✓ I acknowledge that after the completion of this payment, it cannot be refunded. 
@@ -65,11 +65,11 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td><span class="invoiceDate"></span></td>
-                            <td><span class="invBankBenefName"></span></td>
-                            <td><span class="invAmount"></span></td>
-                            <td><span class="invoiceCurrency"></span></td>
-                            <td> ___________________<span class="arrow"><i class="fas fa-check"></i></span></td>
+                            <td><span class="invoiceDate"><%= invoiceDate.getDate() + '/' + ( invoiceDate.getMonth()+ 1) + '/' +  invoiceDate.getFullYear(); %></span></td>
+                            <td><span class="invBankBenefName"><%= invBankBenefName %></span></td>
+                            <td><span class="invAmount"><%= invAmount %></span></td>
+                            <td><span class="invoiceCurrency"><%= invoiceCurrency %></span></td>
+                            <td> <span>___________________</span><span class="arrow"><i class="fas fa-check"></i></span></td>
                         </tr>
                     </tbody>
                 </table>
