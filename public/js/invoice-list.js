@@ -29,6 +29,7 @@ class invoiceList {
         this.loadingGif = document.querySelector("#loadingGif");
         this.filterReceive = document.querySelector(".receive_Filter");
         this.filterApproved = document.querySelector(".approved_Filter");
+        this.filterRecall = document.querySelector(".recall_filter");
         this.render();
     }
 
@@ -49,28 +50,27 @@ class invoiceList {
     reCallStatus = async () => {
         var checkStatus = ["Received", "Approved", "Available"].some((item) => item === this.currentInvoice[0].status);
         if (checkStatus) {
-            // Loading GIF On
-            this.loadingGif.style.display = "flex";
+            // // Loading GIF On
+            // this.loadingGif.style.display = "flex";
 
             var createdBy = this.currentUser.textContent.trim();
             var currentAmount = `amount_${this.currentInvoice[0].status.toLowerCase()}`;
+            var amountReceived = this.currentInvoice[0].amount.amount_received;
 
-            // If Invoice currency USD
-            var USD = "";
-            if (this.currentInvoice[0].currency === "USD"){
-                var currencyInv = await this.getEURexchange("EUR", "USD");
-                USD = currencyInv.rates.USD;
-            }
+            var fineRecallPer = (+(document.querySelector("#finePercent").value)*amountReceived)/100;
+            var fineRecallFlat = +(document.querySelector("#fineFlat").value);
+            var fineRecallAdd = +(document.querySelector("#fineAdd").value);
+            var totalComm = Math.round(fineRecallPer + fineRecallFlat + fineRecallAdd);
 
             // Recall request
             var data = {
                 "invNumber": this.currentInvoice[0].number,
                 "createdBy": createdBy,
                 "currencySymbol": this.currency,
-                "amountReceived": this.currentInvoice[0].amount.amount_received,
+                "amountReceived": amountReceived,
                 "amountRecall": this.currentInvoice[0].amount[currentAmount],
                 "beforeRecallStatus": this.currentInvoice[0].status,
-                "USD": USD
+                "totalComm": totalComm
             };
 
             await this.reCallStatusRequest(data);
@@ -94,12 +94,47 @@ class invoiceList {
              document.querySelector(".currentStatus").innerHTML = `Recall`;
              document.querySelector(".currentStatus").style.color = `#560795`;
              
+             this.filterRecall.style.display = "none";
+
              // Loading GIF Off
             this.loadingGif.style.display = "none";
 
         } else {
             this.alertWindow(`Your current status ${this.currentInvoice[0].status} does't allow this!`);
         }
+    }
+
+    reCallStatusInit = async () => {
+        // Loading GIF On
+        this.loadingGif.style.display = "flex";
+
+        this.filterRecall.style.display = "flex";
+        this.filterRecall.addEventListener("click", (event) => {
+            event.target === this.filterRecall ? this.filterRecall.style.display = "none" : "";
+        });
+
+        // Get Current Merchant
+        this.currentMerhcant = await this.getCurrentMerchant(0, {"name": this.currentInvoice[0].merchant});
+        
+        var fineFlat = this.currentMerhcant[0].fees.fine_recall.flat;
+        var fineAdd = this.currentMerhcant[0].fees.fine_recall.additional;
+
+        var USD = "";
+        if (this.currentInvoice[0].currency === "USD"){
+            var currencyInv = await this.getEURexchange("EUR", "USD");
+            fineFlat *= currencyInv.rates.USD;
+            fineAdd *= currencyInv.rates.USD;
+        }
+
+        document.querySelector("#finePercent").value = this.currentMerhcant[0].fees.fine_recall.percent;
+        document.querySelector("#fineFlat").value = Math.round(fineFlat);
+        document.querySelector("#fineAdd").value = Math.round(fineAdd);
+
+        // Event for button Recall inside pop up
+        document.querySelector("#recallSubmit_btn").addEventListener("click", this.reCallStatus);
+
+        // Loading GIF off
+        this.loadingGif.style.display = "none";
     }
 
     unfrozenStatusRequest = async (data) => {
@@ -792,7 +827,6 @@ class invoiceList {
 
             // Open Modal Sent
             this.sentFilter.style.display = "flex";
-            this.sentFilter.style.display = "flex";
             this.sentFilter.addEventListener("click", (event) => {
                 event.target === this.sentFilter ? this.sentFilter.style.display = "none" : "";
             });
@@ -1176,7 +1210,7 @@ class invoiceList {
     }
 
     postEditedInvoice = async (number, newInvoice, comment, createdBy, currecyChanged, chnagedAmountReq, amountReqOld, chnagedAmountSent, amountSentOld, changedBank, oldBank) => {
-    return  await fetch("http://18.216.223.81:3000/postEditedInvoice", {
+        return  await fetch("http://18.216.223.81:3000/postEditedInvoice", {
             method: "POST",
             body: JSON.stringify({
                 number,
@@ -1320,7 +1354,7 @@ class invoiceList {
         document.querySelector("#uploadBtn").addEventListener("click", this.initialUpload);
         document.querySelector("#addCommentBtn").addEventListener("click", this.addCommentForBtn);
         document.querySelector("#uploadDocs").addEventListener("input", this.changeFileClickTo);
-        document.querySelector("#recallBtn").addEventListener("click", this.reCallStatus);
+        document.querySelector("#recallBtn").addEventListener("click", this.reCallStatusInit);
 
         // If Frozen status need to change button
         if (this.currentInvoice[0].status === "Frozen") {
