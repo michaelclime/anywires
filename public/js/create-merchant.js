@@ -62,108 +62,66 @@ class CreateMerchant{
             var editedMerch = {
                 "name": document.querySelector("#merchName").value,
                 "b2b": b2b,
-                "fees": {
-                    "in_c2b":{
-                        "percent": +(document.querySelector("#in_c2b_per").value),
-                        "flat": +(document.querySelector("#in_c2b_flat").value),
-                        "additional": 0
-                    },
-                    "in_b2b":{
-                        "percent": +(document.querySelector("#in_b2b_per").value),
-                        "flat": +(document.querySelector("#in_b2b_flat").value),
-                        "additional": 0
-                    },
-                    "settlement_btc":{
-                        "percent": +(document.querySelector("#settBTC_per").value),
-                        "flat": +(document.querySelector("#settBTC_flat").value),
-                        "additional": 0
-                    },
-                    "settlement_atm":{
-                        "percent": +(document.querySelector("#settATM_per").value),
-                        "flat": +(document.querySelector("#settATM_flat").value),
-                        "additional": 0
-                    },
-                    "settlement_c2b_wire":{
-                        "percent": +(document.querySelector("#settC2Bwire_per").value),
-                        "flat": +(document.querySelector("#settC2Bwire_flat").value),
-                        "additional": 0
-                    },
-                    "settlement_b2b_wire":{
-                        "percent": +(document.querySelector("#settB2Bwire_per").value),
-                        "flat": +(document.querySelector("#settB2Bwire_flat").value),
-                        "additional": 0
-                    },
-                    "settlement_recall":{
-                        "percent": +(document.querySelector("#settRecall_per").value),
-                        "flat": +(document.querySelector("#settRecall_flat").value),
-                        "additional": 0
-                    },
-                    "fee_account_additional":{
-                        "percent": +(document.querySelector("#feeAccAdd_per").value),
-                        "flat": +(document.querySelector("#feeAccAdd_flat").value),
-                        "additional": 0
-                    },
-                    "fee_account_dedicated":{
-                        "percent": +(document.querySelector("#feeAccDed_per").value),
-                        "flat": +(document.querySelector("#feeAccDed_flat").value),
-                        "additional": 0
-                    },
-                    "fee_account_mounthly":{
-                        "percent": +(document.querySelector("#feeAccMonthly_per").value),
-                        "flat": +(document.querySelector("#feeAccMonthly_flat").value),
-                        "additional": 0
-                    },
-                    "fee_account_setup":{
-                        "percent": +(document.querySelector("#feeAccSetup_per").value),
-                        "flat": +(document.querySelector("#feeAccSetup_flat").value),
-                        "additional": 0
-                    },
-                    "fine_attitude_incorrect_payment_purpose":{
-                        "percent": +(document.querySelector("#fineAttIncPp_per").value),
-                        "flat": +(document.querySelector("#fineAttIncPp_flat").value),
-                        "additional": 0
-                    },
-                    "fine_attitude_more_then_1percent_recalls":{
-                        "percent": +(document.querySelector("#fineAttMoreThen1perRecalls_per").value),
-                        "flat": +(document.querySelector("#fineAttMoreThen1perRecalls_flat").value),
-                        "additional": 0
-                    },
-                    "fine_attitude_more_then_1_payment":{
-                        "percent": +(document.querySelector("#fineAttMoreThen1Pay_per").value),
-                        "flat": +(document.querySelector("#fineAttMoreThen1Pay_flat").value),
-                        "additional": 0
-                    },
-                    "fine_attitude_payment_from_blocked":{
-                        "percent": +(document.querySelector("#fineAttPayFromBlo_per").value),
-                        "flat": +(document.querySelector("#fineAttPayFromBlo_flat").value),
-                        "additional": 0
-                    },
-                    "fine_attitude_payment_without_invoice":{
-                        "percent": +(document.querySelector("#fineAttPayWithInv_per").value),
-                        "flat": +(document.querySelector("#fineAttPayWithInv_flat").value),
-                        "additional": 0
-                    },
-                    "fine_attitude_wrong_amount":{
-                        "percent": +(document.querySelector("#fineAttWrongAm_per").value),
-                        "flat": +(document.querySelector("#fineAttWrongAm_flat").value),
-                        "additional": 0
-                    },
-                    "fine_recall":{
-                        "percent": +(document.querySelector("#fineRecall_per").value),
-                        "flat": +(document.querySelector("#fineRecall_flat").value),
-                        "additional": 0
-                    },
-                    "settlement_b2c":{
-                        "percent": +(document.querySelector("#settB2C_per").value),
-                        "flat": +(document.querySelector("#settB2C_flat").value),
-                        "additional": 0
-                    },
-                    "settlement_refund":{
-                        "percent": +(document.querySelector("#settRefund_per").value),
-                        "flat": +(document.querySelector("#settRefund_flat").value),
-                        "additional": 0
-                    }
-                },
+                "fees.in_c2b.percent": +(document.querySelector("#in_c2b_per").value),
+                "fees.in_c2b.flat": +(document.querySelector("#in_c2b_flat").value),
+
+                "fees.in_b2b.percent": +(document.querySelector("#in_b2b_per").value),
+                "fees.in_b2b.flat": +(document.querySelector("#in_b2b_flat").value),
+
+                "fees.settlement_btc.percent": +(document.querySelector("#settBTC_per").value),
+                "fees.settlement_btc.flat": +(document.querySelector("#settBTC_flat").value),
+
+                "fees.settlement_atm.percent": +(document.querySelector("#settATM_per").value),
+                "fees.settlement_atm.flat": +(document.querySelector("#settATM_flat").value),
+
+                "fees.settlement_c2b_wire.percent": +(document.querySelector("#settC2Bwire_per").value),
+                "fees.settlement_c2b_wire.flat": +(document.querySelector("#settC2Bwire_flat").value),
+
+                "fees.settlement_b2b_wire.percent": +(document.querySelector("#settB2Bwire_per").value),
+                "fees.settlement_b2b_wire.flat": +(document.querySelector("#settB2Bwire_flat").value),
+
+                "fees.settlement_recall.percent": +(document.querySelector("#settRecall_per").value),
+                "fees.settlement_recall.flat": +(document.querySelector("#settRecall_flat").value),
+
+                "fees.fee_account_additional.percent": +(document.querySelector("#feeAccAdd_per").value),
+                "fees.fee_account_additional.flat": +(document.querySelector("#feeAccAdd_flat").value),
+
+                "fees.fee_account_dedicated.percent": +(document.querySelector("#feeAccDed_per").value),
+                "fees.fee_account_dedicated.flat": +(document.querySelector("#feeAccDed_flat").value),
+
+                "fees.fee_account_mounthly.percent": +(document.querySelector("#feeAccMonthly_per").value),
+                "fees.fee_account_mounthly.flat": +(document.querySelector("#feeAccMonthly_flat").value),
+
+                "fees.fee_account_setup.percent": +(document.querySelector("#feeAccSetup_per").value),
+                "fees.fee_account_setup.flat": +(document.querySelector("#feeAccSetup_flat").value),
+
+                "fees.fine_attitude_incorrect_payment_purpose.percent": +(document.querySelector("#fineAttIncPp_per").value),
+                "fees.fine_attitude_incorrect_payment_purpose.flat": +(document.querySelector("#fineAttIncPp_flat").value),
+
+                "fees.fine_attitude_more_then_1percent_recalls.percent": +(document.querySelector("#fineAttMoreThen1perRecalls_per").value),
+                "fees.fine_attitude_more_then_1percent_recalls.flat": +(document.querySelector("#fineAttMoreThen1perRecalls_flat").value),
+
+                "fees.fine_attitude_more_then_1_payment.percent": +(document.querySelector("#fineAttMoreThen1Pay_per").value),
+                "fees.fine_attitude_more_then_1_payment.flat": +(document.querySelector("#fineAttMoreThen1Pay_flat").value),
+
+                "fees.fine_attitude_payment_from_blocked.percent": +(document.querySelector("#fineAttPayFromBlo_per").value),
+                "fees.fine_attitude_payment_from_blocked.flat": +(document.querySelector("#fineAttPayFromBlo_flat").value),
+
+                "fees.fine_attitude_payment_without_invoice.percent": +(document.querySelector("#fineAttPayWithInv_per").value),
+                "fees.fine_attitude_payment_without_invoice.flat": +(document.querySelector("#fineAttPayWithInv_flat").value),
+
+                "fees.fine_attitude_wrong_amount.percent": +(document.querySelector("#fineAttWrongAm_per").value),
+                "fees.fine_attitude_wrong_amount.flat": +(document.querySelector("#fineAttWrongAm_flat").value),
+
+                "fees.fine_recall.percent": +(document.querySelector("#fineRecall_per").value),
+                "fees.fine_recall.flat": +(document.querySelector("#fineRecall_flat").value),
+
+                "fees.settlement_b2c.percent": +(document.querySelector("#settB2C_per").value),
+                "fees.settlement_b2c.flat": +(document.querySelector("#settB2C_flat").value),
+
+                "fees.settlement_refund.percent": +(document.querySelector("#settRefund_per").value),
+                "fees.settlement_refund.flat": +(document.querySelector("#settRefund_flat").value),
+
                 "specifications": {
                     "background": document.querySelector("#backColor").value,
                     "first_color": document.querySelector("#firstColor").value,
