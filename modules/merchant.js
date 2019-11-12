@@ -107,14 +107,29 @@ let MerchantSchema = new mongoose.Schema({
         }
     },
     specifications: {
-        background: String
+        background: String,
+        first_color: String,
+        second_color: String,
+        logo: String,
+        tagline: String
     },
     support_email: String,
     promo_code: String,
-    users: Object,
+    users: {
+        merchant_manager: Array,
+        invoice_manager: Array,
+        affiliate: String
+    },
     wallets: Array,
     available_banks: Array,
-    specifications_b2b: Object,
+    specifications_b2b: {
+        beneficiary_name: String,
+        beneficiary_address: String,
+        bank_name: String,
+        bank_address: String,
+        iban: String,
+        swift: String
+    },
     creating_date: Date,
     created_by: Object,
     inside_wallets: Array,

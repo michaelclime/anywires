@@ -16,7 +16,7 @@ table thead tr {
   background: #20a5f7;
 }
 table tbody tr {
-  height: 50px;
+  height: 70px;
 }
 table tbody tr:last-child {
   border: 0;
@@ -51,47 +51,24 @@ tbody tr {
   color: #808080;
   line-height: 1.2;
   font-weight: unset;
+  cursor: pointer;
 }
 
-/* tbody tr:hover {
-  color: #ffffff;
-  background-color: rgb(91, 192, 255);
-  cursor: pointer;
-} */
+tbody tr:hover {
+  background-color: rgb(197, 247, 241);
+}
 
 .column1 {
-  width: 200px;
   padding-left: 40px;
 }
 
-.column2 {
-  width: 250px;
+.col_wrapper {
+  display: flex;
+  flex-direction: column;
 }
 
-.column3 {
-  width: 80px;
-  padding-left: 40px;
-}
-
-.column4 {
-  width: 160px;
-  padding-left: 40px;
-  text-align: left;
-}
-
-.column5 {
-  width: 212px;
-  text-align: left;
-  padding-left: 40px;
-}
-
-.column6{
-  text-align: left;
-  width: 215px;
-}
-
-.column7 {
-  width: 200px;
+.col_item {
+  margin-bottom: 10px;
 }
 
 

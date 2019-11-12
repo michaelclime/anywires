@@ -243,19 +243,8 @@
         background-color: rgb(102, 102, 102);
     }
     
-    .buttonView {
-        width: 100px;
-        height: 45px;
-        background-color: #12C7B2;
-        margin-right: 5px;
-    }
-    
-    .buttonView:active {
-        background-color: #20a5f7;
-    }
-    
     .buttonAddSettle {
-        width: 100px;
+        width: 80px;
         height: 45px;
     }
     

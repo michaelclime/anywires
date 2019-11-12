@@ -1,6 +1,7 @@
 const express = require('express'),
     router = new express.Router(),
     mongo = require('mongodb'),
+    Merchant = require("../modules/merchant");
     jsonParser = express.json();
  
 const url = 'mongodb://18.216.223.81:27017/anywires';
@@ -67,6 +68,17 @@ router.post("/createMerchant", jsonParser, (req, res) => {
             if(err) return console.log("Error with creating new Merchant!", err);
             res.send("Merchant has been created successfully!");
         });
+    });
+});
+
+// @route POST /editMerchant
+// @desc Edited one Merchant
+router.post("/editMerchant", jsonParser, (req, res) => {
+    const mechantName = req.body.mechantName;
+    const newData = req.body.newData;
+    Merchant.updateOne({"name": mechantName}, {$set: newData}, {returnOriginal: false}, (err, bank) => {
+        if(err) return console.log("Error witch changing Merchant Data!", err);  
+        res.send("Merchant has been changed successfully!")
     });
 });
 

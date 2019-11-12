@@ -10,6 +10,25 @@ class MerchantList {
         this.render();
     }
 
+    editMerchant = async () => {
+        var allTd = document.querySelectorAll(".edit");
+        allTd.forEach((td) => {
+            td.addEventListener("click", () => {
+                var merchantName = td.parentElement.children[0].textContent;
+                document.location.href = "http://18.216.223.81:3000/create-merchant?&" + merchantName;
+            });
+        });
+    }
+
+
+    createMerchant = () => {
+        // Loading GIF ON
+        this.loadingGif.style.display = "flex";
+        document.body.classList.add("modal-open");
+        document.location.href = "http://18.216.223.81:3000/create-merchant";
+    }
+
+
     checkEmpty = (data) => {
         var s = [];
         data.forEach((item) => {
@@ -19,14 +38,6 @@ class MerchantList {
         return checkEmpty;
     }
 
-
-    createMerchant = () => {
-        // Loading GIF ON
-        this.loadingGif.style.display = "flex";
-        document.body.classList.add("modal-open");
-
-        document.location.href = "http://18.216.223.81:3000/create-merchant";
-    }
 
     saveXls = () => {
         // For hide not useless element XLS
@@ -209,18 +220,39 @@ class MerchantList {
     loadMerchants(arr){
         this.container = document.getElementById("table-list");
         arr.forEach((item) => {
-            item === "" ? item = "—" : "";
+            var incTra = item.fees.in_c2b.percent;
+            item.b2b === true ? incTra = item.fees.in_b2b.percent : "";
             this.userList = document.createElement("tr");
             this.userList.innerHTML =  `
-                    <td class="column1">${item.name}</td> 
-                    <td class="column2">${item.created_by}</td> 
-                    <td class="column3">${item.promo_code}</td> 
-                    <td class="column4">${item.users.affiliate}</td> 
-                    <td class="column5">${(item.fees.incoming_transfer_percent)*100}</td>
-                    <td class="column6">${""}</td>
-                    <td class="column7"> 
+                    <td class="column1 edit">${item.name}</td> 
+                    <td class="column2 edit">${item.created_by}</td> 
+                    <td class="column3 edit">${item.promo_code}</td> 
+                    <td class="column4 edit">${item.users.affiliate}</td> 
+                    <td class="column5 edit">${incTra}</td>
+
+                    <td class="column6 edit">
+                        <div class="col_wrapper">
+                            <div class="col_item">€${item.balance_EUR.balance_received}</div>
+                            <div>$${item.balance_USD.balance_received}</div>
+                        </div>
+                    </td>
+
+                    <td class="column7 edit">
+                        <div class="col_wrapper">
+                            <div class="col_item">€${item.balance_EUR.balance_approved}</div>
+                            <div>$${item.balance_USD.balance_approved}</div>
+                        </div>
+                    </td>
+
+                    <td class="column8 edit">
+                        <div class="col_wrapper">
+                            <div class="col_item">€${item.balance_EUR.balance_available}</div>
+                            <div>$${item.balance_USD.balance_available}</div>
+                        </div>
+                    </td>
+
+                    <td class="column9"> 
                         <div id="merchantButtons">
-                            <button class="buttonView">View</button> 
                             <button class="buttonAddSettle">Add Settle</button>
                         </div>
                     </td>
@@ -231,6 +263,7 @@ class MerchantList {
         // Loading GIF OFF after rendering all table
         this.loadingGif.style.display = "none";
         document.body.classList.remove("modal-open");
+        this.editMerchant();
     }
 
     render(){
