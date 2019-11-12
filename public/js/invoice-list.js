@@ -1309,32 +1309,18 @@ class invoiceList {
 
     renderViewInvoice = async (obj) => {
         // Events Listeners for PopUp View Invoice
-        this.requestedBtn = document.querySelector("#requested");
-        this.requestedBtn.addEventListener("click", this.requestedStatus);
-        this.sentBtn = document.querySelector("#sent");
-        this.sentBtn.addEventListener("click", this.initialSentStatus);
-        this.receivedBtn = document.querySelector("#received");
-        this.receivedBtn.addEventListener("click", this.initialReceivedStatus);
-        this.approvedBtn = document.querySelector("#approved");
-        this.approvedBtn.addEventListener("click", this.approvedStatus);
-        this.availableBtn = document.querySelector("#available");
-        this.availableBtn.addEventListener("click", this.availableStatus);
-        this.editInvoiceBtn = document.querySelector("#editBtn");
-        this.editInvoiceBtn.addEventListener("click", this.editInvoice);
-        // this.settledBtn = document.querySelector("#settledBtn");
-        // this.settledBtn.addEventListener("click", this.settledStatus);
-        this.declinedBtn = document.querySelector("#declinedBtn");
-        this.declinedBtn.addEventListener("click", this.declinedStatus);
-        this.frozenBtn = document.querySelector("#frozenBtn");
-        this.frozenBtn.addEventListener("click", this.frozenStatus);
-        this.uploadBtn = document.querySelector("#uploadBtn");
-        this.uploadBtn.addEventListener("click", this.initialUpload);
-        this.addCommentBtn = document.querySelector("#addCommentBtn");
-        this.addCommentBtn.addEventListener("click", this.addCommentForBtn);
-        this.clickToDownload = document.querySelector("#uploadDocs");
-        this.clickToDownload.addEventListener("input", this.changeFileClickTo);
-        this.reCallBtn = document.querySelector("#recallBtn");
-        this.reCallBtn.addEventListener("click", this.reCallStatus);
+        document.querySelector("#requested").addEventListener("click", this.requestedStatus);
+        document.querySelector("#sent").addEventListener("click", this.initialSentStatus);
+        document.querySelector("#received").addEventListener("click", this.initialReceivedStatus);
+        document.querySelector("#approved").addEventListener("click", this.approvedStatus);
+        document.querySelector("#available").addEventListener("click", this.availableStatus);
+        document.querySelector("#editBtn").addEventListener("click", this.editInvoice);
+        // document.querySelector("#settledBtn").addEventListener("click", this.settledStatus);
+        document.querySelector("#declinedBtn").addEventListener("click", this.declinedStatus);
+        document.querySelector("#uploadBtn").addEventListener("click", this.initialUpload);
+        document.querySelector("#addCommentBtn").addEventListener("click", this.addCommentForBtn);
+        document.querySelector("#uploadDocs").addEventListener("input", this.changeFileClickTo);
+        document.querySelector("#recallBtn").addEventListener("click", this.reCallStatus);
 
         // If Frozen status need to change button
         if (this.currentInvoice[0].status === "Frozen") {
