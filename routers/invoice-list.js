@@ -1201,7 +1201,6 @@ router.post("/recallStatus", jsonParser, (req, res) => {
     const amountRecall = req.body.amountRecall;
     const amountReceived = req.body.amountReceived;
     const beforeRecallStatus = req.body.beforeRecallStatus; 
-    const USD = req.body.USD;
 
     // 1. Change Invoice to Recall
     Invoice.findOneAndUpdate({"number": invNumber}, {
@@ -1228,59 +1227,44 @@ router.post("/recallStatus", jsonParser, (req, res) => {
         var objMerch = {};
         objMerch[result] = -amountRecall;
 
+        var total = req.body.totalComm;
+        var merchAvailable = `${invCurrency}.balance_available`;
+        objMerch[merchAvailable] = -req.body.totalComm;
+
         // 3. Change Merchant balance to Recall
         Merchant.findOneAndUpdate({"name": inv.merchant}, {$inc: objMerch}, 
         {returnOriginal: false}, (err, merch) => {
             if(err) return console.log("Error with changing merchant balance to Recall!");
 
-            // 4. Write off the commission from Merchant
-            var percent = merch.fees.fine_recall.percent;
-                percent = (amountReceived * percent)/100;
-            var flat = merch.fees.fine_recall.flat;
-            var add = merch.fees.fine_recall.additional;
-            if (inv.currency === "USD") {
-                flat *= USD;
-                add *= USD;
-            }
-            var total = Math.round(percent + flat + add);
-            var commObj = {};
-            var merchAvailable = `${invCurrency}.balance_available`;
-            commObj[merchAvailable] = -total;
+            // 4. Change Bank balance to Recall "remove invoice cuurent amount"
+            var objBank = {};
+            var bankAmount = `${invCurrency}.balance_received`;
+            objBank[bankAmount] = -amountReceived;
+            
+            Bank.updateOne({"name": inv.bank}, {$inc: objBank}, 
+            {returnOriginal: false}, (err, bank) => {
+                if(err) return console.log("Error with changing bank balance to Recall!", err);
 
-            Merchant.updateOne({"name": inv.merchant}, {$inc: commObj}, 
-            {returnOriginal: false}, (err, merch) => {
-                if(err) return console.log("Error with write off commission from Merchant, Recall!");
+                // 5. Add new Commission to DB
+                var percentCommission = (100*total)/amountReceived;
+                var newComm = {
+                    "created_by": createdBy,
+                    "amount": total,
+                    "currency": inv.currency,
+                    "type": "Recall Commission",
+                    "percentage": percentCommission,
+                    "creation_date": new Date()
+                };
 
-                // 5. Change Bank balance to Recall "remove invoice cuurent amount"
-                var objBank = {};
-                var bankAmount = `${invCurrency}.balance_received`;
-                objBank[bankAmount] = -amountReceived;
-                
-                Bank.updateOne({"name": inv.bank}, {$inc: objBank}, 
-                {returnOriginal: false}, (err, bank) => {
-                    if(err) return console.log("Error with changing bank balance to Recall!", err);
+                Commission.create(newComm, (err, comm) => {
+                    if(err) return console.log(err, "Error with insert commission, Recall!");
+                    var commissionId = new objectId(comm._id);
 
-                    // 6. Add new Commission to DB
-                    var percentCommission = (100*total)/amountReceived;
-                    var newComm = {
-                        "created_by": createdBy,
-                        "amount": total,
-                        "currency": inv.currency,
-                        "type": "Recall Commission",
-                        "percentage": percentCommission,
-                        "creation_date": new Date()
-                    };
-
-                    Commission.create(newComm, (err, comm) => {
-                        if(err) return console.log(err, "Error with insert commission, Recall!");
-                        var commissionId = new objectId(comm._id);
-
-                        // 7. Pushing new Commission to Invoice
-                        Invoice.updateOne({"number": invNumber}, {$push:{"commissions": commissionId}}, 
-                        {returnOriginal: false}, (err, result) => {
-                            if(err) return console.log(err, "Error with pushing new commission to Invoice, Recall!");
-                            res.send("Recall status has been set successfully!");
-                        });
+                    // 6. Pushing new Commission to Invoice
+                    Invoice.updateOne({"number": invNumber}, {$push:{"commissions": commissionId}}, 
+                    {returnOriginal: false}, (err, result) => {
+                        if(err) return console.log(err, "Error with pushing new commission to Invoice, Recall!");
+                        res.send("Recall status has been set successfully!");
                     });
                 });
             });

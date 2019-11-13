@@ -641,6 +641,7 @@
         width: 110px;
         height: 35px;
         transition: .2s;
+        display: none;
     }
     #declinedBtn{
         background-color: rgb(255, 0, 0);
@@ -1334,7 +1335,69 @@
 
     }
     /* PopUp Alert End */
+
+
     
+    /* Pop-Up Recall */
+    .recall_filter {
+        display: none;
+        justify-content: center;
+        align-items: center;
+        background-color: rgba(0, 0, 0, 0.8);
+        position: fixed;
+        top: 0; bottom: 0; left: 0; right: 0;
+        z-index: 200;
+    }
+
+    .recall_wrapper {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 350px;
+        background-color: white;
+        padding: 20px;
+        z-index: 200;
+    }
+
+    .recall_block {
+        width: 65%;
+        margin: 30px 0;
+    }
+
+    .recall_item {
+        display: flex;
+        margin-bottom: 10px;
+        justify-content: space-between;
+    }
+
+    .recall_item input {
+        border-bottom: 1.5px solid #0B9E8D;
+        text-align: center;
+        width: 50px;
+        height: 15px;
+        padding: 5px;
+        font-family: 'Frank Ruhl Libre', serif;
+        outline: none;
+        margin-left: 5px;
+        font-size: 16px;
+    }
+
+    #recallSubmit_btn {
+        width: 100px;
+        height: 45px;
+        background-color: #12C7B2;
+        color: white;
+        font-size: 18px;
+    }
+
+    #recallSubmit_btn:hover{
+        background-color: #555;
+    }
+    #recallSubmit_btn:active{
+        background-color: #12C7B2;
+    }
+
     
     /* Media */
     @media screen and (max-width: 1125px) {

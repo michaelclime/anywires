@@ -1,8 +1,261 @@
+const allCountry = [
+    'Zimbabwe',
+    'Zambia',
+    'Yemen',
+    'Western Sahara',
+    'Wallis and Futuna',
+    'Virgin Islands, U.S.',
+    'Virgin Islands, British',
+    'Vietnam',
+    'Venezuela',
+    'Vanuatu',
+    'Uzbekistan',
+    'Uruguay',
+    'United States Minor Outlying Islands',
+    'United States',
+    'United Kingdom',
+    'United Arab Emirates',
+    'Ukraine',
+    'Uganda',
+    'Tuvalu',
+    'Turks and Caicos Islands',
+    'Turkmenistan',
+    'Turkey',
+    'Tunisia',
+    'Trinidad and Tobago',
+    'Tonga',
+    'Tokelau',
+    'Togo',
+    'Timor-Leste',
+    'Thailand',
+    'Tanzania',
+    'Tajikistan',
+    'Taiwan',
+    'Syrian Arab Republic',
+    'Switzerland',
+    'Sweden',
+    'Swaziland',
+    'Svalbard and Jan Mayen',
+    'Suriname',
+    'Sudan',
+    'Sri Lanka',
+    'Spain',
+    'South Sudan',
+    'South Georgia and the South Sandwich Islands',
+    'South Africa',
+    'Somalia',
+    'Solomon Islands',
+    'Slovenia',
+    'Slovakia',
+    'Sint Maarten (Dutch part)',
+    'Singapore',
+    'Sierra Leone',
+    'Seychelles',
+    'Serbia',
+    'Senegal',
+    'Saudi Arabia',
+    'Sao Tome and Principe',
+    'San Marino',
+    'Samoa',
+    'Saint Vincent and the Grenadines',
+    'Saint Pierre and Miquelon',
+    'Saint Martin (French part)',
+    'Saint Lucia',
+    'Saint Kitts and Nevis',
+    'Saint Helena, Ascension and Tristan da Cunha',
+    'Saint Barthelemy',
+    'Rwanda',
+    'Russian Federation',
+    'Romania',
+    'Réunion',
+    'Qatar',
+    'Puerto Rico',
+    'Portugal',
+    'Poland',
+    'Pitcairn',
+    'Philippines',
+    'Peru',
+    'Paraguay',
+    'Papua New Guinea',
+    'Panama',
+    'Palestine',
+    'Palau',
+    'Pakistan',
+    'Oman',
+    'Norway',
+    'Northern Mariana Islands',
+    'Norfolk Island',
+    'Niue',
+    'Nigeria',
+    'Niger',
+    'Nicaragua',
+    'New Zealand',
+    'New Caledonia',
+    'Netherlands',
+    'Nepal',
+    'Nauru',
+    'Namibia',
+    'Myanmar',
+    'Mozambique',
+    'Morocco',
+    'Montserrat',
+    'Montenegro',
+    'Mongolia',
+    'Monaco',
+    'Moldova',
+    'Micronesia',
+    'Mexico',
+    'Mayotte',
+    'Mauritius',
+    'Mauritania',
+    'Martinique',
+    'Marshall Islands',
+    'Malta',
+    'Mali',
+    'Maldives',
+    'Malaysia',
+    'Malawi',
+    'Madagascar',
+    'Macedonia',
+    'Macao',
+    'Luxembourg',
+    'Lithuania',
+    'Liechtenstein',
+    'Libya',
+    'Liberia',
+    'Lesotho',
+    'Lebanon',
+    'Latvia',
+    "Lao People's Democratic Republic",
+    'Kyrgyzstan',
+    'Kuwait',
+    'North Korea',
+    'South Korea',
+    'Kiribati',
+    'Kenya',
+    'Kazakhstan',
+    'Jordan',
+    'Jersey',
+    'Japan',
+    'Jamaica',
+    'Italy',
+    'Israel',
+    'Isle of Man',
+    'Ireland',
+    'Iraq',
+    'Iran',
+    'Indonesia',
+    'India',
+    'Iceland',
+    'Hungary',
+    'Hong Kong',
+    'Honduras',
+    'Holy See (Vatican City State)',
+    'Heard Island and McDonald Islands',
+    'Haiti',
+    'Guyana',
+    'Guinea-Bissau',
+    'Guinea',
+    'Guernsey',
+    'Guatemala',
+    'Guam',
+    'Guadeloupe',
+    'Grenada',
+    'Greenland',
+    'Greece',
+    'Gibraltar',
+    'Ghana',
+    'Germany',
+    'Georgia',
+    'Gambia',
+    'Gabon',
+    'French Southern Territories',
+    'French Polynesia',
+    'French Guiana',
+    'France',
+    'Finland',
+    'Fiji',
+    'Faroe Islands',
+    'Falkland Islands (Malvinas)',
+    'Ethiopia',
+    'Estonia',
+    'Eritrea',
+    'Equatorial Guinea',
+    'El Salvador',
+    'Egypt',
+    'Ecuador',
+    'Dominican Republic',
+    'Dominica',
+    'Djibouti',
+    'Denmark',
+    'Czech Republic',
+    'Cyprus',
+    'Curaçao',
+    'Cuba',
+    'Croatia',
+    "Cote d'Ivoire",
+    'Costa Rica',
+    'Cook Islands',
+    'Congo',
+    'Democratic Republic of the Congo',
+    'Comoros',
+    'Colombia',
+    'Cocos (Keeling) Islands',
+    'Christmas Island',
+    'China',
+    'Chile',
+    'Chad',
+    'Central African Republic',
+    'Cayman Islands',
+    'Cape Verde',
+    'Canada',
+    'Cameroon',
+    'Cambodia',
+    'Burundi',
+    'Burkina Faso',
+    'Bulgaria',
+    'Brunei Darussalam',
+    'British Indian Ocean Territory',
+    'Brazil',
+    'Bouvet Island',
+    'Botswana',
+    'Bosnia and Herzegovina',
+    'Bonaire, Sint Eustatius and Saba',
+    'Bolivia',
+    'Bhutan',
+    'Bermuda',
+    'Benin',
+    'Belize',
+    'Belgium',
+    'Belarus',
+    'Barbados',
+    'Bangladesh',
+    'Bahrain',
+    'Bahamas',
+    'Azerbaijan',
+    'Austria',
+    'Australia',
+    'Aruba',
+    'Armenia',
+    'Argentina',
+    'Antigua and Barbuda',
+    'Antarctica',
+    'Anguilla',
+    'Angola',
+    'Andorra',
+    'American Sa,moa',
+    'Algeria',
+    'Albania',
+    'Aland Islands',
+    'Afghanistan'
+ ];
+
 class UsersList {
     constructor(){
         this.filter = {};
         this.ArrayLIst = [];
         this.banksNumber = [];
+        this.USD = 1;
         this.container = document.getElementById("table-list");
         this.clearFilter = document.querySelector("#clearFilterBtn");
         this.btnShowFilter = document.querySelector("#showBtn");
@@ -52,20 +305,19 @@ class UsersList {
         this.filterSepa = document.querySelector("#filterSepa").value;
         this.filterEnable = document.querySelector("#filterEnable").value;
         this.filterSolution = document.querySelector("#filterSolution").value;
-        this.filterCurrency = document.querySelector("#filterCurrency").value;
         this.filterCountry = document.querySelector("#filterCountry").value;
 
         // Min Wire Filter
         if (this.filterMin !== ""){
             this.filter.min_wire = {
-                $lte: +(this.filterMin)
+                $gte: +(this.filterMin)
             };
         }
 
         // Max Wire Filter
         if (this.filterMax !== ""){
             this.filter.max_wire = {
-                $gte: +(this.filterMax)
+                $lte: +(this.filterMax)
             };
         }
 
@@ -83,11 +335,6 @@ class UsersList {
 
         // Solution Filter
         this.filterSolution !== "" ? this.filter.solution_name = this.filterSolution : "";
-
-        // Currency Filter
-        if(this.filterCurrency !== ""){
-            this.filter.currency = {$elemMatch: {$eq: this.filterCurrency}};
-        }
 
         // Country Filter
         this.filterCountry !== "" ? this.filter.country = this.filterCountry : "";
@@ -336,18 +583,50 @@ class UsersList {
         });
     }
 
+    renderAllCountry = () => {
+        allCountry.sort().forEach((name) => {
+            var container = document.querySelector("#filterCountry");
+            var option = document.createElement("option");
+            option.value = name;
+            option.innerHTML = name;
+            container.appendChild(option);
+        });
+    }
+
     saveLocalBanks = async (array) => {
+        
+        // Get USD
+        var currencyInv = await this.getEURexchange("USD", "EUR");
+        this.USD = currencyInv.rates.EUR;
+
         this.banksNumber = await this.getBanks_Number({});
         array = await this.getBanks(0);
         array.forEach((item) => {
             this.ArrayLIst.push(item);
         });
         this.countNextPage(this.ArrayLIst, this.banksNumber.numbers);
+        this.renderAllCountry();
+    }
+
+    getEURexchange = async (base, symbols) => {
+        return  await fetch(`https://api.exchangeratesapi.io/latest?base=${base}&symbols=${symbols}`)
+         .then(res => {
+             return res.json();
+         }) 
+         .catch(err => {
+             console.log(err);
+         });
     }
 
     loadBanks = (array) => {
         this.container = document.getElementById("table-list");
         array.forEach((item) => {
+            // Counting Before Limit
+            var balance_Req = (item.balance_USD.balance_requested*this.USD) + item.balance_EUR.balance_requested;
+            var balance_Sent = (item.balance_USD.balance_sent*this.USD) + item.balance_EUR.balance_sent;
+            var balance_Received = (item.balance_USD.balance_received*this.USD) + item.balance_EUR.balance_received;
+            var beforeLimit = (balance_Req*25/100) + (balance_Sent*80/100) + balance_Received;
+            // 
             this.userList = document.createElement("tr");
             this.userList.innerHTML =  `
                     <td class="column1 edit">${item.name}</td> 
@@ -381,19 +660,9 @@ class UsersList {
                         </div>
                     </td>
 
-                    <td class="column7 edit">
-                        <div class="currency_wrapper">
-                            <div class="currency_EUR">€${item.balance_EUR.balance_approved}</div> 
-                            <div class="currency_USD">$${item.balance_USD.balance_approved}</div> 
-                        </div>
-                    </td>
+                    <td class="column7 edit">${Math.round(beforeLimit)}</td>
 
-                    <td class="column8 edit">
-                        <div class="currency_wrapper">
-                            <div class="currency_EUR">€${item.balance_EUR.balance_available}</div> 
-                            <div class="currency_USD">$${item.balance_USD.balance_available}</div> 
-                        </div>
-                    </td>
+                    <td class="column8 edit">${item.stop_limit}</td>
 
                     <td class="column edit9">${item.min_wire}</td> 
                     <td class="column10 edit">${item.max_wire}</td> 
