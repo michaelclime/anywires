@@ -399,6 +399,16 @@ main {
     font-size: 15px;
 }
 
+#bankCountry {
+    width: 240px;
+    height: 40px;
+    padding: 5px;
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: 15px;
+    border: 1.5px solid #20A5F7;
+    border-radius: 3px;
+}
+
 .secondModal-input {
     border-bottom: 1.5px solid #20A5F7;
     width: 240px;
