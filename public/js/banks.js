@@ -256,6 +256,7 @@ class UsersList {
         this.ArrayLIst = [];
         this.banksNumber = [];
         this.USD = 1;
+        this.solutionNames = [];
         this.container = document.getElementById("table-list");
         this.clearFilter = document.querySelector("#clearFilterBtn");
         this.btnShowFilter = document.querySelector("#showBtn");
@@ -264,6 +265,7 @@ class UsersList {
         this.containerPages = document.querySelector(".nextPage-block");
         this.openCreatePageBtn = document.querySelector("#createBank-button");
         this.loadingGIF = document.querySelector("#loadingGif");
+        this.searchInput = document.querySelector("#search-input");
         this.render();
     }
 
@@ -298,6 +300,9 @@ class UsersList {
     }
 
     showFilters = async () => {
+        // Loading GIF Off
+        this.loadingGIF.style.display = "flex";
+
         this.filter = {};
         this.filterArray = document.querySelectorAll(".filter");
         this.filterMin = document.querySelector("#filterMin").value;
@@ -355,6 +360,9 @@ class UsersList {
                 this.countNextPage(this.arrBanks, this.lengthBanks.numbers);
             }
         }
+
+        // Loading GIF Off
+        this.loadingGIF.style.display = "none";
     }
 
     checkIsEmptyObj = (obj) => {
@@ -381,7 +389,10 @@ class UsersList {
         saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), 'banks.xlsx');
     }
 
-    searchFunction = async () =>{
+    searchFunction = async () => {
+        // Loading GIF On
+        this.loadingGIF.style.display = "flex";
+
         this.phrase = document.getElementById('search-input').value;
         this.filter = { $text: { $search: this.phrase } };
 
@@ -394,6 +405,9 @@ class UsersList {
 
             this.countNextPage(this.filterList, this.length.numbers);
         }
+
+        // Loading GIF Off
+        this.loadingGIF.style.display = "none";
     }
 
     methodPutEnable = (id, status) => {
@@ -593,8 +607,18 @@ class UsersList {
         });
     }
 
+    renderSolution = () => {
+        var arr = this.uniqueArr(this.solutionNames);
+        arr.sort().forEach((item) => {
+            var container = document.querySelector("#filterSolution");
+            var option = document.createElement("option");
+            option.value = item;
+            option.innerHTML = item;
+            container.appendChild(option);
+        });
+    }
+
     saveLocalBanks = async (array) => {
-        
         // Get USD
         var currencyInv = await this.getEURexchange("USD", "EUR");
         this.USD = currencyInv.rates.EUR;
@@ -606,6 +630,12 @@ class UsersList {
         });
         this.countNextPage(this.ArrayLIst, this.banksNumber.numbers);
         this.renderAllCountry();
+        
+        // Put solution name into variable
+        var allBanks = await this.getAllBanks();
+        allBanks.forEach((item) => this.solutionNames.push(item.solution_name));
+        var uniqueSoluName = this.uniqueArr(this.solutionNames);
+        this.renderSolution();
     }
 
     getEURexchange = async (base, symbols) => {
@@ -616,6 +646,26 @@ class UsersList {
          .catch(err => {
              console.log(err);
          });
+    }
+
+    getAllBanks = async () => {
+        return  await fetch("http://18.216.223.81:3000/getBanks")
+         .then(res => {
+             return res.json();
+         }) 
+         .catch(err => {
+             console.log(err);
+         });
+    }
+
+    uniqueArr = (arr) => {
+        var result = [];
+        arr.forEach((item) => {
+            if (!result.includes(item)) {
+                result.push(item);
+            }
+        });
+        return result;
     }
 
     loadBanks = (array) => {
@@ -692,7 +742,11 @@ class UsersList {
         this.btnShowFilter.addEventListener("click", this.showFilters);
         this.clearFilter.addEventListener("click", this.clearFilters);
         this.openCreatePageBtn.addEventListener("click", this.openCreatePage);
-        
+
+        this.searchInput.addEventListener("keyup", () => {
+            event.preventDefault();
+            event.keyCode === 13 ? this.searchFunction() : "";
+        }); 
     }
 };
 
