@@ -87,3 +87,33 @@ table {
 th, td {
     height: 50px;
 }
+
+/* Loading GIF */
+.loadingGif {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgb(0, 0, 0);
+    opacity: .7;
+    z-index: 1000;
+}
+
+.loadingGif img {
+    width: 50px;
+    height: 50px;
+}
+
+.loadingGif div {
+    font-size: 24px;
+    color: white;
+}
+
+.hide {
+    display: none;
+}

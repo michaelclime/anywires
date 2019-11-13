@@ -77,6 +77,7 @@
 // const invoice_ = new InvoicePreview();
 
 function SaveAsPdf() {
+    document.querySelector('.loadingGif').classList.remove('hide');
     var api_endpoint = "https://selectpdf.com/api2/convert/";
     var api_key = "07414060-af55-4b55-bb90-db2da50e128b";
  
@@ -105,7 +106,7 @@ function SaveAsPdf() {
  
             //console.log('File url: ' + fileURL);
  
-            var fileName = "Invoice-Contract.pdf";
+            var fileName = "Invoice-Preview.pdf";
  
             if (navigator.appVersion.toString().indexOf('.NET') > 0) {
                 // This is for IE browsers, as the alternative does not work
@@ -128,4 +129,5 @@ function SaveAsPdf() {
     };
  
     xhr.send(JSON.stringify(params));
+    document.querySelector('.loadingGif').classList.add('hide');
 }

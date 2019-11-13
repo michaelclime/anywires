@@ -146,6 +146,7 @@
 // const invoice_ = new InvoicePreview();
 
 function SaveAsPdf() {
+    document.querySelector('.loadingGif').classList.remove('hide');
     var api_endpoint = "https://selectpdf.com/api2/convert/";
     var api_key = "07414060-af55-4b55-bb90-db2da50e128b";
  
@@ -197,4 +198,5 @@ function SaveAsPdf() {
     };
  
     xhr.send(JSON.stringify(params));
+    document.querySelector('.loadingGif').classList.add('hide');
 }
