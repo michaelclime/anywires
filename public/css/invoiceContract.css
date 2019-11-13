@@ -54,9 +54,14 @@
     flex-direction: column;
 }
 
+.footer {
+    margin: 40px 0;
+}
+
 .footerConteriner {
     display: flex;
     justify-content: space-around;
+    margin-bottom: 200px;
 }
 
 .contractorInfo, .customerInfo {

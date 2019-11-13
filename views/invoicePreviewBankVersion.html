@@ -17,23 +17,23 @@
         <header>
             <div class="block-logo">
                 <div class="bank-logo-block">
-                    <img class="bank-logo" src="" alt="bank-logo">
+                    <img class="bank-logo" src="<%= bankLogo %>" alt="bank-logo">
                 </div>
                 <div class="invoice-info">
                     <h1>Invoice</h1>
-                    <p>Invoice date: <span id="invoiceDate"></span></p>
-                    <p>Invoice num: <span id="invoiceNumber"></span> / <span id="invoiceYear"></span></p>
+                    <p>Invoice date: <span id="invoiceDate"><%= invoiceDate.getDate() + '/' + ( invoiceDate.getMonth()+ 1) + '/' +  invoiceDate.getFullYear(); %></span></p>
+                    <p>Invoice num: <span id="invoiceNumber"><%= invoiceNumber %>/<%= invoiceDate.getFullYear() %></span></p>
                 </div>
             </div>
 
             <div class="invoice-fromFor-block">
                 <div class="invoice-for-block">
                     <p><b>Invoice for:</b></p>
-                    <p>Client: <span id="clientName"></span></p>
-                    <p>Email: <span id="clientEmail"></span></p>
-                    <p>Phone: <span id="clientPhone"></span></p>
-                    <p>Address: <span id="clientAddress"></span></p>
-                    <p>Passport No: <span id="clientID"></span></p>
+                    <p>Client: <span id="clientName"><%= invClientName %></span></p>
+                    <p>Email: <span id="clientEmail"><%= invClientEmail %></span></p>
+                    <p>Phone: <span id="clientPhone"><%= invClientPhone %></span></p>
+                    <p>Address: <span id="clientAddress"><%= invClientAdress %></span></p>
+                    <p>Passport No: <span id="clientID"><%= invClientID %></span></p>
                 </div>
             </div>
         </header>
@@ -49,9 +49,16 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td data-label="Item description" class="col1">Payment for <span class="paymentClass"></span> educational package - <span class="bankSite"></span></td>
+                    <td data-label="Item description" class="col1">Payment for
+                         <% if (invAmount >= 250 && invAmount <= 1000) { %><span class="paymentClass">View</span>
+                         <% } else  if (invAmount > 1000 && invAmount <= 5000) { %><span class="paymentClass">Basic</span>
+                         <% } else  if (invAmount > 5000 && invAmount <= 10000) { %><span class="paymentClass">Basic PLUS</span>
+                         <% } else  if (invAmount > 10000 && invAmount <= 15000) { %><span class="paymentClass">Silver</span>
+                         <% } else  if (invAmount > 15000 && invAmount <= 25000) { %><span class="paymentClass">Gold</span>
+                         <% } else  if (invAmount > 25000 && invAmount <= 80000) { %><span class="paymentClass">Platinum</span> <% } %>
+                            educational package - <span class="bankSite"><%= bankSite %></span></td>
                     <td data-label="Quantity">1</td>
-                    <td data-label="Total" class="table-total col2"><span id="totalSum"></span> <span class="currency"></span></td>
+                    <td data-label="Total" class="table-total col2"><span id="totalSum"><%= invAmount %></span> <span class="currency"><%= invoiceCurrency %></span></td>
                   </tr>
                   <tr>
                     <td scope="row" data-label="Item description" class="col1">VAT</td>
@@ -64,19 +71,19 @@
             <div class="line-under-table"></div>
 
             <div class="final-sum">
-                <h2><span id="totalLarge"></span> <span class="currency"></span></h2>
+                <h2><span id="totalLarge"><%= invAmount %></span> <span class="currency"><%= invoiceCurrency %></span></h2>
             </div>
 
             <div class="line-under-sum"></div>
 
             <div class="invoice-from-block">
                 <p><b>Bank Account Details:</b></p>
-                <p>Beneficiary name: <span id="benefName"></span></p>
-                <p>Beneficiary address: <span id="benefAdress"></span></p>
-                <p>Bank name: <span id="bankName"></span></p>
-                <p>Bank address: <span id="bankAdress"></span></p>
-                <p><span id="IBAN"></span></p>
-                <p>SWIFT: <span id="SWIFT"></span></p>
+                <p>Beneficiary name: <span id="benefName"><%= invBankBenefName %></span></p>
+                <p>Beneficiary address: <span id="benefAdress"><%= bankBenefAddress %></span></p>
+                <p>Bank name: <span id="bankName"><%= bankName %></span></p>
+                <p>Bank address: <span id="bankAdress"><%= bankAddress %></span></p>
+                <p>IBAN: <span id="IBAN"><% if (invoiceCurrency == 'EUR') { %> <%= bankIBAN_EUR %> <% } else { %> <%= bankIBAN_USD %><% } %></span></p>
+                <p>SWIFT: <span id="SWIFT"><%= bankSWIFT %></span></p>
             </div>
 
             <div class="line-under-sum"></div>

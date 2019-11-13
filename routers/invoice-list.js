@@ -21,12 +21,48 @@ router.get('/invoice-report.html', isLoggedIn, function(req, res) {
     res.render("invoice-report.html");
 });
 
-router.get("/invoice-preview", function (req, res) {
-    res.render("invoice-preview.html");
+router.get("/invoice-preview", async function (req, res) {
+    const invoiceNumber = Object.keys(req.query)[0];
+    const invoice = await Invoice.find({number: invoiceNumber});
+    const bank = await Bank.find({name: invoice[0].bank});
+    
+    const bankLogo = bank[0].company_logo;
+    const bankBenefAddress = bank[0].beneficiary_address;
+    const bankName = bank[0].name;
+    const bankAddress = bank[0].bank_address;
+    const bankSWIFT = bank[0].swift_bic;
+    const bankSite = bank[0].company_site;
+    const invBankBenefName = bank[0].beneficiary_name;
+    const invoiceDate = invoice[0].dates.creation_date;
+    const invAmount = invoice[0].amount.amount_requested;
+    const invoiceCurrency = invoice[0].currency;
+    const invClientName = invoice[0].client_details.full_name;
+    const invClientEmail = invoice[0].client_details.email;
+    const invClientAdress = invoice[0].client_details.address;
+    const invClientID = invoice[0].client_details.id_number;
+    const invClientPhone = invoice[0].client_details.phone;
+    const bankIBAN_EUR = bank[0].iban_EUR;
+    const bankIBAN_USD = bank[0].iban_USD;
+
+    res.render("invoice-preview.html", { invoiceNumber, bankLogo, bankBenefAddress, bankName, invClientPhone, bankIBAN_EUR, bankIBAN_USD,
+                bankAddress, bankSWIFT, bankSite, invBankBenefName, invoiceDate, invAmount, invoiceCurrency, invClientName, invClientEmail, invClientAdress, invClientID });
 });
 
-router.get("/invoiceContract", function (req, res) {
-    res.render("invoiceContract.html");
+router.get("/invoiceContract", async function (req, res) {
+    const invoiceNumber = Object.keys(req.query)[0];
+    const invoice = await Invoice.find({number: invoiceNumber});
+    const bank = await Bank.find({name: invoice[0].bank});
+
+   
+    const bankBenefAddress = bank[0].beneficiary_address;
+    const bankSite = bank[0].company_site;
+    const invBankBenefName = bank[0].beneficiary_name;
+    const invoiceDate = invoice[0].dates.creation_date;
+    const invClientName = invoice[0].client_details.full_name;
+    const invClientEmail = invoice[0].client_details.email;
+    const invClientAdress = invoice[0].client_details.address;
+
+    res.render("invoiceContract.html", { invoiceNumber, bankBenefAddress, bankSite, invBankBenefName, invoiceDate, invClientName, invClientEmail, invClientAdress });
 });
 router.get("/invoiceDecOfPay", async function (req, res) {
     const invoiceNumber = Object.keys(req.query)[0];
@@ -44,8 +80,31 @@ router.get("/invoiceDecOfPay", async function (req, res) {
     res.render("invoiceDecOfPay.html", {bankLogo, invClientCountry, invClientID, invBankBenefName, invoiceDate, invAmount, invoiceCurrency});
 });
 
-router.get("/invoicePreviewBankVersion", function (req, res) {
-    res.render("invoicePreviewBankVersion.html");
+router.get("/invoicePreviewBankVersion", async function (req, res) {
+    const invoiceNumber = Object.keys(req.query)[0];
+    const invoice = await Invoice.find({number: invoiceNumber});
+    const bank = await Bank.find({name: invoice[0].bank});
+    
+    const bankLogo = bank[0].company_logo;
+    const bankBenefAddress = bank[0].beneficiary_address;
+    const bankName = bank[0].name;
+    const bankAddress = bank[0].bank_address;
+    const bankSWIFT = bank[0].swift_bic;
+    const bankSite = bank[0].company_site;
+    const invBankBenefName = bank[0].beneficiary_name;
+    const invoiceDate = invoice[0].dates.creation_date;
+    const invAmount = invoice[0].amount.amount_requested;
+    const invoiceCurrency = invoice[0].currency;
+    const invClientName = invoice[0].client_details.full_name;
+    const invClientEmail = invoice[0].client_details.email;
+    const invClientAdress = invoice[0].client_details.address;
+    const invClientID = invoice[0].client_details.id_number;
+    const invClientPhone = invoice[0].client_details.phone;
+    const bankIBAN_EUR = bank[0].iban_EUR;
+    const bankIBAN_USD = bank[0].iban_USD;
+
+    res.render("invoicePreviewBankVersion.html", { invoiceNumber, bankLogo, bankBenefAddress, bankName, invClientPhone, bankIBAN_EUR, bankIBAN_USD,
+                bankAddress, bankSWIFT, bankSite, invBankBenefName, invoiceDate, invAmount, invoiceCurrency, invClientName, invClientEmail, invClientAdress, invClientID });
 });
 
 // Function for Dates Range START.

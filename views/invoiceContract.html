@@ -13,21 +13,21 @@
     
     <div id="HTMLtoPDF">
     <div class="contractContent">
-        <h1>Financial Education SERVICES  CONTRACT #<span class="invNum"></span></h1>
+        <h1>Financial Education SERVICES  CONTRACT #<span class="invNum"><%= invoiceNumber %></span></h1>
         <div class="paragraph">
-           <span class="invDate"></span> 
+           <span class="invDate"><%= invoiceDate.getDate() + '/' + ( invoiceDate.getMonth()+ 1) + '/' +  invoiceDate.getFullYear(); %></span> 
            <span><strong>by and between</strong></span>
         </div>
         <div class="paragraph">
-            <p>Company: <span class="bankBenefName"></span>, 
-                with its principal place of business at: <span class="bankBenefAddress"></span>,
-                business URL:  <span class="bankSite"></span> on one hand</p>
+            <p>Company: <span class="bankBenefName"><%= invBankBenefName %></span>, 
+                with its principal place of business at: <span class="bankBenefAddress"><%= bankBenefAddress %></span>,
+                business URL:  <span class="bankSite"><%= bankSite %></span> on one hand</p>
         </div>
         <div class="paragraph">
             <span><strong>and</strong></span>
-            <span>Name: <span class="invClientName"></span></span>
-            <span>Email: <span class="invClientEmail"></span></span>
-            <span>Residential address: <span class="invClientAdress"></span></span>
+            <span>Name: <span class="invClientName"><%= invClientName %></span></span>
+            <span>Email: <span class="invClientEmail"><%= invClientEmail %></span></span>
+            <span>Residential address: <span class="invClientAdress"><%= invClientAdress %></span></span>
         </div>
         <div class="paragraph">
                 <span><strong>Assignments</strong></span>
@@ -134,13 +134,13 @@
             <div class="footerConteriner">
                 <div class="contractorInfo">
                     <h4>CONTRACTOR</h4>
-                    <span>Company: <span class="bankBenefName"></span></span>
-                    <span>Company registered address: <span class="bankBenefAddress"></span></span>
+                    <span>Company: <span class="bankBenefName"><%= invBankBenefName %></span></span>
+                    <span>Company registered address: <span class="bankBenefAddress"><%= bankBenefAddress %></span></span>
                 </div>
                 <div class="customerInfo">
                         <h4>CUSTOMER</h4>
-                        <span>Customer name: <span class="invClientName"></span></span>
-                        <span>Customer registered email: <span class="invClientEmail"></span></span>
+                        <span>Customer name: <span class="invClientName"><%= invClientName %></span></span>
+                        <span>Customer registered email: <span class="invClientEmail"><%= invClientEmail %></span></span>
                     </div>
             </div>
         </div>
