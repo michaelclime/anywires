@@ -3,6 +3,7 @@ class UsersList {
         this.filter = {};
         this.ArrayLIst = [];
         this.banksNumber = [];
+        this.USD = 1;
         this.container = document.getElementById("table-list");
         this.clearFilter = document.querySelector("#clearFilterBtn");
         this.btnShowFilter = document.querySelector("#showBtn");
@@ -337,6 +338,10 @@ class UsersList {
     }
 
     saveLocalBanks = async (array) => {
+        // Get USD
+        var currencyInv = await this.getEURexchange("USD", "EUR");
+        this.USD = currencyInv.rates.EUR;
+
         this.banksNumber = await this.getBanks_Number({});
         array = await this.getBanks(0);
         array.forEach((item) => {
@@ -345,9 +350,30 @@ class UsersList {
         this.countNextPage(this.ArrayLIst, this.banksNumber.numbers);
     }
 
+    getEURexchange = async (base, symbols) => {
+        return  await fetch(`https://api.exchangeratesapi.io/latest?base=${base}&symbols=${symbols}`)
+         .then(res => {
+             return res.json();
+         }) 
+         .catch(err => {
+             console.log(err);
+         });
+    }
+
     loadBanks = (array) => {
         this.container = document.getElementById("table-list");
         array.forEach((item) => {
+            // Counting Before Limit
+            
+            var balance_Req = (item.balance_USD.balance_requested*this.USD) + item.balance_EUR.balance_requested;
+            var balance_Sent = (item.balance_USD.balance_sent*this.USD) + item.balance_EUR.balance_sent;
+            var balance_Received = (item.balance_USD.balance_received*this.USD) + item.balance_EUR.balance_received;
+            var beforeLimit = (balance_Req*25/100) + (balance_Sent*80/100) + balance_Received;
+            console.log(balance_Req*25/100);
+            console.log(balance_Sent*80/100);
+            console.log(balance_Received);
+            console.log(this.USD);
+            // 
             this.userList = document.createElement("tr");
             this.userList.innerHTML =  `
                     <td class="column1 edit">${item.name}</td> 
@@ -381,19 +407,9 @@ class UsersList {
                         </div>
                     </td>
 
-                    <td class="column7 edit">
-                        <div class="currency_wrapper">
-                            <div class="currency_EUR">€${item.balance_EUR.balance_approved}</div> 
-                            <div class="currency_USD">$${item.balance_USD.balance_approved}</div> 
-                        </div>
-                    </td>
+                    <td class="column7 edit">${Math.round(beforeLimit)}</td>
 
-                    <td class="column8 edit">
-                        <div class="currency_wrapper">
-                            <div class="currency_EUR">€${item.balance_EUR.balance_available}</div> 
-                            <div class="currency_USD">$${item.balance_USD.balance_available}</div> 
-                        </div>
-                    </td>
+                    <td class="column8 edit">${item.stop_limit}</td>
 
                     <td class="column edit9">${item.min_wire}</td> 
                     <td class="column10 edit">${item.max_wire}</td> 
