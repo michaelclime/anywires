@@ -482,8 +482,7 @@ fetchPromise3.then(response => {
     }).then(number => {
         jQuery(".invoiceBtn").click(function(){
             let bankList = document.querySelector('#bankList');
-            console.log((bankList == null));
-            console.log(document.querySelector('#merchList').value);
+          
             if (bankList == null) {
                 if ( document.querySelector('#merchList').value !== '' &&
                         document.querySelector('.nameInput').value !== '' &&
