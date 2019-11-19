@@ -51,22 +51,18 @@ let MerchantSchema = new mongoose.Schema({
             additional: Number
         },
         fee_account_setup: {
-            percent: Number,
             flat: Number,
             additional: Number
         },
         fee_account_mounthly: {
-            percent: Number,
             flat: Number,
             additional: Number
         },
         fee_account_additional: {
-            percent: Number,
             flat: Number,
             additional: Number
         },
         fee_account_dedicated: {
-            percent: Number,
             flat: Number,
             additional: Number
         },

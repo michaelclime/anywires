@@ -16,6 +16,7 @@ let express = require("express"),
     banksRouter = require('./routers/banks');
     invoiceListRouter = require('./routers/invoice-list'),
     authorizationRouter = require('./routers/authorization');
+    wallets = require("./routers/wallets")
 
 const url = 'mongodb://18.216.223.81:27017/anywires';
 
@@ -62,13 +63,10 @@ app.use(usersRouter);
 app.use(merchantsRouter);
 app.use(banksRouter);
 app.use(invoiceListRouter);
+app.use(wallets);
 
 app.get('/personal-area.html', isLoggedIn, function(req, res) {
     res.render("personal-area.html");
-});
-
-app.get('/wallets.html', isLoggedIn, function(req, res) {
-    res.render("wallets.html");
 });
 
 app.get('/affiliateReport.html', isLoggedIn, function(req, res) {

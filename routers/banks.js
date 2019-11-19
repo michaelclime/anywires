@@ -20,7 +20,6 @@ router.get("/getBanks", (req, res) => {
     mongo.connect(url, (err, db) =>{
         db.collection("banks").find({}).sort({"name": 1}).toArray(function(err, bank){
             if(err) return console.log("Error with upload Banks!", err);
-            db.close();
             res.send(bank);
         })
     });
@@ -32,13 +31,12 @@ router.post("/getPart-Banks", jsonParser, (req, res) => {
         var filter = req.body.filter;
 
         db.collection("banks")
-        .find(filter, { score: { $meta: "textScore" } })
+        .find(filter)
+        .sort({"name": 1})
         .skip(number)
         .limit(10)
-        .sort({ score: { $meta: "textScore" } })
         .toArray(function(err, bank){
             if(err) return console.log("Error with upload Banks Part!", err);
-            db.close();
             res.send(bank);
         })
     });
@@ -52,7 +50,6 @@ router.post("/getNumber-Banks", jsonParser, (req, res) => {
         db.collection("banks").find(filter).count(function(err, bank){
             if(err) return console.log("Error with upload Number of Banks!", err);
             
-            db.close();
             res.send({"numbers": bank});
         })
     });

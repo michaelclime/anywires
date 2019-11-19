@@ -35,7 +35,7 @@ router.post("/getPart-Merchants", jsonParser, (req, res) => {
 
         db.collection("merchants")
         .find(filter)
-        .sort({_id:-1})
+        .sort({"name": 1})
         .skip(number)
         .limit(10)
         .toArray(function(err, merchants){
