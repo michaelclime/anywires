@@ -48,7 +48,7 @@
                 <input type="text" name="address" placeholder="Client's address"  class="addressInput" required>
                 <input type="text" name="country" placeholder="Client's country"  class="countryInput" required>
                 <input type="text" name="phone" placeholder="Client's phone"  class="phoneInput" required>
-                <input type="text" name="email" placeholder="Client's email"  class="emailInput" required>
+                <input type="email" name="email" placeholder="Client's email"  class="emailInput" required>
                 <div class="amountCurrency">
                     <input class="currencyInput" type="number"  name="amount" placeholder="Amount to Transfer" required>
                     <select name="currency" class="currency">
@@ -60,6 +60,7 @@
                     <input type="checkbox" name="sepa">
                     <span>SEPA</span>
                 </div>
+                <input class='invoiceBtn' type="submit" value='Make an Invoice' >
                 <% if (currentUser.typeClass == 'admin') { %>
                     <div class="merchChoose">
                         <label for="merchList">Merch</label>
@@ -89,11 +90,11 @@
                         <option  value="<%= currentUser.merchant %>"><%= currentUser.merchant %></option>
                     </select>
                 <% }  }%>
-                <input class='invoiceBtn' type="submit" value='Make an Invoice' >
             </form>
         </div>
     </div>
     <script src="js/invoiceGeneration.js"></script>
     <script type="text/javascript" src="js/sweetalert2.js"></script>
+    
 </body>
 </html>

@@ -519,3 +519,51 @@ fetchPromise3.then(response => {
         });
     });
 
+// Email validation 
+
+function validateEmail(email) {
+    const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email);
+  }
+  
+  function validateE() {
+    const $result = $(".emailInput");
+    const email = $(".emailInput").val();
+    $result.text("");
+  
+    if (validateEmail(email)) {
+      $result.css("border", " 1px solid green");
+    } else {
+      $result.val('');
+      $result.css("border", " 1px solid red");
+      Swal.fire('Please, enter correct email!');
+    }
+    return false;
+  }
+  
+  $(".emailInput").change(validateE);
+
+  // Phone number validation
+
+  function validatePhone(phone) {
+    const re = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
+    return re.test(phone);
+  }
+  
+  function validateP() {
+    const $result = $(".phoneInput");
+    const phone = $(".phoneInput").val();
+    $result.text("");
+  
+    if (validatePhone(phone)) {
+      $result.css("border", " 1px solid green");
+    } else {
+      $result.val('');
+      $result.css("border", " 1px solid red");
+      Swal.fire('Please, enter correct phone number!');
+    }
+    return false;
+  }
+  
+  $(".phoneInput").change(validateP);
+  
