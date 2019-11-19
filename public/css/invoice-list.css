@@ -114,7 +114,7 @@
         align-items: center;
         background-color: rgb(255, 255, 255);
         padding: 30px 0 30px 0px;
-        padding-left: 65px;
+        padding-left: 35px;
         margin-top: 2px;
     }
     header img {
@@ -150,13 +150,13 @@
     
     .table-line {
         margin: 10px 0;
-        width: 90%;
+        width: 95%;
         height: 2px;
         background-color: rgb(102, 102, 102);
     }
     
     .invoiceTable {
-        width: 90%;
+        width: 95%;
     }
     
     
@@ -196,7 +196,7 @@
     }
     
     .filterBlock-first {
-        width: 90%;
+        width: 95%;
         display: flex;
         align-items: flex-end;
     }
@@ -221,7 +221,7 @@
     
     /* Filter Block Second START */
     .filterBlock-second {
-        width: 90%;
+        width: 95%;
         display: flex;
         align-items: flex-end;
         margin: 20px 0;
@@ -286,7 +286,7 @@
     
     
     .showClear-block {
-        width: 90%;
+        width: 95%;
         margin: 10px 0; 
         display: flex;
         justify-content: space-between;
@@ -313,7 +313,7 @@
     }
     
     .downloadXls-block {
-        width: 90%;
+        width: 95%;
         display: flex;
         justify-content: flex-end;
         margin-top: 10px;
@@ -750,7 +750,7 @@
     }
     
     .firstPage-block {
-        width: 90%;
+        width: 95%;
         display: none;
         align-items: flex-start;
     }

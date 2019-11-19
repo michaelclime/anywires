@@ -6,9 +6,17 @@ let WalletSchema = new mongoose.Schema({
     type: String,
     balance: Number,
     currency: String,
-    requisites: Object,
+    requisites: {
+        beneficiary_name: String,
+        beneficiary_address: String,
+        bank_name: String, 
+        bank_address: String, 
+        account_number: String,
+        iban: String,
+        swift: String
+    },
     creating_date: Date,
-    created_by: Object
+    created_by: String
 });
 
 WalletSchema.plugin(passportLocalMongoose);

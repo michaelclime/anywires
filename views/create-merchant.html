@@ -19,6 +19,10 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js"></script>
 		<script src="https://kit.fontawesome.com/5355902e87.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+
+		<!-- ColorPicker -->
+		<script src="js/jscolor.js"></script>
+		
 	</head>
 	<body>
 			<% if (currentUser.role == 'Invoice Manager') { %>
@@ -215,17 +219,17 @@
 
 								<div class="modal_item">
 									<label for="backColor">Background color:</label>
-									<input id="backColor" class="secondModal-input" type="text" placeholder="rgb(255,255,255)">
+									<input id="backColor" class="secondModal-input jscolor" type="text" value="fff">
 								</div>
             
                                 <div class="modal_item">
                                     <label for="firstColor">First color:</label>
-                                    <input id="firstColor" class="secondModal-input" type="text" placeholder="rgb(255,255,255)">
+                                    <input id="firstColor" class="secondModal-input jscolor" type="text" value="fff">
                                 </div>
             
                                 <div class="modal_item">
                                     <label for="secondColor">Second color:</label>
-                                    <input id="secondColor" class="secondModal-input" type="text" placeholder="rgb(255,255,255)">
+                                    <input id="secondColor" class="secondModal-input jscolor" type="text" value="fff">
                                 </div>
             
                                 <div class="modal_item">
@@ -291,7 +295,7 @@
 							<div class="comm_item">
 								<label for="comm_inputs">In C2B:</label>
 								<div class="comm_inputs">
-									<input class="required" id="in_c2b_per" type="number" placeholder="Percent">
+									<span id="symPercent">%</span><input class="required percent" id="in_c2b_per" type="number" placeholder="Percent">
 									<input class="required" id="in_c2b_flat" type="number" placeholder="Flat">
 								</div>
 							</div>
@@ -299,7 +303,7 @@
 							<div class="comm_item border_bottom">
 								<label for="comm_item">In B2B:</label>
 								<div class="comm_inputs">
-									<input class="required" id="in_b2b_per" type="number" placeholder="Percent">
+									<span id="symPercent">%</span><input class="required" id="in_b2b_per" type="number" placeholder="Percent">
 									<input class="required" id="in_b2b_flat" type="number" placeholder="Flat">
 								</div>
 							</div>
@@ -312,7 +316,6 @@
 							<div class="comm_item">
 								<label for="comm_item">Fee Account Setup:</label>
 								<div class="comm_inputs">
-									<input class="required" id="feeAccSetup_per" type="number" placeholder="Percent">
 									<input class="required" id="feeAccSetup_flat" type="number" placeholder="Flat">
 								</div>
 							</div>
@@ -320,7 +323,6 @@
 							<div class="comm_item">
 								<label for="comm_item">Fee Account Monthly:</label>
 								<div class="comm_inputs">
-									<input class="required" id="feeAccMonthly_per" type="number" placeholder="Percent">
 									<input class="required" id="feeAccMonthly_flat" type="number" placeholder="Flat">
 								</div>
 							</div>
@@ -328,7 +330,6 @@
 							<div class="comm_item">
 								<label for="comm_item">Fee Account Additional:</label>
 								<div class="comm_inputs">
-									<input class="required" id="feeAccAdd_per" type="number" placeholder="Percent">
 									<input class="required" id="feeAccAdd_flat" type="number" placeholder="Flat">
 								</div>
 							</div>
@@ -336,7 +337,6 @@
 							<div class="comm_item border_bottom">
 								<label for="comm_item">Fee Account Dedicated:</label>
 								<div class="comm_inputs">
-									<input class="required" id="feeAccDed_per" type="number" placeholder="Percent">
 									<input class="required" id="feeAccDed_flat" type="number" placeholder="Flat">
 								</div>
 							</div>
@@ -352,7 +352,7 @@
 							<div class="comm_item">
 								<label for="comm_item">Fine Recall:</label>
 								<div class="comm_inputs">
-									<input class="required" id="fineRecall_per" type="number" placeholder="Percent">
+									<span id="symPercent">%</span><input class="required" id="fineRecall_per" type="number" placeholder="Percent">
 									<input class="required" id="fineRecall_flat" type="number" placeholder="Flat">
 								</div>
 							</div>
@@ -360,7 +360,7 @@
 							<div class="comm_item">
 								<label for="comm_item">Fine Attitude Incorrect Payment Purpose:</label>
 								<div class="comm_inputs">
-									<input class="required" id="fineAttIncPp_per" type="number" placeholder="Percent">
+									<span id="symPercent">%</span><input class="required" id="fineAttIncPp_per" type="number" placeholder="Percent">
 									<input class="required" id="fineAttIncPp_flat" type="number" placeholder="Flat">
 								</div>
 							</div>
@@ -368,7 +368,7 @@
 							<div class="comm_item">
 								<label for="comm_item">Fine Attitude Wrong Amount:</label>
 								<div class="comm_inputs">
-									<input class="required" id="fineAttWrongAm_per" type="number" placeholder="Percent">
+									<span id="symPercent">%</span><input class="required" id="fineAttWrongAm_per" type="number" placeholder="Percent">
 									<input class="required" id="fineAttWrongAm_flat" type="number" placeholder="Flat">
 								</div>
 							</div>
@@ -377,7 +377,7 @@
 							<div class="comm_item">
 								<label for="comm_item">Fine Attitude More then 1 payment:</label>
 								<div class="comm_inputs">
-									<input class="required" id="fineAttMoreThen1Pay_per" type="number" placeholder="Percent">
+									<span id="symPercent">%</span><input class="required" id="fineAttMoreThen1Pay_per" type="number" placeholder="Percent">
 									<input class="required" id="fineAttMoreThen1Pay_flat" type="number" placeholder="Flat">
 								</div>
 							</div>
@@ -385,7 +385,7 @@
 							<div class="comm_item">
 								<label for="comm_item">Fine Attitude Payment without invoice:</label>
 								<div class="comm_inputs">
-									<input class="required" id="fineAttPayWithInv_per" type="number" placeholder="Percent">
+									<span id="symPercent">%</span><input class="required" id="fineAttPayWithInv_per" type="number" placeholder="Percent">
 									<input class="required" id="fineAttPayWithInv_flat" type="number" placeholder="Flat">
 								</div>
 							</div>
@@ -393,7 +393,7 @@
 							<div class="comm_item">
 								<label for="comm_item">Fine Attitude Payment from Blocked:</label>
 								<div class="comm_inputs">
-									<input class="required" id="fineAttPayFromBlo_per" type="number" placeholder="Percent">
+									<span id="symPercent">%</span><input class="required" id="fineAttPayFromBlo_per" type="number" placeholder="Percent">
 									<input class="required" id="fineAttPayFromBlo_flat" type="number" placeholder="Flat">
 								</div>
 							</div>
@@ -401,7 +401,7 @@
 							<div class="comm_item border_bottom">
 								<label for="comm_item">Fine Attitude More then 1% recalls:</label>
 								<div class="comm_inputs">
-									<input class="required" id="fineAttMoreThen1perRecalls_per" type="number" placeholder="Percent">
+									<span id="symPercent">%</span><input class="required" id="fineAttMoreThen1perRecalls_per" type="number" placeholder="Percent">
 									<input class="required" id="fineAttMoreThen1perRecalls_flat" type="number" placeholder="Flat">
 								</div>
 							</div>
@@ -415,7 +415,7 @@
 							<div class="comm_item">
 								<label for="comm_item">Settlement BTC:</label>
 								<div class="comm_inputs">
-									<input class="required" id="settBTC_per" type="number" placeholder="Percent">
+									<span id="symPercent">%</span><input class="required" id="settBTC_per" type="number" placeholder="Percent">
 									<input class="required" id="settBTC_flat" type="number" placeholder="Flat">
 								</div>
 							</div>
@@ -423,7 +423,7 @@
 							<div class="comm_item">
 								<label for="comm_item">Settlement ATM:</label>
 								<div class="comm_inputs">
-									<input class="required" id="settATM_per" type="number" placeholder="Percent">
+									<span id="symPercent">%</span><input class="required" id="settATM_per" type="number" placeholder="Percent">
 									<input class="required" id="settATM_flat" type="number" placeholder="Flat">
 								</div>
 							</div>
@@ -431,7 +431,7 @@
 							<div class="comm_item">
 								<label for="comm_item">Settlement C2B Wire:</label>
 								<div class="comm_inputs">
-									<input class="required" id="settC2Bwire_per" type="number" placeholder="Percent">
+									<span id="symPercent">%</span><input class="required" id="settC2Bwire_per" type="number" placeholder="Percent">
 									<input class="required" id="settC2Bwire_flat" type="number" placeholder="Flat">
 								</div>
 							</div>
@@ -439,7 +439,7 @@
 							<div class="comm_item">
 								<label for="comm_item">Settlement B2B Wire:</label>
 								<div class="comm_inputs">
-									<input class="required" id="settB2Bwire_per" type="number" placeholder="Percent">
+									<span id="symPercent">%</span><input class="required" id="settB2Bwire_per" type="number" placeholder="Percent">
 									<input class="required" id="settB2Bwire_flat" type="number" placeholder="Flat">
 								</div>
 							</div>
@@ -447,7 +447,7 @@
 							<div class="comm_item">
 								<label for="comm_item">Settlement Recall:</label>
 								<div class="comm_inputs">
-									<input class="required" id="settRecall_per" type="number" placeholder="Percent">
+									<span id="symPercent">%</span><input class="required" id="settRecall_per" type="number" placeholder="Percent">
 									<input class="required" id="settRecall_flat" type="number" placeholder="Flat">
 								</div>
 							</div>
@@ -455,7 +455,7 @@
 							<div class="comm_item">
 								<label for="comm_item">Settlement Refund:</label>
 								<div class="comm_inputs">
-									<input class="required" id="settRefund_per" type="number" placeholder="Percent">
+									<span id="symPercent">%</span><input class="required" id="settRefund_per" type="number" placeholder="Percent">
 									<input class="required" id="settRefund_flat" type="number" placeholder="Flat">
 								</div>
 							</div>
@@ -463,7 +463,7 @@
 							<div class="comm_item border_bottom">
 								<label for="comm_item">Settlement B2C:</label>
 								<div class="comm_inputs">
-									<input class="required" id="settB2C_per" type="number" placeholder="Percent">
+									<span id="symPercent">%</span><input class="required" id="settB2C_per" type="number" placeholder="Percent">
 									<input class="required" id="settB2C_flat" type="number" placeholder="Flat">
 								</div>
 							</div>

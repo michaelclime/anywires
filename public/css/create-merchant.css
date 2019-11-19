@@ -432,6 +432,7 @@ main {
 .comm_inputs {
     display: flex;
     flex-direction: column;
+    position: relative;
     width: 80px;
 }
 
@@ -442,6 +443,12 @@ main {
     padding: 5px;
     font-family: 'Frank Ruhl Libre', serif;
     font-size: 15px;
+}
+
+.comm_inputs input[type=number]::-webkit-inner-spin-button, 
+.comm_inputs input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
 }
 
 .comm_title {
@@ -472,4 +479,10 @@ main {
 
 #create_merch:active{
     background-color: #555;
+}
+
+#symPercent {
+    position: absolute;
+    right: 5px;
+    top: 10px;
 }

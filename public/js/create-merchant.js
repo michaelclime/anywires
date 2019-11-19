@@ -1,3 +1,5 @@
+// import { threadId } from "worker_threads";
+
 class CreateMerchant{
     constructor(){
         this.merchName = "";
@@ -7,6 +9,14 @@ class CreateMerchant{
         this.b2bInput = document.querySelector("#b2b");
         this.currentUser = document.querySelector(".userName");
         this.render();
+    }
+
+    addSymbolPercentInput = (event) => {
+        // if (!(event.target.value.length >= 1)){
+        //     var input = event.target;
+        //     var value = event.target.value;
+        //     event.target.value = value + "%";
+        // } 
     }
 
     editMerchantReq = async (mechantName, newData) => {
@@ -83,16 +93,12 @@ class CreateMerchant{
                 "fees.settlement_recall.percent": +(document.querySelector("#settRecall_per").value),
                 "fees.settlement_recall.flat": +(document.querySelector("#settRecall_flat").value),
 
-                "fees.fee_account_additional.percent": +(document.querySelector("#feeAccAdd_per").value),
                 "fees.fee_account_additional.flat": +(document.querySelector("#feeAccAdd_flat").value),
 
-                "fees.fee_account_dedicated.percent": +(document.querySelector("#feeAccDed_per").value),
                 "fees.fee_account_dedicated.flat": +(document.querySelector("#feeAccDed_flat").value),
 
-                "fees.fee_account_mounthly.percent": +(document.querySelector("#feeAccMonthly_per").value),
                 "fees.fee_account_mounthly.flat": +(document.querySelector("#feeAccMonthly_flat").value),
 
-                "fees.fee_account_setup.percent": +(document.querySelector("#feeAccSetup_per").value),
                 "fees.fee_account_setup.flat": +(document.querySelector("#feeAccSetup_flat").value),
 
                 "fees.fine_attitude_incorrect_payment_purpose.percent": +(document.querySelector("#fineAttIncPp_per").value),
@@ -180,16 +186,12 @@ class CreateMerchant{
         var inb2b_per = document.querySelector("#in_b2b_per").value = this.currentMerchant[0].fees.in_b2b.percent;
         var inb2b_flat = document.querySelector("#in_b2b_flat").value = this.currentMerchant[0].fees.in_b2b.flat;
         // 
-        var feeAccSetup_per = document.querySelector("#feeAccSetup_per").value = this.currentMerchant[0].fees.fee_account_setup.percent;
         var feeAccSetup_flat = document.querySelector("#feeAccSetup_flat").value = this.currentMerchant[0].fees.fee_account_setup.flat;
         // 
-        var feeAccMonthly_per = document.querySelector("#feeAccMonthly_per").value = this.currentMerchant[0].fees.fee_account_mounthly.percent;
         var feeAccMonthly_flat = document.querySelector("#feeAccMonthly_flat").value = this.currentMerchant[0].fees.fee_account_mounthly.flat;
         // 
-        var feeAccAdd_per = document.querySelector("#feeAccAdd_per").value = this.currentMerchant[0].fees.fee_account_additional.percent;
         var feeAccAdd_flat = document.querySelector("#feeAccAdd_flat").value = this.currentMerchant[0].fees.fee_account_additional.flat;
         // 
-        var feeAccDed_per = document.querySelector("#feeAccDed_per").value = this.currentMerchant[0].fees.fee_account_dedicated.percent;
         var feeAccDed_flat = document.querySelector("#feeAccDed_flat").value = this.currentMerchant[0].fees.fee_account_dedicated.flat;
         // 
         var fineRecall_per = document.querySelector("#fineRecall_per").value = this.currentMerchant[0].fees.fine_recall.percent;
@@ -352,22 +354,18 @@ class CreateMerchant{
                         "additional": 0
                     },
                     "fee_account_additional":{
-                        "percent": +(document.querySelector("#feeAccAdd_per").value),
                         "flat": +(document.querySelector("#feeAccAdd_flat").value),
                         "additional": 0
                     },
                     "fee_account_dedicated":{
-                        "percent": +(document.querySelector("#feeAccDed_per").value),
                         "flat": +(document.querySelector("#feeAccDed_flat").value),
                         "additional": 0
                     },
                     "fee_account_mounthly":{
-                        "percent": +(document.querySelector("#feeAccMonthly_per").value),
                         "flat": +(document.querySelector("#feeAccMonthly_flat").value),
                         "additional": 0
                     },
                     "fee_account_setup":{
-                        "percent": +(document.querySelector("#feeAccSetup_per").value),
                         "flat": +(document.querySelector("#feeAccSetup_flat").value),
                         "additional": 0
                     },
@@ -474,6 +472,7 @@ class CreateMerchant{
             document.title = `Edit ${this.merchName}`;
             this.editMerchantRenderPage();
 
+            this.buttonCreate.textContent = "Edit";
             this.buttonCreate.addEventListener("click", this.editMerchantInit);
             
         } else {
@@ -486,6 +485,12 @@ class CreateMerchant{
     render(){
         this.createOrEdit();
         this.b2bInput.addEventListener("click", this.openB2B);
+        
+        // Events for inputs %
+        var inputs = document.querySelectorAll(".percent");
+        inputs.forEach((inp) => {
+            inp.addEventListener("keydown", this.addSymbolPercentInput);
+        });
     }
 }
 

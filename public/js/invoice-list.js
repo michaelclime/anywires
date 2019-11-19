@@ -673,7 +673,7 @@ class invoiceList {
                 this.currentInvoice[0].status === "Received" && !PaymantProof ||
                 this.currentInvoice[0].status === "Received" && !UtilityBill ||
                 this.currentInvoice[0].status === "Received" &&  !Declaration) {
-            this.alertWindow("First you must download all the documents!");
+            this.alertWindow("Please verify all the documents First!");
 
         } else  {
             this.alertWindow(`Your current status ${this.currentInvoice[0].status} does't allow this!`);
@@ -972,73 +972,91 @@ class invoiceList {
     }
 
     docsBad = async () => {
-        // Loading GIF appear
-        this.loadingGif.style.display = "flex";
+        var statusTd = event.target.closest("tr").children[2].innerHTML;
 
-        var filename = event.target.closest("tr").children[4].textContent.trim();
-        var status = "Declined";
-        var type = event.target.closest("tr").children[1].textContent.trim();
-        var statusTd = event.target.closest("tr").children[2].innerHTML = status;
-        var createdBy = this.currentUser.textContent.trim();
-        var docId = event.target.closest("tr").children[5].textContent.trim();
+        // Check if status already Approved
+        if (statusTd.trim() === "Declined") {
+            this.alertWindow(`Status of this document is already Declined!`);
 
-        // Request in MongoDB
-        await this.changeDocsStatus(filename, status, this.currentInvoice[0].number, type, createdBy);
+        // Set New status 
+        } else {
+            // Loading GIF appear
+            this.loadingGif.style.display = "flex";
 
-        // Update Comment Area for this.currentInvoce Obj
-        this.tableComments = document.querySelector("#tableTbody-comments").innerHTML = "";
-        this.currentInvoice[0].comments.unshift({
-            "created_by": createdBy,
-            "creation_date": new Date(),
-            "message": `Invoice #${this.currentInvoice[0].number}. ${type} was ${status}!`
-        });
-        this.tableCommentsRender(this.currentInvoice[0].comments);
+            var filename = event.target.closest("tr").children[4].textContent.trim();
+            var status = "Declined";
+            var type = event.target.closest("tr").children[1].textContent.trim();
+            event.target.closest("tr").children[2].innerHTML = status;
+            var createdBy = this.currentUser.textContent.trim();
+            var docId = event.target.closest("tr").children[5].textContent.trim();
 
-        // Change doc status for current Invoice
-        type === "Payment proof" ? type = "payment_proof" : "";
-        type === "Utility Bill" ? type = "utility_bill" : "";
-        var currentObjType = this.currentInvoice[0].documents[type.toLowerCase()];
-        currentObjType.forEach((doc) =>{
-            doc.id === docId ? doc.status = "Declined" : "";
-        });
+            // Request in MongoDB
+            await this.changeDocsStatus(filename, status, this.currentInvoice[0].number, type, createdBy);
 
-        // Loading GIF appear
-        this.loadingGif.style.display = "none";
+            // Update Comment Area for this.currentInvoce Obj
+            this.tableComments = document.querySelector("#tableTbody-comments").innerHTML = "";
+            this.currentInvoice[0].comments.unshift({
+                "created_by": createdBy,
+                "creation_date": new Date(),
+                "message": `Invoice #${this.currentInvoice[0].number}. ${type} was ${status}!`
+            });
+            this.tableCommentsRender(this.currentInvoice[0].comments);
+
+            // Change doc status for current Invoice
+            type === "Payment proof" ? type = "payment_proof" : "";
+            type === "Utility Bill" ? type = "utility_bill" : "";
+            var currentObjType = this.currentInvoice[0].documents[type.toLowerCase()];
+            currentObjType.forEach((doc) =>{
+                doc.id === docId ? doc.status = "Declined" : "";
+            });
+
+            // Loading GIF appear
+            this.loadingGif.style.display = "none";
+        }
     }
 
-    docsGood = async () => {
-        // Loading GIF appear
-        this.loadingGif.style.display = "flex";
+    docsGood = async (event) => {
+        var statusTd = event.target.closest("tr").children[2].innerHTML;
 
-        var filename = event.target.closest("tr").children[4].textContent.trim();
-        var status = "Approved";
-        var type = event.target.closest("tr").children[1].textContent.trim();
-        var statusTd = event.target.closest("tr").children[2].innerHTML = status;
-        var createdBy = this.currentUser.textContent.trim();
-        var docId = event.target.closest("tr").children[5].textContent.trim();
-        
-        // Request in MongoDB
-        await this.changeDocsStatus(filename, status, this.currentInvoice[0].number, type, createdBy);
+        // Check if status already Approved
+        if (statusTd.trim() === "Approved") {
+            this.alertWindow(`Status of this document is already Approved!`);
 
-        // Update Comment Area for this.currentInvoce Obj
-        this.tableComments = document.querySelector("#tableTbody-comments").innerHTML = "";
-        this.currentInvoice[0].comments.unshift({
-            "created_by": createdBy,
-            "creation_date": new Date(),
-            "message": `Invoice #${this.currentInvoice[0].number}. ${type} was ${status}!`
-        });
+        // Set New status 
+        } else {
+            // Loading GIF appear
+            this.loadingGif.style.display = "flex";
 
-        // Change doc status for current Invoice
-        type === "Payment proof" ? type = "payment_proof" : "";
-        type === "Utility Bill" ? type = "utility_bill" : "";
-        var currentObjType = this.currentInvoice[0].documents[type.toLowerCase()];
-        currentObjType.forEach((doc) =>{
-            doc.id === docId ? doc.status = "Approved" : "";
-        });
-        this.tableCommentsRender(this.currentInvoice[0].comments);
+            var filename = event.target.closest("tr").children[4].textContent.trim();
+            var status = "Approved";
+            var type = event.target.closest("tr").children[1].textContent.trim();
+            event.target.closest("tr").children[2].innerHTML = status;
+            var createdBy = this.currentUser.textContent.trim();
+            var docId = event.target.closest("tr").children[5].textContent.trim();
+            
+            // Request in MongoDB
+            await this.changeDocsStatus(filename, status, this.currentInvoice[0].number, type, createdBy);
 
-        // Loading GIF appear
-        this.loadingGif.style.display = "none";
+            // Update Comment Area for this.currentInvoce Obj
+            this.tableComments = document.querySelector("#tableTbody-comments").innerHTML = "";
+            this.currentInvoice[0].comments.unshift({
+                "created_by": createdBy,
+                "creation_date": new Date(),
+                "message": `Invoice #${this.currentInvoice[0].number}. ${type} was ${status}!`
+            });
+
+            // Change doc status for current Invoice
+            type === "Payment proof" ? type = "payment_proof" : "";
+            type === "Utility Bill" ? type = "utility_bill" : "";
+            var currentObjType = this.currentInvoice[0].documents[type.toLowerCase()];
+            currentObjType.forEach((doc) =>{
+                doc.id === docId ? doc.status = "Approved" : "";
+            });
+            this.tableCommentsRender(this.currentInvoice[0].comments);
+
+            // Loading GIF appear
+            this.loadingGif.style.display = "none";
+            }
     }
 
     openDocsImage = (event) => {
@@ -2092,7 +2110,7 @@ class invoiceList {
         Arr.forEach((item) => {
             var currency = ""; item.currency === "EUR" ? currency = "€" : currency = "$";
             var color = "";
-            var emptyImg = `<img src="img/img_3975.png" alt="empty" width="20px" height="10px">`;
+            
             item.status === "Approved" ? color = "approved" : "";
             item.status === "Declined" ? color = "red" : "";
             item.status === "Received" ? color = "blue" : "";
@@ -2103,6 +2121,10 @@ class invoiceList {
             item.status === "Recall" ? color = "recall" : "";
 
             var docs = "documents" in item;
+            var emptyImg = `<img src="img/img_3975.png" alt="empty" width="20px" height="10px">`;
+
+            var bankFee = item.amount.amount_sent - item.amount.amount_received;
+            item.amount.amount_received <= 0 ? bankFee = 0 : "";
 
             this.userList = document.createElement("tr");
             this.userList.innerHTML =  `
@@ -2117,13 +2139,22 @@ class invoiceList {
                         ${item.merchant}
                     </td> 
                     <td class="column3 view">${item.client_details.full_name}</td> 
+
+                    <td class="column4 view">
+                        <div class="sentTd">
+                            <p>${currency}${item.amount.amount_requested}</p>
+                            <p class="grey smallBoldText">${this.checkDate(item.dates.creation_date)}</p>
+                        </div>
+                    </td> 
+
                     <td class="column4 view">
                         <div class="sentTd">
                             <p>${currency}${item.amount.amount_sent}</p>
                             <p class="yellow smallBoldText">${this.checkDate(item.dates.sent_date)}</p>
                         </div>
                     </td> 
-                    <td class="column5 view">${""}</td>
+
+                    <td class="column5 view">${currency}${bankFee}</td>
                     <td class="column6 view">
                         <div>
                             <p>${currency}${item.amount.amount_received}</p>
