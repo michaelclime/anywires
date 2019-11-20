@@ -14,44 +14,71 @@ $(document).ready(function(){
     });
 });
 
-// Generate merchants list for selected menu
+// Merchant window
 
-let fetchPromise  = fetch('http://18.216.223.81:3000/getMerchants');
-fetchPromise.then(response => {
-    return response.json();
-    }).then(merchants => {
+const merchantChooseBtn = document.querySelector('.merchantChooseList');
+let showIndicator = true;
 
-        class MerchantOptoinList {
-            constructor(){
-                this.list = merchants;
-                this.render();
-            }
-        
-            loadMerchant(list) {
-                this.container = document.querySelector('#merchant1');
-                list.slice(0, list.length).forEach((item, i) => {
-                    this.option = document.createElement("option");
-                    this.option.value = item.name;
-                    this.option.innerHTML =  item.name;   
-                    this.container.append(this.option);
-                });
-            }
+merchantChooseBtn.addEventListener('click', () => {
+    document.querySelector('.selectAllBox').innerHTML = 'Loading...';
+    if (showIndicator) {
+        let fetchPromise  = fetch('http://18.216.223.81:3000/getMerchants');
+        fetchPromise.then(response => {
+            return response.json();
+            }).then(merchants => {
 
-            loadMerchant2(list) {
-                this.container = document.querySelector('#merchant2');
-                list.slice(0, list.length).forEach((item, i) => {
-                    this.option = document.createElement("option");
-                    this.option.value = item.name;
-                    this.option.innerHTML =  item.name;   
-                    this.container.append(this.option);
-                });
-            }
+                class MerchantOptoinList {
+                    constructor(){
+                        this.list = merchants;
+                        this.render();
+                    }
 
-            render(){
-                this.loadMerchant(this.list);
-                this.loadMerchant2(this.list);
-            }
-        };
+                    loadMerchant(list) {
 
-    const a = new MerchantOptoinList(merchants);
+                        this.container = document.querySelector('.selectAllBox');
+                        this.container.innerHTML = ` 
+                            <span class="mechCheckBox"> <input onclick="selectAll(this)" type="checkbox" name="select-all" id="selectAll "> Select / Remove All</span>
+                        `;
+
+                        list.slice(0, list.length).forEach((item, i) => {
+                            this.span = document.createElement("span");
+                            this.span.className = `mechCheckBox`;
+                            this.span.innerHTML =  `
+                                <span class="mechCheckBox"><input class="check" type="checkbox" name='merchant' value=${item._id }> ${item.name}</span>
+                            `;
+                            this.leftBox =  document.querySelector('.leftBox');
+                            this.rightBox = document.querySelector('.rightBox');
+                            if ( i % 2 === 0) {
+                                this.leftBox.append(this.span);
+                            } else {
+                                this.rightBox.append(this.span);
+                            }
+                            
+                        });
+                    }
+
+                    render(){
+                        this.loadMerchant(this.list);
+                    }
+                };
+
+            const a = new MerchantOptoinList(merchants);
+
+            
+        });
+        showIndicator = false; 
+    } else {
+        showIndicator = true;
+        document.querySelector('.selectAllBox').innerHTML = '';
+        document.querySelector('.leftBox').innerHTML = '';
+        document.querySelector('.rightBox').innerHTML = '';
+    }
 });
+
+
+const selectAll = (source) => {
+    checkboxes = document.getElementsByName('merchant');
+    for(let i = 0, n = checkboxes.length; i < n; i++) {
+      checkboxes[i].checked = source.checked;
+    }       
+};

@@ -366,7 +366,7 @@ label {
 	left: 0;
 	bottom: 0;
 	width: 100%;
-	min-height: 1000px;
+	min-height: 1200px;
     z-index: 9;
     background-color: rgba(0, 0, 0, 0.5);
     font-family: Helvetica, Arial, serif;
@@ -422,6 +422,40 @@ label {
     border-radius: 3px;
     padding-left: 10px;
     font-size: 16px;
+}
+
+.merchantChooseList {
+    height: 30px;
+    width: 40px;
+}
+
+.merchantChooseList:hover {
+    background-color: rgb(240, 240, 240);
+    
+    cursor: pointer;
+}
+
+.merchList {
+    width: 100%;
+}
+
+.merchListContainer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.leftBox, .rightBox {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.mechCheckBox {
+    margin: 5px 0;
+    font-weight: normal;
+    font-size: 18px;
+    color: #808080;
 }
 
 .creatUserBtn {

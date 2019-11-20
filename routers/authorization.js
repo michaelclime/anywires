@@ -27,7 +27,6 @@ router.post('/register', function(req, res){
         typeClass: req.body.typeClass,
         role: req.body.role,
         merchant: req.body.merchant,
-        merchant2: req.body.merchant2,
         dateCreation: new Date()
     });
     User.register(newUser, req.body.password, function(err, user) {
