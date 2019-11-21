@@ -78,7 +78,8 @@ router.post("/createMerchant", jsonParser, (req, res) => {
                 "swift": ""
             },
             "created_by": req.body.newMerchant.created_by,
-            "merchant_name": req.body.newMerchant.name
+            "merchant_name": req.body.newMerchant.name,
+            "creation_date": new Date()
         },{
             "name": "AW Wallet",
             "type": "Anywires",
@@ -94,7 +95,8 @@ router.post("/createMerchant", jsonParser, (req, res) => {
                 "swift": ""
             },
             "created_by": req.body.newMerchant.created_by,
-            "merchant_name": req.body.newMerchant.name
+            "merchant_name": req.body.newMerchant.name,
+            "creation_date": new Date()
         }];
     Wallet.insertMany(arr).then((docs) => {
         const wallet1ID = docs[0]._id;
