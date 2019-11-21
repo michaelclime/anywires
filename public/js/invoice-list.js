@@ -2177,9 +2177,9 @@ class invoiceList {
                     </td>
                     <td class="column11">
                         <div class="previewIcons">
-                            <i class="fas fa-file-alt"></i>
-                            <i class="fas fa-file-signature"></i>
-                            <i class="fas fa-file-invoice-dollar"></i>
+                            <i title="Bank Invoice" class="fas fa-file-alt"></i>
+                            <i title="Contract" class="fas fa-file-signature"></i>
+                            <i title="Declaration Of Payment" class="fas fa-file-invoice-dollar"></i>
                         </div>
                     </td>
                     <td class="column12">
