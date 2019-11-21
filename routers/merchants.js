@@ -28,6 +28,7 @@ router.get("/getMerchants", jsonParser, (req, res) => {
     });
 });
 
+
 router.post("/getPart-Merchants", jsonParser, (req, res) => {
     mongo.connect(url, (err, db) => {
     var number = req.body.number;
@@ -60,6 +61,8 @@ router.post("/getNumber-Merchants", jsonParser, (req, res) => {
     });
 });
 
+// @route POST /createMerchant
+// @desc Create Merchant
 router.post("/createMerchant", jsonParser, (req, res) => {
     const newMerchant = req.body.newMerchant;
     newMerchant["creation_date"] = new Date();

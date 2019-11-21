@@ -2,6 +2,7 @@ const express = require('express'),
     router = new express.Router(),
     mongo = require('mongodb'),
     jsonParser = express.json();
+    User = require("../modules/user");
  
 const url = 'mongodb://18.216.223.81:27017/anywires';
 
@@ -57,6 +58,22 @@ router.post("/getNumber-Users", jsonParser, (req, res) => {
             res.send({"numbers": user});
         })
     });
+});
+
+// @route POST /getUserByFilter
+// @desc Create Merchant
+router.post("/getUserByFilter", jsonParser, (req, res) => {
+    const filter = req.body.filter;
+    User.find(filter, (err, users) => {
+        if(err) return console.log("Error with get user by filter!", err);
+        res.send(users);
+    });
+    // mongo.connect(url, (err, db) =>{
+    //     db.collection("merchants").find({}).sort({"name": 1}).toArray(function(err, merchants){
+    //         if(err) return console.log("Error with upload Merchants!", err);
+    //         res.send(merchants);
+    //     })
+    // });
 });
 
 function isLoggedIn(req, res, next) {

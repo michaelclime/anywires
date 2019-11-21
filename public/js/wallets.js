@@ -13,7 +13,7 @@ class Wallets {
     }
 
     getAllMerchants = async () => {
-        return  await fetch("http://18.216.223.81:3000/getMerchants")
+        return  await fetch("http://18.216.223.81:3000/getAffilliates")
         .then(res => {
             return res.json();
         }) 
