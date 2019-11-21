@@ -22,7 +22,6 @@ router.get("/getMerchants", jsonParser, (req, res) => {
     mongo.connect(url, (err, db) =>{
         db.collection("merchants").find({}).sort({"name": 1}).toArray(function(err, merchants){
             if(err) return console.log("Error with upload Merchants!", err);
-            db.close();
             res.send(merchants);
         })
     });

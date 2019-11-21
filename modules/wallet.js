@@ -15,7 +15,7 @@ let WalletSchema = new mongoose.Schema({
         iban: String,
         swift: String
     },
-    creating_date: Date,
+    creation_date: Date,
     created_by: String
 });
 
