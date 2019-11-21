@@ -435,7 +435,7 @@ class Wallets {
         arr.forEach((item) => {
             this.userList = document.createElement("tr");
             this.userList.innerHTML =  `
-                    <td class="column1">${this.checkDate(item.creating_date)}</td> 
+                    <td class="column1">${this.checkDate(item.creation_date)}</td> 
                     <td class="column2">${item.name}</td> 
                     <td class="column3">${item.type}</td> 
                     <td class="column4">${item.balance}</td> 

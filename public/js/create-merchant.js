@@ -440,7 +440,6 @@ class CreateMerchant{
                     "swift": document.querySelector("#SWIFT").value
                 },
                 "created_by": createdBy,
-                "inside_wallets": [],
                 "balance_USD": {
                     "balance_received": 0,
                     "balance_approved": 0,

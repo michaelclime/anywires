@@ -16,7 +16,8 @@ let WalletSchema = new mongoose.Schema({
         swift: String
     },
     creation_date: Date,
-    created_by: String
+    created_by: String,
+    merchant_name: String
 });
 
 WalletSchema.plugin(passportLocalMongoose);
