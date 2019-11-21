@@ -90,5 +90,5 @@ function isLoggedIn(req, res, next) {
 // =====================
 
 app.listen(3000, function() {
-    console.log('Servering localhost 3000');
+    console.log('Servering on port 3000');
 });

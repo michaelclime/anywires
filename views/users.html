@@ -31,7 +31,6 @@
 								<nav class="gn-menu-wrapper">
 									<div class="gn-scroller">
 										<ul class="gn-menu">
-											<li><a href='personal-area.html'><img class="icon" src="fonts/icons/personal-area.png">Personal Area</a></li>
 											<li><a href="dashBoardMainPage.html"><img class="icon" src="fonts/icons/dashboard.png">Dashboard</a></li>
 											<li><a href='InvoiceGeneration.html'><img class="icon" src="fonts/icons/invoice.png">Invoice generation</a></li>
 											<li><a href="invoice-list.html"><img class="icon" src="fonts/icons/invoice-list.png">Invoice list</a></li>
@@ -219,8 +218,8 @@
 										<label for="role">Role</label>
 										<select id="role" class="selectMenu" name="role">
 												<option value=""></option>
-												<option value="Crm FinanceManager">CRM finance manager</option>
-												<option value="Crm InvoiceManager">CRM invoice manager</option>
+												<option value="Crm FinanceManager">CRM Finance manager</option>
+												<option value="Crm InvoiceManager">CRM Invoice manager</option>
 												<option value="Crm SuccessManager">CRM Success manager</option>
 												<option value="Crm Admin">CRM admin</option>
 												<option value="Merchant Manager">Merchant manager</option>
@@ -231,16 +230,18 @@
 									</div>
 									<div class="inputSection">
 										<label for="merchant1">Merchant </label>
-										<select id="merchant1" class="selectMenu" name="merchant">
-											<option value="null"></option>
-										</select>
+										<span class="merchantChooseList"><i class="fas fa-sort-down"></i></span>
+										
 									</div>
-									<div class="inputSection">
-										<label for="merchant2">Merchant 2</label>
-										<select id="merchant2" class="selectMenu" name="merchant2">
-											<option value="null"></option>
-										</select>
+									
+									<div class="merchList">
+										<span class="selectAllBox"></span>
+										<div class="merchListContainer">
+											<div class="leftBox"></div>
+											<div class="rightBox"></div>
+										</div>
 									</div>
+
 									<input type="submit" class="creatUserBtn" value="Creat A New User">
 								</form>
 							</div>
@@ -339,16 +340,9 @@
 									</div>
 									<div class="inputSection hide">
 										<label for="merchant1">Merchant </label>
-										<select id="merchant1" class="selectMenu" name="merchant">
-											<option value="<%= currentUser.merchant %>"></option>
-										</select>
+										<button><i class="fas fa-sort-down"></i></button>
 									</div>
-									<div class="inputSection hide">
-										<label for="merchant2">Merchant 2</label>
-										<select id="merchant2" class="selectMenu" name="merchant2">
-											<option value="<%= currentUser.merchant2 %>"></option>
-										</select>
-									</div>
+									
 									<input type="submit" class="creatUserBtn" value="Creat A New User">
 								</form>
 							</div>
