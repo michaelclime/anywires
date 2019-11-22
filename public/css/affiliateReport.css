@@ -112,6 +112,10 @@ p, span {
 .turnOverChartBtn:hover {
     background: rgb(51, 181, 229);
 }
+
+.hide {
+    display: none;
+}
 /* CHART */
 
 .chartBox {

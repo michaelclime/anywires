@@ -25,6 +25,7 @@
 </head>
 
 <body>
+    <span class="affiliateEmail hide"><%= currentUser.email %></span>
      <!-- MENU -->
      <% if (currentUser.role == 'Affiliate') { %>
     <header>
@@ -136,16 +137,17 @@
             </div>
            
            <div class="rightBlockChoosePeriod">
-                <h3 class="affiliateName">AW_Technical</h3>
                <span>Please, select a period:</span>
                <div class="inputPeriod">
                     <input type="text"
-                    value="02/21/2019 - 07/06/2019"
+                    id="inputPeriod"
+                    value="<%= new Date() %>"
                     data-range="true"
                     data-multiple-dates-separator=" - "
                     data-language="en"
                     class="datepicker-here"/>
                </div>
+               
            </div>
         </div>
 
@@ -180,6 +182,7 @@
         new gnMenu( document.getElementById( 'gn-menu' ) );
     </script>
     <script type="text/javascript" src="js/affiliateReportChart.js"></script>
+    <script type="text/javascript" src="js/affiliateReport.js"></script>
     <script type="text/javascript" src="js/authorizationMenu.js"></script>
 </body>
 </html>

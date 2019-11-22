@@ -1,4 +1,4 @@
-let express = require("express"),
+const express = require("express"),
     app = express(),
     path = require('path'),
     bodyParser = require('body-parser'),
@@ -10,13 +10,13 @@ let express = require("express"),
     invoiceGenerationRouter = require('./routers/invoicesGeneration'),
     dashBoardMainPageRouter = require('./routers/dashBoardMainPage'),
     authorizationRouter = require('./routers/authorization'),
-    settlementsRouter = require('./routers/settlements');
-    usersRouter = require('./routers/users');
-    merchantsRouter = require('./routers/merchants');
-    banksRouter = require('./routers/banks');
+    settlementsRouter = require('./routers/settlements'),
+    usersRouter = require('./routers/users'),
+    merchantsRouter = require('./routers/merchants'),
+    banksRouter = require('./routers/banks'),
     invoiceListRouter = require('./routers/invoice-list'),
-    authorizationRouter = require('./routers/authorization');
-    wallets = require("./routers/wallets")
+    wallets = require("./routers/wallets"),
+    affiliateReportRouter = require('./routers/affiliateReport');
 
 const url = 'mongodb://18.216.223.81:27017/anywires';
 
@@ -64,13 +64,11 @@ app.use(merchantsRouter);
 app.use(banksRouter);
 app.use(invoiceListRouter);
 app.use(wallets);
+app.use(affiliateReportRouter);
+
 
 app.get('/personal-area.html', isLoggedIn, function(req, res) {
     res.render("personal-area.html");
-});
-
-app.get('/affiliateReport.html', isLoggedIn, function(req, res) {
-    res.render("affiliateReport.html");
 });
 
 app.get('/Dashboard-how-it-works.html', isLoggedIn, function(req, res) {
