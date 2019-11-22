@@ -11,25 +11,35 @@ class CreateMerchant{
         this.render();
     }
 
-    addSymbolPercentInput = (event) => {
-        // if (!(event.target.value.length >= 1)){
-        //     var input = event.target;
-        //     var value = event.target.value;
-        //     event.target.value = value + "%";
-        // } 
+    getListOfAffilliate = async () => {
+        const Affilliate = await this.getListOfAffilliateReq({"role":"Affiliate"});
+        const container = document.querySelector("#affiliate");
+        Affilliate.forEach( aff => {
+            const option = document.createElement("option");
+            option.value = aff.email;
+            option.innerHTML = `${aff.username} '${aff.email}'`;
+            container.appendChild(option);
+        });
     }
 
-    editMerchantReq = async (mechantName, newData) => {
-        return  await fetch("http://18.216.223.81:3000/editMerchant", {
+    getListOfAffilliateReq = async (filter) => {
+        return  await fetch("http://18.216.223.81 :3000/getUserByFilter", {
             method: "POST",
-            body: JSON.stringify({
-                mechantName,
-                newData
-            }),
+            body: JSON.stringify({filter}),
             headers:{'Content-Type': 'application/json'}
         })
         .then(res => {
-            return res.text();
+            return res.json();
+        }) 
+        .catch(err => {
+            console.log(err);
+        });
+    }
+
+    editMerchantReq = async (mechantName, newData) => {
+        return  await fetch("http://18.216.223.81 :3000/getMerchants")
+        .then(res => {
+            return res.json();
         }) 
         .catch(err => {
             console.log(err);
@@ -149,7 +159,7 @@ class CreateMerchant{
             };
 
             await this.editMerchantReq(this.merchName, editedMerch);
-            document.location.replace("http://18.216.223.81:3000/merchants.html");
+            document.location.replace("http://18.216.223.81 :3000/merchants.html");
 
         }
     }
@@ -241,7 +251,7 @@ class CreateMerchant{
     }
 
     getMerchants = async (number, filter) => {
-        return  await fetch("http://18.216.223.81:3000/getPart-Merchants", {
+        return  await fetch("http://18.216.223.81 :3000/getPart-Merchants", {
             method: "POST",
             body: JSON.stringify({
                 number, 
@@ -258,7 +268,7 @@ class CreateMerchant{
     }
 
     createMerchantReq = async (data) => {
-        return  await fetch("http://18.216.223.81:3000/createMerchant", {
+        return  await fetch("http://18.216.223.81 :3000/createMerchant", {
                 method: "POST",
                 body: JSON.stringify({
                     "newMerchant": data
@@ -440,7 +450,6 @@ class CreateMerchant{
                     "swift": document.querySelector("#SWIFT").value
                 },
                 "created_by": createdBy,
-                "inside_wallets": [],
                 "balance_USD": {
                     "balance_received": 0,
                     "balance_approved": 0,
@@ -458,7 +467,7 @@ class CreateMerchant{
             // Loading GIF OFF
             this.loadingGIF.style.display = "none";
 
-            document.location.replace("http://18.216.223.81:3000/merchants.html");
+            document.location.replace("http://18.216.223.81 :3000/merchants.html");
         } 
     }
 
@@ -484,13 +493,11 @@ class CreateMerchant{
 
     render(){
         this.createOrEdit();
+        // 
+        // Get list of Affilliate
+        this.getListOfAffilliate();
+        // 
         this.b2bInput.addEventListener("click", this.openB2B);
-        
-        // Events for inputs %
-        var inputs = document.querySelectorAll(".percent");
-        inputs.forEach((inp) => {
-            inp.addEventListener("keydown", this.addSymbolPercentInput);
-        });
     }
 }
 

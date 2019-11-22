@@ -113,7 +113,6 @@
 						<nav class="gn-menu-wrapper">
 							<div class="gn-scroller">
 								<ul class="gn-menu">
-									<li><a href='personal-area.html'><img class="icon" src="fonts/icons/personal-area.png">Personal Area</a></li>
 									<li><a href="dashBoardMainPage.html"><img class="icon" src="fonts/icons/dashboard.png">Dashboard</a></li>
 									<li><a href='InvoiceGeneration.html'><img class="icon" src="fonts/icons/invoice.png">Invoice generation</a></li>
 									<li><a href="invoice-list.html"><img class="icon" src="fonts/icons/invoice-list.png">Invoice list</a></li>
@@ -179,17 +178,20 @@
 			<main>
                 <div class="containerBlock">
                     <div class="filterBlock-first">
-                        <div class="filterSolution-block">
-                            <label for="filterSolution-block">Type:</label>
-                            <select id="filterSolution" type="text">
-                                    <option value="" selected></option>
+                        <div class="filterType-block">
+                            <label for="filterType-block">Type:</label>
+                            <select id="filterType" type="text">
+									<option value="" selected></option>
+									<option value="Wire">Wire</option>
+									<option value="BTC">BTC</option>
+									<option value="Anywires">Anywires</option>
                             </select>
                         </div>
 
-                        <div class="filterCountry-block">
-                            <label for="filterCountry-block">Merchant:</label>
-                            <select id="filterCountry" type="text">
-                                    <option value="" selected></option>
+                        <div class="filterMerchant-block">
+                            <label for="filterMerchant-block">Merchant:</label>
+                            <select id="filterMerchant" type="text">
+									<option value="" selected></option>
                             </select>
                         </div>
                     </div>
@@ -228,6 +230,7 @@
 									<th class="column4">Balance</th>
 									<th class="column5">Currency</th>
 									<th class="column6">Merchant</th>
+									<th class="column7"></th>
 								</tr>
 							</thead>
 							<tbody id="table-list"></tbody>
@@ -237,6 +240,102 @@
 				</div>
 			</main>
 		</div>
+
+		<!-- Edit Wallet PopUp Window -->
+		<div class="filter_editWallet">
+			<div class="editWallet_wrapper">
+				<h3 class="editWallet_title">EDIT WALLET</h3>
+				<div class="editWallet_main">
+					<div class="editWallet_block">
+						<div class="editWallet_item">
+							<label>Wallet name:</label>
+							<input class="requiredEdit" type="text" id="walletName" placeholder="Wallet name">
+						</div>
+						<div class="editWallet_item">
+							<label>Beneficiary name:</label>
+							<input class="requiredEdit" type="text" id="benefName" placeholder="Beneficiary name">
+						</div>
+						<div class="editWallet_item">
+							<label>Beneficiary address:</label>
+							<input class="requiredEdit" type="text" id="benefAddress" placeholder="Beneficiary address">
+						</div>
+						<div class="editWallet_item">
+							<label>Bank name:</label>
+							<input class="requiredEdit" type="text" id="bankName" placeholder="Bank name">
+						</div>
+					</div>
+					<div class="editWallet_block">
+						<div class="editWallet_item">
+							<label>Bank address:</label>
+							<input class="requiredEdit" type="text" id="bankAddress" placeholder="Bank address">
+						</div>
+						<div class="editWallet_item">
+							<label>Account number:</label>
+							<input class="requiredEdit" type="text" id="accountNum" placeholder="Account number">
+						</div>
+						<div class="editWallet_item">
+							<label>IBAN:</label>
+							<input class="requiredEdit" type="text" id="IBAN" placeholder="IBAN">
+						</div>
+						<div class="editWallet_item">
+							<label>SWIFT:</label>
+							<input class="requiredEdit" type="text" id="SWIFT" placeholder="SWIFT">
+						</div>
+					</div>
+				</div>
+				<!-- Create Wallet START -->
+				<div class="createWallet_main">
+					<div class="createWallet_block">
+						<div class="createWallet_item">
+							<label>Merchant:</label>
+							<select class="requiredCreate" id="merchant">
+								<option value="" selected></option>
+								<option value="1">1</option>
+							</select>
+						</div>
+						<div class="createWallet_item">
+							<label>Currency:</label>
+							<select class="requiredCreate" id="currency">
+								<option value="" selected></option>
+								<option value="USD">USD</option>
+								<option value="EUR">EUR</option>
+							</select>
+						</div>
+					</div>
+					<div class="createWallet_block">
+						<div class="createWallet_item">
+							<label>Type:</label>
+							<select class="requiredCreate" id="type">
+								<option value="" selected></option>
+								<option value="Wire">Wire</option>
+								<option value="BTC">BTC</option>
+								<option value="AW Wallet">AW Wallet</option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<!-- Create Wallet END -->
+				<button id="editWallet_action">Edit</button>
+			</div>
+		</div>
+		<!-- Edit Wallet END -->
+
+		<!-- Alert Window -->
+		<div class="alert_filter">
+			<div class="alert_wrapper bounceIn">
+				<div class="alert_head">
+					<img id="alert_image" src="../img/alert_img.png" alt="Alert image">
+				</div>
+				<div class="alert_body">
+					<h2>Oops...</h2>
+					<p id="alert_body_text">You can't do that!</p>
+				</div>
+				<div class="alert_footer">
+					<button id="alert_button">OK</button>
+				</div>
+			</div>
+		</div>
+		<!-- Alert Window  END-->
 		
 		<script src="js/authorizationMenu.js"></script>
 		<script src="./js/wallets.js"></script>

@@ -15,8 +15,9 @@ let WalletSchema = new mongoose.Schema({
         iban: String,
         swift: String
     },
-    creating_date: Date,
-    created_by: String
+    creation_date: Date,
+    created_by: String,
+    merchant_name: String
 });
 
 WalletSchema.plugin(passportLocalMongoose);

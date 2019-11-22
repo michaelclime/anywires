@@ -2,6 +2,7 @@ const express = require('express'),
     router = new express.Router(),
     mongo = require('mongodb'),
     Merchant = require("../modules/merchant");
+    Wallet = require("../modules/wallet");
     jsonParser = express.json();
  
 const url = 'mongodb://18.216.223.81:27017/anywires';
@@ -22,11 +23,11 @@ router.get("/getMerchants", jsonParser, (req, res) => {
     mongo.connect(url, (err, db) =>{
         db.collection("merchants").find({}).sort({"name": 1}).toArray(function(err, merchants){
             if(err) return console.log("Error with upload Merchants!", err);
-            db.close();
             res.send(merchants);
         })
     });
 });
+
 
 router.post("/getPart-Merchants", jsonParser, (req, res) => {
     mongo.connect(url, (err, db) => {
@@ -60,15 +61,52 @@ router.post("/getNumber-Merchants", jsonParser, (req, res) => {
     });
 });
 
+// @route POST /createMerchant
+// @desc Create Merchant
 router.post("/createMerchant", jsonParser, (req, res) => {
     const newMerchant = req.body.newMerchant;
     newMerchant["creation_date"] = new Date();
-    mongo.connect(url, (err, db) => {
-        db.collection("merchants").insertOne(newMerchant, function(err, result) {
-            if(err) return console.log("Error with creating new Merchant!", err);
-            res.send("Merchant has been created successfully!");
-        });
-    });
+    const arr = [{
+            "name": "AW Wallet",
+            "type": "Anywires",
+            "balance": 0,
+            "currency": "USD",
+            "requisites": {
+                "beneficiary_name": "",
+                "beneficiary_address": "",
+                "bank_name": "",
+                "bank_address": "",
+                "account_number": "",
+                "iban": "",
+                "swift": ""
+            },
+            "created_by": req.body.newMerchant.created_by,
+            "merchant_name": req.body.newMerchant.name,
+            "creation_date": new Date()
+        },{
+            "name": "AW Wallet",
+            "type": "Anywires",
+            "balance": 0,
+            "currency": "EUR",
+            "requisites": {
+                "beneficiary_name": "",
+                "beneficiary_address": "",
+                "bank_name": "",
+                "bank_address": "",
+                "account_number": "",
+                "iban": "",
+                "swift": ""
+            },
+            "created_by": req.body.newMerchant.created_by,
+            "merchant_name": req.body.newMerchant.name,
+            "creation_date": new Date()
+        }];
+    Wallet.insertMany(arr).then((docs) => {
+        const wallet1ID = docs[0]._id;
+        const wallet2ID = docs[1]._id;
+        newMerchant["wallets"] = [wallet1ID, wallet2ID];
+        new Merchant(newMerchant).save()
+    }).then(() => res.send("Merchant has been created successfully!"));
 });
 
 // @route POST /editMerchant

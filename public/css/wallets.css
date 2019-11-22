@@ -173,7 +173,7 @@ main {
 
 /* Filter Block First START*/
 
-#filterMin, #filterMax, #filterSepa, #filterEnable, #filterSolution, #filterCurrency, #filterCountry {
+#filterMin, #filterMax, #filterSepa, #filterEnable, #filterType, #filterCurrency, #filterMerchant {
     width: 100%;
     height: 40px;
     border: 1px solid rgb(189, 189, 189);
@@ -201,7 +201,7 @@ option {
     align-items: flex-end;
 }
 
-.filterSolution-block {
+.filterType-block {
     width: 200px;
     margin-right: 20px;
 }
@@ -211,7 +211,7 @@ option {
     margin-right: 20px;
 }
 
-.filterCountry-block {
+.filterMerchant-block {
     width: 200px;
 }
 /* Filter Block First END*/
@@ -424,11 +424,30 @@ option {
   .column1 {
     padding-left: 20px;
   }
-  
-  
-  .column13 {
-    text-align: right;
-    padding-right: 5px;
+
+  .editWallet_btn {
+    width: 22px;
+    height: 22px;
+    margin-top: 10px;
+    margin-right: 10px;
+  }
+
+  .editWallet_btn:hover {
+    filter: invert(75%);
+  }
+
+  .editWallet_btn:active {
+    filter: invert(20%);
+  }
+
+  .column7 {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+
+  .hide {
+    display: none;
   }
   
   
@@ -512,3 +531,224 @@ option {
     }
   }
 /* Table STYLE END */
+
+
+/* Edit Wallet PopUp  START*/
+.filter_editWallet {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.6);
+  position: fixed;
+  top: 0; bottom: 0; left: 0; right: 0;
+  z-index: 100;
+}
+
+.editWallet_wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 900px;
+  background-color: white;
+  padding: 20px;
+  z-index: 110;
+}
+
+.editWallet_main {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.createWallet_main {
+  width: 100%;
+  display: none;
+  justify-content: space-between;
+}
+
+.editWallet_block, .createWallet_block {
+  width: 45%;
+}
+
+.editWallet_item, .createWallet_item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.editWallet_item input {
+  border-bottom: 1.5px solid #20A5F7;
+  width: 220px;
+  height: 40px;
+  padding: 5px;
+  font-family: 'Frank Ruhl Libre', serif;
+  font-size: 15px;
+}
+
+.createWallet_item select {
+  border-bottom: 1.5px solid #20A5F7;
+  width: 220px;
+  height: 40px;
+  padding: 5px;
+  font-family: 'Frank Ruhl Libre', serif;
+  font-size: 15px;
+  background-color: inherit;
+}
+
+#editWallet_action {
+  width: 140px;
+  height: 45px;
+  background-color: #12C7B2;
+  color: white;
+  cursor: pointer;
+  border: none;
+  text-align: center;
+  line-height: 1;
+  border-radius: 3px;
+  outline: none;
+  transition: .35s;
+  font-family: 'Frank Ruhl Libre', serif;
+  font-size: 18px;
+  margin-top: 20px;
+}
+#editWallet_action:hover {
+  background-color: #555;
+}
+#editWallet_action:active {
+  background-color: #12C7B2;
+}
+/* Edit Wallet PopUp  END*/
+
+
+/* PopUp Alert START */
+.alert_filter {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.8);
+  position: fixed;
+  top: 0; bottom: 0; left: 0; right: 0;
+  z-index: 500;
+}
+
+.alert_wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 550px;
+  background-color: white;
+  padding: 20px;
+  z-index: 510;
+  border-radius: 5px;;
+}
+
+.alert_head {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
+
+#alert_image {
+  width: 100px;
+  height: 100px;
+}
+
+.alert_body {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
+
+#alert_body_text {
+  margin-top: 20px;
+  font-size: 20px;
+  color: #555;
+}
+
+.alert_footer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
+
+#alert_button {
+  width: 100px;
+  height: 45px;
+  background-color: #12C7B2;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  border-radius: 3px;
+  line-height: 1;
+  outline: none;
+  transition: .35s;
+  font-family: 'Frank Ruhl Libre', serif;
+}
+
+#alert_button:hover{
+  background-color: #4D4D4D;
+
+}
+
+@keyframes bounceIn{
+  from,
+  20%,
+  40%,
+  60%,
+  80%,
+  to {
+    -webkit-animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+    animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+  }
+
+  0% {
+    opacity: 0;
+    -webkit-transform: scale3d(0.3, 0.3, 0.3);
+    transform: scale3d(0.3, 0.3, 0.3);
+  }
+
+  20% {
+    -webkit-transform: scale3d(1.1, 1.1, 1.1);
+    transform: scale3d(1.1, 1.1, 1.1);
+  }
+
+  40% {
+    -webkit-transform: scale3d(0.9, 0.9, 0.9);
+    transform: scale3d(0.9, 0.9, 0.9);
+  }
+
+  60% {
+    opacity: 1;
+    -webkit-transform: scale3d(1.03, 1.03, 1.03);
+    transform: scale3d(1.03, 1.03, 1.03);
+  }
+
+  80% {
+    -webkit-transform: scale3d(0.97, 0.97, 0.97);
+    transform: scale3d(0.97, 0.97, 0.97);
+  }
+
+  to {
+    opacity: 1;
+    -webkit-transform: scale3d(1, 1, 1);
+    transform: scale3d(1, 1, 1);
+  }
+}
+
+.bounceIn{
+  animation: .5s bounceIn ease-in-out 1;
+}
+
+.modal-open {
+  overflow: hidden;
+}
+/* PopUp Alert End */

@@ -27,12 +27,43 @@ router.post('/getWalletsPart', jsonParser, async (req, res) => {
         resObj["wallets"] = wallets;
         
         // Get number of wallets
-        resObj["counts"] = await Wallet.countDocuments();
+        resObj["counts"] = await Wallet.countDocuments(filter);
         res.send(resObj);
     })
     .sort({_id:-1})
     .skip(number)
     .limit(10);
+});
+
+// @route POST /getWalletById
+// @desc Get one Wallet by _id
+router.post("/getWalletById", jsonParser, (req, res) => {
+    Wallet
+    .find({"_id": new objectId(req.body.id)}, (err, wallet) => {
+        if (err) return res.send("Error with get wallet by id!");
+        res.send(wallet);
+    });
+});
+
+// @route POST /editWallet
+// @desc Edited one Wallet
+router.post("/editWallet", jsonParser, (req, res) => {
+    const walletId = req.body.walletId;
+    const editedWallet = req.body.editedWallet;
+    Wallet.updateOne({"_id": new objectId(walletId)}, {$set: editedWallet}, 
+    {returnOriginal: false}, (err, bank) => {
+        if(err) return console.log("Error witch changing Wallet Data!", err);  
+        res.send("Wallet has been changed successfully!")
+    });
+});
+
+// @route POST /createWallet
+// @desc Insert New Wallet
+router.post("/createWallet", jsonParser, (req, res) => {
+    const newWallet = req.body.newWallet;
+    newWallet["creation_date"] = new Date();
+    new Wallet(newWallet).save()
+    .then(() => res.send("Wallet has been created successfully!"));
 });
 
 
