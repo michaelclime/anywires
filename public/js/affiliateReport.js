@@ -82,6 +82,18 @@ async function loadPage(chosenDate)  {
         TransactionsPerDay.innerHTML = obj.ransactionsPerDay;
         amountAvgTransaction.innerHTML = obj.avgRransaction;
 
+
+        if (chosenDate) {
+            const secondTitle = document.querySelector('.chartTitle');
+            const datesArr = chosenDate.split('-');
+            const correctDate = [];
+            datesArr.forEach( (d) => {
+                let dt = new Date(d);
+                correctDate.push(dt.getDate() +'/' +(dt.getMonth() + 1) + '/' + dt.getFullYear());
+            });
+            
+            secondTitle.innerHTML = 'Report from ' + correctDate[0] + ' to ' + correctDate[1];
+        }
         chart(obj);
     }
 
