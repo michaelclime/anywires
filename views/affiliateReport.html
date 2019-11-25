@@ -22,6 +22,9 @@
     <link href="css/datepicker.min.css" rel="stylesheet" type="text/css">
     <script src="js/datepicker.min.js"></script>
     <script src="js/datepicker.en.js"></script>
+    <!-- Exel libs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.15.1/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js"></script>
 </head>
 
 <body>
@@ -127,13 +130,17 @@
     <!-- CONTENT -->
     <main>
         <div class="headerBlock">
-            <h1 class="mainTitle"><span class="affiliateReportlogo"><i class="fas fa-chart-line"></i></span>Affiliate reports</h1> 
+            <h1 class="mainTitle"><span class="affiliateReportlogo"><i class="fas fa-chart-line"></i></span>Affiliate reports</h1>
+            <span class="downloadExel" title="Download Exel Report" onclick="saveXls()">
+                <img class="downloadImg" src="/img/download.png" alt="">
+            </span>
         </div>
         <div class="choosePeriod">
             <div class="leftBlockChoosePeriod">
                 <h2 class="secondTitle">You kindly brought to us this merchants:</h2>
-                <span>Popcorn</span>
-                <p>Turnover: <span class="amountTurnover number">€46 700</span></p>
+                <div class="merchContainer">
+
+                </div>
             </div>
            
            <div class="rightBlockChoosePeriod">
@@ -155,14 +162,14 @@
             <div class="turnoverReport">
                 <h2 class="secondTitle">Turnover report:</h2>
                 <div class="affiliateNameChoose">
-                    <span class="affiliateNameReport">Popcorn</span>
+                    <span class="affiliateNameReport"></span>
                     <button class="affiliateNameLeftBtn"><</button>
                     <button class="affiliateNameRightBtn">></button>
                 </div>
-                <p>Turnover: <span class="amountTurnover number">€46 700</span></p>
-                <p>Transactions: <span class="amountTransactions number">8</span></p>
+                <p>Turnover: <span class="amountTurnoverR number">0</span></p>
+                <p>Transactions: <span class="amountTransactions number">0</span></p>
                 <p>Transactions per day: <span class="TransactionsPerDay number">0</span></p>
-                <p>Avg. transaction: <span class="amountAvgTransaction number">€5 838</span></p>
+                <p>Avg. transaction: <span class="amountAvgTransaction number">0</span></p>
                 <button class="turnOverChartBtn">All Turnover Chart</button>
             </div>
 
@@ -181,7 +188,7 @@
     <script>
         new gnMenu( document.getElementById( 'gn-menu' ) );
     </script>
-    <script type="text/javascript" src="js/affiliateReportChart.js"></script>
+   
     <script type="text/javascript" src="js/affiliateReport.js"></script>
     <script type="text/javascript" src="js/authorizationMenu.js"></script>
 </body>

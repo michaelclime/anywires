@@ -26,9 +26,12 @@ router.get('/getDatasList/:email/:date', async function(req, res) {
         minDate = nowDate.getFullYear() + '-' + (nowDate.getMonth() + 1) + '-' + (nowDate.getDate());
         maxDate = nowDate.getFullYear() + '-' + (nowDate.getMonth() + 1) + '-' + (nowDate.getDate() + 1);
     } else {
-        nowDate = new Date();
-        minDate = nowDate.getFullYear() + '-' + (nowDate.getMonth() + 1) + '-' + (nowDate.getDate() - 1);
-        maxDate = nowDate.getFullYear() + '-' + (nowDate.getMonth() + 1) + '-' + (nowDate.getDate() + 1);
+        datesArr = req.params.date.split('-');
+        for (let i = 0; i < datesArr.length; i += 1) {
+            datesArr[i] = new Date(datesArr[i]);
+        }
+        minDate = datesArr[0].getFullYear() + '-' + (datesArr[0].getMonth() + 1) + '-' + (datesArr[0].getDate() );
+        maxDate = datesArr[1].getFullYear() + '-' + (datesArr[1].getMonth() + 1) + '-' + (datesArr[1].getDate() + 1);
     }
     
     const invoices = await Invoice.find( { merchant: { $in: merchantsName }, 

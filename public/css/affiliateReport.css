@@ -28,9 +28,19 @@ p, span {
 }
 
 .headerBlock {
-    padding: 30px 0;
-    padding-left: 70px;
+    padding: 30px 70px;
     background: #FFF;
+    display: flex;
+    justify-content: space-between;
+}
+
+.downloadExel:hover {
+    cursor: pointer;
+}
+
+.downloadImg {
+    width: 30px;
+    height: 30px;
 }
 
 .mainTitle {
@@ -62,11 +72,16 @@ p, span {
     flex-direction: column;
     align-items: flex-end;
     margin-right: 50px;
+    width: 100%;
 }
 
 .affiliateName, .secondTitle {
     padding-bottom: 10px;
     font-size: 30px;
+}
+
+.affiliateNameReport {
+    margin-right: 20px;
 }
 
 .datepicker-here {
