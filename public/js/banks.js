@@ -274,7 +274,7 @@ class UsersList {
         allTd.forEach((td) => {
             td.addEventListener("click", () => {
                 var bankName = td.parentElement.children[0].textContent;
-                window.open("http://18.216.223.81:3000/create-bank?&" + bankName, '_blank');
+                window.open("http://localhost:3000/create-bank?&" + bankName, '_blank');
             });
         });
     }
@@ -284,7 +284,7 @@ class UsersList {
         this.loadingGIF.style.display = "flex";
         document.body.classList.add("modal-open");
 
-        document.location.href = "http://18.216.223.81:3000/create-bank";
+        document.location.href = "http://localhost:3000/create-bank";
     }
 
     clearFilters = () => {
@@ -411,7 +411,7 @@ class UsersList {
     }
 
     methodPutEnable = (id, status) => {
-        fetch("http://18.216.223.81:3000/putBank", {
+        fetch("http://localhost:3000/putBank", {
                     method: "PUT",
                     body: JSON.stringify({
                         id: id, //Must be id!
@@ -563,7 +563,7 @@ class UsersList {
     };
 
     getBanks = async (number, filter) => {
-        return  await fetch("http://18.216.223.81:3000/getPart-Banks", {
+        return  await fetch("http://localhost:3000/getPart-Banks", {
             method: "POST",
             body: JSON.stringify({
                 number, 
@@ -581,7 +581,7 @@ class UsersList {
     }
 
     getBanks_Number = async (filter) => {
-        return  await fetch("http://18.216.223.81:3000/getNumber-Banks", {
+        return  await fetch("http://localhost:3000/getNumber-Banks", {
             method: "POST",
             body: JSON.stringify({
                 filter
@@ -649,7 +649,7 @@ class UsersList {
     }
 
     getAllBanks = async () => {
-        return  await fetch("http://18.216.223.81:3000/getBanks")
+        return  await fetch("http://localhost:3000/getBanks")
          .then(res => {
              return res.json();
          }) 
