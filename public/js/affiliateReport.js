@@ -240,10 +240,52 @@ async function loadPage(chosenDate)  {
         });
     });
 
+    // Fill hiden table
+    const loadTable = (merchantInfoList) => {
+        const tableList = document.querySelector('#table-list');
+        tableList.innerHTML = '';
+        let totalSumUSD = 0;
+        let totalSumEUR = 0;
+
+        merchantInfoList.forEach( (merch) => {
+           
+            merch.invoices.forEach( (invoice) => {
+                let tr = document.createElement("tr");
+                tr.innerHTML =  `
+                    <td class="column1">${invoice.merchant}</td> 
+                    <td class="column2">${invoice.dates.received_date}</td> 
+                    <td class="column3">${invoice.amount.amount_received}</td>
+                    <td class="column4">${invoice.currency}</td> 
+                `;   
+                tableList.appendChild(tr);
+
+                if (invoice.currency === 'EUR') {
+                    totalSumEUR += invoice.amount.amount_received;
+                } else {
+                    totalSumUSD += invoice.amount.amount_received;
+                }
+            });
+        });
+
+        const totalSumRow = document.querySelector('.totalSum');
+        if (totalSumRow) {
+            tableList.removeChild(totalSumRow);
+        }
+        let totalTr = document.createElement("tr");
+        totalTr.className = 'totalSum';
+        totalTr.innerHTML =  `
+            <td class="column1">Total amount</td> 
+            <td class="column2">${totalSumUSD} USD</td> 
+            <td class="column3">${totalSumEUR} EUR</td>
+        `;
+        tableList.appendChild(totalTr);
+    };
+
     // Render page
     document.querySelector('.merchContainer').innerHTML = '';
     merchantInfoList.forEach ( merchantInfo => merchantInfoLoad(merchantInfo) );
     turnoverReport(merchantInfoList[0]);
+    loadTable(merchantInfoList);
 }
 
 loadPage();
@@ -277,20 +319,18 @@ function formatStr(num) {
     }
 }
 
-// Exel table 
-
-saveXls = () => {
-        
-    var tbl = document.getElementById('table-affiliate');
-    var wb = XLSX.utils.table_to_book(tbl, {
-        sheet: "Invoice list table",
+// Exel table download function
+saveXls = () => { 
+    const tbl = document.getElementById('table-affiliate');
+    const wb = XLSX.utils.table_to_book(tbl, {
+        sheet: "Affiliate report table",
         display: true
     });
-    var wbout = XLSX.write(wb, {bookType: "xlsx", bookSST: true, type: "binary"});
+    const wbout = XLSX.write(wb, {bookType: "xlsx", bookSST: true, type: "binary"});
     function s2ab(s) {
-        var buf = new ArrayBuffer(s.length);
-        var view = new Uint8Array(buf);
-        for (var i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+        let buf = new ArrayBuffer(s.length);
+        let view = new Uint8Array(buf);
+        for (let i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
         return buf;
     };
     saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), 'affiliate-report.xlsx');
