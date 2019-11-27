@@ -839,7 +839,9 @@ router.post("/receivedStatus", jsonParser, (req, res) => {
                             "currency": inv.value.currency,
                             "type": "Incoming Bank Commission",
                             "percentage": percentCommission,
-                            "creation_date": new Date()
+                            "creation_date": new Date(),
+                            "bank": bankName,
+                            "merchant": inv.value.merchant
                         };
                         db.collection("commissions").insertOne(newComment, (err) => {
                             if(err) return console.log(err, "Error with add commission!");
@@ -918,6 +920,8 @@ router.post("/approvedStatus", jsonParser, (req, res) => {
                     "flat": +req.body.anyFeeFlat,
                     "additional": +req.body.AdditionaFee,
                     "creation_date": new Date(),
+                    "bank": inv.bank,
+                    "merchant": merchantName
                 });
             try {
                 await comm.save();
@@ -937,7 +941,9 @@ router.post("/approvedStatus", jsonParser, (req, res) => {
                     "additional": 0,
                     "creation_date": new Date(),
                     "bank_commision": +req.body.bankCommission,
-                    "left_from_transfer": +req.body.leftFromTransfer
+                    "left_from_transfer": +req.body.leftFromTransfer,
+                    "bank": inv.bank,
+                    "merchant": merchantName
             });
             try {
                 await comm2.save();

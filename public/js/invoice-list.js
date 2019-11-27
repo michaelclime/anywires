@@ -30,6 +30,7 @@ class invoiceList {
         this.filterReceive = document.querySelector(".receive_Filter");
         this.filterApproved = document.querySelector(".approved_Filter");
         this.filterRecall = document.querySelector(".recall_filter");
+        this.clickToDownload = document.querySelector("#uploadDocs");
         this.render();
     }
 
@@ -738,10 +739,10 @@ class invoiceList {
             this.currentInvoice[0].amount.amount_received = +(typedAmount);
 
             // Change table information
-            this.currentTr.children[8].innerHTML = `<strong>Received</strong>`;
-            this.currentTr.children[8].style.color = "rgb(49, 117, 218)";
-            this.currentTr.children[5].children[0].children[0].textContent = `${this.currency}${typedAmount}`;
-            this.currentTr.children[5].children[0].children[1].textContent = `${this.checkDate(new Date())}`;
+            this.currentTr.children[9].innerHTML = `<strong>Received</strong>`;
+            this.currentTr.children[9].style.color = "rgb(49, 117, 218)";
+            this.currentTr.children[6].children[0].children[0].textContent = `${this.currency}${typedAmount}`;
+            this.currentTr.children[6].children[0].children[1].textContent = `${this.checkDate(new Date())}`;
 
             // Change style for popUp
             document.querySelector(".currentStatus").textContent = "Received";
@@ -859,10 +860,10 @@ class invoiceList {
         this.currentInvoice[0].amount.amount_sent = +sent;
 
         // Change table information
-        this.currentTr.children[8].innerHTML = `<strong>Sent</strong>`;
-        this.currentTr.children[8].style.color = "rgb(255, 187, 51)";
-        this.currentTr.children[3].children[0].children[0].textContent = `${this.currency}${+sent}`;
-        this.currentTr.children[3].children[0].children[1].innerHTML = `${this.checkDate(new Date())}`;
+        this.currentTr.children[9].innerHTML = `<strong>Sent</strong>`;
+        this.currentTr.children[9].style.color = "rgb(255, 187, 51)";
+        this.currentTr.children[4].children[0].children[0].textContent = `${this.currency}${+sent}`;
+        this.currentTr.children[4].children[0].children[1].innerHTML = `${this.checkDate(new Date())}`;
 
         // Change style for popUp
         document.querySelector(".currentStatus").textContent = "Sent";

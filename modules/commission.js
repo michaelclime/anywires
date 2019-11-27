@@ -11,7 +11,9 @@ let CommissionSchema = new mongoose.Schema({
     additional: Number,
     creation_date: Date,
     bank_commision: Number,
-    left_from_transfer: Number
+    left_from_transfer: Number,
+    bank: String,
+    merchant: String
 });
 
 CommissionSchema.plugin(passportLocalMongoose);
