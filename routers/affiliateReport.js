@@ -1,17 +1,11 @@
-const express = require('express'),
-    mongo = require('mongodb'),
-    objectId = require("mongodb").ObjectID, 
+const express = require('express'), 
     router = new express.Router(),
-    jsonParser = express.json(),
-    multer = require("multer"),
-    upload = multer({dest:"uploads"}),
     Invoice = require('../modules/invoice'),
-    Merchant = require('../modules/merchant'),
-    assert = require('assert');
+    Merchant = require('../modules/merchant');
 
 const url = 'mongodb://18.216.223.81:27017/anywires';
 
-router.get('/affiliateReport.html', isLoggedIn, function(req, res) {
+router.get('/affiliateReport.html', isLoggedIn, visibilityApproval, function(req, res) {
     res.render("affiliateReport.html");
 });
 
@@ -41,10 +35,18 @@ router.get('/getDatasList/:email/:date', async function(req, res) {
 });
 
 function isLoggedIn(req, res, next) {
-    if(req.isAuthenticated()) {
+    if( req.isAuthenticated() ) {
         return next()
     }
     req.flash('error', 'You need to be logged in to do that');
+    res.redirect('/');
+}
+
+function visibilityApproval(req, res, next) {
+    if( req.user.role === 'Affiliate' ||  req.user.role === 'Crm Admin' ) {
+        return next()
+    }
+    req.flash('error', 'Sorry, You don\'t have rigths to see this content');
     res.redirect('/');
 }
 

@@ -333,6 +333,11 @@ saveXls = () => {
         for (let i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
         return buf;
     };
-    saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), 'affiliate-report.xlsx');
+
+    const affName = document.querySelector('.userName').textContent;
+    const date = new Date();
+    const dateNow = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
+    saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}),
+     `AffiliateReport-${affName}-${dateNow}.xlsx`);
     
 }
