@@ -9,6 +9,35 @@ class Commission {
         this.render();
     }
 
+    saveXls = () => {
+        var tbl = document.getElementById('table_commission');
+        var wb = XLSX.utils.table_to_book(tbl, {
+            sheet: "Commission Report Table",
+            display: true
+        });
+
+        var wbout = XLSX.write(wb, {bookType: "xlsx", bookSST: true, type: "binary"});
+        function s2ab(s) {
+            var buf = new ArrayBuffer(s.length);
+            var view = new Uint8Array(buf);
+            for (var i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+            return buf;
+        };
+        
+        saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), `commission-report-${moment(new Date()).format("YYYY-MM-DD")}.xlsx`);
+    }
+
+    hoverXLS = () => {
+        document.querySelector(".table-arrows").addEventListener("mouseover", (event) => {
+            event.preventDefault();
+            document.querySelector(".xlsTip").style.display = "flex";
+        });
+        document.querySelector(".table-arrows").addEventListener("mouseout", (event) => {
+            event.preventDefault();
+            document.querySelector(".xlsTip").style.display = "none";
+        });
+    }
+
     searchFunction = async () => {
         // Loading GIF On
         this.loadingGIF.style.display = "flex";
@@ -259,8 +288,10 @@ class Commission {
         this.saveLocalCommissions();
         this.listOfMerchantName();
         this.listOfBankNames();
+        this.hoverXLS();
         document.querySelector("#showFilterBtn").addEventListener("click", this.filterList);
         document.querySelector("#clearFilterBtn").addEventListener("click", this.clearFilter);
+        document.querySelector("#dowloadPdf").addEventListener("click", this.saveXls);
     }
 }
 

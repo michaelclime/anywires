@@ -19,8 +19,12 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 		<script src="js/modernizr.custom.js"></script>
 		<script src="https://kit.fontawesome.com/5355902e87.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
 		<!-- Type of data -->
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+		<!-- XLS data -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.15.1/xlsx.full.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js"></script>
 	</head>
 	<body class="modal-open">
 			<% if (currentUser.role == 'Invoice Manager') { %>
@@ -234,7 +238,10 @@
 					<div class="tableUser-header">
 						<h2>COMMISSIONS LIST</h2>
 						<div class="table-arrows">
-							<img title="Download .pdf" id="dowloadPdf" src="./img/download.png" alt="arrow right table" width="15px" height="15px"/>
+							<img id="dowloadPdf" src="./img/download.png" alt="arrow right table" width="15px" height="15px"/>
+						</div>
+						<div class="xlsTip fadeInUp">
+							<p>Download .xls</p>
 						</div>
 					</div>
 
