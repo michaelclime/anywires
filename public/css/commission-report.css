@@ -107,7 +107,7 @@ body button:active {
     
 /* Loading GIF START*/
 #loadingGif {
-    display: none;
+    display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -188,7 +188,7 @@ main {
 
 
 /* Filter Block First START*/
-#filterMin, #filterMax, #filterSolution, #filterCurrency, #filterCountry {
+#filterBank, #filterMerch, #filterCurrency, #filterType {
     width: 100%;
     height: 40px;
     border: 1px solid rgb(189, 189, 189);
@@ -211,7 +211,7 @@ label {
 }
 
 .filterBlock-first {
-    width: 80%;
+    width: 100%;
     display: flex;
     align-items: flex-end;
 }
@@ -246,12 +246,7 @@ label {
     justify-content: space-between;
 }
 
-#createBank-button {
-    width: 140px;
-    height: 40px;  
-}
-
-#clearFilterBtn, #showBtn {
+#clearFilterBtn, #showFilterBtn {
     width: 115px;
     height: 40px;
 }
@@ -388,6 +383,10 @@ label {
     background-color: #f5f5f5;
 }
 
+#table_commission tbody tr:nth-child(even):hover {
+    background-color: rgb(197, 247, 241);
+}
+
 #table_commission tbody tr {
     font-size: 15px;
     color: #808080;
@@ -478,7 +477,7 @@ label {
 
 /* Next Page Block START*/
 .nextPage-block {
-    width: 90%;
+    width: 100%;
     display: flex;
     align-items: flex-end;
     justify-content: center;

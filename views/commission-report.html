@@ -22,7 +22,7 @@
 		<!-- Type of data -->
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
 	</head>
-	<body>
+	<body class="modal-open">
 			<% if (currentUser.role == 'Invoice Manager') { %>
 				<div id="burgerMenu">
 						<div class="menu">
@@ -118,7 +118,7 @@
 									<li><a href="dashBoardMainPage.html"><img class="icon" src="fonts/icons/dashboard.png">Dashboard</a></li>
 									<li><a href='InvoiceGeneration.html'><img class="icon" src="fonts/icons/invoice.png">Invoice generation</a></li>
 									<li><a href="invoice-list.html"><img class="icon" src="fonts/icons/invoice-list.png">Invoice list</a></li>
-									<li><a href="wallets.html"><img class="icon" src="fonts/icons/wallet.png">Wallets</a></li>
+									<li><a href="wallets"><img class="icon" src="fonts/icons/wallet.png">Wallets</a></li>
 									<li><a href="settlements.html"><img class="icon" src="fonts/icons/settlement.png">Settlements</a></li>
 									<li><a href="merchants.html"><img class="icon" src="fonts/icons/merchant.png">Merchants</a></li>
 									<li><a href='users.html'><img class="icon" src="fonts/icons/users.png">Users</a></li>
@@ -129,6 +129,7 @@
 										<li><a href="merchantReport.html"><img class="icon" src="fonts/icons/aff-report.png">Merchants report</a></li>
 										<li><a href="settlementReport.html"><img class="icon" src="fonts/icons/aff-report.png">Settlements report</a></li>
 										<li><a href="affiliateReport.html"><img class="icon" src="fonts/icons/aff-report.png">Affiliates report</a></li>
+										<li><a href="commission-report"><img class="icon" src="fonts/icons/aff-report.png">Commission report</a></li>
 									</ul>
 									<li><a href='Dashboard-how-it-works.html'><img class="icon" src="fonts/icons/info.png">How it works</a></li>
 										</ul>
@@ -172,7 +173,7 @@
 
 			<!--Header Page-->
 			<header> 
-				<img src="./img/bank.png" alt="icon page" width="40px" height="40px"/>
+				<img src="./img/graph-report--v2.png" width="40" height="40" alt="icon page"/>
 				<h1>Commission Report</h1>
 			</header>
 			
@@ -181,12 +182,16 @@
 				<div class="minMax-block">
 					<div class="filterMin-block">
 						<label for="filterMin-block">Bank</label>
-						<input id="filterMin" type="text">
+						<select id="filterBank">
+							<option value="" selected></option>
+						</select>
 					</div>
 
 					<div class="filterMax-block">
 						<label for="filterMax-block">Merchant</label>
-						<input id="filterMax" type="text">
+						<select id="filterMerch">
+							<option value="" selected></option>
+						</select>
 					</div>
 				</div>
 
@@ -194,7 +199,7 @@
 					<div class="filterBlock-first">
 						<div class="filterSolution-block">
 							<label for="filterSolution-block">Currency</label>
-							<select id="filterSolution" type="text">
+							<select id="filterCurrency" type="text">
 									<option value="" selected></option>
 									<option value="USD">USD</option>
 									<option value="EUR">EUR</option>
@@ -203,24 +208,26 @@
 
 						<div class="filterCountry-block">
 							<label for="filterCountry-block">Type</label>
-							<select id="filterCountry" type="text">
+							<select id="filterType" type="text">
 									<option value="" selected></option>
+									<option value="Anywires commission">Anywires commission</option>
+									<option value="Incoming Bank Commission">Incoming Bank Commission</option>
+									<option value="Incoming solution commission">Incoming solution commission</option>
+									<option value="Recall Commission">Recall Commission</option>
 							</select>
 						</div>
-					</div>
-				
-					<div class="search-block">
-						<input id="search-input" type="search" placeholder="Search..."/>
-						<img id="search-button" src="./img/magnifying-glass.png" alt="search button"/>
 					</div>
 				</div>
 
 					<div id="createUser-block">
 						<div>
-							<button id="showBtn">Show</button>
+							<button id="showFilterBtn">Show</button>
 							<button id="clearFilterBtn">Clear Filter</button>
 						</div>
-						<button id="createBank-button">Create Bank</button>
+						<div class="search-block">
+							<input id="search-input" type="search" placeholder="Search..."/>
+							<img id="search-button" src="./img/magnifying-glass.png" alt="search button"/>
+						</div>
 					</div>
 
 				<div id="tableUser-block">

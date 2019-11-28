@@ -237,7 +237,7 @@ class Wallets {
         //
     }
 
-        alertWindow = (text) => {
+    alertWindow = (text) => {
         document.body.classList.add("modal-open");
         var filter =  document.querySelector(".alert_filter");
         filter.style.display = "flex";
