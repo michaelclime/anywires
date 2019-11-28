@@ -12,6 +12,26 @@ class Wallets {
         this.render();
     }
 
+    searchFunction = async () => {
+        // Loading GIF On
+        this.loadingGif.style.display = "flex";
+
+        const phrase = document.getElementById('search-input').value;
+        this.filter = { $text: { $search: phrase } };
+
+        if (phrase) {
+            const res = await this.getWalletsPart(0, this.filter);
+
+            this.container.innerHTML = "";
+            this.containerPages.innerHTML = "";
+
+            this.countNextPage(res.wallets, res.counts);
+        }
+
+        // Loading GIF Off
+        this.loadingGif.style.display = "none";
+    }
+
     getAllMerchants = async () => {
         return  await fetch("http://18.216.223.81:3000/getMerchants")
         .then(res => {
@@ -473,6 +493,13 @@ class Wallets {
         // 
         // Create Merchant event
         document.querySelector("#createBank-button").addEventListener("click", this.createWallet);
+        //
+        // Search function
+        document.querySelector("#search-button").addEventListener("click", this.searchFunction);
+        document.querySelector("#search-input").addEventListener("keyup", () => {
+            event.preventDefault();
+            event.keyCode === 13 ? this.searchFunction() : "";
+        }); 
     }
 }
 
