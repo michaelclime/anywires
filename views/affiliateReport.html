@@ -11,6 +11,7 @@
     <link rel="shortcut icon" href="img/AnyWiresFavicon.png" type="image/png">
     <link rel="stylesheet" href="css/affiliateReport.css">
     <link rel="stylesheet" href="css/authorizationMenu.css">
+    <link rel="stylesheet" href="css/sweetalert2.css">
     <script src="https://kit.fontawesome.com/5355902e87.js"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <link rel="stylesheet" type="text/css" href="css/menu.css" />
@@ -29,6 +30,7 @@
 
 <body>
     <span class="affiliateEmail hide"><%= currentUser.email %></span>
+    <span class="userRole hide"><%= currentUser.role %></span>
      <!-- MENU -->
      <% if (currentUser.role == 'Affiliate') { %>
     <header>
@@ -137,7 +139,8 @@
         </div>
         <div class="choosePeriod">
             <div class="leftBlockChoosePeriod">
-                <h2 class="secondTitle">You kindly brought to us this merchants:</h2>
+                <h2 class="secondTitle broughtTitle"></h2>
+                <div class="selectMenuDiv"></div>
                 <hr>
                 <div class="merchContainer">
 
@@ -149,7 +152,7 @@
                <div class="inputPeriod">
                     <input type="text"
                     id="inputPeriod"
-                    value="<%= new Date() %>"
+                    value="<%= new Date().getDate() + '/' + (new Date().getMonth() + 1) + '/' + new Date().getFullYear() %>"
                     data-range="true"
                     data-multiple-dates-separator=" - "
                     data-language="en"
@@ -207,5 +210,6 @@
    
     <script type="text/javascript" src="js/affiliateReport.js"></script>
     <script type="text/javascript" src="js/authorizationMenu.js"></script>
+    <script type="text/javascript" src="js/sweetalert2.js"></script>
 </body>
 </html>

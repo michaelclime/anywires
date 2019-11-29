@@ -52,6 +52,19 @@ p, span {
     padding: 0 20px;
 }
 
+.selectMenu {
+    margin-top: 40px;
+    margin-bottom: 10px;
+    width: 330px;
+    padding: 10px;
+    font-size: 18px;
+    outline: none;
+}
+
+hr {
+    margin-bottom: 10px;
+}
+
 .choosePeriod {
     display: flex;
     justify-content: space-between;
@@ -87,7 +100,8 @@ p, span {
 .datepicker-here {
     font-size: 1.1rem;
     color: rgb(51, 51, 51);
-    padding: 5px;
+    padding: 10px;
+    min-width: 250px;
 }
 
 .report {

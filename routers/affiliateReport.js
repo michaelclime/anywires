@@ -1,7 +1,8 @@
 const express = require('express'), 
     router = new express.Router(),
     Invoice = require('../modules/invoice'),
-    Merchant = require('../modules/merchant');
+    Merchant = require('../modules/merchant'),
+    User = require('../modules/user');
 
 const url = 'mongodb://18.216.223.81:27017/anywires';
 
@@ -9,10 +10,19 @@ router.get('/affiliateReport.html', isLoggedIn, visibilityApproval, function(req
     res.render("affiliateReport.html");
 });
 
+router.get('/getAffNameList', async function(req, res) {
+    const affiliates = await User.find( { role: 'Affiliate' } );
+    if (affiliates.length) {
+        res.status(200).send( affiliates );
+    } else {
+        res.status(500).send('Error');
+    }
+});
+
 router.get('/getDatasList/:email/:date', async function(req, res) {
     const merchants = await Merchant.find( { 'users.affiliate': req.params.email });
     const merchantsName = [];
-    merchants.forEach( merchant => merchantsName.push(merchant.name))
+    merchants.forEach( merchant => merchantsName.push(merchant.name));
 
     let minDate = 0, maxDate = 0;
     if (req.params.date == 'now') {
@@ -46,7 +56,7 @@ function visibilityApproval(req, res, next) {
     if( req.user.role === 'Affiliate' ||  req.user.role === 'Crm Admin' ) {
         return next()
     }
-    req.flash('error', 'Sorry, You don\'t have rigths to see this content');
+    req.flash('error', 'Sorry, you don\'t have permission to see this page.');
     res.redirect('/');
 }
 
