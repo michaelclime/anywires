@@ -220,17 +220,27 @@ async function loadPage(chosenDate, Data)  {
             document.getElementById('affiliateReportChart').innerHTML = '';
             let datesArr = [];
             let amountsArr = [];
-            obj.invoices.forEach( (invoice) => {
+            let sortedObj = obj.invoices.sort((a, b) => new Date(a.dates.received_date) - new Date(b.dates.received_date));
 
-                if (invoice.currency === 'EUR') {
-                    amountsArr.push(invoice.amount.amount_received);
-                } else {
-                    amountsArr.push(Math.round(invoice.amount.amount_received / coefEURtoUSD));
-                }
-            
+            sortedObj.forEach( (invoice) => {
                 let d = new Date(invoice.dates.received_date);
-                datesArr.push(d.getDate() +'/' +(d.getMonth() + 1) + '/' + d.getFullYear());
+                let correctDate = d.getDate() +'/' +(d.getMonth() + 1) + '/' + d.getFullYear();
+                if (datesArr.includes(correctDate)) {
+                    if (invoice.currency === 'EUR') {
+                        amountsArr[amountsArr.length-1] += invoice.amount.amount_received;
+                    } else {
+                        amountsArr[amountsArr.length-1] += Math.round(invoice.amount.amount_received / coefEURtoUSD);
+                    }
+                } else {
+                    datesArr.push(correctDate);
+                    if (invoice.currency === 'EUR') {
+                        amountsArr.push(invoice.amount.amount_received);
+                    } else {
+                        amountsArr.push(Math.round(invoice.amount.amount_received / coefEURtoUSD));
+                    }
+                }
             });
+
             const ctx = document.getElementById('affiliateReportChart').getContext('2d');
             const data = {
                 labels: datesArr,
@@ -286,7 +296,6 @@ async function loadPage(chosenDate, Data)  {
                         }
                     } else {
                         datesArr.push(correctDate);
-                        console.log(correctDate);
                         if (invoice.currency === 'EUR') {
                             amountsArr.push(invoice.amount.amount_received);
                         } else {
