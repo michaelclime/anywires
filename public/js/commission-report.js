@@ -1,6 +1,8 @@
 class Commission {
     constructor(){
         this.filter = {};
+        this.dateFrom = "";
+        this.dateTill = "";
         this.firstCommissionArr = [];
         this.commissionsArr = [];
         this.commArrNum = 0;
@@ -9,7 +11,62 @@ class Commission {
         this.render();
     }
 
+    jsonToXls = async () => {
+        // Loading GIF appear and scroll on
+        this.loadingGif.style.display = "flex";
+        document.body.classList.add("modal-open");
+        //
+        const createXLSLFormatObj = [];
+ 
+        /* XLS Head Columns */
+        const xlsHeader = ["Crated By", "Amount", "Currency", "Type", "Percentage", "Flat", "Addittional", "Bank commission", "Left from transfer", "Bank", "Merchant", "Creation date"];
+        
+        // /* XLS Rows Data */
+        const res = await this.getCommissionsPart(0, "", this.filter, this.dateFrom, this.dateTill);
+        const xlsRows = res.commissions;
+        
+        // Removing ID field and changing Date format
+        xlsRows.forEach((item) => {
+            delete item["_id"];
+            item.creation_date = moment(item.creation_date).format("DD-MM-YYYY");
+        });
+
+        createXLSLFormatObj.push(xlsHeader);
+        $.each(xlsRows, function(index, value) {
+            var innerRowData = [];
+            $.each(value, function(ind, val) {
+                innerRowData.push(val);
+            });
+            createXLSLFormatObj.push(innerRowData);
+        });
+ 
+ 
+        /* File Name */
+        var filename = `commission-report-${moment(new Date()).format("YYYY-MM-DD")}.xlsx`;
+ 
+        /* Sheet Name */
+        var ws_name = "commissionReport";
+ 
+        var wb = XLSX.utils.book_new(),
+            ws = XLSX.utils.aoa_to_sheet(createXLSLFormatObj);
+ 
+        /* Add worksheet to workbook */
+        XLSX.utils.book_append_sheet(wb, ws, ws_name);
+ 
+        /* Write workbook and Download */
+        XLSX.writeFile(wb, filename);
+
+        // Loading GIF off and scroll off
+        this.loadingGif.style.display = "none";
+        document.body.classList.remove("modal-open");
+        // 
+    }
+
     saveXls = () => {
+        // Loading GIF appear and scroll on
+        this.loadingGif.style.display = "flex";
+        document.body.classList.add("modal-open");
+        //
         var tbl = document.getElementById('table_commission');
         var wb = XLSX.utils.table_to_book(tbl, {
             sheet: "Commission Report Table",
@@ -25,6 +82,11 @@ class Commission {
         };
         
         saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), `commission-report-${moment(new Date()).format("YYYY-MM-DD")}.xlsx`);
+
+        // Loading GIF off and scroll off
+        this.loadingGif.style.display = "none";
+        document.body.classList.remove("modal-open");
+        // 
     }
 
     hoverXLS = () => {
@@ -41,21 +103,14 @@ class Commission {
     searchFunction = async () => {
         // Loading GIF On
         this.loadingGIF.style.display = "flex";
-
         this.phrase = document.getElementById('search-input').value;
         this.filter = { $text: { $search: this.phrase } };
-
         if (this.phrase) {
-            // this.length = await this.getBanks_Number(this.filter);
-            // this.filterList = await this.getBanks(0, this.filter);
-            const res = await this.getCommissionsPart(0, this.filter);
-
+            const res = await this.getCommissionsPart(0, 10, this.filter);
             this.container.innerHTML = "";
             this.containerPages.innerHTML = "";
-
             this.countNextPage(res.commissions, res.counts);
         }
-
         // Loading GIF Off
         this.loadingGIF.style.display = "none";
     }
@@ -134,7 +189,15 @@ class Commission {
         const commMerch = document.querySelector("#filterMerch").value;
         const commCurrency = document.querySelector("#filterCurrency").value;
         const commType = document.querySelector("#filterType").value;
+        const creationDate = document.querySelector("#creationDate").value;
         //
+        // Add date Filter
+        if (creationDate) {
+            const DATE = creationDate.split("—");
+            this.dateFrom = new Date(DATE[0].trim());
+            this.dateTill = new Date(DATE[1].trim());
+        }
+        // 
         // Add filter criteria to obj
         commBank ? this.filter.bank = commBank : null;
         commMerch ? this.filter.merchant = commMerch : null;
@@ -142,7 +205,7 @@ class Commission {
         commType ? this.filter.type = commType : null;
         // 
         // Request for data 
-        const res = await this.getCommissionsPart(0, this.filter);
+        const res = await this.getCommissionsPart(0, 10, this.filter, this.dateFrom, this.dateTill);
         // 
         // Table cleaning
         this.container = document.getElementById("table-list");
@@ -195,7 +258,7 @@ class Commission {
                 var currentEvent = +(event.target.textContent);
                 var listNumber = ((currentEvent*10)-10);
 
-                var nextList = await this.getCommissionsPart(listNumber, this.filter);
+                var nextList = await this.getCommissionsPart(listNumber, 10, this.filter);
 
                 // Loading GIF appear and scroll off
                 this.loadingGif.style.display = "none";
@@ -244,10 +307,10 @@ class Commission {
         });
     };
 
-    getCommissionsPart = async (number, filter) => {
+    getCommissionsPart = async (number, limit, filter, dateFrom, dateTill) => {
         return  await fetch("http://18.216.223.81:3000/getCommissionsPart", {
             method: "POST",
-            body: JSON.stringify({number, filter}),
+            body: JSON.stringify({number, limit, filter, dateFrom, dateTill}),
             headers:{'Content-Type': 'application/json'}
         })
         .then(res => {
@@ -261,20 +324,31 @@ class Commission {
     renderCommissionTable = (arr) => {
         const container = document.getElementById("table-list");
         arr.forEach((commission) => {
+            const currency = commission.currency === "USD" ? "$" : "€";
             const commissionsList = document.createElement("tr");
             commissionsList.innerHTML = `
-                <td class="column1">${commission.type}</td> 
+                <td class="column1">
+                    <div class="commDate">
+                        ${moment(commission.creation_date).format("ll")}
+                    </div>
+                    <div>
+                        ${commission.type}
+                    </div>
+                </td> 
                 <td class="column2">${commission.currency}</td> 
-                <td class="column3">${commission.amount}</td> 
-                <td class="column4">${commission.bank}</td> 
-                <td class="column5">${commission.merchant}</td> 
+                <td class="column3">${commission.amount}${currency}</td> 
+                <td class="column4">${Math.floor(commission.percentage)}%</td> 
+                <td class="column5">${commission.flat ? commission.flat : 0}€</td> 
+                <td class="column6">${commission.additional ? commission.additional : 0}€</td> 
+                <td class="column7">${commission.bank}</td> 
+                <td class="column8">${commission.merchant}</td> 
             `;
             container.appendChild(commissionsList);
         });
     }
 
     saveLocalCommissions = async () => {
-        const res = await this.getCommissionsPart(0, {});
+        const res = await this.getCommissionsPart(0, 10, {});
         this.firstCommissionArr = res.commissions;
         this.commArrNum = res.counts;
         this.countNextPage(this.firstCommissionArr, this.commArrNum);
@@ -289,9 +363,10 @@ class Commission {
         this.listOfMerchantName();
         this.listOfBankNames();
         this.hoverXLS();
+        
         document.querySelector("#showFilterBtn").addEventListener("click", this.filterList);
         document.querySelector("#clearFilterBtn").addEventListener("click", this.clearFilter);
-        document.querySelector("#dowloadPdf").addEventListener("click", this.saveXls);
+        document.querySelector("#dowloadPdf").addEventListener("click", this.jsonToXls);
     }
 }
 
