@@ -432,10 +432,10 @@ class invoiceList {
             this.currentInvoice[0].amount.amount_available = this.currentInvoice[0].amount.amount_approved;
 
             // Change table info for current Invoice
-            this.currentTr.children[8].innerHTML = `<strong>Available</strong>`;
-            this.currentTr.children[8].style.color = "rgb(24, 209, 24)";
-            this.currentTr.children[7].children[0].innerHTML = `${this.currency}${this.currentInvoice[0].amount.amount_available}`;
-            this.currentTr.children[7].children[1].innerHTML = `${this.checkDate(new Date())}`;
+            this.currentTr.children[9].innerHTML = `<strong>Available</strong>`;
+            this.currentTr.children[9].style.color = "rgb(24, 209, 24)";
+            this.currentTr.children[8].children[0].innerHTML = `${this.currency}${this.currentInvoice[0].amount.amount_available}`;
+            this.currentTr.children[8].children[1].innerHTML = `${this.checkDate(new Date())}`;
             document.querySelector(".currentStatus").innerHTML = "Available";
             document.querySelector(".currentStatus").style.color = "rgb(24, 209, 24)";
 

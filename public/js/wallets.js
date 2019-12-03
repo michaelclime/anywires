@@ -87,7 +87,7 @@ class Wallets {
     createMerchantCheckData = async () => {
         const createdBy = this.currentUser.textContent.trim();
         const requiredCreate = this.checkedEmptyArray(document.querySelectorAll(".requiredCreate"));
-        if(requiredCreate){
+        if (requiredCreate) {
             this.alertWindow("Please fill out all fields!");
 
         } else {
@@ -113,8 +113,21 @@ class Wallets {
             };
             await this.createMerchantRequest(newWallet);
             //
+             // Request for data 
+            const response = await this.getWalletsPart(0);
+            this.walletsArr = response.wallets;
+            this.walletsNum = response.counts;
+            // 
+            // Table cleaning
+            this.container = document.getElementById("table-list");
+            this.container.innerHTML = "";
+            this.containerPages.innerHTML = "";
+            // 
+            // Render wallets 
+            this.countNextPage(this.walletsArr, this.walletsNum);
             // Loading GIF off and scroll off
             this.loadingGif.style.display = "none";
+            this.filterEditWallet.style.display = "none";
         }
     }
 
@@ -125,6 +138,7 @@ class Wallets {
         // Show PopUp Window
         document.querySelector(".editWallet_title").innerHTML = "CREATE WALLET";
         document.querySelector(".createWallet_main").style.display = "flex";
+        document.querySelector("#editWallet_action").innerHTML = "Create";
         this.filterEditWallet.style.display = "flex";
         this.filterEditWallet.addEventListener("click", (event) => {
             if (event.target === this.filterEditWallet){
@@ -195,8 +209,18 @@ class Wallets {
                 this.loadingGif.style.display = "flex";
                 await this.editWalletRequest(this.currentWallet[0]._id, editedWallet);
                 //
-                // Change table info
-                this.currentTr.children[1].innerHTML = document.querySelector("#walletName").value;
+                 // Request for data 
+                const response = await this.getWalletsPart(0);
+                this.walletsArr = response.wallets;
+                this.walletsNum = response.counts;
+                // 
+                // Table cleaning
+                this.container = document.getElementById("table-list");
+                this.container.innerHTML = "";
+                this.containerPages.innerHTML = "";
+                // 
+                // Render wallets 
+                this.countNextPage(this.walletsArr, this.walletsNum);
                 //
                 // Loading GIF off and scroll off
                 this.loadingGif.style.display = "none";
@@ -219,6 +243,7 @@ class Wallets {
         // 
         // Show PopUp Window
         document.querySelector(".editWallet_title").innerHTML = "EDIT WALLET";
+        document.querySelector("#editWallet_action").innerHTML = "Edit";
         this.filterEditWallet.style.display = "flex";
         this.filterEditWallet.addEventListener("click", (event) => {
             if (event.target === this.filterEditWallet){
@@ -346,7 +371,7 @@ class Wallets {
             this.containerPages.appendChild(this.dotts);
             this.renderNextPage(lastPage);
         } else {
-            for (let i = 0; i < lastPage; i++) {
+            for (let i = 0; i <= lastPage; i++) {
                 this.renderNextPage([i+1]);
             }
         }
@@ -415,7 +440,6 @@ class Wallets {
         this.walletsArr = response.wallets;
         this.walletsNum = response.counts;
         this.countNextPage(this.walletsArr, this.walletsNum);
-        // this.renderWallets(this.walletsArr);
     }
 
     getWalletById = async (id) => {
