@@ -227,6 +227,7 @@ label {
 }
 
 .filterCountry-block {
+    margin-right: 20px;
     width: 200px;
 }
 /* Filter Block First END*/
@@ -251,49 +252,18 @@ label {
     height: 40px;
 }
 
-#search-input {
+
+.filterInput {
     width: 100%;
     height: 40px;
-    background-color: #4D4D4D;
-    border-radius: 3px 0 0 3px;
-    font-size: 16px;
-    padding: 5px 15px;
-    transition: .3s;
-    outline: none;
-    border: none;
-    color: #FFF;
-    font-family: 'Frank Ruhl Libre', serif;
-}
-
-#search-input::placeholder{
-    color: rgb(224, 224, 224);
-}
-
-#search-input:focus {
-    box-shadow: 0px 0px 6px 0px rgba(68, 68, 68, 0.75);
-    background-color: rgb(110, 110, 110);
-}
-
-.search-block {
-    display: flex;
-    justify-content: flex-end;
-    align-items: flex-end;
-    width: 250px;
-}
-
-#search-button {
-    width: 40px;
-    height: 40px;
-    padding: 12px;
-    background-color: rgb(54, 54, 54);
+    border: 1px solid rgb(189, 189, 189);
     cursor: pointer;
-    border-radius: 0px 3px 3px 0px;
-}
-#search-button:hover {
-    background-color: rgb(0, 0, 0);
-}
-#search-button:active {
-    background-color: rgb(139, 139, 139);
+    border-radius: 3px;
+    font-size: 15px;
+    font-family: 'Frank Ruhl Libre', serif;
+    background-color: #F5F5F5;
+    margin-top: 5px;
+    text-indent: 15px;
 }
 
 
@@ -441,7 +411,18 @@ label {
 }
 
 .column1 {
-    padding-left: 20px;
+    padding: 10px 0 10px 20px;
+}
+
+.column5 {
+    padding-right: 20px;
+}
+
+.commDate {
+    color: rgb(49, 117, 218);
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 5px;
 }
 
 @media screen and (max-width: 1075px) {

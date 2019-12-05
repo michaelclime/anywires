@@ -839,10 +839,15 @@ router.post("/receivedStatus", jsonParser, (req, res) => {
                             "currency": inv.value.currency,
                             "type": "Incoming Bank Commission",
                             "percentage": percentCommission,
-                            "creation_date": new Date(),
+                            "flat": 0,
+                            "additional": 0,
+                            "bank_commision": 0,
+                            "left_from_transfer": 0,
                             "bank": bankName,
-                            "merchant": inv.value.merchant
+                            "merchant": inv.value.merchant,
+                            "creation_date": new Date()
                         };
+                       
                         db.collection("commissions").insertOne(newComment, (err) => {
                             if(err) return console.log(err, "Error with add commission!");
                             var commissionId = new objectId(newComment._id);
@@ -919,10 +924,13 @@ router.post("/approvedStatus", jsonParser, (req, res) => {
                     "percentage": +req.body.anywiresPercent,
                     "flat": +req.body.anyFeeFlat,
                     "additional": +req.body.AdditionaFee,
-                    "creation_date": new Date(),
+                    "bank_commision": 0,
+                    "left_from_transfer": 0,
                     "bank": inv.bank,
-                    "merchant": merchantName
+                    "merchant": merchantName,
+                    "creation_date": new Date()
                 });
+
             try {
                 await comm.save();
                 var commId1 = new objectId(comm._id);
@@ -939,12 +947,13 @@ router.post("/approvedStatus", jsonParser, (req, res) => {
                     "percentage": +req.body.solutionPercent,
                     "flat": +req.body.solutionFlat,
                     "additional": 0,
-                    "creation_date": new Date(),
                     "bank_commision": +req.body.bankCommission,
                     "left_from_transfer": +req.body.leftFromTransfer,
                     "bank": inv.bank,
-                    "merchant": merchantName
+                    "merchant": merchantName,
+                    "creation_date": new Date()
             });
+
             try {
                 await comm2.save();
                 var commId2 = new objectId(comm2._id);
@@ -1261,7 +1270,13 @@ router.post("/recallStatus", jsonParser, (req, res) => {
                     "currency": inv.currency,
                     "type": "Recall Commission",
                     "percentage": percentCommission,
-                    "creation_date": new Date()
+                    "flat": 0,
+                    "additional": 0,
+                    "bank_commision": 0,
+                    "left_from_transfer": 0,
+                    "bank": inv.bank,
+                    "merchant": inv.merchant,
+                    "creation_date": new Date(),
                 };
 
                 Commission.create(newComm, (err, comm) => {
