@@ -64,6 +64,34 @@ router.get("/getWalletsList/:id", async (req, res) => {
             walletList.push(wallet);
         }
 
+        for (let i = 0; i < merchant.inside_wallets.length; i += 1) {
+            let wallet = await Wallet.findById( merchant.inside_wallets[i] );
+            walletList.push(wallet);
+        }
+
+        return walletList;
+    };
+
+    getList().then( (result) => {
+        res.status(200).send(result);
+    }).catch((err) =>{
+        res.status(400).send(err);
+        console.log(err);
+    })
+});
+
+router.get("/getExternalWalletsList/:id", async (req, res) => {
+
+    const merchant = await Merchant.findById(req.params.id);
+    
+    const getList = async () => {
+        let walletList =[];
+
+        for (let i = 0; i < merchant.wallets.length; i += 1) {
+            let wallet = await Wallet.findById( merchant.wallets[i] );
+            walletList.push(wallet);
+        }
+
         return walletList;
     };
 
@@ -270,13 +298,17 @@ router.post('/creatSettle/:id', async (req, res) => {
     
     let wallet = await Wallet.findById(req.body.wallets);
 
+
     const reducer = (accumulator, currentValue) => +accumulator + +currentValue;
     let totalSumInv = amounts.reduce(reducer);
     let newSettle = {
         dates: {
             creation_date: new Date()
         },
-        amount: totalSumInv,
+        amount: {
+            amount_requested: totalSumInv,
+            amount_sent: 0
+        },
         currency:  currency,
         merchant: objectId(merchantID),
         status: 'Requested',
@@ -296,6 +328,22 @@ router.post('/creatSettle/:id', async (req, res) => {
         });
     }
 
+    if (currency === 'USD') {
+        let merchantUpdate = await Merchant.findByIdAndUpdate(merchantID, {
+            "$inc": { "balance_USD.balance_available": - totalSumInv }
+        });
+    } else if (currency === 'EUR') {
+        let merchantUpdate = await Merchant.findByIdAndUpdate(merchantID, {
+            "$inc": { "balance_EUR.balance_available": - totalSumInv }
+        });
+    }
+
+    if ( wallet.type === 'Anywires' ) {
+        let walletBalUpd = await Wallet.findByIdAndUpdate(req.body.wallets, {
+            "$inc": { "balance": totalSumInv }
+        });
+    }
+
     try {
         await settlement.save();
         req.flash('success', 'Settlement successfully created!');
@@ -309,12 +357,19 @@ router.post('/creatSettle/:id', async (req, res) => {
 });
 
 router.post('/creatSettleFromAwWallet/:id', async (req, res) => {
-   
+
+    let walletAW = await Wallet.findByIdAndUpdate(req.body.AwWalletId, {
+        "$inc": { "balance": - req.body.amountPaymentfromAW } 
+    });
+    
     let newSettle = {
         dates: {
             creation_date: new Date()
         },
-        amount: req.body.amountPaymentfromAW,
+        amount: {
+            amount_requested: req.body.amountPaymentfromAW,
+            amount_sent: 0
+        },
         currency:  req.body.currency,
         merchant: objectId(req.body.merchantID),
         status: 'Requested',

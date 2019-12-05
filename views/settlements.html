@@ -159,10 +159,11 @@
                         <tr class="table-head">
                             <th class="column0">Created By</th>
                             <th class="column1">Date</th>
-                            <th class="column2">Amount Sent</th>
-                            <th class="column3">Type</th>
-                            <th class="column4">Wallet</th>
-                            <th class="column5">Status</th>
+                            <th class="column2">Amount Requested</th>
+                            <th class="column3">Amount Sent</th>
+                            <th class="column4">Type</th>
+                            <th class="column5">Wallet</th>
+                            <th class="column6">Status</th>
                         </tr>
                     </thead>
                     <tbody class="tableList"></tbody>
@@ -215,7 +216,8 @@
                             <div class="hide hide-currency"></div>
                             <div class="hide hide-type"></div>
                             <div class="hide hide-merchantID"></div>
-                            <input type="number" class="amountPayment" placeholder="0" name="amountPaymentfromAW">
+                            <div class="hide hide-AwWalletId"></div>
+                            <input type="number" class="amountPayment" placeholder="0" name="amountPaymentfromAW" required>
                             <select name="wallet" class="walletPayFrom" required>
                                 <option value="">Choose your wallet</option>
                             </select>

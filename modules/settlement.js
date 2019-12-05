@@ -8,7 +8,10 @@ let SettlementSchema = new mongoose.Schema({
         received_date: Date,
         declined_date: Date
     },
-    amount: Number,
+    amount: {
+        amount_requested: Number,
+        amount_sent: Number
+    },
     currency: String,
     merchant: Object,
     status: String,
