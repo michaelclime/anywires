@@ -43,6 +43,7 @@ router.post("/invoices/:fullname/:_id/:merchant", function(req, res, next) {
                         amount_sent: 0,
                         amount_received: 0,
                         amount_approved: 0,
+                        amount_settled: 0,
                         amount_available: 0
                     },
                     currency:  req.body.currency,
@@ -54,6 +55,7 @@ router.post("/invoices/:fullname/:_id/:merchant", function(req, res, next) {
                         sent_date: '',
                         received_date: '',
                         approved_date: '',
+                        settled_date: '',
                         available_date: '',
                         declined_date: ''
                     }, 
@@ -249,6 +251,7 @@ router.post("/invoices/:fullname/:_id/:merchant", function(req, res, next) {
                                                     amount_sent: 0,
                                                     amount_received: 0,
                                                     amount_approved: 0,
+                                                    amount_settled: 0,
                                                     amount_available: 0
                                                 },
                                                 currency:  req.body.currency,
@@ -260,6 +263,7 @@ router.post("/invoices/:fullname/:_id/:merchant", function(req, res, next) {
                                                     sent_date: '',
                                                     received_date: '',
                                                     approved_date: '',
+                                                    settled_date: '',
                                                     available_date: '',
                                                     declined_date: ''
                                                 }, 

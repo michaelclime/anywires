@@ -320,7 +320,7 @@ async function loadSettleList()  {
                 
             // Settlement Details Window 
 
-            this.settleList.addEventListener('click', (e) => {
+            this.settleList.addEventListener('click',  (e) => {
                 e.preventDefault();
                 document.querySelector('#table-docs').innerHTML = '';
                 document.querySelector('#tableTbody-comments').innerHTML = '';
@@ -339,8 +339,29 @@ async function loadSettleList()  {
                 this.receivedBTN = document.querySelector('#received');
                 this.declinedBTN = document.querySelector('#declined');
 
-                this.sentBTN.addEventListener('click', (e) => {
+                this.sentBTN.addEventListener('click', async (e) => {
                     e.preventDefault();
+
+                    // Check existing docs and commission
+                    const documentsTable = document.querySelector('#table-docs').children;
+                    const commissionsTable = document.querySelector('#tableTbody-commissions').firstChild;
+
+                    const DocProof = async () => {
+                        let checkDocs = await fetch(`http://localhost:3000/isDocProof/${item._id}`);
+                        
+                        if (checkDocs.status !== 200) {
+                            return Swal.fire('Something went wrong on server side');
+                        }
+
+                        return await checkDocs.json();
+                    };
+
+                    const isDocProof = await DocProof();
+                   
+                    if (!commissionsTable || !isDocProof) {
+                        return Swal.fire('Please, upload payment proof and add commission');
+                    }
+
                     document.querySelector('.settleInfoTitle').innerHTML = `Settlement to <strong>${item.wallet[0].name}</strong> made on  
                      <strong>${new Date(item.dates.creation_date).getDate() + '/' + (new Date(item.dates.creation_date).getMonth()+ 1) + '/' +   new Date(item.dates.creation_date).getFullYear()}</strong> for <strong>${formatStr(item.amount.amount_requested)} ${item.currency}</strong> - <span class="currentStatus">Sent</span>`;
                     

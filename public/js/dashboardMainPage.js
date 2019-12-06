@@ -168,7 +168,7 @@ let sentAmountEuro = 0,
                     sentAmountEuro += +i.amount.amount_sent,
                     receivedAmountEuro += +i.amount.amount_received,
                     approvedAmountEuro += +i.amount.amount_approved,
-                    settledAmountEuro += 0;
+                    settledAmountEuro += +i.amount.amount_settled;
                     amountListSentEUR.push(i.amount.amount_sent);
                     dateListSentEUR.push(i.dates.sent_date);
                     amountListReceivedEUR.push(i.amount.amount_received);
@@ -181,7 +181,7 @@ let sentAmountEuro = 0,
                         sentAmountDollar += +i.amount.amount_sent,
                         receivedAmountDollar += +i.amount.amount_received,
                         approvedAmountDollar += +i.amount.amount_approved,
-                        settledAmountDollar += 0;
+                        settledAmountDollar += +i.amount.amount_settled;;
                         amountListSentUSD.push(i.amount.amount_sent);
                         dateListSentUSD.push(i.dates.sent_date);
                         amountListReceivedUSD.push(i.amount.amount_received);
@@ -224,7 +224,7 @@ let sentAmountEuro = 0,
                     sentAmountEuro += +i.amount.amount_sent,
                     receivedAmountEuro += +i.amount.amount_received,
                     approvedAmountEuro += +i.amount.amount_approved,
-                    settledAmountEuro += 0;
+                    settledAmountEuro += +i.amount.amount_settled;
                     amountListSentEUR.push(i.amount.amount_sent);
                     dateListSentEUR.push(i.dates.sent_date);
                     amountListReceivedEUR.push(i.amount.amount_received);
@@ -237,7 +237,7 @@ let sentAmountEuro = 0,
                         sentAmountDollar += +i.amount.amount_sent,
                         receivedAmountDollar += +i.amount.amount_received,
                         approvedAmountDollar += +i.amount.amount_approved,
-                        settledAmountDollar += 0;
+                        settledAmountDollar += +i.amount.amount_settled;
                         amountListSentUSD.push(i.amount.amount_sent);
                         dateListSentUSD.push(i.dates.sent_date);
                         amountListReceivedUSD.push(i.amount.amount_received);
@@ -281,7 +281,7 @@ let sentAmountEuro = 0,
                     sentAmountEuro += +i.amount.amount_sent,
                     receivedAmountEuro += +i.amount.amount_received,
                     approvedAmountEuro += +i.amount.amount_approved,
-                    settledAmountEuro += 0;
+                    settledAmountEuro += +i.amount.amount_settled;
                     amountListSentEUR.push(i.amount.amount_sent);
                     dateListSentEUR.push(i.dates.sent_date);
                     amountListReceivedEUR.push(i.amount.amount_received);
@@ -294,7 +294,7 @@ let sentAmountEuro = 0,
                         sentAmountDollar += +i.amount.amount_sent,
                         receivedAmountDollar += +i.amount.amount_received,
                         approvedAmountDollar += +i.amount.amount_approved,
-                        settledAmountDollar += 0;
+                        settledAmountDollar += +i.amount.amount_settled;
                         amountListSentUSD.push(i.amount.amount_sent);
                         dateListSentUSD.push(i.dates.sent_date);
                         amountListReceivedUSD.push(i.amount.amount_received);
@@ -383,7 +383,7 @@ const weekAmount = () => {
                     sentAmountEuro += +i.amount.amount_sent,
                     receivedAmountEuro += +i.amount.amount_received,
                     approvedAmountEuro += +i.amount.amount_approved,
-                    settledAmountEuro += 0;
+                    settledAmountEuro += +i.amount.amount_settled;
                     amountListSentEUR.push(i.amount.amount_sent);
                     dateListSentEUR.push(i.dates.sent_date);
                     amountListReceivedEUR.push(i.amount.amount_received);
@@ -396,7 +396,7 @@ const weekAmount = () => {
                         sentAmountDollar += +i.amount.amount_sent,
                         receivedAmountDollar += +i.amount.amount_received,
                         approvedAmountDollar += +i.amount.amount_approved,
-                        settledAmountDollar += 0;
+                        settledAmountDollar += +i.amount.amount_settled;
                         amountListSentUSD.push(i.amount.amount_sent);
                         dateListSentUSD.push(i.dates.sent_date);
                         amountListReceivedUSD.push(i.amount.amount_received);
@@ -441,7 +441,7 @@ const weekAmount = () => {
                     sentAmountEuro += +i.amount.amount_sent,
                     receivedAmountEuro += +i.amount.amount_received,
                     approvedAmountEuro += +i.amount.amount_approved,
-                    settledAmountEuro += 0;
+                    settledAmountEuro += +i.amount.amount_settled;
                     amountListSentEUR.push(i.amount.amount_sent);
                     dateListSentEUR.push(i.dates.sent_date);
                     amountListReceivedEUR.push(i.amount.amount_received);
@@ -454,7 +454,7 @@ const weekAmount = () => {
                         sentAmountDollar += +i.amount.amount_sent,
                         receivedAmountDollar += +i.amount.amount_received,
                         approvedAmountDollar += +i.amount.amount_approved,
-                        settledAmountDollar += 0;
+                        settledAmountDollar += +i.amount.amount_settled;
                         amountListSentUSD.push(i.amount.amount_sent);
                         dateListSentUSD.push(i.dates.sent_date);
                         amountListReceivedUSD.push(i.amount.amount_received);
@@ -500,7 +500,7 @@ const weekAmount = () => {
                     sentAmountEuro += +i.amount.amount_sent,
                     receivedAmountEuro += +i.amount.amount_received,
                     approvedAmountEuro += +i.amount.amount_approved,
-                    settledAmountEuro += 0;
+                    settledAmountEuro += +i.amount.amount_settled;
                     amountListSentEUR.push(i.amount.amount_sent);
                     dateListSentEUR.push(i.dates.sent_date);
                     amountListReceivedEUR.push(i.amount.amount_received);
@@ -513,7 +513,7 @@ const weekAmount = () => {
                         sentAmountDollar += +i.amount.amount_sent,
                         receivedAmountDollar += +i.amount.amount_received,
                         approvedAmountDollar += +i.amount.amount_approved,
-                        settledAmountDollar += 0;
+                        settledAmountDollar += +i.amount.amount_settled;
                         amountListSentUSD.push(i.amount.amount_sent);
                         dateListSentUSD.push(i.dates.sent_date);
                         amountListReceivedUSD.push(i.amount.amount_received);
@@ -605,7 +605,7 @@ const monthAmount = () => {
                     sentAmountEuro += +i.amount.amount_sent,
                     receivedAmountEuro += +i.amount.amount_received,
                     approvedAmountEuro += +i.amount.amount_approved,
-                    settledAmountEuro += 0;
+                    settledAmountEuro += +i.amount.amount_settled;
                     amountListSentEUR.push(i.amount.amount_sent);
                     dateListSentEUR.push(i.dates.sent_date);
                     amountListReceivedEUR.push(i.amount.amount_received);
@@ -618,7 +618,7 @@ const monthAmount = () => {
                         sentAmountDollar += +i.amount.amount_sent,
                         receivedAmountDollar += +i.amount.amount_received,
                         approvedAmountDollar += +i.amount.amount_approved,
-                        settledAmountDollar += 0;
+                        settledAmountDollar += +i.amount.amount_settled;
                         amountListSentUSD.push(i.amount.amount_sent);
                         dateListSentUSD.push(i.dates.sent_date);
                         amountListReceivedUSD.push(i.amount.amount_received);
@@ -661,7 +661,7 @@ const monthAmount = () => {
                     sentAmountEuro += +i.amount.amount_sent,
                     receivedAmountEuro += +i.amount.amount_received,
                     approvedAmountEuro += +i.amount.amount_approved,
-                    settledAmountEuro += 0;
+                    settledAmountEuro += +i.amount.amount_settled;
                     amountListSentEUR.push(i.amount.amount_sent);
                     dateListSentEUR.push(i.dates.sent_date);
                     amountListReceivedEUR.push(i.amount.amount_received);
@@ -674,7 +674,7 @@ const monthAmount = () => {
                         sentAmountDollar += +i.amount.amount_sent,
                         receivedAmountDollar += +i.amount.amount_received,
                         approvedAmountDollar += +i.amount.amount_approved,
-                        settledAmountDollar += 0;
+                        settledAmountDollar += +i.amount.amount_settled;
                         amountListSentUSD.push(i.amount.amount_sent);
                         dateListSentUSD.push(i.dates.sent_date);
                         amountListReceivedUSD.push(i.amount.amount_received);
@@ -718,7 +718,7 @@ const monthAmount = () => {
                     sentAmountEuro += +i.amount.amount_sent,
                     receivedAmountEuro += +i.amount.amount_received,
                     approvedAmountEuro += +i.amount.amount_approved,
-                    settledAmountEuro += 0;
+                    settledAmountEuro += +i.amount.amount_settled;
                     amountListSentEUR.push(i.amount.amount_sent);
                     dateListSentEUR.push(i.dates.sent_date);
                     amountListReceivedEUR.push(i.amount.amount_received);
@@ -731,7 +731,7 @@ const monthAmount = () => {
                         sentAmountDollar += +i.amount.amount_sent,
                         receivedAmountDollar += +i.amount.amount_received,
                         approvedAmountDollar += +i.amount.amount_approved,
-                        settledAmountDollar += 0;
+                        settledAmountDollar += +i.amount.amount_settled;
                         amountListSentUSD.push(i.amount.amount_sent);
                         dateListSentUSD.push(i.dates.sent_date);
                         amountListReceivedUSD.push(i.amount.amount_received);
@@ -820,7 +820,7 @@ const allTimeAmount = () => {
                     sentAmountEuro += +i.amount.amount_sent,
                     receivedAmountEuro += +i.amount.amount_received,
                     approvedAmountEuro += +i.amount.amount_approved,
-                    settledAmountEuro += 0;
+                    settledAmountEuro += +i.amount.amount_settled;
                     amountListSentEUR.push(i.amount.amount_sent);
                     dateListSentEUR.push(i.dates.sent_date);
                     amountListReceivedEUR.push(i.amount.amount_received);
@@ -833,7 +833,7 @@ const allTimeAmount = () => {
                         sentAmountDollar += +i.amount.amount_sent,
                         receivedAmountDollar += +i.amount.amount_received,
                         approvedAmountDollar += +i.amount.amount_approved,
-                        settledAmountDollar += 0;
+                        settledAmountDollar += +i.amount.amount_settled;
                         amountListSentUSD.push(i.amount.amount_sent);
                         dateListSentUSD.push(i.dates.sent_date);
                         amountListReceivedUSD.push(i.amount.amount_received);
@@ -875,7 +875,7 @@ const allTimeAmount = () => {
                     sentAmountEuro += +i.amount.amount_sent,
                     receivedAmountEuro += +i.amount.amount_received,
                     approvedAmountEuro += +i.amount.amount_approved,
-                    settledAmountEuro += 0;
+                    settledAmountEuro += +i.amount.amount_settled;
                     amountListSentEUR.push(i.amount.amount_sent);
                     dateListSentEUR.push(i.dates.sent_date);
                     amountListReceivedEUR.push(i.amount.amount_received);
@@ -888,7 +888,7 @@ const allTimeAmount = () => {
                         sentAmountDollar += +i.amount.amount_sent,
                         receivedAmountDollar += +i.amount.amount_received,
                         approvedAmountDollar += +i.amount.amount_approved,
-                        settledAmountDollar += 0;
+                        settledAmountDollar += +i.amount.amount_settled;
                         amountListSentUSD.push(i.amount.amount_sent);
                         dateListSentUSD.push(i.dates.sent_date);
                         amountListReceivedUSD.push(i.amount.amount_received);
@@ -933,7 +933,7 @@ const allTimeAmount = () => {
                     sentAmountEuro += +i.amount.amount_sent,
                     receivedAmountEuro += +i.amount.amount_received,
                     approvedAmountEuro += +i.amount.amount_approved,
-                    settledAmountEuro += 0;
+                    settledAmountEuro += +i.amount.amount_settled;
                     amountListSentEUR.push(i.amount.amount_sent);
                     dateListSentEUR.push(i.dates.sent_date);
                     amountListReceivedEUR.push(i.amount.amount_received);
@@ -946,7 +946,7 @@ const allTimeAmount = () => {
                         sentAmountDollar += +i.amount.amount_sent,
                         receivedAmountDollar += +i.amount.amount_received,
                         approvedAmountDollar += +i.amount.amount_approved,
-                        settledAmountDollar += 0;
+                        settledAmountDollar += +i.amount.amount_settled;
                         amountListSentUSD.push(i.amount.amount_sent);
                         dateListSentUSD.push(i.dates.sent_date);
                         amountListReceivedUSD.push(i.amount.amount_received);

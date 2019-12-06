@@ -9,6 +9,7 @@ const express = require('express'),
     Merchant = require('../modules/merchant'),
     Wallet = require('../modules/wallet'),
     Settlement = require('../modules/settlement'),
+    Document = require('../modules/document'),
     assert = require('assert');
 
 const url = 'mongodb://18.216.223.81:27017/anywires';
@@ -202,35 +203,94 @@ router.post('/addSettleCommision/:id', jsonParser,  function(req, res) {
     });
 });
 
-router.post('/changeSettleStatus/:id', jsonParser,  function(req, res) {
+router.post('/changeSettleStatus/:id', jsonParser, async function(req, res) {
     
-    mongo.connect(url, (err, db) => {
-        if (req.body.sent_date) {
-            db.collection("settlements").findOneAndUpdate( {
-                _id: new objectId(req.params.id)
-            }, { $set: { 
+    switch (req.body.newStatus) {
+        case 'Sent':
+            const settlementUpdate1 = await Settlement.findByIdAndUpdate(req.params.id, {
+                $set: { 
                     "status": req.body.newStatus,
                     "dates.sent_date":  req.body.sent_date
-                }         
+                }
             });
-        } else  if (req.body.received_date) {
-            db.collection("settlements").findOneAndUpdate( {
-                _id: new objectId(req.params.id)
-            }, { $set: { 
+            const settlement1 = await Settlement.findById(req.params.id);
+            if (settlement1.invoices.length) {
+                for (let i = 0; i < settlement1.invoices.length; i += 1) {
+                    let invoice1 = await Invoice.findById(settlement1.invoices[i]);
+                    let invoiceUpdate1 = await Invoice.findByIdAndUpdate(settlement1.invoices[i], {
+                        $set: { 
+                            "status": 'Settled',
+                            "dates.settled_date":  new Date(),
+                            "amount.amount_settled": invoice1.amount.amount_available
+                        }
+                    } );
+                }
+            }
+            break;
+
+        case 'Received':
+            const settlement2 = await Settlement.findByIdAndUpdate(req.params.id, {
+                $set: { 
                     "status": req.body.newStatus,
                     "dates.received_date":  req.body.received_date
-                }         
-            });
-        } else {
-            db.collection("settlements").findOneAndUpdate( {
-                _id: new objectId(req.params.id)
-            }, { $set: { 
+                }
+            })
+            break;
+
+        case 'Declined':
+            const settlementUpdate2 = await Settlement.findByIdAndUpdate(req.params.id, {
+                $set: { 
                     "status": req.body.newStatus,
                     "dates.declined_date":  req.body.declined_date
-                }         
+                }
             });
-        }
-    });
+            
+            const settlement3 = await Settlement.findById(req.params.id);
+            if (settlement3.invoices.length) {
+                for (let i = 0; i < settlement3.invoices.length; i += 1) {
+                    let invoiceUpdate3 = await Invoice.findByIdAndUpdate(settlement3.invoices[i], {
+                        $set: { 
+                            "status": 'Available',
+                            "dates.settled_date":  '',
+                            "amount.amount_settled": 0
+                        }
+                    } );
+                }
+            }
+            break;
+        default:
+            break;
+    }
+    
+
+
+    // mongo.connect(url, (err, db) => {
+    //     if (req.body.sent_date) {
+    //         db.collection("settlements").findOneAndUpdate( {
+    //             _id: new objectId(req.params.id)
+    //         }, { $set: { 
+    //                 "status": req.body.newStatus,
+    //                 "dates.sent_date":  req.body.sent_date
+    //             }         
+    //         });
+    //     } else  if (req.body.received_date) {
+    //         db.collection("settlements").findOneAndUpdate( {
+    //             _id: new objectId(req.params.id)
+    //         }, { $set: { 
+    //                 "status": req.body.newStatus,
+    //                 "dates.received_date":  req.body.received_date
+    //             }         
+    //         });
+    //     } else {
+    //         db.collection("settlements").findOneAndUpdate( {
+    //             _id: new objectId(req.params.id)
+    //         }, { $set: { 
+    //                 "status": req.body.newStatus,
+    //                 "dates.declined_date":  req.body.declined_date
+    //             }         
+    //         });
+    //     }
+    // });
 });
 
 router.post("/uploadSettleDoc", upload.single("file"), jsonParser, (req, res) => {
@@ -391,6 +451,22 @@ router.post('/creatSettleFromAwWallet/:id', async (req, res) => {
         res.status(400).send(err);
         console.log(err);
     }  
+});
+
+router.get('/isDocProof/:id', async (req, res) => {
+    let flag = false;
+    let settlement = await Settlement.findById(req.params.id);
+
+    for (let i = 0; i < settlement.documents.length; i += 1) {
+        let doc = await Document.findById(settlement.documents[i]);
+        if (doc) {
+            if (doc.type === 'Payment proof') {
+                flag = true;
+            }
+        }
+    }
+    
+    res.status(200).send(flag);
 });
 
 

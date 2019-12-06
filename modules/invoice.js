@@ -11,6 +11,7 @@ let InvoiceSchema = new mongoose.Schema({
         amount_sent: Number,
         amount_received: Number,
         amount_approved: Number,
+        amount_settled: Number,
         amount_available: Number
     },
     currency: String,

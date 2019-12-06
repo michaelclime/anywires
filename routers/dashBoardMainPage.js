@@ -18,7 +18,7 @@ router.get('/getInvListToday', function(req, res, next) {
         mongo.connect(url, function(err, db) {
         assert.equal(null, err);
         var cursor = db.collection('invoices').find({ 'dates.creation_date': { $gt: new Date(minDate), $lt: new Date(maxDate) },
-                                                      'status': { $in: ['Received', 'Approved', 'Available']}  } );
+                                                      'status': { $in: ['Received', 'Approved', 'Available', 'Settled']}  } );
         cursor.forEach(function(doc, err) {
             assert.equal(null, err);
             INVOIECES.push(doc);
@@ -37,7 +37,7 @@ router.get('/getInvListToday/:merchant', function(req, res, next) {
     mongo.connect(url, function(err, db) {
         assert.equal(null, err);
         var cursor = db.collection('invoices').find({ 'dates.creation_date': { $gt: new Date(minDate), $lt: new Date(maxDate) },
-                                                      'status': { $in: ['Received', 'Approved', 'Available']},
+                                                      'status': { $in: ['Received', 'Approved', 'Available', 'Settled']},
                                                       'merchant': req.params.merchant  } );
         cursor.forEach(function(doc, err) {
             assert.equal(null, err);
@@ -58,7 +58,7 @@ router.get('/getInvListWeek', function(req, res, next) {
     mongo.connect(url, function(err, db) {
         assert.equal(null, err);
         var cursor = db.collection('invoices').find({ 'dates.creation_date': { $gt: new Date(minDate), $lt: new Date(maxDate) },
-                                                      'status': { $in: ['Received', 'Approved', 'Available']}  } );
+                                                      'status': { $in: ['Received', 'Approved', 'Available', 'Settled']}  } );
         cursor.forEach(function(doc, err) {
             assert.equal(null, err);
             INVOIECES.push(doc);
@@ -77,7 +77,7 @@ router.get('/getInvListWeek/:merchant', function(req, res, next) {
     mongo.connect(url, function(err, db) {
         assert.equal(null, err);
         var cursor = db.collection('invoices').find({ 'dates.creation_date': { $gt: new Date(minDate), $lt: new Date(maxDate) },
-                                                      'status': { $in: ['Received', 'Approved', 'Available']},
+                                                      'status': { $in: ['Received', 'Approved', 'Available', 'Settled']},
                                                       'merchant': req.params.merchant  } );
         cursor.forEach(function(doc, err) {
             assert.equal(null, err);
@@ -99,7 +99,7 @@ router.get('/getInvListMonth', function(req, res, next) {
         mongo.connect(url, function(err, db) {
         assert.equal(null, err);
         var cursor = db.collection('invoices').find({ 'dates.creation_date': { $gt: new Date(minDate), $lt: new Date(maxDate) },
-                                                      'status': { $in: ['Received', 'Approved', 'Available']}  } );
+                                                      'status': { $in: ['Received', 'Approved', 'Available', 'Settled']}  } );
         cursor.forEach(function(doc, err) {
             assert.equal(null, err);
             INVOIECES.push(doc);
@@ -118,7 +118,7 @@ router.get('/getInvListMonth/:merchant', function(req, res, next) {
     mongo.connect(url, function(err, db) {
         assert.equal(null, err);
         var cursor = db.collection('invoices').find({ 'dates.creation_date': { $gt: new Date(minDate), $lt: new Date(maxDate) },
-                                                      'status': { $in: ['Received', 'Approved', 'Available']},
+                                                      'status': { $in: ['Received', 'Approved', 'Available', 'Settled']},
                                                       'merchant': req.params.merchant  } );
         cursor.forEach(function(doc, err) {
             assert.equal(null, err);
@@ -134,7 +134,7 @@ router.get('/getInvListAll', function(req, res, next) {
     let INVOIECES = [];
     mongo.connect(url, function(err, db) {
         assert.equal(null, err);
-        var cursor = db.collection('invoices').find( {'status': { $in: ['Received', 'Approved', 'Available']}} );
+        var cursor = db.collection('invoices').find( {'status': { $in: ['Received', 'Approved', 'Available', 'Settled']}} );
         cursor.forEach(function(doc, err) {
             assert.equal(null, err);
             INVOIECES.push(doc);
