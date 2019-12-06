@@ -3,6 +3,7 @@ const express = require('express'),
     mongo = require('mongodb'),
     objectId = require("mongodb").ObjectID,
     jsonParser = express.json(),
+    Merchant = require("../modules/merchant"),
     Wallet = require("../modules/wallet");
  
 
@@ -18,6 +19,7 @@ router.get('/wallets', isLoggedIn, function(req, res) {
 router.post('/getWalletsPart', jsonParser, async (req, res) => {
     const filter = req.body.filter;
     const number = req.body.number;
+    const limit = req.body.limit;
     let resObj = {};
 
     // Get 10 wallets
@@ -32,7 +34,7 @@ router.post('/getWalletsPart', jsonParser, async (req, res) => {
     })
     .sort({_id:-1})
     .skip(number)
-    .limit(10);
+    .limit(limit);
 });
 
 // @route POST /getWalletById
@@ -63,7 +65,24 @@ router.post("/createWallet", jsonParser, (req, res) => {
     const newWallet = req.body.newWallet;
     newWallet["creation_date"] = new Date();
     new Wallet(newWallet).save()
-    .then(() => res.send("Wallet has been created successfully!"));
+    .then( async (newWallet) => {
+        if (newWallet.type === "AW Wallet") {
+            try {
+                await Merchant.updateOne({"name": newWallet.merchant_name}, {$push: {"inside_wallets": newWallet._id}});
+            } catch (e) {
+                console.log(e);
+            }
+        } else {
+            try {
+                await Merchant.updateOne({"name": newWallet.merchant_name}, {$push: {"wallets": newWallet._id}});
+            } catch (e) {
+                console.log(e);
+            }
+        }
+    })
+    .then(() => {
+        res.send("Wallet has been created successfully!");
+    });
 });
 
 

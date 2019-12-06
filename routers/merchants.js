@@ -65,9 +65,10 @@ router.post("/getNumber-Merchants", jsonParser, (req, res) => {
 // @desc Create Merchant
 router.post("/createMerchant", jsonParser, (req, res) => {
     const newMerchant = req.body.newMerchant;
+
     newMerchant["creation_date"] = new Date();
     const arr = [{
-            "name": "AW Wallet",
+            "name": "AW Wallet USD",
             "type": "Anywires",
             "balance": 0,
             "currency": "USD",
@@ -84,7 +85,7 @@ router.post("/createMerchant", jsonParser, (req, res) => {
             "merchant_name": req.body.newMerchant.name,
             "creation_date": new Date()
         },{
-            "name": "AW Wallet",
+            "name": "AW Wallet EUR",
             "type": "Anywires",
             "balance": 0,
             "currency": "EUR",
@@ -104,7 +105,7 @@ router.post("/createMerchant", jsonParser, (req, res) => {
     Wallet.insertMany(arr).then((docs) => {
         const wallet1ID = docs[0]._id;
         const wallet2ID = docs[1]._id;
-        newMerchant["wallets"] = [wallet1ID, wallet2ID];
+        newMerchant["inside_wallets"] = [wallet1ID, wallet2ID];
         new Merchant(newMerchant).save()
     }).then(() => res.send("Merchant has been created successfully!"));
 });

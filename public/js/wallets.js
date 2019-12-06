@@ -12,6 +12,68 @@ class Wallets {
         this.render();
     }
 
+    jsonToXls = async () => {
+        // Loading GIF appear and scroll off
+        this.loadingGif.style.display = "flex";
+        document.body.classList.add("modal-open");
+        // 
+        const createXLSLFormatObj = [];
+ 
+        /* XLS Head Columns */
+        const xlsHeader = ["Name", "Type", "Balance", "Currency", "Created by", "Merchant", "Creation date"];
+        
+        // /* XLS Rows Data */
+        const res = await this.getWalletsPart(0, "", this.filter);
+        const xlsRows = res.wallets;
+        
+        // Removing ID field and changing Date format
+        xlsRows.forEach((item) => {
+            delete item["_id"];
+            delete item["__v"];
+            delete item["requisites"];
+            item.creation_date = moment(item.creation_date).format("DD-MM-YYYY");
+        });
+
+        createXLSLFormatObj.push(xlsHeader);
+        $.each(xlsRows, function(index, value) {
+            var innerRowData = [];
+            $.each(value, function(ind, val) {
+                innerRowData.push(val);
+            });
+            createXLSLFormatObj.push(innerRowData);
+        });
+ 
+        /* File Name */
+        var filename = `wallets-${moment(new Date()).format("YYYY-MM-DD")}.xlsx`;
+ 
+        /* Sheet Name */
+        var ws_name = "wallets";
+ 
+        var wb = XLSX.utils.book_new(),
+            ws = XLSX.utils.aoa_to_sheet(createXLSLFormatObj);
+ 
+        /* Add worksheet to workbook */
+        XLSX.utils.book_append_sheet(wb, ws, ws_name);
+ 
+        /* Write workbook and Download */
+        XLSX.writeFile(wb, filename);
+        
+        this.loadingGif.style.display = "none";
+        document.body.classList.remove("modal-open");
+        // 
+    }
+
+    hoverXLS = () => {
+        document.querySelector(".table-arrows").addEventListener("mouseover", (event) => {
+            event.preventDefault();
+            document.querySelector(".xlsTip").style.display = "flex";
+        });
+        document.querySelector(".table-arrows").addEventListener("mouseout", (event) => {
+            event.preventDefault();
+            document.querySelector(".xlsTip").style.display = "none";
+        });
+    }
+
     searchFunction = async () => {
         // Loading GIF On
         this.loadingGif.style.display = "flex";
@@ -20,7 +82,7 @@ class Wallets {
         this.filter = { $text: { $search: phrase } };
 
         if (phrase) {
-            const res = await this.getWalletsPart(0, this.filter);
+            const res = await this.getWalletsPart(0, 10, this.filter);
 
             this.container.innerHTML = "";
             this.containerPages.innerHTML = "";
@@ -114,7 +176,7 @@ class Wallets {
             await this.createMerchantRequest(newWallet);
             //
              // Request for data 
-            const response = await this.getWalletsPart(0);
+            const response = await this.getWalletsPart(0, 10);
             this.walletsArr = response.wallets;
             this.walletsNum = response.counts;
             // 
@@ -210,7 +272,7 @@ class Wallets {
                 await this.editWalletRequest(this.currentWallet[0]._id, editedWallet);
                 //
                  // Request for data 
-                const response = await this.getWalletsPart(0);
+                const response = await this.getWalletsPart(0, 10);
                 this.walletsArr = response.wallets;
                 this.walletsNum = response.counts;
                 // 
@@ -333,8 +395,7 @@ class Wallets {
         type ? this.filter.type = type : null;
         // 
         // Request for data 
-        const response = await this.getWalletsPart(0, this.filter);console.log(response);
-        // 
+        const response = await this.getWalletsPart(0, 10, this.filter);
         // Table cleaning
         this.container = document.getElementById("table-list");
         this.container.innerHTML = "";
@@ -386,7 +447,7 @@ class Wallets {
                 var currentEvent = +(event.target.textContent);
                 var listNumber = ((currentEvent*10)-10);
 
-                var nextList = await this.getWalletsPart(listNumber, this.filter);
+                var nextList = await this.getWalletsPart(listNumber, 10, this.filter);
 
                 // Loading GIF appear and scroll off
                 this.loadingGif.style.display = "none";
@@ -436,7 +497,7 @@ class Wallets {
     };
     
     saveLocalWallets = async () => {
-        const response = await this.getWalletsPart(0);
+        const response = await this.getWalletsPart(0, 10);
         this.walletsArr = response.wallets;
         this.walletsNum = response.counts;
         this.countNextPage(this.walletsArr, this.walletsNum);
@@ -456,10 +517,10 @@ class Wallets {
         });
     }
 
-    getWalletsPart = async (number, filter) => {
+    getWalletsPart = async (number, limit, filter) => {
         return  await fetch("http://18.216.223.81:3000/getWalletsPart", {
             method: "POST",
-            body: JSON.stringify({number, filter}),
+            body: JSON.stringify({number, limit, filter}),
             headers:{'Content-Type': 'application/json'}
         })
         .then(res => {
@@ -524,6 +585,10 @@ class Wallets {
             event.preventDefault();
             event.keyCode === 13 ? this.searchFunction() : "";
         }); 
+        // 
+        // Download XLS Tip
+        document.querySelector("#dowloadXLS").addEventListener("click", this.jsonToXls);
+        this.hoverXLS();
     }
 }
 
