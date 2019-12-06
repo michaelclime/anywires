@@ -23,7 +23,7 @@ class CreateMerchant{
     }
 
     getListOfAffilliateReq = async (filter) => {
-        return  await fetch("http://18.216.223.81 :3000/getUserByFilter", {
+        return  await fetch("http://18.216.223.81:3000/getUserByFilter", {
             method: "POST",
             body: JSON.stringify({filter}),
             headers:{'Content-Type': 'application/json'}
@@ -37,7 +37,7 @@ class CreateMerchant{
     }
 
     editMerchantReq = async (mechantName, newData) => {
-        return  await fetch("http://18.216.223.81 :3000/getMerchants")
+        return  await fetch("http://18.216.223.81:3000/getMerchants")
         .then(res => {
             return res.json();
         }) 
@@ -159,7 +159,7 @@ class CreateMerchant{
             };
 
             await this.editMerchantReq(this.merchName, editedMerch);
-            document.location.replace("http://18.216.223.81 :3000/merchants.html");
+            document.location.replace("http://18.216.223.81:3000/merchants.html");
 
         }
     }
@@ -251,7 +251,7 @@ class CreateMerchant{
     }
 
     getMerchants = async (number, filter) => {
-        return  await fetch("http://18.216.223.81 :3000/getPart-Merchants", {
+        return  await fetch("http://18.216.223.81:3000/getPart-Merchants", {
             method: "POST",
             body: JSON.stringify({
                 number, 
@@ -268,7 +268,7 @@ class CreateMerchant{
     }
 
     createMerchantReq = async (data) => {
-        return  await fetch("http://18.216.223.81 :3000/createMerchant", {
+        return  await fetch("http://18.216.223.81:3000/createMerchant", {
                 method: "POST",
                 body: JSON.stringify({
                     "newMerchant": data
@@ -464,10 +464,11 @@ class CreateMerchant{
                 }
             };
             await this.createMerchantReq(newMerchant);
+            console.log(newMerchant);
             // Loading GIF OFF
             this.loadingGIF.style.display = "none";
 
-            document.location.replace("http://18.216.223.81 :3000/merchants.html");
+            document.location.replace("http://18.216.223.81:3000/merchants.html");
         } 
     }
 

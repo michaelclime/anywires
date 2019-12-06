@@ -28,6 +28,7 @@ class Commission {
         // Removing ID field and changing Date format
         xlsRows.forEach((item) => {
             delete item["_id"];
+            delete item["__v"];
             item.creation_date = moment(item.creation_date).format("DD-MM-YYYY");
         });
 
@@ -59,7 +60,6 @@ class Commission {
         // Loading GIF off and scroll off
         this.loadingGif.style.display = "none";
         document.body.classList.remove("modal-open");
-        // 
     }
 
     saveXls = () => {
@@ -171,7 +171,6 @@ class Commission {
 
     clearFilter = () => {
         this.filter = {};
-        document.querySelector("#search-input").value = "";
         document.querySelectorAll("select").forEach(item => item.value = "");
         this.container = document.getElementById("table-list");
         this.container.innerHTML = "";
@@ -192,11 +191,16 @@ class Commission {
         const creationDate = document.querySelector("#creationDate").value;
         //
         // Add date Filter
-        if (creationDate) {
+        if (creationDate.length > 20) {
             const DATE = creationDate.split("—");
             this.dateFrom = new Date(DATE[0].trim());
             this.dateTill = new Date(DATE[1].trim());
-        }
+        } 
+        if (creationDate.length < 20) {
+            this.dateFrom = new Date(creationDate.trim());
+            this.dateTill = false;
+            console.log(this.dateFrom)
+        } 
         // 
         // Add filter criteria to obj
         commBank ? this.filter.bank = commBank : null;
