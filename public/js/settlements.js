@@ -1,3 +1,23 @@
+const COMMISSIONS = [
+    {
+        name: 'Settlement BTC',
+        fee: 2.5,
+        flat: 0
+    },{
+        name: 'Settlement ATM',
+        fee: 2,
+        flat: 0
+    },{
+        name: 'Settlement C2B Wire',
+        fee: 0.5,
+        flat: 100
+    },{
+        name: 'Settlement B2B Wire',
+        fee: 1.7,
+        flat: 100
+    }
+];
+
 
 // Settle Transfers
 
@@ -569,34 +589,78 @@ async function loadSettleList()  {
                     this.commisionTable.appendChild(this.commisionList);
                 });
                 
+                const merchantFees = document.querySelector('#merchantFees');
+                COMMISSIONS.forEach((commission) => {
+                    let newOption = document.createElement("option"); 
+                    newOption.value = commission.name;
+                    newOption.innerHTML = commission.name;
+                    merchantFees.append(newOption);
+                });
+
+                let percentage, flat, additional, left_from_transfer;
+                merchantFees.addEventListener('change', (event) => {
+                    let key = event.target.value;
+                    let commissionPercent = document.querySelector('.commissionPercent');
+                    let commisAmount =  document.querySelector('.commissionAmount');
+                    COMMISSIONS.forEach( (comm) => {
+                        if (comm.name ===  event.target.value) {
+                            commissionPercent.innerHTML= `${comm.fee}%`;
+                            percentage = comm.fee;
+                            flat = comm.flat;
+                            left_from_transfer = item.amount.amount_requested - Math.round(item.amount.amount_requested * comm.fee / 100) - comm.flat;
+                            commisAmount.value = Math.round(item.amount.amount_requested * comm.fee / 100) + comm.flat;
+                            commisAmount.placeholder = Math.round(item.amount.amount_requested * comm.fee / 100) + comm.flat;
+                        }
+                    })
+
+                });
+                
                 this.addCommissionsBtn = document.querySelector('#addCommissionsBtn');
                 
                 this.addCommissionsBtn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    this.userName = document.querySelector('.userName').textContent;
-                    this.commisType =  document.querySelector('.commissionType').value;
+                    this.commisType =  document.querySelector('#commissionType').value;
                     this.commisAmount =  +document.querySelector('.commissionAmount').value;
+                    this.merchantFee = document.querySelector('#merchantFees').value
 
-                    this.commisstTable =  document.querySelector('#tableTbody-commissions');
-                    this.commisTR = document.createElement("tr");
-                    this.commisTR.innerHTML = `
-                        <td class="col column0">${this.userName}</td> 
-                        <td class="col column1">${this.commisType}</td>
-                        <td class="col column2">${this.commisAmount}</td>
-                    `;
-                    this.commisstTable.appendChild(this.commisTR);
+                    if (this.commisType && this.commisAmount && this.merchantFee) {
+                        this.checkCurrentStatus = document.querySelector('.currentStatus').textContent
+                        if (this.checkCurrentStatus === 'Requested') {
+                            this.userName = document.querySelector('.userName').textContent;
+                            
+        
+                            this.commisstTable =  document.querySelector('#tableTbody-commissions');
+                            this.commisTR = document.createElement("tr");
+                            this.commisTR.innerHTML = `
+                                <td class="col column0">${this.userName}</td> 
+                                <td class="col column1">${this.commisType}</td>
+                                <td class="col column2">${this.commisAmount}</td>
+                            `;
+                            this.commisstTable.appendChild(this.commisTR);
+        
+                            (async () => {
+                                let addCommision = await fetch(`http://localhost:3000/addSettleCommision/${item._id}`, {
+                                    method: "POST",
+                                    body: JSON.stringify({
+                                        created_by: this.userName,
+                                        type: this.commisType,
+                                        amount: this.commisAmount,
+                                        percentage: percentage,
+                                        flat: flat,
+                                        additional: 0,
+                                        bank_commision: 0,
+                                        left_from_transfer: left_from_transfer,
+                                        merchant: item.mercName[0].name
 
-                    (async () => {
-                        let addCommision = await fetch(`http://localhost:3000/addSettleCommision/${item._id}`, {
-                            method: "POST",
-                            body: JSON.stringify({
-                                created_by: this.userName,
-                                type: this.commisType,
-                                amount: this.commisAmount
-                            }),
-                            headers:{'Content-Type': 'application/json'}
-                        });
-                    })();
+                                    }),
+                                    headers:{'Content-Type': 'application/json'}
+                                });
+                            })();
+                        } else {
+                            Swal.fire('Commissions are available only for "requested" settlement.')
+                        }
+                    } else {
+                        Swal.fire('Please fill all fields.')
+                    }
                 });
 
                 document.querySelector('.settlementDetails-close').addEventListener('click', (e) => {

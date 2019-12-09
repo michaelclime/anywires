@@ -190,7 +190,13 @@ router.post('/addSettleCommision/:id', jsonParser,  function(req, res) {
             created_by: req.body.created_by, 
             amount: req.body.amount,
             type: req.body.type,
-            percentage: ''
+            percentage: req.body.percentage,
+            flat: req.body.flat,
+            additional: req.body.additional,
+            bank_commision: req.body.bank_commision,
+            left_from_transfer: req.body.left_from_transfer,
+            merchant: req.body.merchant,
+            creation_date: new Date()
         });
     });
 

@@ -345,8 +345,18 @@
 
                 <div class="commissionssInside-block">
                     <form>
-                        <input type="text" class="commissionType" placeholder="Commission type">
-                        <input type="number" class="commissionAmount" placeholder="Amount">
+                        <select name="commissionType" id="commissionType" required>
+                            <option value=""></option>
+                            <option value="Settlement Anywires Commission">Settlement Anywires Commission</option>
+                            <option value="Settlement Solution Commission">Settlement Solution Commission</option>
+                        </select>
+                        <select name="merchantFees" id="merchantFees" required>
+                                <option value=""></option>
+                        </select>
+                        <div id="commisAmounBlock">
+                            <input type="number" class="commissionAmount" placeholder="Amount">
+                            <span class="commissionPercent">0%</span>
+                        </div>
                         <input type="submit" id="addCommissionsBtn" value='Add Commission' >
                     </form>
                 </div>
