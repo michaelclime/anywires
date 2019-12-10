@@ -481,7 +481,7 @@ table {
     width: 70%;
     overflow: scroll;
     overflow-x:hidden;
-    height: 165px; 
+    height: 150px; 
 }
 
 .docsUpload-block {
@@ -584,6 +584,14 @@ table {
     transition: .2s;
 }
 
+#docGood {
+    color: green;
+}
+
+#docBad {
+    color: red;
+}
+
 #uploadBtn:hover, #addCommentBtn:hover, #addCommissionsBtn:hover {
     background-color: #20a5f7;
 }
@@ -629,7 +637,7 @@ table {
     width: 62%;
     overflow: scroll;
     overflow-x:hidden;
-    height: 165px; 
+    height: 150px; 
 }
 
 .commentsInside-block, .commissionssInside-block {

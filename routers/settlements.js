@@ -5,11 +5,13 @@ const express = require('express'),
     jsonParser = express.json(),
     multer = require("multer"),
     upload = multer({dest:"uploads"}),
+    fs = require("fs"),
     Invoice = require('../modules/invoice'),
     Merchant = require('../modules/merchant'),
     Wallet = require('../modules/wallet'),
     Settlement = require('../modules/settlement'),
     Document = require('../modules/document'),
+    Commission = require('../modules/commission'),
     assert = require('assert');
 
 const url = 'mongodb://18.216.223.81:27017/anywires';
@@ -154,7 +156,7 @@ router.get("/getSettlementsList", (req, res) => {
                 $lookup: {
                     from: "merchants",
                     localField: 'merchant',    // field in the settlements collection
-                    foreignField: "_id",  // field in the commissions  collection
+                    foreignField: "_id",  // field in the merchants  collection
                     as: "mercName"
                 }
             }
@@ -213,13 +215,17 @@ router.post('/changeSettleStatus/:id', jsonParser, async function(req, res) {
     
     switch (req.body.newStatus) {
         case 'Sent':
-            const settlementUpdate1 = await Settlement.findByIdAndUpdate(req.params.id, {
-                $set: { 
-                    "status": req.body.newStatus,
-                    "dates.sent_date":  req.body.sent_date
-                }
-            });
             const settlement1 = await Settlement.findById(req.params.id);
+            let totalSumCommission = 0;
+            
+            for (let i = 0; i <  settlement1.commissions.length; i += 1) {
+                let commission = await Commission.findById(settlement1.commissions[i]);
+                
+                if (commission.type !== 'Settlement Solution Commission') {
+                    totalSumCommission += commission.amount;
+                }
+            }
+            
             if (settlement1.invoices.length) {
                 for (let i = 0; i < settlement1.invoices.length; i += 1) {
                     let invoice1 = await Invoice.findById(settlement1.invoices[i]);
@@ -231,6 +237,22 @@ router.post('/changeSettleStatus/:id', jsonParser, async function(req, res) {
                         }
                     } );
                 }
+
+                const settlementUpdate1 = await Settlement.findByIdAndUpdate(req.params.id, {
+                    $set: { 
+                        "status": req.body.newStatus,
+                        "dates.sent_date":  req.body.sent_date,
+                        "amount.amount_sent": settlement1.amount.amount_requested - totalSumCommission
+                    }
+                });
+            } else {
+                const settlementUpdate1 = await Settlement.findByIdAndUpdate(req.params.id, {
+                    $set: { 
+                        "status": req.body.newStatus,
+                        "dates.sent_date":  req.body.sent_date,
+                        "amount.amount_sent": settlement1.amount.amount_requested + totalSumCommission
+                    }
+                });
             }
             break;
 
@@ -267,36 +289,6 @@ router.post('/changeSettleStatus/:id', jsonParser, async function(req, res) {
         default:
             break;
     }
-    
-
-
-    // mongo.connect(url, (err, db) => {
-    //     if (req.body.sent_date) {
-    //         db.collection("settlements").findOneAndUpdate( {
-    //             _id: new objectId(req.params.id)
-    //         }, { $set: { 
-    //                 "status": req.body.newStatus,
-    //                 "dates.sent_date":  req.body.sent_date
-    //             }         
-    //         });
-    //     } else  if (req.body.received_date) {
-    //         db.collection("settlements").findOneAndUpdate( {
-    //             _id: new objectId(req.params.id)
-    //         }, { $set: { 
-    //                 "status": req.body.newStatus,
-    //                 "dates.received_date":  req.body.received_date
-    //             }         
-    //         });
-    //     } else {
-    //         db.collection("settlements").findOneAndUpdate( {
-    //             _id: new objectId(req.params.id)
-    //         }, { $set: { 
-    //                 "status": req.body.newStatus,
-    //                 "dates.declined_date":  req.body.declined_date
-    //             }         
-    //         });
-    //     }
-    // });
 });
 
 router.post("/uploadSettleDoc", upload.single("file"), jsonParser, (req, res) => {
@@ -338,6 +330,20 @@ router.post("/uploadSettleDoc", upload.single("file"), jsonParser, (req, res) =>
                });
             });
         })
+    });
+});
+
+router.get("/upload/:filename", (req, res) => {
+    const filename = req.params.filename;
+    var filePath = `/../uploads/${filename}`;
+
+    mongo.connect(url, (err, db) => {
+        if (err) return console.log(err, "Can't connect to database!");
+        db.collection("documents").find({"filename": filename}).toArray(function(err, doc){
+            if(err) return console.log("Error with openning file!", err);
+
+            checkTypeOfDocument(doc[0].mimetype, filePath, res);
+        });
     });
 });
 
@@ -483,5 +489,18 @@ function isLoggedIn(req, res, next) {
     req.flash('error', 'You need to be logged in to do that');
     res.redirect('/');
 }
+
+// Checking if type is supported for open in browser
+var checkTypeOfDocument = (type, filePath, res) => {
+    if(type !== "application/pdf" && type !== "image/jpeg" && type !== "image/png"){
+        res.send("File type is not supported!");
+    } else {
+        fs.readFile(__dirname + filePath , (err, data) => {
+            if (err) return res.sendStatus(404);
+            res.contentType(type);
+            res.send(data);
+        });
+    }
+};
     
 module.exports = router;
