@@ -1,3 +1,6 @@
+const curentUserRole = document.querySelector('.curentUserRole').textContent;
+const curentUserId = document.querySelector('.curentUserId').textContent;
+
 // Settle Transfers
 
 $(document).ready(function(){
@@ -11,7 +14,7 @@ $(document).ready(function(){
       
         document.querySelector(".walletList").innerHTML = '<option value="">Wallet for Settlement:</option>';
        
-        let availableInvs  = fetch(`http://localhost:3000/availableInvs/${merchantName}`);
+        let availableInvs  = fetch(`http://18.216.223.81:3000/availableInvs/${merchantName}`);
         availableInvs.then(response => {
             return response.json();
         }).then(invoices => {
@@ -81,7 +84,7 @@ $(document).ready(function(){
             const a = new InvoicesList(invoices);
         });
 
-       let walletsList  = fetch(`http://localhost:3000/getWalletsList/${merchantName}`);
+       let walletsList  = fetch(`http://18.216.223.81:3000/getWalletsList/${merchantName}`);
         walletsList.then(response => {
             return response.json();
             }).then(wallets => {
@@ -129,7 +132,7 @@ $(document).ready(function(){
       $('.MerchantPayWindow').fadeIn();
       document.querySelector(".walletPayFrom").innerHTML = '<option value="">Choose your wallet:</option>';
       document.querySelector(".inside_wallet").innerHTML = '';
-       let walletsList  = fetch(`http://localhost:3000/getExternalWalletsList/${merchantName}`);
+       let walletsList  = fetch(`http://18.216.223.81:3000/getExternalWalletsList/${merchantName}`);
        walletsList.then(response => {
            return response.json();
            }).then(wallets => {
@@ -177,7 +180,7 @@ $(document).ready(function(){
        });
 
       
-       let inside_walletsList  = fetch(`http://localhost:3000/getInside_walletsList/${merchantName}`);
+       let inside_walletsList  = fetch(`http://18.216.223.81:3000/getInside_walletsList/${merchantName}`);
        inside_walletsList.then(response => {
            return response.json();
            }).then(wallets => {
@@ -247,9 +250,47 @@ document.querySelector('.amountPayment').addEventListener('focusout', (event) =>
 
 
 // Generate merchants list for selected menu
-
-let fetchPromise  = fetch('http://localhost:3000/getMerchants');
-fetchPromise.then(response => {
+if ( curentUserRole !== "Merchant Manager") {
+    let fetchPromise  = fetch('http://18.216.223.81:3000/getMerchants');
+    fetchPromise.then(response => {
+        return response.json();
+        }).then(merchants => {
+    
+            class MerchantOptoinList {
+                constructor(){
+                    this.list = merchants;
+                    this.render();
+                }
+            
+                loadMerchant(list) {
+                    this.container = document.querySelector('#filterMerchantA');
+                    list.slice(0, list.length).forEach((item, i) => {
+                        if ( this.container) {
+                        this.option = document.createElement("option");
+                        this.option.value = item._id;
+                        this.option.innerHTML =  item.name;   
+                        this.container.append(this.option);
+                        }
+                    });
+                }
+                render(){
+                    this.loadMerchant(this.list);
+                }
+            };
+    
+        const a = new MerchantOptoinList(merchants);
+    
+        let merchantList = document.querySelector('.merchantList');
+    
+        merchantList.addEventListener('change', (event) => {
+            event.preventDefault();
+            let currentMerchant =  merchants.filter(item => item._id == merchantList.value);
+            document.querySelector('.hide-merchantID').innerHTML =  `<input name="merchantID" value=${currentMerchant[0]._id}>`;
+        });
+    });
+} else {
+    let fetchPromise  = fetch('http://18.216.223.81:3000/getMerchant/' + curentUserId);
+    fetchPromise.then(response => {
     return response.json();
     }).then(merchants => {
 
@@ -285,14 +326,23 @@ fetchPromise.then(response => {
         document.querySelector('.hide-merchantID').innerHTML =  `<input name="merchantID" value=${currentMerchant[0]._id}>`;
     });
 });
+}
+
 
 // SETTLEMENTS LIST 
 
 // Show settlements list
 
 async function loadSettleList()  {
-    let settleList = await  fetch('http://localhost:3000/getSettlementsList');
-    let SETTLEMENTS = await settleList.json();
+    let SETTLEMENTS;
+    if ( curentUserRole !== "Merchant Manager") {
+        let settleList = await  fetch('http://18.216.223.81:3000/getSettlementsList');
+        SETTLEMENTS = await settleList.json();
+    } else {
+        let settleList = await  fetch('http://18.216.223.81:3000/getSettlementsList/' + curentUserId);
+        SETTLEMENTS = await settleList.json();
+    }
+    
 
     class SettlementsList {
         constructor(){
@@ -314,7 +364,7 @@ async function loadSettleList()  {
                     <td class="col column3">${formatStr(item.amount.amount_sent)} ${item.currency}</td> 
                     <td class="col column4">${item.type}</td>
                     <td class="col column5">${item.wallet[0].name}</td> 
-                    <td class="col column6">${item.status}</td>
+                    <td class="col column6"><strong>${item.status}</strong></td>
                 `;
                 
             // Settlement Details Window 
@@ -346,7 +396,7 @@ async function loadSettleList()  {
                     const commissionsTable = document.querySelector('#tableTbody-commissions').firstChild;
 
                     const DocProof = async () => {
-                        let checkDocs = await fetch(`http://localhost:3000/isDocProof/${item._id}`);
+                        let checkDocs = await fetch(`http://18.216.223.81:3000/isDocProof/${item._id}`);
                         
                         if (checkDocs.status !== 200) {
                             return Swal.fire('Something went wrong on server side');
@@ -365,7 +415,7 @@ async function loadSettleList()  {
                      <strong>${new Date(item.dates.creation_date).getDate() + '/' + (new Date(item.dates.creation_date).getMonth()+ 1) + '/' +   new Date(item.dates.creation_date).getFullYear()}</strong> for <strong>${formatStr(item.amount.amount_requested)} ${item.currency}</strong> - <span class="currentStatus">Sent</span>`;
                      
                     (async () => {
-                        let changeSStatus = await fetch(`http://localhost:3000/changeSettleStatus/${item._id}`, {
+                        let changeSStatus = await fetch(`http://18.216.223.81:3000/changeSettleStatus/${item._id}`, {
                             method: "POST",
                             body: JSON.stringify({
                                 newStatus: 'Sent',
@@ -382,7 +432,7 @@ async function loadSettleList()  {
                      <strong>${new Date(item.dates.creation_date).getDate() + '/' + (new Date(item.dates.creation_date).getMonth()+ 1) + '/' +   new Date(item.dates.creation_date).getFullYear()}</strong> for <strong>${formatStr(item.amount.amount_requested)} ${item.currency}</strong> - <span class="currentStatus">Received</span>`;
                     
                     (async () => {
-                        let changeSStatus = await fetch(`http://localhost:3000/changeSettleStatus/${item._id}`, {
+                        let changeSStatus = await fetch(`http://18.216.223.81:3000/changeSettleStatus/${item._id}`, {
                             method: "POST",
                             body: JSON.stringify({
                                 newStatus: 'Received',
@@ -399,7 +449,7 @@ async function loadSettleList()  {
                      <strong>${new Date(item.dates.creation_date).getDate() + '/' + (new Date(item.dates.creation_date).getMonth()+ 1) + '/' +   new Date(item.dates.creation_date).getFullYear()}</strong> for <strong>${formatStr(item.amount.amount_requested)} ${item.currency}</strong> - <span class="currentStatus"> Declined</span>`;
                     
                      (async () => {
-                        let changeSStatus = await fetch(`http://localhost:3000/changeSettleStatus/${item._id}`, {
+                        let changeSStatus = await fetch(`http://18.216.223.81:3000/changeSettleStatus/${item._id}`, {
                             method: "POST",
                             body: JSON.stringify({
                                 newStatus: 'Declined',
@@ -415,7 +465,8 @@ async function loadSettleList()  {
                     this.docTable =  document.querySelector('#table-docs');
                     this.docList = document.createElement("tr");
                     this.docList.className = `tr${i}`;
-                    this.docList.innerHTML = `
+                    if (curentUserRole !== "Merchant Manager" && curentUserRole !== "Crm SuccessManager") {
+                        this.docList.innerHTML = `
                         <td class="col column0">${i.type}</td> 
                         <td class="col column1">${new Date().getDate() + '/' + (new Date().getMonth()+ 1) + '/' +   new Date().getFullYear()}</td> 
                         <td class="col column2">${i.status}</td> 
@@ -427,6 +478,19 @@ async function loadSettleList()  {
                         <td class="col column5 hide">${i.filename}</td>
                         <td class="col column6 hide">${i._id}</td>
                     `;
+                    } else {
+                        this.docList.innerHTML = `
+                        <td class="col column0">${i.type}</td> 
+                        <td class="col column1">${new Date().getDate() + '/' + (new Date().getMonth()+ 1) + '/' +   new Date().getFullYear()}</td> 
+                        <td class="col column2">${i.status}</td> 
+                        <td class="col column3">
+                        </td>
+                        <td  class="col column4"><span onclick="openDocsImage(event)" class="viewSpan">View</span></td> 
+                        <td class="col column5 hide">${i.filename}</td>
+                        <td class="col column6 hide">${i._id}</td>
+                    `;
+                    }
+                    
 
 
 
@@ -479,7 +543,8 @@ async function loadSettleList()  {
                             this.docTablee =  document.querySelector('#table-docs');
                             this.docListt = document.createElement("tr");
                             this.docListt.className = `tr${i}`;
-                            this.docListt.innerHTML = `
+                            if (curentUserRole !== "Merchant Manager" && curentUserRole !== "Crm SuccessManager") {
+                                this.docListt.innerHTML = `
                                 <td class="col column0">${type}</td> 
                                 <td class="col column1">${new Date().getDate() + '/' + (new Date().getMonth()+ 1) + '/' +   new Date().getFullYear()}</td> 
                                 <td class="col column2">Non-Verified</td> 
@@ -490,6 +555,19 @@ async function loadSettleList()  {
                                 <td  class="col column4"><span onclick="openDocsImage(event)" class="viewSpan">View</span></td> 
                                 <td class="col column5 hide">${file.filename}</td>
                             `;
+                            } else {
+                                this.docListt.innerHTML = `
+                                <td class="col column0">${type}</td> 
+                                <td class="col column1">${new Date().getDate() + '/' + (new Date().getMonth()+ 1) + '/' +   new Date().getFullYear()}</td> 
+                                <td class="col column2">Non-Verified</td> 
+                                <td class="col column3">
+                                   
+                                </td>
+                                <td  class="col column4"><span onclick="openDocsImage(event)" class="viewSpan">View</span></td> 
+                                <td class="col column5 hide">${file.filename}</td>
+                            `;
+                            }
+                            
 
                             this.docTablee.appendChild(this.docListt);
                 
@@ -508,7 +586,7 @@ async function loadSettleList()  {
                     }
                 
                     const postFile = async (fd) => {
-                    return  await fetch("http://localhost:3000/uploadSettleDoc", {
+                    return  await fetch("http://18.216.223.81:3000/uploadSettleDoc", {
                             method: "POST",
                             body: fd,
                             mode: "no-cors",
@@ -555,7 +633,7 @@ async function loadSettleList()  {
                     this.commentTable.appendChild(this.commentTr);
 
                     (async () => {
-                        let addComment = await fetch(`http://localhost:3000/addSettleComment/${item._id}`, {
+                        let addComment = await fetch(`http://18.216.223.81:3000/addSettleComment/${item._id}`, {
                             method: "POST",
                             body: JSON.stringify({
                                 created_by: userName,
@@ -573,12 +651,24 @@ async function loadSettleList()  {
                     this.commisionTable =  document.querySelector('#tableTbody-commissions');
                     this.commisionList = document.createElement("tr");
                     this.commisionList.className = `tr${i}`;
-                    this.commisionList.innerHTML = `
-                        <td class="col column0">${i.created_by}</td> 
-                        <td class="col column1">${i.type}</td>
-                        <td class="col column2">${i.amount}</td>
-                    `;
-                    this.commisionTable.appendChild(this.commisionList);
+                    if (curentUserRole !== "Merchant Manager" && curentUserRole !== "Crm SuccessManager") {
+                        
+                        this.commisionList.innerHTML = `
+                            <td class="col column0">${i.created_by}</td> 
+                            <td class="col column1">${i.type}</td>
+                            <td class="col column2">${i.amount}</td>
+                        `;
+                        this.commisionTable.appendChild(this.commisionList);
+                    } else {
+                        if (i.type !== 'Settlement Solution Commission') {
+                            this.commisionList.innerHTML = `
+                                <td class="col column0">${i.created_by}</td> 
+                                <td class="col column1">${i.type}</td>
+                                <td class="col column2">${i.amount}</td>
+                            `;
+                            this.commisionTable.appendChild(this.commisionList);
+                        }
+                    }
                 });
                 
 
@@ -647,7 +737,7 @@ async function loadSettleList()  {
                                 this.commisstTable.appendChild(this.commisTR);
                             if ( this.commisType === 'Settlement Anywires Commission') {
                                 (async () => {
-                                    let addCommision = await fetch(`http://localhost:3000/addSettleCommision/${item._id}`, {
+                                    let addCommision = await fetch(`http://18.216.223.81:3000/addSettleCommision/${item._id}`, {
                                         method: "POST",
                                         body: JSON.stringify({
                                             created_by: this.userName,
@@ -666,7 +756,7 @@ async function loadSettleList()  {
                                 })();
                             } else {
                                 (async () => {
-                                    let addCommision = await fetch(`http://localhost:3000/addSettleCommision/${item._id}`, {
+                                    let addCommision = await fetch(`http://18.216.223.81:3000/addSettleCommision/${item._id}`, {
                                         method: "POST",
                                         body: JSON.stringify({
                                             created_by: this.userName,
@@ -728,9 +818,9 @@ async function loadSettleList()  {
         searchFunction() {
             let table = document.getElementById('main-table');
             let phrase = document.querySelector('.input-search').value.toLowerCase();
-            for (var i = 1; i < table.rows.length; i++) {
+            for (var i = 0; i < table.rows.length; i++) {
                 var flag = false;
-                for (var j = 0; j < 6; j++) {
+                for (var j = 0; j <= 6; j++) {
                     var item = table.rows[i].cells[j].textContent.toLowerCase();
                     if (item.includes(phrase)) flag = true;
                 }
@@ -868,30 +958,53 @@ function checkIsEmptyObj (obj) {
 
 function openDocsImage (event) {
     var filename = event.target.closest("tr").children[5].textContent.trim();
-    window.open(`http://localhost:3000/upload/${filename}`, '_blank');
+    window.open(`http://18.216.223.81:3000/upload/${filename}`, '_blank');
 }
 
-function docsGood(event) {
-    //console.log(event.target.closest("tr").children[6].textContent)
+// Document change status
+async function docsGood(event) {
     let currentStatus = event.target.closest("tr").children[2].textContent;
 
     if (currentStatus === "Approved") {
         return Swal.fire('Status of this document is already Approved!');
     }
-    console.log(currentStatus)
+    
+
+    (async () => {
+        let changeStatus = await fetch(`http://18.216.223.81:3000/changeDocStatus`, {
+            method: "POST",
+            body: JSON.stringify({
+                id: event.target.closest("tr").children[6].textContent,
+                status: "Approved"
+            }),
+            headers:{'Content-Type': 'application/json'}
+        });
+        if (changeStatus.status !== 200) return Swal.fire('Problem on server side.');
+
+        event.target.closest("tr").children[2].innerHTML = "Approved";
+    })();
 }
 
-function docsBad(event) {
-    //console.log(event.target.closest("tr").children[6].textContent)
+async function docsBad(event) {
     let currentStatus = event.target.closest("tr").children[2].textContent;
 
     if (currentStatus === "Declined") {
         return Swal.fire('Status of this document is already Declined!');
     }
-
     
+    (async () => {
+        let changeStatus = await fetch(`http://18.216.223.81:3000/changeDocStatus`, {
+            method: "POST",
+            body: JSON.stringify({
+                id: event.target.closest("tr").children[6].textContent,
+                status: "Declined"
+            }),
+            headers:{'Content-Type': 'application/json'}
+        });
+        if (changeStatus.status !== 200) return Swal.fire('Problem on server side.');
 
-    console.log(currentStatus)
+        event.target.closest("tr").children[2].innerHTML = "Declined";
+    })();
 }
 
 

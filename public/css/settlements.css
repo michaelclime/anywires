@@ -83,6 +83,7 @@ main {
     margin-top: 3px;
     padding: 50px 70px;
     background: #FFF;
+   
 }
 
 #dowloadPdf:hover{
@@ -135,7 +136,12 @@ table {
     overflow: hidden;
     width: 100%;
   }
-  
+
+.test {
+    height: 560px;
+    overflow-x: hidden;
+}
+
   table td, table th {
     padding-left: 8px;
   }
@@ -188,7 +194,6 @@ table {
   .column5 {
     padding-right: 20px;
   }
-
 
 /* Modal windows */
 
