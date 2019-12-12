@@ -29,9 +29,9 @@
     /* HEADER */
 .downloadPDFbtn {
     margin: 30px 0;
-    margin-left: 75%;
+    margin-left: 80%;
     padding: 8px;
-    font-size: 18px;
+    font-size: 14px;
     background: rgb(77, 77, 77);
     color: #FFF;
     border: none;
@@ -46,12 +46,10 @@
 .header {
     display: grid;
     grid-template-columns: 60% 1fr; 
-    grid-template-rows: 1fr 1fr;
-    grid-gap: 10px 10%;
+    grid-template-rows: 200px 150px;
+    
     justify-items: stretch;
-    margin: 0 90px;
-    margin-top: 50px;
-
+    margin: 0 120px;
 }
 
 .logo {
@@ -63,7 +61,7 @@
     display: flex;
     flex-direction: column;
     justify-self: stretch;
-    font-size: 20px;
+    font-size: 16px;
 }
 
 .mainTitle {
@@ -71,19 +69,29 @@
     font-size: 40px;
 }
 
-.settleInfo span {
-    margin-bottom: 20px;
+.settleInfo p {
+    margin-bottom: 10px;
 }
 
-.settleRecInfo span {
+.settleRecInfo p {
     margin-bottom: 10px;
+}
+
+.settleStateP {
+    margin-top: 20px;
+}
+
+.settleState {
+    margin-left: 10px;
+    font-size: 20px;
+    font-weight: 700;
 }
     /* TABLE */
 
 .tableTransList, .servCommission {
     text-align: center;
     min-height: 300px;
-    padding: 50px 90px;
+    padding: 10px 120px;
     padding-bottom: 0;
     margin-top: 3px;
     background-color: #FFF;
@@ -96,8 +104,9 @@
 .tableTransListHead, .totalSumRow {
     width: 14%;
     background-color:  rgb(67, 186, 162);
-    font-size: 20px;
+    font-size: 14px;
     color: #FFF;
+   
     
 }
 
@@ -111,15 +120,24 @@ th {
 }
 
 .column0, .column1, .column2, .column3, .column4 {
-    padding: 20px;
+    padding: 10px;
 }
 
 .tableList {
     text-align: center;
     width: 14%;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 700;
     color: rgb(88, 78, 78);
+}
+
+.totalSum-div {
+    text-align: right;
+    margin-top: 30px;
+    margin-right: 15%;
+    font-size: 36px;
+    font-weight: 700;
+    color: rgb(39, 133, 114);
 }
 
  /* FOOTER */
@@ -133,7 +151,37 @@ th {
 .footerInfo {
     margin: 30px 90px;
     line-height: 1.8;
-    font-size: 18px;
+    font-size: 16px;
+}
+
+/* Loading GIF */
+.loadingGif {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgb(0, 0, 0);
+    opacity: .7;
+    z-index: 1000;
+}
+
+.loadingGif img {
+    width: 50px;
+    height: 50px;
+}
+
+.loadingGif div {
+    font-size: 24px;
+    color: white;
+}
+
+.hide {
+    display: none;
 }
 
 @media (max-width: 1100px) {

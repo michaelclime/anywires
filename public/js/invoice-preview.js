@@ -149,7 +149,7 @@ function SaveAsPdf() {
     document.querySelector('.loadingGif').classList.remove('hide');
 
     var api_endpoint = "https://selectpdf.com/api2/convert/";
-    var api_key = "6981bab0-31b1-44db-9ce6-1245fba8558c";
+    var api_key = "cc21c1f1-502c-43a3-b6bc-83006301e204";
  
     var url = window.location.href; // current page
     console.log();

@@ -6,6 +6,7 @@ let CommissionSchema = new mongoose.Schema({
     amount: Number,
     currency: String,
     type: String,
+    name: String,
     percentage: Number,
     flat: Number,
     additional: Number,

@@ -374,6 +374,7 @@ async function loadSettleList()  {
                 document.querySelector('#table-docs').innerHTML = '';
                 document.querySelector('#tableTbody-comments').innerHTML = '';
                 document.querySelector('#tableTbody-commissions').innerHTML = '';
+                document.querySelector('.settlementId').innerHTML = item._id;
                 $('.filter').css('display', 'flex');
                 
                 this.merchName = document.querySelector('#settleMerchant');
@@ -723,7 +724,7 @@ async function loadSettleList()  {
 
                         this.commisType =  document.querySelector('#commissionType').value;
                         this.commisAmount =  +document.querySelector('.commissionAmount').value;
-                        this.merchantFee = document.querySelector('#merchantFees').value
+                        this.merchantFee = document.querySelector('#merchantFees').value;
 
                         if (this.commisType && this.commisAmount && this.merchantFee) {
                                 this.userName = document.querySelector('.userName').textContent;
@@ -742,6 +743,7 @@ async function loadSettleList()  {
                                         body: JSON.stringify({
                                             created_by: this.userName,
                                             type: this.commisType,
+                                            name: this.merchantFee,
                                             amount: this.commisAmount,
                                             percentage: percentage,
                                             flat: flat,
@@ -761,6 +763,7 @@ async function loadSettleList()  {
                                         body: JSON.stringify({
                                             created_by: this.userName,
                                             type: this.commisType,
+                                            name: this.merchantFee,
                                             amount: this.commisAmount,
                                             percentage: 0,
                                             flat: 0,
@@ -921,7 +924,16 @@ loadSettleList();
 let prevSettleBtn = document.querySelector('.settlePrevBtn');
 
 prevSettleBtn.addEventListener('click', (e) => {
-    document.location.href='/settlementPreview.html';
+    const settlementId = document.querySelector('.settlementId').textContent;
+    
+    if (settlementId && settlementId !== null) {
+        var win = window.open();
+        win.location = '/settlementPreview?&' + settlementId;
+        win.opener = null;
+        win.blur();
+        window.focus();
+    }
+    
 
 });
 

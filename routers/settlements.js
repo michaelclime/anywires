@@ -25,8 +25,117 @@ router.get('/settlementReport.html', isLoggedIn, visibilityApproval, function(re
     res.render("settlementReport.html");
 });
 
-router.get('/settlementPreview.html', isLoggedIn, visibilityApproval, function(req, res) {
-    res.render("settlementPreview.html");
+router.get('/settlementPreview', isLoggedIn, visibilityApproval, async function(req, res) {
+
+    setTimeout( async () => {
+        const SettlementId = Object.keys(req.query)[0];
+        const settlement = await Settlement.findById(SettlementId);
+        const wallet = await Wallet.findById(settlement.wallets);
+
+        const settleDate = settlement.dates.creation_date;
+        const settleNumber = settlement.number;
+        const settleFor = wallet.merchant_name;
+        const settleState = settlement.status;
+        const settleWallet = wallet.name;
+        const settleIBAN = wallet.requisites.iban;
+        const settleBenName = wallet.requisites.beneficiary_name;
+        const settleBenAdd = wallet.requisites.beneficiary_address;
+
+        let table = ``;
+        const loadInvoices = (list) => {
+            list.slice(0, list.length).forEach((item, i) => {
+                let invsList =  `
+                <tr class="row">
+                    <td class="column0">${settleNumber}</td> 
+                    <td class="column1">${item.merchant}</td> 
+                    <td class="column2">${formatStr(item.amount.amount_received)} ${item.currency}</td> 
+                    <td class="column3">${formatStr(item.amount.amount_received - item.amount.amount_approved)} ${item.currency}</td> 
+                    <th class="column4">${formatStr(item.amount.amount_approved)} ${item.currency}</th>
+                </tr>
+                `;   
+                table += invsList;
+            });
+        }
+
+        let totalSumReceived = 0;
+        let totalSumApproved = 0;
+        if (settlement.invoices.length) {
+            let invoices = [];
+            for (let i = 0; i < settlement.invoices.length; i += 1) {
+                let invoice = await Invoice.findById(settlement.invoices[i]);
+                totalSumReceived += invoice.amount.amount_received;
+                totalSumApproved += invoice.amount.amount_approved;
+                invoices.push(invoice);
+            }
+
+            loadInvoices(invoices);
+
+            table += `
+            <tr class="totalSumRow">
+                <th class="column0"></th>
+                <th class="column1"></th>
+                <th class="column2">${totalSumReceived} ${settlement.currency}</th>
+                <th class="column3"></th>
+                <th class="column4">${totalSumApproved} ${settlement.currency}</th>
+            </tr>
+            `;   
+        } else {
+            table =  `
+            <tr class="row">
+                <td class="column0">${settleNumber}</td> 
+                <td class="column1">${settleFor}</td> 
+                <td class="column2"></td> 
+                <td class="column3"></td> 
+                <th class="column4">${formatStr(settlement.amount.amount_requested)} ${settlement.currency}</th>
+            </tr>
+            `;   
+        }
+
+        let commissionTable = ``;
+        const loadCommissions = (list) => {
+            list.slice(0, list.length).forEach((item, i) => {
+                let commList =  `
+                <tr class="row">
+                    <td class="column0">${item.name}</td> 
+                    <td class="column1">${formatStr(item.amount)} ${settlement.currency}</td>
+                </tr>
+                `;   
+                commissionTable += commList;
+            });
+        }
+
+        let totalSumComm = 0;
+        if (settlement.commissions.length) {
+            let commiss = [];
+            for (let i = 0; i < settlement.commissions.length; i += 1) {
+                let comms = await Commission.findById(settlement.commissions[i]);
+                if (comms.type === 'Settlement Anywires Commission') {
+                    totalSumComm += comms.amount;
+                    commiss.push(comms);
+                }
+            }
+
+            loadCommissions(commiss);
+
+            commissionTable += `
+            <tr class="totalSumRow">
+                <th class="column0"></th>
+                <th class="column1">${totalSumComm} ${settlement.currency}</th>
+            </tr>
+            `;   
+        }
+
+        let TOTAL = ``;
+        if (settlement.invoices.length) {
+            TOTAL = settlement.amount.amount_requested - totalSumComm + ` ${settlement.currency}`;
+        } else {
+            TOTAL = settlement.amount.amount_requested - totalSumComm + ` ${settlement.currency}`;
+        }
+
+        res.render("settlementPreview.html", { settleDate, settleNumber, settleFor, settleState, 
+            settleWallet, settleIBAN, settleBenName, settleBenAdd, table, commissionTable, TOTAL
+        });
+     }, 1000);
 });
 
 router.get('/availableInvs/:merchant', async function(req, res, next) {
@@ -241,6 +350,7 @@ router.post('/addSettleCommision/:id', jsonParser,  function(req, res) {
             created_by: req.body.created_by, 
             amount: req.body.amount,
             type: req.body.type,
+            name: req.body.name,
             percentage: req.body.percentage,
             flat: req.body.flat,
             additional: req.body.additional,
@@ -452,11 +562,12 @@ router.post('/creatSettle/:id', async (req, res) => {
     }
     
     let wallet = await Wallet.findById(req.body.wallets);
-
+    const count = await Settlement.count();
 
     const reducer = (accumulator, currentValue) => +accumulator + +currentValue;
     let totalSumInv = amounts.reduce(reducer);
     let newSettle = {
+        number: count + 1,
         dates: {
             creation_date: new Date()
         },
@@ -516,8 +627,10 @@ router.post('/creatSettleFromAwWallet/:id', async (req, res) => {
     let walletAW = await Wallet.findByIdAndUpdate(req.body.AwWalletId, {
         "$inc": { "balance": - req.body.amountPaymentfromAW } 
     });
-    
+    const count = await Settlement.countDocuments();
+
     let newSettle = {
+        number: count + 1,
         dates: {
             creation_date: new Date()
         },
@@ -581,6 +694,14 @@ router.get("/getMerchant/:id", jsonParser, async (req, res) => {
 
 });
 
+router.post("/getSettlementById", jsonParser, async (req, res) => {
+    let settlement = await Settlement.findById({_id: req.body.number});
+    
+    if (settlement && settlement !== null) {
+        res.status(200).send(settlement);
+    }
+});
+
 // Checking if type is supported for open in browser
 var checkTypeOfDocument = (type, filePath, res) => {
     if(type !== "application/pdf" && type !== "image/jpeg" && type !== "image/png"){
@@ -610,6 +731,26 @@ function visibilityApproval(req, res, next) {
     }
     req.flash('error', 'Sorry, you don\'t have permission to see this page.');
     res.redirect('/');
+}
+
+// Correct amount function
+
+function formatStr(num) {
+    let str = num + '';
+    str = str.replace(/(\.(.*))/g, '');
+    var arr = str.split('');
+    var str_temp = '';
+    if (str.length > 3) {
+        for (var i = arr.length - 1, j = 1; i >= 0; i--, j++) {
+            str_temp = arr[i] + str_temp;
+            if (j % 3 == 0) {
+                str_temp = ' ' + str_temp;
+            }
+        }
+        return str_temp;
+    } else {
+        return str;
+    }
 }
     
 module.exports = router;

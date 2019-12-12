@@ -14,25 +14,32 @@
 </head>
 
 <body>
-    <button class="downloadPDFbtn" onclick="HTMLtoPDF()">Download PDF</button>
-<div id="HTMLtoPDF">   
+    <button class="downloadPDFbtn" onclick="SaveAsPdf()">Download PDF</button>
+ 
+   <!-- Loading GIF -->
+    <div class="loadingGif hide">
+        <img src="img/Gear-2.5s-200px.gif" alt="loading GIF"/>
+        <div>Loading...</div>
+    </div>
+    <!-- Loading GIF -->   
+
+    <div id="HTMLtoPDF">   
     <div class="header">
 
         <img src="img/logocompany.png" alt="AnyWires logo company" class="logo">
 
         <div class="settleInfo">
             <h1 class="mainTitle">Settlement</h1>
-            <span class="settleDate"><strong>Settlement date:</strong> Apr 19, 2019</span>
-            <span class="settleNumber"><strong>Settlement num:</strong> 54400</span>
-            <span class="settleFor"><strong>Settlement for:</strong> CMP24</span>
-            <span class="settleState"><strong>Status:</strong> Received</span>
+            <p><strong>Settlement date: </strong><span class="settleDate"> <%= settleDate.getDate() + '/' + ( settleDate.getMonth()+ 1) + '/' +  settleDate.getFullYear(); %></span></p>
+            <p><strong>Settlement num: </strong><span class="settleNumber"> <%= settleNumber %></span></p>
+            <p><strong>Settlement for: </strong><span class="settleFor"> <%= settleFor %></span></p>
+            <p class="settleStateP"><strong>Status: </strong><span class="settleState"> <%= settleState %></span></p>
         </div>
         <div class="settleRecInfo">
-            <span class="settleWallet"><strong>Settlement Wallet:</strong> MisterTango LT</span>
-            <span class="settleIBAN"><strong>IBAN:</strong> LT453510000016700232</span>
-            <span class="settleBenName"><strong>Beneficiary name:</strong> CMP24 LTD</span>
-            <span class="settleBenAdd"><strong>Beneficiary Address:</strong> trust cc, Ajeltakeroad, 
-                Ajeltakeisland Marshall Islands Majuro MH96960</span>
+            <p><strong>Settlement Wallet: </strong><span class="settleWallet"> <%= settleWallet %></span></p>
+            <p><strong>IBAN: </strong><span class="settleIBAN"> <%= settleIBAN %></span></p>
+            <p><strong>Beneficiary name: </strong><span class="settleBenName"> <%= settleBenName %></span></p>
+            <p><strong>Beneficiary Address: </strong><span class="settleBenAdd"> <%= settleBenAdd %></span></p>
         </div>
     </div>
 
@@ -49,48 +56,7 @@
                 </tr>
             </thead>
             <tbody class="tableList">
-                <tr class="row">
-                    <th class="column0">661</th>
-                    <th class="column1">GIULIO GAGLIARDO</th>
-                    <th class="column2">€1 400</th>
-                    <th class="column3">€98</th>
-                    <th class="column4">€1 302</th>
-                </tr>
-                <tr class="row">
-                    <th class="column0">698</th>
-                    <th class="column1">Giacomino Vitali</th>
-                    <th class="column2">€25 000</th>
-                    <th class="column3">€1 750</th>
-                    <th class="column4">€23 250</th>
-                </tr>
-                <tr class="row">
-                    <th class="column0">738</th>
-                    <th class="column1">Antonio Neri</th>
-                    <th class="column2">€20 000</th>
-                    <th class="column3">€1 400</th>
-                    <th class="column4">€18 600</th>
-                </tr>
-                <tr class="row">
-                    <th class="column0">760</th>
-                    <th class="column1">Raffaella Graglia</th>
-                    <th class="column2">€5 000</th>
-                    <th class="column3">€385</th>
-                    <th class="column4">€5 115</th>
-                </tr>
-                <tr class="row">
-                    <th class="column0">761</th>
-                    <th class="column1">Andrea Bartollucci</th>
-                    <th class="column2">€500</th>
-                    <th class="column3">€35</th>
-                    <th class="column4">€465</th>
-                </tr>
-                <tr class="totalSumRow">
-                        <th class="column0"></th>
-                        <th class="column1"></th>
-                        <th class="column2">€52 400</th>
-                        <th class="column3"></th>
-                        <th class="column4">€48 732</th>
-                </tr>
+                    <%- table %>
             </tbody>
         </table>
     </div>
@@ -104,20 +70,13 @@
                 </tr>
             </thead>
             <tbody class="tableList">
-                <tr class="row">
-                    <th class="column0">B2C Transfer 2000 EUR for client Camillo Pasquini</th>
-                    <th class="column1">€2 000</th>
-                </tr>
-                <tr class="row">
-                    <th class="column0">Commission for B2C Transfer 2000 EUR for client Camillo Pasquini (5% + 100 EUR)</th>
-                    <th class="column1">€200</th>
-                </tr>
-                <tr class="totalSumRow">
-                    <th class="column0"></th>
-                    <th class="column1">€2 200</th>
-                </tr>
+                    <%- commissionTable %>
             </tbody>
         </table>
+    </div>
+
+    <div class="totalSum-div">
+        Total: <span class="totalSum"> <%= TOTAL %></span>
     </div>
 
     <footer>
@@ -131,8 +90,6 @@
 </div>
 
     <script src="js/jquery-2.1.3.js"></script>
-    <script src="js/jspdf.js"></script>
-    <script src="js/pdfFromHTML.js"></script>
-    
+    <script src="js/settlementPreview.js"></script>
 </body>
 </html>

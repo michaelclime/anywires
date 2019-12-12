@@ -2,6 +2,7 @@ let mongoose = require("mongoose");
 let passportLocalMongoose = require('passport-local-mongoose');
 
 let SettlementSchema = new mongoose.Schema({
+    number: Number,
     dates: {
         creation_date: Date,
         sent_date: Date,
