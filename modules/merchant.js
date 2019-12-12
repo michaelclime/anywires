@@ -141,6 +141,9 @@ let MerchantSchema = new mongoose.Schema({
         balance_available: Number,
         balance_frozen: Number
     },
+    creation_date: Date,
+    countInvoice: Number,
+    walletsReport: Array
 });
 
 MerchantSchema.plugin(passportLocalMongoose);

@@ -65,8 +65,8 @@ router.post("/getNumber-Merchants", jsonParser, (req, res) => {
 // @desc Create Merchant
 router.post("/createMerchant", jsonParser, (req, res) => {
     const newMerchant = req.body.newMerchant;
-
     newMerchant["creation_date"] = new Date();
+
     const arr = [{
             "name": "AW Wallet USD",
             "type": "Anywires",

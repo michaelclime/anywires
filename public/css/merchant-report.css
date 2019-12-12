@@ -1,0 +1,533 @@
+*{
+    margin:0;
+    padding:0;
+    border:0;
+    }
+    
+    /* width */
+    ::-webkit-scrollbar {
+    width: 10px;
+    }
+    /* Track */
+    ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    }
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+    background: #888;
+    }
+    /* Handle on hover */
+    ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+    }
+    
+    body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background-color: #F1F4F6;
+        font-family: 'Frank Ruhl Libre', serif;
+    }
+    
+    body button {
+        cursor: pointer;
+        background-color: rgb(77, 77, 77);
+        border: none;
+        text-align: center;
+        color: rgb(255, 255, 255);
+        line-height: 1;
+        border-radius: 3px;
+        outline: none;
+        transition: .35s;
+        font-family: 'Frank Ruhl Libre', serif;
+    }
+    body button:hover {
+        background-color: rgb(143, 143, 143);
+    }
+    body button:active {
+        background-color: #12C7B2;
+    }
+        
+    #burgerMenu {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        background:  #FFF;
+    }
+    
+    
+    /* Autorization Menu START */
+    .authorizationMenu {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        margin-right: 50px; 
+        font-size: 20px;
+        color: #555;
+    }
+    
+    .userLogo{
+        padding-left: 10px;
+        font-size: 30px;
+        color:  rgb(34, 218, 95);
+    }
+    
+    .dropMenu {
+        display: none;
+        flex-direction: column;
+        position: fixed;
+        right: 50px;
+        top: 60px;
+        font-size: 20px;
+        background:  #FFF;
+        list-style-type: none;
+    }
+    
+    .dropMenu li {
+        margin: 5px 0;
+    }
+    
+    .dropMenu li:hover {
+        background:  #EEF3FA;
+    }
+    
+    .dropMenu li a {
+        margin: 0 10px;
+        text-decoration: none;
+        color: #555;
+    }
+    
+    .liLogo {
+        margin: 0 10px;
+        padding-left: 10px;
+        font-size: 28px;
+    } 
+    /* Autorization Menu END */
+    
+        
+    /* Loading GIF START*/
+    #loadingGif {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: rgb(0, 0, 0);
+        opacity: .7;
+        z-index: 1000;
+    }
+    
+    #loadingGif img {
+        width: 50px;
+        height: 50px;
+    }
+    
+    #loadingGif div {
+        font-size: 24px;
+        color: white;
+    }
+    
+    .modal-open {
+        overflow: hidden;
+    }
+    /* Loading GIF END*/
+            
+            
+            
+    /* Wrapper */
+    #wrapper {
+        width: 100%;
+    }
+    
+    .opacityWrapper {
+        opacity: .2;
+    }
+    
+    /* Header */
+    header {
+        display: flex;
+        width: 100%;
+        align-items: center;
+        background-color: rgb(255, 255, 255);
+        padding: 30px 0 30px 70px;
+        margin-top: 2px;
+    }
+    header img {
+        margin-right: 15px;
+    }
+    
+    
+    /* Main */
+    main {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        min-height: 800px;
+        background-color: rgb(255, 255, 255);
+        padding: 30px 0 30px 30px;
+        margin-top: 2px;
+    }
+
+    
+    /* Filter Block First START*/
+    #filterName {
+        width: 100%;
+        height: 40px;
+        border: 1px solid rgb(189, 189, 189);
+        cursor: pointer;
+        border-radius: 3px;
+        font-size: 15px;
+        font-family: 'Frank Ruhl Libre', serif;
+        background-color: #F5F5F5;
+        margin-top: 5px;
+        text-indent: 15px;
+    }
+    
+    option {
+        font-size: 16px;
+        background-color: rgb(255, 255, 255);
+    }
+    
+    label {
+        font-weight: bold;
+    }
+    
+    .filterBlock-first {
+        width: 100%;
+        display: flex;
+        align-items: flex-end;
+    }
+    
+    .filterSolution-block {
+        width: 200px;
+        margin-right: 20px;
+    }
+    
+    .filterCurrency-block {
+        width: 200px;
+        margin-right: 20px;
+    }
+    
+    .filterCountry-block {
+        margin-right: 20px;
+        width: 200px;
+    }
+    /* Filter Block First END*/
+    
+    
+    /* Create User and Search area */
+    .containerBlock {
+        width: 90%;
+        display: flex;
+        margin-bottom: 20px;
+        justify-content: space-between;
+    }
+    
+    #createUser-block {
+        width: 90%;
+        display: flex;
+        justify-content: space-between;
+    }
+    
+    #clearFilterBtn, #showFilterBtn {
+        width: 115px;
+        height: 40px;
+    }
+    
+    
+    .filterInput {
+        width: 100%;
+        height: 40px;
+        border: 1px solid rgb(189, 189, 189);
+        cursor: pointer;
+        border-radius: 3px;
+        font-size: 15px;
+        font-family: 'Frank Ruhl Libre', serif;
+        background-color: #F5F5F5;
+        margin-top: 5px;
+        text-indent: 15px;
+    }
+    
+    
+    /* Table, list of Commissions START*/
+    #tableUser-block {
+        width: 90%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        padding: 40px 0;
+    }
+    
+    .tableUser-header {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 5px 0;
+        position: relative;
+    }
+    
+    .table-arrows img {
+        margin-left: 20px;
+        cursor: pointer;
+    }
+    .table-arrows img:hover{
+        filter: invert(75%);
+    }
+    .table-arrows img:active{
+        filter: invert(95%);
+    }
+    
+    .tableUser-header h2 {
+        font-size: 20px;
+    }
+    
+    
+    /* XLS TIP START */
+    .xlsTip {
+        width: 120px;
+        height: 35px;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        background: #4D4D4D;
+        color: white;
+        right: 30px;
+        bottom: 10px;
+        border-radius: 3px;
+        font-size: 13px;
+        z-index: 50;
+    }
+    .xlsTip::after {
+        content: "";
+        position: absolute;
+        left: 119px; bottom: 8px;
+        border: 7px solid transparent; border-left: 7px solid #4D4D4D;
+    }
+    /* XLS TIP END */
+    
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: .3;
+            -webkit-transform: translate3d(-20%, 0, 0);
+            transform: translate3d(-20%, 0, 0);
+          }
+        
+          to {
+            opacity: 1;
+            -webkit-transform: translate3d(0, 0, 0);
+            transform: translate3d(0, 0, 0);
+          }
+      }
+    
+    .fadeInUp {
+        animation: .3s fadeInUp ease-in 1;
+    }
+    
+    .table-line {
+        margin: 10px 0;
+        width: 100%;
+        height: 2px;
+        background-color: rgb(102, 102, 102);
+    }
+    
+    #table_commission {
+        border-spacing: 1;
+        border-collapse: collapse;
+        background: white;
+        border-radius: 3px;
+        overflow: hidden;
+        width: 100%;
+    }
+    
+    #table_commission thead tr {
+        height: 60px;
+        background: #20a5f7;
+    }
+    #table_commission tbody tr {
+        height: 50px;
+    }
+    #table_commission tbody tr:last-child {
+        border: 0;
+    }
+    #table_commission td, #table_commission th {
+        text-align: left;
+    }
+    #table_commission td.l, #table_commission th.l {
+        text-align: right;
+    }
+    #table_commission td.c, #table_commission th.c {
+        text-align: center;
+    }
+    #table_commission td.r, #table_commission th.r {
+        text-align: center;
+    }
+    
+    #table_commission tbody tr:hover{
+        background-color: rgb(197, 247, 241);
+    }
+      
+    .table-head th{
+        font-size: 18px;
+        color: #fff;
+        line-height: 1.2;
+        font-weight: unset;
+    }
+    
+    #table_commission tbody tr:nth-child(even) {
+        background-color: #f5f5f5;
+    }
+    
+    #table_commission tbody tr:nth-child(even):hover {
+        background-color: rgb(197, 247, 241);
+    }
+    
+    #table_commission tbody tr {
+        font-size: 15px;
+        color: #808080;
+        line-height: 1.2;
+        font-weight: unset;
+        cursor: pointer;
+    }
+    
+    .column1 {
+        padding: 10px 0 10px 20px;
+    }
+    
+    .column5 {
+        padding-right: 20px;
+    }
+    
+    .commDate {
+        color: rgb(49, 117, 218);
+        font-size: 12px;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    .walletItem {
+        margin: 10px 0;
+    }
+    
+    @media screen and (max-width: 1075px) {
+        #table_commission  *{
+            position: relative;
+        }
+        #table_commission {
+            display: block;
+        }
+        #table_commission > *, #table_commission tr, #table_commission td, #table_commission th {
+            display: block;
+        }
+        #table_commission thead {
+            display: none;
+        }
+        #table_commission tbody tr {
+            height: auto;
+            padding: 37px 0;
+        }
+        #table_commission tbody tr td {
+            padding-left: 45% !important;
+            margin-bottom: 24px;
+        }
+        #table_commission tbody tr td:last-child {
+            margin-bottom: 0;
+        }
+        #table_commission tbody tr td:before {
+            
+            color: #999999;
+            line-height: 1.2;
+            font-weight: unset;
+            position: absolute;
+            width: 40%;
+            left: 30px;
+            top: 0;
+        }
+    
+        #table_commission tbody tr td:nth-child(1):before {
+            content: "Name";
+        }
+        #table_commission tbody tr td:nth-child(2):before {
+            content: "Country";
+        }
+        #table_commission tbody tr td:nth-child(3):before {
+            content: "Currency";
+        }
+        #table_commission tbody tr td:nth-child(4):before {
+            content: "Requested";
+        }
+    
+        .column12,
+        .column11,
+        .column10,
+        .column9,
+        .column8,
+        .column7,
+        .column6,
+        .column3,
+        .column4,
+        .column5 {
+            text-align: left;
+        }
+    
+        .column4,
+        .column5,
+        .column1,
+        .column2,
+        .column3 {
+            width: 100%;
+        }
+    
+        #table_commission tbody tr {
+            font-size: 13px;
+        }
+    }
+    /* Table, list of Commissions END */
+    
+    
+    /* Next Page Block START*/
+    .nextPage-block {
+        width: 100%;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        margin-top: 20px;
+    }
+    
+    .nextPage-btn {
+        width: 30px;
+        height: 30px;
+        background-color: inherit;
+        border: 1px solid #20A5F7;
+        border-radius: 0;
+        margin-right: 2px;
+        color: black;
+    }
+    
+    .nextPage-btn:hover {
+        background-color: #20A5F7;
+        color: white;
+    }
+    
+    .dotts {
+        display: flex;
+        justify-content: center;
+        width: 30px;
+        height: 30px;
+        font-size: 30px;
+        line-height: 40px;
+        color: #4D4D4D;
+    }
+    
+    .highlight {
+        background-color: #20A5F7;
+        color: white;
+    }
+    /* Next Page Block END*/
