@@ -83,6 +83,7 @@ main {
     margin-top: 3px;
     padding: 50px 70px;
     background: #FFF;
+   
 }
 
 #dowloadPdf:hover{
@@ -135,7 +136,12 @@ table {
     overflow: hidden;
     width: 100%;
   }
-  
+
+.test {
+    height: 560px;
+    overflow-x: hidden;
+}
+
   table td, table th {
     padding-left: 8px;
   }
@@ -188,7 +194,6 @@ table {
   .column5 {
     padding-right: 20px;
   }
-
 
 /* Modal windows */
 
@@ -481,7 +486,7 @@ table {
     width: 70%;
     overflow: scroll;
     overflow-x:hidden;
-    height: 165px; 
+    height: 150px; 
 }
 
 .docsUpload-block {
@@ -584,6 +589,14 @@ table {
     transition: .2s;
 }
 
+#docGood {
+    color: green;
+}
+
+#docBad {
+    color: red;
+}
+
 #uploadBtn:hover, #addCommentBtn:hover, #addCommissionsBtn:hover {
     background-color: #20a5f7;
 }
@@ -629,7 +642,7 @@ table {
     width: 62%;
     overflow: scroll;
     overflow-x:hidden;
-    height: 165px; 
+    height: 150px; 
 }
 
 .commentsInside-block, .commissionssInside-block {

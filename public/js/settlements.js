@@ -1,23 +1,5 @@
-const COMMISSIONS = [
-    {
-        name: 'Settlement BTC',
-        fee: 2.5,
-        flat: 0
-    },{
-        name: 'Settlement ATM',
-        fee: 2,
-        flat: 0
-    },{
-        name: 'Settlement C2B Wire',
-        fee: 0.5,
-        flat: 100
-    },{
-        name: 'Settlement B2B Wire',
-        fee: 1.7,
-        flat: 100
-    }
-];
-
+const curentUserRole = document.querySelector('.curentUserRole').textContent;
+const curentUserId = document.querySelector('.curentUserId').textContent;
 
 // Settle Transfers
 
@@ -32,7 +14,7 @@ $(document).ready(function(){
       
         document.querySelector(".walletList").innerHTML = '<option value="">Wallet for Settlement:</option>';
        
-        let availableInvs  = fetch(`http://localhost:3000/availableInvs/${merchantName}`);
+        let availableInvs  = fetch(`http://18.216.223.81:3000/availableInvs/${merchantName}`);
         availableInvs.then(response => {
             return response.json();
         }).then(invoices => {
@@ -102,7 +84,7 @@ $(document).ready(function(){
             const a = new InvoicesList(invoices);
         });
 
-       let walletsList  = fetch(`http://localhost:3000/getWalletsList/${merchantName}`);
+       let walletsList  = fetch(`http://18.216.223.81:3000/getWalletsList/${merchantName}`);
         walletsList.then(response => {
             return response.json();
             }).then(wallets => {
@@ -150,7 +132,7 @@ $(document).ready(function(){
       $('.MerchantPayWindow').fadeIn();
       document.querySelector(".walletPayFrom").innerHTML = '<option value="">Choose your wallet:</option>';
       document.querySelector(".inside_wallet").innerHTML = '';
-       let walletsList  = fetch(`http://localhost:3000/getExternalWalletsList/${merchantName}`);
+       let walletsList  = fetch(`http://18.216.223.81:3000/getExternalWalletsList/${merchantName}`);
        walletsList.then(response => {
            return response.json();
            }).then(wallets => {
@@ -198,7 +180,7 @@ $(document).ready(function(){
        });
 
       
-       let inside_walletsList  = fetch(`http://localhost:3000/getInside_walletsList/${merchantName}`);
+       let inside_walletsList  = fetch(`http://18.216.223.81:3000/getInside_walletsList/${merchantName}`);
        inside_walletsList.then(response => {
            return response.json();
            }).then(wallets => {
@@ -268,9 +250,47 @@ document.querySelector('.amountPayment').addEventListener('focusout', (event) =>
 
 
 // Generate merchants list for selected menu
-
-let fetchPromise  = fetch('http://localhost:3000/getMerchants');
-fetchPromise.then(response => {
+if ( curentUserRole !== "Merchant Manager") {
+    let fetchPromise  = fetch('http://18.216.223.81:3000/getMerchants');
+    fetchPromise.then(response => {
+        return response.json();
+        }).then(merchants => {
+    
+            class MerchantOptoinList {
+                constructor(){
+                    this.list = merchants;
+                    this.render();
+                }
+            
+                loadMerchant(list) {
+                    this.container = document.querySelector('#filterMerchantA');
+                    list.slice(0, list.length).forEach((item, i) => {
+                        if ( this.container) {
+                        this.option = document.createElement("option");
+                        this.option.value = item._id;
+                        this.option.innerHTML =  item.name;   
+                        this.container.append(this.option);
+                        }
+                    });
+                }
+                render(){
+                    this.loadMerchant(this.list);
+                }
+            };
+    
+        const a = new MerchantOptoinList(merchants);
+    
+        let merchantList = document.querySelector('.merchantList');
+    
+        merchantList.addEventListener('change', (event) => {
+            event.preventDefault();
+            let currentMerchant =  merchants.filter(item => item._id == merchantList.value);
+            document.querySelector('.hide-merchantID').innerHTML =  `<input name="merchantID" value=${currentMerchant[0]._id}>`;
+        });
+    });
+} else {
+    let fetchPromise  = fetch('http://18.216.223.81:3000/getMerchant/' + curentUserId);
+    fetchPromise.then(response => {
     return response.json();
     }).then(merchants => {
 
@@ -306,21 +326,30 @@ fetchPromise.then(response => {
         document.querySelector('.hide-merchantID').innerHTML =  `<input name="merchantID" value=${currentMerchant[0]._id}>`;
     });
 });
+}
+
 
 // SETTLEMENTS LIST 
 
 // Show settlements list
 
 async function loadSettleList()  {
-    let settleList = await  fetch('http://localhost:3000/getSettlementsList');
-    let SETTLEMENTS = await settleList.json();
+    let SETTLEMENTS;
+    if ( curentUserRole !== "Merchant Manager") {
+        let settleList = await  fetch('http://18.216.223.81:3000/getSettlementsList');
+        SETTLEMENTS = await settleList.json();
+    } else {
+        let settleList = await  fetch('http://18.216.223.81:3000/getSettlementsList/' + curentUserId);
+        SETTLEMENTS = await settleList.json();
+    }
+    
 
     class SettlementsList {
         constructor(){
             this.buttonSearch = document.querySelector('.search-btn');
             this.searchInput =  document.querySelector('.input-search');
             this.render();
-        }
+        }   
     
         loadSettle(list) {
             this.container = document.querySelector(".tableList");
@@ -335,7 +364,7 @@ async function loadSettleList()  {
                     <td class="col column3">${formatStr(item.amount.amount_sent)} ${item.currency}</td> 
                     <td class="col column4">${item.type}</td>
                     <td class="col column5">${item.wallet[0].name}</td> 
-                    <td class="col column6">${item.status}</td>
+                    <td class="col column6"><strong>${item.status}</strong></td>
                 `;
                 
             // Settlement Details Window 
@@ -367,7 +396,7 @@ async function loadSettleList()  {
                     const commissionsTable = document.querySelector('#tableTbody-commissions').firstChild;
 
                     const DocProof = async () => {
-                        let checkDocs = await fetch(`http://localhost:3000/isDocProof/${item._id}`);
+                        let checkDocs = await fetch(`http://18.216.223.81:3000/isDocProof/${item._id}`);
                         
                         if (checkDocs.status !== 200) {
                             return Swal.fire('Something went wrong on server side');
@@ -384,9 +413,9 @@ async function loadSettleList()  {
 
                     document.querySelector('.settleInfoTitle').innerHTML = `Settlement to <strong>${item.wallet[0].name}</strong> made on  
                      <strong>${new Date(item.dates.creation_date).getDate() + '/' + (new Date(item.dates.creation_date).getMonth()+ 1) + '/' +   new Date(item.dates.creation_date).getFullYear()}</strong> for <strong>${formatStr(item.amount.amount_requested)} ${item.currency}</strong> - <span class="currentStatus">Sent</span>`;
-                    
+                     
                     (async () => {
-                        let changeSStatus = await fetch(`http://localhost:3000/changeSettleStatus/${item._id}`, {
+                        let changeSStatus = await fetch(`http://18.216.223.81:3000/changeSettleStatus/${item._id}`, {
                             method: "POST",
                             body: JSON.stringify({
                                 newStatus: 'Sent',
@@ -403,7 +432,7 @@ async function loadSettleList()  {
                      <strong>${new Date(item.dates.creation_date).getDate() + '/' + (new Date(item.dates.creation_date).getMonth()+ 1) + '/' +   new Date(item.dates.creation_date).getFullYear()}</strong> for <strong>${formatStr(item.amount.amount_requested)} ${item.currency}</strong> - <span class="currentStatus">Received</span>`;
                     
                     (async () => {
-                        let changeSStatus = await fetch(`http://localhost:3000/changeSettleStatus/${item._id}`, {
+                        let changeSStatus = await fetch(`http://18.216.223.81:3000/changeSettleStatus/${item._id}`, {
                             method: "POST",
                             body: JSON.stringify({
                                 newStatus: 'Received',
@@ -420,7 +449,7 @@ async function loadSettleList()  {
                      <strong>${new Date(item.dates.creation_date).getDate() + '/' + (new Date(item.dates.creation_date).getMonth()+ 1) + '/' +   new Date(item.dates.creation_date).getFullYear()}</strong> for <strong>${formatStr(item.amount.amount_requested)} ${item.currency}</strong> - <span class="currentStatus"> Declined</span>`;
                     
                      (async () => {
-                        let changeSStatus = await fetch(`http://localhost:3000/changeSettleStatus/${item._id}`, {
+                        let changeSStatus = await fetch(`http://18.216.223.81:3000/changeSettleStatus/${item._id}`, {
                             method: "POST",
                             body: JSON.stringify({
                                 newStatus: 'Declined',
@@ -432,20 +461,42 @@ async function loadSettleList()  {
                 });
                 
                 // Documents
-
                 item.documentList.forEach((i) => {
                     this.docTable =  document.querySelector('#table-docs');
                     this.docList = document.createElement("tr");
                     this.docList.className = `tr${i}`;
-                    this.docList.innerHTML = `
+                    if (curentUserRole !== "Merchant Manager" && curentUserRole !== "Crm SuccessManager") {
+                        this.docList.innerHTML = `
                         <td class="col column0">${i.type}</td> 
-                        <td class="col column1">${new Date(i.creation_date).getDate() + '/' + (new Date(i.creation_date).getMonth()+ 1) + '/' +   new Date(i.creation_date).getFullYear()}</td> 
-                        <td class="col column2"><span onclick="openDocsImage(event)" class="viewSpan">View</span></td>
-                        <td class="col column3 hide">${i.filename}</td> 
+                        <td class="col column1">${new Date().getDate() + '/' + (new Date().getMonth()+ 1) + '/' +   new Date().getFullYear()}</td> 
+                        <td class="col column2">${i.status}</td> 
+                        <td class="col column3">
+                            <span id="docGood"  onclick="docsGood(event)"><i class="far fa-check-circle"></i></span>
+                            <span id="docBad" onclick="docsBad(event)"}><i class="far fa-times-circle"></i></span>
+                        </td>
+                        <td  class="col column4"><span onclick="openDocsImage(event)" class="viewSpan">View</span></td> 
+                        <td class="col column5 hide">${i.filename}</td>
+                        <td class="col column6 hide">${i._id}</td>
                     `;
+                    } else {
+                        this.docList.innerHTML = `
+                        <td class="col column0">${i.type}</td> 
+                        <td class="col column1">${new Date().getDate() + '/' + (new Date().getMonth()+ 1) + '/' +   new Date().getFullYear()}</td> 
+                        <td class="col column2">${i.status}</td> 
+                        <td class="col column3">
+                        </td>
+                        <td  class="col column4"><span onclick="openDocsImage(event)" class="viewSpan">View</span></td> 
+                        <td class="col column5 hide">${i.filename}</td>
+                        <td class="col column6 hide">${i._id}</td>
+                    `;
+                    }
+                    
+
+
 
                     this.docTable.appendChild(this.docList);
                 });
+
 
                 this.uploadDocs = document.querySelector('#uploadDocs');
 
@@ -492,12 +543,31 @@ async function loadSettleList()  {
                             this.docTablee =  document.querySelector('#table-docs');
                             this.docListt = document.createElement("tr");
                             this.docListt.className = `tr${i}`;
-                            this.docListt.innerHTML = `
+                            if (curentUserRole !== "Merchant Manager" && curentUserRole !== "Crm SuccessManager") {
+                                this.docListt.innerHTML = `
                                 <td class="col column0">${type}</td> 
                                 <td class="col column1">${new Date().getDate() + '/' + (new Date().getMonth()+ 1) + '/' +   new Date().getFullYear()}</td> 
-                                <td class="col column2"><span onclick="openDocsImage(event)" class="viewSpan">View</span></td> 
-                                <td class="col column3 hide">${file.filename}</td>
+                                <td class="col column2">Non-Verified</td> 
+                                <td class="col column3">
+                                    <span id="docGood" onclick="docsGood(event)"><i class="far fa-check-circle"></i></span>
+                                    <span id="docBad" onclick="docsBad(event)"><i class="far fa-times-circle"></i></span>
+                                </td>
+                                <td  class="col column4"><span onclick="openDocsImage(event)" class="viewSpan">View</span></td> 
+                                <td class="col column5 hide">${file.filename}</td>
                             `;
+                            } else {
+                                this.docListt.innerHTML = `
+                                <td class="col column0">${type}</td> 
+                                <td class="col column1">${new Date().getDate() + '/' + (new Date().getMonth()+ 1) + '/' +   new Date().getFullYear()}</td> 
+                                <td class="col column2">Non-Verified</td> 
+                                <td class="col column3">
+                                   
+                                </td>
+                                <td  class="col column4"><span onclick="openDocsImage(event)" class="viewSpan">View</span></td> 
+                                <td class="col column5 hide">${file.filename}</td>
+                            `;
+                            }
+                            
 
                             this.docTablee.appendChild(this.docListt);
                 
@@ -516,7 +586,7 @@ async function loadSettleList()  {
                     }
                 
                     const postFile = async (fd) => {
-                    return  await fetch("http://localhost:3000/uploadSettleDoc", {
+                    return  await fetch("http://18.216.223.81:3000/uploadSettleDoc", {
                             method: "POST",
                             body: fd,
                             mode: "no-cors",
@@ -563,7 +633,7 @@ async function loadSettleList()  {
                     this.commentTable.appendChild(this.commentTr);
 
                     (async () => {
-                        let addComment = await fetch(`http://localhost:3000/addSettleComment/${item._id}`, {
+                        let addComment = await fetch(`http://18.216.223.81:3000/addSettleComment/${item._id}`, {
                             method: "POST",
                             body: JSON.stringify({
                                 created_by: userName,
@@ -581,85 +651,135 @@ async function loadSettleList()  {
                     this.commisionTable =  document.querySelector('#tableTbody-commissions');
                     this.commisionList = document.createElement("tr");
                     this.commisionList.className = `tr${i}`;
-                    this.commisionList.innerHTML = `
-                        <td class="col column0">${i.created_by}</td> 
-                        <td class="col column1">${i.type}</td>
-                        <td class="col column2">${i.amount}</td>
-                    `;
-                    this.commisionTable.appendChild(this.commisionList);
+                    if (curentUserRole !== "Merchant Manager" && curentUserRole !== "Crm SuccessManager") {
+                        
+                        this.commisionList.innerHTML = `
+                            <td class="col column0">${i.created_by}</td> 
+                            <td class="col column1">${i.type}</td>
+                            <td class="col column2">${i.amount}</td>
+                        `;
+                        this.commisionTable.appendChild(this.commisionList);
+                    } else {
+                        if (i.type !== 'Settlement Solution Commission') {
+                            this.commisionList.innerHTML = `
+                                <td class="col column0">${i.created_by}</td> 
+                                <td class="col column1">${i.type}</td>
+                                <td class="col column2">${i.amount}</td>
+                            `;
+                            this.commisionTable.appendChild(this.commisionList);
+                        }
+                    }
                 });
                 
-                const merchantFees = document.querySelector('#merchantFees');
-                COMMISSIONS.forEach((commission) => {
-                    let newOption = document.createElement("option"); 
-                    newOption.value = commission.name;
-                    newOption.innerHTML = commission.name;
-                    merchantFees.append(newOption);
-                });
 
-                let percentage, flat, additional, left_from_transfer;
+                const merchantFees = document.querySelector('#merchantFees');
+                const fees = item.mercName[0].fees;
+                const commissionTypeInput = document.querySelector('#commissionType');
+
+                commissionTypeInput.addEventListener('change', (event) => {
+                    if (event.target.value === "Settlement Anywires Commission") {
+                        merchantFees.innerHTML = `<option value=""></option>`;
+                        for (let key in fees) {
+                            if (key === 'in_c2b' || key === 'in_b2b') continue;
+                            let newOption = document.createElement("option"); 
+                            newOption.value = key.replace(/_/g, ' ');
+                            newOption.innerHTML = key.replace(/_/g, ' ');
+                            merchantFees.append(newOption);
+                        }
+                    } else {
+                        merchantFees.innerHTML = `<option value=""></option>`;
+                        let newOption = document.createElement("option"); 
+                            newOption.value = 'Settlement Solution Commission';
+                            newOption.innerHTML = 'Settlement Solution Commission';
+                            merchantFees.append(newOption);
+                    }
+                })
+
+                let percentage, flat, left_from_transfer, commisAmountByPercent;
+
                 merchantFees.addEventListener('change', (event) => {
-                    let key = event.target.value;
                     let commissionPercent = document.querySelector('.commissionPercent');
                     let commisAmount =  document.querySelector('.commissionAmount');
-                    COMMISSIONS.forEach( (comm) => {
-                        if (comm.name ===  event.target.value) {
-                            commissionPercent.innerHTML= `${comm.fee}%`;
-                            percentage = comm.fee;
-                            flat = comm.flat;
-                            left_from_transfer = item.amount.amount_requested - Math.round(item.amount.amount_requested * comm.fee / 100) - comm.flat;
-                            commisAmount.value = Math.round(item.amount.amount_requested * comm.fee / 100) + comm.flat;
-                            commisAmount.placeholder = Math.round(item.amount.amount_requested * comm.fee / 100) + comm.flat;
+                    
+                    for (let key in fees) {
+                        if (key.replace(/_/g, ' ') ===  event.target.value) {
+                            commissionPercent.innerHTML= `${fees[key].percent}%`;
+                            percentage = fees[key].percent;
+                            flat = fees[key].flat;
+                            left_from_transfer = item.amount.amount_requested - Math.round(item.amount.amount_requested * fees[key].percent / 100) - fees[key].flat;
+                            commisAmount.value = Math.round(item.amount.amount_requested * fees[key].percent / 100) + fees[key].flat;
+                            commisAmount.placeholder = Math.round(item.amount.amount_requested * fees[key].percent / 100) + fees[key].flat;
+                            commisAmountByPercent =  Math.round(item.amount.amount_requested * fees[key].percent / 100) + fees[key].flat;
                         }
-                    })
-
+                    }
                 });
                 
                 this.addCommissionsBtn = document.querySelector('#addCommissionsBtn');
                 
                 this.addCommissionsBtn.addEventListener('click', (e) => {
-                    this.commisType =  document.querySelector('#commissionType').value;
-                    this.commisAmount =  +document.querySelector('.commissionAmount').value;
-                    this.merchantFee = document.querySelector('#merchantFees').value
+                    e.preventDefault();
+                    this.checkCurrentStatus = document.querySelector('.currentStatus').textContent;
+                    if (this.checkCurrentStatus === 'Requested') {
 
-                    if (this.commisType && this.commisAmount && this.merchantFee) {
-                        this.checkCurrentStatus = document.querySelector('.currentStatus').textContent
-                        if (this.checkCurrentStatus === 'Requested') {
-                            this.userName = document.querySelector('.userName').textContent;
-                            
-        
-                            this.commisstTable =  document.querySelector('#tableTbody-commissions');
-                            this.commisTR = document.createElement("tr");
-                            this.commisTR.innerHTML = `
-                                <td class="col column0">${this.userName}</td> 
-                                <td class="col column1">${this.commisType}</td>
-                                <td class="col column2">${this.commisAmount}</td>
-                            `;
-                            this.commisstTable.appendChild(this.commisTR);
-        
-                            (async () => {
-                                let addCommision = await fetch(`http://localhost:3000/addSettleCommision/${item._id}`, {
-                                    method: "POST",
-                                    body: JSON.stringify({
-                                        created_by: this.userName,
-                                        type: this.commisType,
-                                        amount: this.commisAmount,
-                                        percentage: percentage,
-                                        flat: flat,
-                                        additional: 0,
-                                        bank_commision: 0,
-                                        left_from_transfer: left_from_transfer,
-                                        merchant: item.mercName[0].name
+                        this.commisType =  document.querySelector('#commissionType').value;
+                        this.commisAmount =  +document.querySelector('.commissionAmount').value;
+                        this.merchantFee = document.querySelector('#merchantFees').value
 
-                                    }),
-                                    headers:{'Content-Type': 'application/json'}
-                                });
-                            })();
+                        if (this.commisType && this.commisAmount && this.merchantFee) {
+                                this.userName = document.querySelector('.userName').textContent;
+                                this.commisstTable =  document.querySelector('#tableTbody-commissions');
+                                this.commisTR = document.createElement("tr");
+                                this.commisTR.innerHTML = `
+                                    <td class="col column0">${this.userName}</td> 
+                                    <td class="col column1">${this.commisType}</td>
+                                    <td class="col column2">${this.commisAmount}</td>
+                                `;
+                                this.commisstTable.appendChild(this.commisTR);
+                            if ( this.commisType === 'Settlement Anywires Commission') {
+                                (async () => {
+                                    let addCommision = await fetch(`http://18.216.223.81:3000/addSettleCommision/${item._id}`, {
+                                        method: "POST",
+                                        body: JSON.stringify({
+                                            created_by: this.userName,
+                                            type: this.commisType,
+                                            amount: this.commisAmount,
+                                            percentage: percentage,
+                                            flat: flat,
+                                            additional: this.commisAmount - commisAmountByPercent,
+                                            bank_commision: 0,
+                                            left_from_transfer: left_from_transfer,
+                                            merchant: item.mercName[0].name
+
+                                        }),
+                                        headers:{'Content-Type': 'application/json'}
+                                    });
+                                })();
+                            } else {
+                                (async () => {
+                                    let addCommision = await fetch(`http://18.216.223.81:3000/addSettleCommision/${item._id}`, {
+                                        method: "POST",
+                                        body: JSON.stringify({
+                                            created_by: this.userName,
+                                            type: this.commisType,
+                                            amount: this.commisAmount,
+                                            percentage: 0,
+                                            flat: 0,
+                                            additional: this.commisAmount,
+                                            bank_commision: 0,
+                                            left_from_transfer: item.amount.amount_requested,
+                                            merchant: item.mercName[0].name
+
+                                        }),
+                                        headers:{'Content-Type': 'application/json'}
+                                    });
+                                })();
+                            }
+                                
                         } else {
-                            Swal.fire('Commissions are available only for "requested" settlement.')
-                        }
+                            Swal.fire('Please fill all fields.')
+                        } 
                     } else {
-                        Swal.fire('Please fill all fields.')
+                        Swal.fire('Commissions are available only for "requested" settlement.')
                     }
                 });
 
@@ -675,7 +795,7 @@ async function loadSettleList()  {
         }
     
         colorStatus() {
-            let statusCells = document.querySelectorAll('.column5');
+            let statusCells = document.querySelectorAll('.column6');
             
             statusCells.forEach( (i) => {
                 switch (i.textContent + '') {
@@ -698,9 +818,9 @@ async function loadSettleList()  {
         searchFunction() {
             let table = document.getElementById('main-table');
             let phrase = document.querySelector('.input-search').value.toLowerCase();
-            for (var i = 1; i < table.rows.length; i++) {
+            for (var i = 0; i < table.rows.length; i++) {
                 var flag = false;
-                for (var j = 0; j < 6; j++) {
+                for (var j = 0; j <= 6; j++) {
                     var item = table.rows[i].cells[j].textContent.toLowerCase();
                     if (item.includes(phrase)) flag = true;
                 }
@@ -717,6 +837,7 @@ async function loadSettleList()  {
                 }
             });
         }
+
     
         render(){
             this.loadSettle(SETTLEMENTS);
@@ -836,8 +957,54 @@ function checkIsEmptyObj (obj) {
 // Open downloded files for settlement
 
 function openDocsImage (event) {
-    var filename = event.target.closest("tr").children[3].textContent.trim();
-    window.open(`http://localhost:3000/upload/${filename}`, '_blank');
+    var filename = event.target.closest("tr").children[5].textContent.trim();
+    window.open(`http://18.216.223.81:3000/upload/${filename}`, '_blank');
+}
+
+// Document change status
+async function docsGood(event) {
+    let currentStatus = event.target.closest("tr").children[2].textContent;
+
+    if (currentStatus === "Approved") {
+        return Swal.fire('Status of this document is already Approved!');
+    }
+    
+
+    (async () => {
+        let changeStatus = await fetch(`http://18.216.223.81:3000/changeDocStatus`, {
+            method: "POST",
+            body: JSON.stringify({
+                id: event.target.closest("tr").children[6].textContent,
+                status: "Approved"
+            }),
+            headers:{'Content-Type': 'application/json'}
+        });
+        if (changeStatus.status !== 200) return Swal.fire('Problem on server side.');
+
+        event.target.closest("tr").children[2].innerHTML = "Approved";
+    })();
+}
+
+async function docsBad(event) {
+    let currentStatus = event.target.closest("tr").children[2].textContent;
+
+    if (currentStatus === "Declined") {
+        return Swal.fire('Status of this document is already Declined!');
+    }
+    
+    (async () => {
+        let changeStatus = await fetch(`http://18.216.223.81:3000/changeDocStatus`, {
+            method: "POST",
+            body: JSON.stringify({
+                id: event.target.closest("tr").children[6].textContent,
+                status: "Declined"
+            }),
+            headers:{'Content-Type': 'application/json'}
+        });
+        if (changeStatus.status !== 200) return Swal.fire('Problem on server side.');
+
+        event.target.closest("tr").children[2].innerHTML = "Declined";
+    })();
 }
 
 

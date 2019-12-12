@@ -24,6 +24,9 @@
 </head>
 
 <body>
+    <span class="curentUserRole hide"><%= currentUser.role %></span>
+    <span class="curentUserId hide"><%= currentUser.id %></span>
+    <span class="curentUserMerchantList hide"><%= currentUser.merchant %></span>
      <!-- MENU -->
     <header>
         <div class="menu">
@@ -110,23 +113,9 @@
                 <div class="filterBank-block">
                     <div class="filterMerchant-block">
                         <label for="filterMerchant-block">Merchant</label>
-                        
-                        <% if (currentUser.typeClass == 'admin') { %>
-                            <select class="merchantList"  id="filterMerchantA">
-                                <option value=""></option>
-                            </select>
-                        <% } else { %>
-                        <% if (currentUser.merchant2 == 'null') { %>
-                            <select class="merchantList"  id="filterMerchant">
-                                <option value="<%= currentUser.merchant %>"><%= currentUser.merchant %></option>
-                            </select>
-                        <% } else { %>
-                            <select class="merchantList"  id="filterMerchant">
-                                <option value=""></option>
-                                <option value="<%= currentUser.merchant %>"><%= currentUser.merchant %></option>
-                                <option value="<%= currentUser.merchant2 %>"><%= currentUser.merchant2 %></option>
-                            </select>
-                        <% } } %>
+                        <select class="merchantList"  id="filterMerchantA">
+                            <option value=""></option>
+                        </select>
                     </div>
                 </div>
                 
@@ -168,6 +157,11 @@
                     </thead>
                     <tbody class="tableList"></tbody>
                 </table>
+            </div>
+
+            <div class="nextPage-block"></div>
+            <div class="firstPage-block">
+                <img id="first-img" src="img/icon_top.png" alt="firstPage">
             </div>
         </div>
     </main>
@@ -242,7 +236,7 @@
             </div>
     </div>
     
-    <!-- Popup window View Invoice -->
+    <!-- Popup window View settlement -->
 		
     <div class="filter">
         <div class="modalView-block">
@@ -258,9 +252,15 @@
                 <p class="settleInfoTitle"></p>
                 <div class="buttonBlock">
                     <div>
+                        <% if (currentUser.role !== "Merchant Manager" && currentUser.role !== "Crm SuccessManager") { %>
                         <button id="sent">Sent</button>
                         <button id="received">Received</button>
-                        <button id="declined">Declined</button>  
+                        <button id="declined">Declined</button> 
+                        <% } else { %>
+                            <button id="sent" class="hide">Sent</button>
+                            <button id="received"  class="hide">Received</button>
+                            <button id="declined"  class="hide">Declined</button> 
+                        <% } %> 
                     </div>
                     <div  id="prevSettleBtn">
                         <button class="settlePrevBtn">Preview settlement</button>
@@ -277,9 +277,23 @@
                     <div class="docTable-block">
                         <table id="docsTable">
                             <thead>
+                                <% if (currentUser.role !== "Merchant Manager" && currentUser.role !== "Crm SuccessManager") { %>
                                 <tr>
-                                    <th>Type</th> <th>Uploaded Date</th> <th></th>
+                                    <th>Type</th> 
+                                    <th>Uploaded Date</th> 
+                                    <th>Status</th>
+                                    <th>Confirmation</th>
+                                    <th></th>
                                 </tr>
+                                <% } else { %>
+                                <tr>
+                                    <th>Type</th> 
+                                    <th>Uploaded Date</th> 
+                                    <th>Status</th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                                <% } %>    
                             </thead>
                             <tbody id="table-docs"></tbody>
                         </table>
@@ -344,6 +358,7 @@
                 </div>
 
                 <div class="commissionssInside-block">
+                    <% if (currentUser.role !== "Merchant Manager" && currentUser.role !== "Crm SuccessManager") { %>
                     <form>
                         <select name="commissionType" id="commissionType" required>
                             <option value=""></option>
@@ -359,6 +374,23 @@
                         </div>
                         <input type="submit" id="addCommissionsBtn" value='Add Commission' >
                     </form>
+                    <% } else { %>
+                        <form class="hide">
+                                <select name="commissionType" id="commissionType" required>
+                                    <option value=""></option>
+                                    <option value="Settlement Anywires Commission">Settlement Anywires Commission</option>
+                                    <option value="Settlement Solution Commission">Settlement Solution Commission</option>
+                                </select>
+                                <select name="merchantFees" id="merchantFees" required>
+                                        <option value=""></option>
+                                </select>
+                                <div id="commisAmounBlock">
+                                    <input type="number" class="commissionAmount" placeholder="Amount">
+                                    <span class="commissionPercent">0%</span>
+                                </div>
+                                <input type="submit" id="addCommissionsBtn" value='Add Commission' >
+                            </form>
+                    <% } %> 
                 </div>
             </div>
 
