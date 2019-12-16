@@ -126,6 +126,10 @@ header h1 {
     font-size: 28px;
 }
 
+.hide {
+    display: none;
+}
+
 @media (max-width: 500px){
 
     .authorizationMenu {

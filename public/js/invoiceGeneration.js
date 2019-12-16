@@ -1,4 +1,3 @@
-
 // input hint
 
 const banedCountry = [
@@ -404,39 +403,77 @@ document.querySelector('.countryInput').addEventListener('change', () => {
 
  // Generate merchants list for selected menu
 
-let fetchPromise  = fetch('http://18.216.223.81:3000/getMerchants');
-fetchPromise.then(response => {
-    return response.json();
-    }).then(merchants => {
+const curentUserRole = document.querySelector('.curentUserRole').textContent;
+const curentUserId = document.querySelector('.curentUserId').textContent;
+const currentUserMerchant =  document.querySelector('.currentUserMerchant').textContent.split(',');
 
-        class MerchantOptoinList {
-            constructor(){
-                this.list = merchants;
-                this.render();
-            }
-        
-            loadMerchant(list) {
-                this.container = document.querySelector('#merchList');
-                list.slice(0, list.length).forEach((item, i) => {
-                    if ( this.container) {
-                    this.option = document.createElement("option");
-                    this.option.value = item.name;
-                    this.option.innerHTML =  item.name;   
-                    this.container.append(this.option);
-                    }
-                });
-            }
-            render(){
-                this.loadMerchant(this.list);
-            }
-        };
+if (curentUserRole === 'admin') {
+    let fetchPromise  = fetch('http://localhost:3000/getMerchants');
+    fetchPromise.then(response => {
+        return response.json();
+        }).then(merchants => {
 
-    const a = new MerchantOptoinList(merchants);
-});
+            class MerchantOptoinList {
+                constructor(){
+                    this.list = merchants;
+                    this.render();
+                }
+            
+                loadMerchant(list) {
+                    this.container = document.querySelector('#merchList');
+                    list.slice(0, list.length).forEach((item, i) => {
+                        if ( this.container) {
+                        this.option = document.createElement("option");
+                        this.option.value = item.name;
+                        this.option.innerHTML =  item.name;   
+                        this.container.append(this.option);
+                        }
+                    });
+                }
+                render(){
+                    this.loadMerchant(this.list);
+                }
+            };
 
+        const a = new MerchantOptoinList(merchants);
+    });
+} else {
+    let fetchPromise  = fetch('http://localhost:3000/getMerchantsById/' + curentUserId);
+    fetchPromise.then(response => {
+        return response.json();
+        }).then(merchants => {
+
+            class MerchantOptoinList {
+                constructor(){
+                    this.list = merchants;
+                    this.render();
+                }
+            
+                loadMerchant(list) {
+                    this.container = document.querySelector('#merchList');
+                    list.slice(0, list.length).forEach((item, i) => {
+                        if ( this.container) {
+                        this.option = document.createElement("option");
+                        this.option.value = item.name;
+                        this.option.innerHTML =  item.name;   
+                        this.container.append(this.option);
+                        }
+                    });
+                }
+                render(){
+                    this.loadMerchant(this.list);
+                }
+            };
+
+        const a = new MerchantOptoinList(merchants);
+    });
+}
+// } else if (currentUserMerchant.length === 1) {
+//     console.log(currentUserMerchant)
+// }
 // Generate banks list for selected menu
 
-let fetchPromise2  = fetch('http://18.216.223.81:3000/getActiveBanks');
+let fetchPromise2  = fetch('http://localhost:3000/getActiveBanks');
 fetchPromise2.then(response => {
     return response.json();
     }).then(banks => {
@@ -475,7 +512,7 @@ if (alertWindow) {
 }
 
 // Open Invoice Preview
-let fetchPromise3  = fetch('http://18.216.223.81:3000/getInvNumber');
+let fetchPromise3  = fetch('http://localhost:3000/getInvNumber');
 
 fetchPromise3.then(response => {
     return response.json();

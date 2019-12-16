@@ -7,6 +7,7 @@ const express = require("express"),
     passport = require('passport'),
     LocalStrategy = require('passport-local'),
     User = require('./modules/user'),
+    Merchant = require('./modules/merchant'),
     invoiceGenerationRouter = require('./routers/invoicesGeneration'),
     dashBoardMainPageRouter = require('./routers/dashBoardMainPage'),
     authorizationRouter = require('./routers/authorization'),
@@ -16,10 +17,8 @@ const express = require("express"),
     banksRouter = require('./routers/banks'),
     invoiceListRouter = require('./routers/invoice-list'),
     wallets = require("./routers/wallets"),
-    affiliateReportRouter = require('./routers/affiliateReport'),
-    commissionReportRouter = require("./routers/commission-report"),
-    merchantReportRouter = require("./routers/merchant-report");
-
+    affiliateReportRouter = require('./routers/affiliateReport');
+    commissionReportRouter = require("./routers/commission-report");
 
 const url = 'mongodb://18.216.223.81:27017/anywires';
 
@@ -68,10 +67,21 @@ app.use(invoiceListRouter);
 app.use(wallets);
 app.use(affiliateReportRouter);
 app.use(commissionReportRouter);
-app.use(merchantReportRouter);
 
 app.get('/personal-area.html', isLoggedIn, function(req, res) {
     res.render("personal-area.html");
+});
+
+app.get('/getPersonalMerch/:id', async function(req, res) {
+    if (req.params.id && req.params.id !== 'null') {
+        const merchArr = req.params.id.split(',');
+        let merchName = [];
+        for ( let i = 0; i < merchArr.length; i += 1) {
+            let merch = await Merchant.findById(merchArr[i]);
+            merchName.push(merch.name);
+        }
+        res.send(merchName);
+    }
 });
 
 app.get('/Dashboard-how-it-works.html', isLoggedIn, function(req, res) {

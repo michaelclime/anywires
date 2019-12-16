@@ -19,6 +19,7 @@
 		<script src="https://kit.fontawesome.com/5355902e87.js"></script>
 	</head>
 	<body>
+			<span class="curentUserMerchantList hide"><%= currentUser.merchant %></span>
 		<% if (currentUser.role == 'Affiliate') { %>
 			<div id="burgerMenu">
 					<div class="menu">
@@ -253,21 +254,9 @@
 					<div class="info-blocks">
 						<p class="person-info preson-info-merchants">You're working with Merchants:</p>
 						<div class="profile_line"></div>
-						<% if(currentUser.merchant2 !== 'null') {%>
-							<p  class="description-info">
-								<%= currentUser.merchant %>
-							</p>
-							<p  class="description-info">
-								<%= currentUser.merchant2 %>
-							</p>
-						<% } else { if(currentUser.merchant !== 'null') { %>
-							<p  class="description-info">
-								<%= currentUser.merchant %>
-							</p>
-						<% } } %>
-						
+						<div class="merList"></div>
+
 					</div>
-	
 				</div>
 			</main>
 	

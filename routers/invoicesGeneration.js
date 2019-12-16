@@ -7,7 +7,8 @@ const express = require('express'),
     assert = require('assert'),
     objectId = require("mongodb").ObjectID,
     request = require('request'),
-    chalk = require('chalk');
+    chalk = require('chalk'),
+    jsonParser = express.json();
 
 const url = 'mongodb://18.216.223.81:27017/anywires';
 
@@ -424,6 +425,26 @@ router.get("/getActiveBanks", (req, res) => {
     });
 });
 
+router.get("/getMerchants", jsonParser, (req, res) => {
+    mongo.connect(url, (err, db) =>{
+        db.collection("merchants").find({}).sort({"name": 1}).toArray(function(err, merchants){
+            if(err) return console.log("Error with upload Merchants!", err);
+            res.send(merchants);
+        })
+    });
+});
+
+router.get("/getMerchantsById/:id", jsonParser, async (req, res) => {
+    let user = await User.findById(req.params.id);
+    let merchList = user.merchant.map( item => objectId(item));
+    
+    mongo.connect(url, (err, db) =>{
+        db.collection("merchants").find({ _id: {$in: merchList}}).sort({"name": 1}).toArray(function(err, merchants){
+            if(err) return console.log("Error with upload Merchants!", err);
+            res.send(merchants);
+        })
+    });
+});
 function isLoggedIn(req, res, next) {
     if(req.isAuthenticated()) {
         return next()

@@ -18,6 +18,9 @@
     <link rel="stylesheet" href="css/sweetalert2.css">
 </head>
 <body>
+    <span class="curentUserRole hide"><%= currentUser.role %></span>
+    <span class="curentUserId hide"><%= currentUser.id %></span>
+    <span class="currentUserMerchant hide"><%= currentUser.merchant %></span>
     <!-- Modal Action Window -->
 		<% if(error && error.length > 0) {%>
 			<div class="alert" role="alert">
@@ -61,7 +64,7 @@
                     <span>SEPA</span>
                 </div>
                 <input class='invoiceBtn' type="submit" value='Make an Invoice' >
-                <% if (currentUser.typeClass == 'admin') { %>
+                <% if (currentUser.typeClass === 'admin') { %>
                     <div class="merchChoose">
                         <label for="merchList">Merch</label>
                         <select id="merchList"  name="merch" required>
@@ -74,22 +77,19 @@
                             <option value=""></option>
                         </select>
                     </div>
-                <% } else { %>
-                <% if(currentUser.merchant2 !== 'null' && currentUser.typeClass !== 'admin') { %>
+                <% } else if(currentUser.merchant.length !== 1 && currentUser.typeClass !== 'admin') { %>
                     <div class="merchChoose">
                         <label for="merchList">Merch</label>
                         <select id="merchList"  name="merch" required>
                             <option  value=""></option>
-                            <option  value="<%= currentUser.merchant %>"><%= currentUser.merchant %></option>
-                            <option  value="<%= currentUser.merchant2 %>"><%= currentUser.merchant2 %></option>
                         </select>
                     </div> 
                
                 <% } else { %>
                     <select id="merchList" class="hide" name="merch" required>
-                        <option  value="<%= currentUser.merchant %>"><%= currentUser.merchant %></option>
+                       
                     </select>
-                <% }  }%>
+                <% }%>
             </form>
         </div>
     </div>
