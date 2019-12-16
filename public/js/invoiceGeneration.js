@@ -408,7 +408,7 @@ const curentUserId = document.querySelector('.curentUserId').textContent;
 const currentUserMerchant =  document.querySelector('.currentUserMerchant').textContent.split(',');
 
 if (curentUserRole === 'admin') {
-    let fetchPromise  = fetch('http://localhost:3000/getMerchants');
+    let fetchPromise  = fetch('http://18.216.223.81:3000/getMerchants');
     fetchPromise.then(response => {
         return response.json();
         }).then(merchants => {
@@ -438,7 +438,7 @@ if (curentUserRole === 'admin') {
         const a = new MerchantOptoinList(merchants);
     });
 } else {
-    let fetchPromise  = fetch('http://localhost:3000/getMerchantsById/' + curentUserId);
+    let fetchPromise  = fetch('http://18.216.223.81:3000/getMerchantsById/' + curentUserId);
     fetchPromise.then(response => {
         return response.json();
         }).then(merchants => {
@@ -473,7 +473,7 @@ if (curentUserRole === 'admin') {
 // }
 // Generate banks list for selected menu
 
-let fetchPromise2  = fetch('http://localhost:3000/getActiveBanks');
+let fetchPromise2  = fetch('http://18.216.223.81:3000/getActiveBanks');
 fetchPromise2.then(response => {
     return response.json();
     }).then(banks => {
@@ -512,7 +512,7 @@ if (alertWindow) {
 }
 
 // Open Invoice Preview
-let fetchPromise3  = fetch('http://localhost:3000/getInvNumber');
+let fetchPromise3  = fetch('http://18.216.223.81:3000/getInvNumber');
 
 fetchPromise3.then(response => {
     return response.json();
