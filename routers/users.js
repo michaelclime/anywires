@@ -68,13 +68,8 @@ router.post("/getUserByFilter", jsonParser, (req, res) => {
         if(err) return console.log("Error with get user by filter!", err);
         res.send(users);
     });
-    // mongo.connect(url, (err, db) =>{
-    //     db.collection("merchants").find({}).sort({"name": 1}).toArray(function(err, merchants){
-    //         if(err) return console.log("Error with upload Merchants!", err);
-    //         res.send(merchants);
-    //     })
-    // });
 });
+
 
 function isLoggedIn(req, res, next) {
     if(req.isAuthenticated()) {

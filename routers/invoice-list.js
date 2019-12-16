@@ -13,7 +13,7 @@ const express = require('express'),
  
 const url = 'mongodb://18.216.223.81:27017/anywires';
 
-router.get('/invoice-list.html', isLoggedIn, function(req, res) {
+router.get('/invoice-list.html', isLoggedIn, visibilityApproval, function(req, res) {
     res.render("invoice-list.html");
 });
 
@@ -126,6 +126,47 @@ var datesObj = (key, first, second) => {
     return Obj;
 }; 
 // Function for Dates Range END.
+
+
+
+// @route POST /getInvoicesPartly
+// @desc Get part from Invoices
+router.post("/get-invoices-partly", jsonParser, async (req, res) => {
+    const filter = req.body.filter;
+    const skip = req.body.skip;
+    const limit = req.body.limit;
+
+    // Cheking one or two days Creation START.
+    var firstCrea = req.body.firstCrea;
+    var secondCrea = req.body.secondCrea;
+    if (firstCrea) {
+        var creation = datesObj("dates.creation_date", firstCrea, secondCrea);
+        Object.assign(filter, creation);
+    } 
+    // // Cheking one or two days Creation END.
+
+    // Cheking one or two days Receive START.
+    var firstRec = req.body.firstRec;
+    var secondRec = req.body.secondRec;
+    if (firstRec) {
+        var receive = datesObj("dates.received_date", firstRec, secondRec);
+        Object.assign(filter, receive);
+    } 
+    // Cheking one or two days Receive END.
+
+    // Get 10 Invoices
+    const invoices = await Invoice.find(filter).sort({_id:-1}).skip(skip).limit(limit);
+
+    // Get count of Invoices
+    const count = await Invoice.countDocuments(filter);
+
+    res.send({
+        invoices,
+        count
+    });
+});
+
+
 
 router.post("/getPart-Invoices", jsonParser, (req, res) => {
     mongo.connect(url, (err, db) => {
@@ -626,9 +667,9 @@ router.get("/upload/:filename", (req, res) => {
 });
 
 
-// @route POST /changeDocStatus
+// @route POST /changeInvoiceDocStatus
 // @desc Changed Documents status
-router.post("/changeDocStatus", jsonParser, (req, res) => {
+router.post("/changeInvoiceDocStatus", jsonParser, (req, res) => {
     const filename = req.body.filename;
     const status = req.body.status;
 
@@ -1337,12 +1378,39 @@ router.post("/get-merchantByName", jsonParser, (req, res) => {
 });
 
 
+// @route GET /getUserById/:id
+// @desc Take one user
+router.get("/getUserById/:id", async (req, res) => {
+    try {
+        const currentUser = await User.findById(req.params.id);
+        const merchantArr = currentUser.merchant;
+        let merchantsName = [];
+        for (let i = 0; i < merchantArr.length; i++) {
+            const merchant = await Merchant.findById(new objectId(merchantArr[i]));
+            merchantsName.push(merchant.name);
+        }
+        res.send(merchantsName);
+    } catch (e) {
+        res.send(e);
+    }
+});
+
+
 function isLoggedIn(req, res, next) {
     if(req.isAuthenticated()) {
         return next()
     }
     req.flash('error', 'You need to be logged in to do that');
     res.redirect('/');
+}
+
+function visibilityApproval(req, res, next) {
+    if ( req.user.role === 'Affiliate' ||  req.user.role === 'Solution Manager' ) {
+        req.flash('error', 'Sorry, You don\'t have permission to see this page');
+        res.redirect('/');
+    } else {
+        return next()
+    }
 }
 
 module.exports = router;

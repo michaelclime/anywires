@@ -1,11 +1,18 @@
 class invoiceList {
     constructor(){
+        this.filter = {};
+        this.permissionFilter = {};
+        this.firstCrea = ""; 
+        this.secondCrea = false;
+        this.firstRec = "";
+        this.secondRec = false;
+
         this.currency = "";
         this.currentTr = "";
-        this.ArrayLIst = [];
+        this.ArrayList = [];
         this.ArrayBanks = [];
         this.ArrayMerchants = []; 
-        this.InvoiceNumbers = [];
+        this.InvoiceNumbers = 0;
         this.btnExel = document.querySelector("#dowloadXls");
         this.clearFilterBtn = document.querySelector("#clearFilterBtn");
         this.showFilterBtn = document.querySelector("#showBtn");
@@ -25,6 +32,7 @@ class invoiceList {
         this.currentBank = [];
         this.currentMerhcant = [];
         this.currentUserRole = document.querySelector(".curentUserRole");
+        this.currentUserId = document.querySelector(".currentUserId");
         this.sentFilter = document.querySelector(".sent_Filter");
         this.loadingGif = document.querySelector("#loadingGif");
         this.filterReceive = document.querySelector(".receive_Filter");
@@ -49,22 +57,22 @@ class invoiceList {
     }
 
     reCallStatus = async () => {
-        var checkStatus = ["Received", "Approved", "Available"].some((item) => item === this.currentInvoice[0].status);
+        const checkStatus = ["Received", "Approved", "Available"].some((item) => item === this.currentInvoice[0].status);
         if (checkStatus) {
             // // Loading GIF On
             // this.loadingGif.style.display = "flex";
 
-            var createdBy = this.currentUser.textContent.trim();
-            var currentAmount = `amount_${this.currentInvoice[0].status.toLowerCase()}`;
-            var amountReceived = this.currentInvoice[0].amount.amount_received;
+            const createdBy = this.currentUser.textContent.trim();
+            const currentAmount = `amount_${this.currentInvoice[0].status.toLowerCase()}`;
+            const amountReceived = this.currentInvoice[0].amount.amount_received;
 
-            var fineRecallPer = (+(document.querySelector("#finePercent").value)*amountReceived)/100;
-            var fineRecallFlat = +(document.querySelector("#fineFlat").value);
-            var fineRecallAdd = +(document.querySelector("#fineAdd").value);
-            var totalComm = Math.round(fineRecallPer + fineRecallFlat + fineRecallAdd);
+            const fineRecallPer = (+(document.querySelector("#finePercent").value)*amountReceived)/100;
+            const fineRecallFlat = +(document.querySelector("#fineFlat").value);
+            const fineRecallAdd = +(document.querySelector("#fineAdd").value);
+            const totalComm = Math.round(fineRecallPer + fineRecallFlat + fineRecallAdd);
 
             // Recall request
-            var data = {
+            const data = {
                 "invNumber": this.currentInvoice[0].number,
                 "createdBy": createdBy,
                 "currencySymbol": this.currency,
@@ -494,7 +502,7 @@ class invoiceList {
                 anyFeeFlat = Math.round(anyFeeFlat * currencyInv.rates.USD);
             }
 
-            anyFeePercent = (amountReceive/100)*anyFeePercent;
+            anyFeePercent = (amountReceive/100) * anyFeePercent;
             AdditionaFee < 0 ? AdditionaFee = 0 : "";
             var amountApproved = Math.round(amountReceive - anyFeePercent - anyFeeFlat - AdditionaFee);
             var createBy = this.currentUser.textContent.trim();
@@ -907,13 +915,12 @@ class invoiceList {
     }
 
     requestedStatus = async () => {
-
         // Get current Invoice
         var role = this.currentUserRole.textContent.trim();
         var creator = this.currentUser.textContent.trim();
 
         // If user CRM admin and Status is Sent
-        if (this.currentInvoice[0].status === "Sent" && role === "CrmAdmin") { 
+        if (this.currentInvoice[0].status === "Sent" && role === "Crm Admin") { 
             // Loading GIF appear
             this.loadingGif.style.display = "flex";
 
@@ -953,7 +960,7 @@ class invoiceList {
     }
 
     changeDocsStatus = async (filename, status, number, type, createdBy) => {
-        return  await fetch("http://18.216.223.81:3000/changeDocStatus", {
+        return  await fetch("http://18.216.223.81:3000/changeInvoiceDocStatus", {
                 method: "POST",
                 body: JSON.stringify({
                     filename,
@@ -972,11 +979,11 @@ class invoiceList {
             });
     }
 
-    docsBad = async () => {
-        var statusTd = event.target.closest("tr").children[2].innerHTML;
+    docsBad = async (event) => {
+        const statusTd = event.target.closest("tr").querySelector("#docStatus").textContent.trim();
 
         // Check if status already Approved
-        if (statusTd.trim() === "Declined") {
+        if (statusTd === "Declined") {
             this.alertWindow(`Status of this document is already Declined!`);
 
         // Set New status 
@@ -984,12 +991,12 @@ class invoiceList {
             // Loading GIF appear
             this.loadingGif.style.display = "flex";
 
-            var filename = event.target.closest("tr").children[4].textContent.trim();
-            var status = "Declined";
-            var type = event.target.closest("tr").children[1].textContent.trim();
-            event.target.closest("tr").children[2].innerHTML = status;
-            var createdBy = this.currentUser.textContent.trim();
-            var docId = event.target.closest("tr").children[5].textContent.trim();
+            const filename = event.target.closest("tr").querySelector("#filename").textContent.trim();
+            const status = "Declined";
+            const type = event.target.closest("tr").querySelector("#docType").textContent.trim();
+            const createdBy = this.currentUser.textContent.trim();
+            const docId = event.target.closest("tr").querySelector("#fileId").textContent.trim();
+            event.target.closest("tr").querySelector("#docStatus").innerHTML = status;
 
             // Request in MongoDB
             await this.changeDocsStatus(filename, status, this.currentInvoice[0].number, type, createdBy);
@@ -1017,10 +1024,10 @@ class invoiceList {
     }
 
     docsGood = async (event) => {
-        var statusTd = event.target.closest("tr").children[2].innerHTML;
+        const statusTd = event.target.closest("tr").querySelector("#docStatus").textContent.trim();
 
         // Check if status already Approved
-        if (statusTd.trim() === "Approved") {
+        if (statusTd === "Approved") {
             this.alertWindow(`Status of this document is already Approved!`);
 
         // Set New status 
@@ -1028,12 +1035,12 @@ class invoiceList {
             // Loading GIF appear
             this.loadingGif.style.display = "flex";
 
-            var filename = event.target.closest("tr").children[4].textContent.trim();
-            var status = "Approved";
-            var type = event.target.closest("tr").children[1].textContent.trim();
-            event.target.closest("tr").children[2].innerHTML = status;
-            var createdBy = this.currentUser.textContent.trim();
-            var docId = event.target.closest("tr").children[5].textContent.trim();
+            const filename = event.target.closest("tr").querySelector("#filename").textContent.trim();
+            const status = "Approved";
+            const type = event.target.closest("tr").querySelector("#docType").textContent.trim();
+            const createdBy = this.currentUser.textContent.trim();
+            const docId = event.target.closest("tr").querySelector("#fileId").textContent.trim();
+            event.target.closest("tr").querySelector("#docStatus").innerHTML = status;
             
             // Request in MongoDB
             await this.changeDocsStatus(filename, status, this.currentInvoice[0].number, type, createdBy);
@@ -1061,7 +1068,7 @@ class invoiceList {
     }
 
     openDocsImage = (event) => {
-        var filename = event.target.closest("tr").children[4].textContent.trim();
+        const filename = event.target.closest("tr").querySelector("#filename").textContent.trim();
         window.open(`http://18.216.223.81:3000/upload/${filename}`, '_blank');
     }
 
@@ -1102,7 +1109,15 @@ class invoiceList {
             await this.postFile(fd);
      
              // Update Modal Window View
-             this.currentInvoice = await this.getInvoices(0, {"number": this.currentInvoice[0].number} ); 
+            //  this.currentInvoice = await this.getInvoices(0, {"number": this.currentInvoice[0].number} ); 
+            const data = {
+                skip: 0,
+                limit: 10,
+                filter: {"number": this.currentInvoice[0].number}
+            };
+            this.currentInvoice = await this.getInvoicesPartly(data); 
+            this.currentInvoice = this.currentInvoice.invoices;
+           
 
              // Check and render docs
             document.querySelector("#table-docs").innerHTML = "";
@@ -1215,7 +1230,15 @@ class invoiceList {
 
             await this.postEditedInvoice(this.currentInvoice[0].number, newInvoice, comment, createdBy, currecyChanged, chnagedAmountReq, amountReqOld, chnagedAmountSent, amountSentOld, changedBank, oldBank);
             // Update Modal Window View
-            this.currentInvoice = await this.getInvoices(0, {"number": this.currentInvoice[0].number} ); 
+            // this.currentInvoice = await this.getInvoices(0, {"number": this.currentInvoice[0].number} ); 
+            const data = {
+                skip: listNumber,
+                limit: 10,
+                filter: {"number": this.currentInvoice[0].number}
+            };
+            this.currentInvoice = await this.getInvoicesPartly(data); 
+            this.currentInvoice = this.currentInvoice.invoices;
+
             this.renderViewInvoice(this.currentInvoice);
         } 
 
@@ -1360,8 +1383,15 @@ class invoiceList {
         
     }
 
-    renderViewInvoice = async (obj) => {
-        // Events Listeners for PopUp View Invoice
+    merchantInvoiceManagerFunctions = () => {
+        document.querySelector("#requested").addEventListener("click", this.requestedStatus);
+        document.querySelector("#sent").addEventListener("click", this.initialSentStatus);
+        document.querySelector("#uploadBtn").addEventListener("click", this.initialUpload);
+        document.querySelector("#addCommentBtn").addEventListener("click", this.addCommentForBtn);
+        document.querySelector("#uploadDocs").addEventListener("input", this.changeFileClickTo);
+    }
+
+    crmPopUpFunctions = () => {
         document.querySelector("#requested").addEventListener("click", this.requestedStatus);
         document.querySelector("#sent").addEventListener("click", this.initialSentStatus);
         document.querySelector("#received").addEventListener("click", this.initialReceivedStatus);
@@ -1374,7 +1404,6 @@ class invoiceList {
         document.querySelector("#addCommentBtn").addEventListener("click", this.addCommentForBtn);
         document.querySelector("#uploadDocs").addEventListener("input", this.changeFileClickTo);
         document.querySelector("#recallBtn").addEventListener("click", this.reCallStatusInit);
-
         // If Frozen status need to change button
         if (this.currentInvoice[0].status === "Frozen") {
             document.getElementById('frozenWrapper').innerHTML = `<button id="unFrozenBtn">Unfrozen</button>`;
@@ -1383,15 +1412,25 @@ class invoiceList {
             document.getElementById('frozenWrapper').innerHTML = `<button id="frozenBtn">Frozen</button>`;
             document.querySelector("#frozenBtn").addEventListener("click", this.frozenStatus);
         }
+    }
 
-        this.filter = document.querySelector(".filter");
-        this.filter.style.display = "flex";
-        this.filter.addEventListener("click", (event) => {
-            if(event.target === this.filter){
+    renderViewInvoice = async (obj) => {
+        // Events Listeners for PopUp View Invoice
+        const user = this.currentUserRole.textContent.trim();
+        if (user === "Merchant Manager" || user === "Solution Manager") {
+            this.merchantInvoiceManagerFunctions();
+        } else {
+            this.crmPopUpFunctions();
+        }
+
+        const filter = document.querySelector(".filter");
+        filter.style.display = "flex";
+        filter.addEventListener("click", (event) => {
+            if(event.target === filter){
                 // "On" overflow for BODY
                 document.body.classList.remove("modal-open");
                 // Hide Modal Window
-                this.filter.style.display = "none";
+                filter.style.display = "none";
             }
         });
 
@@ -1406,10 +1445,10 @@ class invoiceList {
         if(obj[0].status === "Frozen") statusColor = "rgb(101, 152, 228)";
         if(obj[0].status === "Recall") statusColor = "#560795";
 
-        this.invoiceNumber = document.querySelector("#invoiceNumber").innerHTML = obj[0].number;
-        this.currentStatus = document.querySelector(".currentStatus");
-        this.currentStatus.innerHTML = obj[0].status;
-        this.currentStatus.style.color = statusColor;
+        document.querySelector("#popUpinvoiceNumber").innerHTML = obj[0].number;
+        const currentStatus = document.querySelector(".currentStatus");
+        currentStatus.innerHTML = obj[0].status;
+        currentStatus.style.color = statusColor;
 
         this.invoiceMerchant = document.querySelector("#invoiceMerchant").innerHTML = obj[0].merchant;
         this.invoiceBank = document.querySelector("#invoiceBank").innerHTML = obj[0].bank;
@@ -1436,6 +1475,8 @@ class invoiceList {
 
         // Off overflow for BODY
         document.body.classList.add("modal-open");
+
+        console.log(this.filter);
     }
 
     getCurrentMerchant = async (number, filter) => {
@@ -1505,7 +1546,15 @@ class invoiceList {
             // Post new comment
             await this.postCommet(this.currentInvoice[0].number, data, created_by);
 
-            this.currentInvoice = await this.getInvoices(0, {"number": this.currentInvoice[0].number} ); 
+            // this.currentInvoice = await this.getInvoices(0, {"number": this.currentInvoice[0].number});
+            const dataReq = {
+                skip: 0,
+                limit: 10,
+                filter: {"number": this.currentInvoice[0].number}
+            };
+            this.currentInvoice = await this.getInvoicesPartly(dataReq); 
+            this.currentInvoice = this.currentInvoice.invoices; 
+
             this.tableComments = document.querySelector("#tableTbody-comments").innerHTML = "";
             this.tableCommentsRender(this.currentInvoice[0].comments);
         }
@@ -1545,18 +1594,25 @@ class invoiceList {
         if(!ifEmpty){
             arr.forEach( async (item) => {
                 var docArr = await this.getDocs({}, item.id);
+                const user = this.currentUserRole.textContent.trim();
                 docArr.forEach((doc) => {
                     var tableTr = document.createElement("tr");
                     tableTr.innerHTML = `
-                        <td>${doc.creator}</td> 
-                        <td>${doc.type}</td> 
-                        <td>${doc.status}</td> 
-                        <td>
+                        <td id="docCreator">${doc.creator}</td> 
+                        <td id="docType">${doc.type}</td> 
+                        <td id="docStatus">${doc.status}</td>
+                        ${
+                            user === "Merchant Manager" || user === "Solution Manager"
+                            ? 
+                            ""
+                            :
+                            `<td>
                             <span id="docGood" onclick="userList.docsGood(event)"><i class="far fa-check-circle"></i></span>
                             <span id="docBad" onclick="userList.docsBad(event)"><i class="far fa-times-circle"></i></span>
-                        </td>
-                        <td class="hide">${doc.filename}</td>
-                        <td class="hide">${doc._id}</td>
+                            </td>`
+                        }
+                        <td class="hide" id="filename">${doc.filename}</td>
+                        <td class="hide" id="fileId">${doc._id}</td>
                         <td> <button class="docPreview" onclick="userList.openDocsImage(event)">Preview</button> </td> 
                     `; 
                     this.tableDocs.appendChild(tableTr);
@@ -1582,66 +1638,27 @@ class invoiceList {
             });
     }
 
-    viewInvoice = async () => {
-        this.tableTd = document.querySelectorAll(".view");
-        this.tableTd.forEach((td) => {
-
-            td.addEventListener("click", async () => {
-                // Loading GIF appear and scroll off
-                this.loadingGif.style.display = "flex";
-                document.body.classList.add("modal-open");
-                // Take current Tr for future changed
-                this.currentTr = td.parentElement;
-                // Remove all filters
-                this.filter = {};
-                // Get number of invoice
-                this.number = td.parentElement.children[0].children[0].children[0].children[0].textContent.split("#")[1];
-                // Get invoice
-                this.currentInvoice = await this.getInvoices(0, {"number": this.number} ); 
-                // Loading GIF hide
-                this.loadingGif.style.display = "none";
-                // Render popup window
-                this.renderViewInvoice(this.currentInvoice);
-                // Set currency of Current Invoice
-                this.currentInvoice[0].currency === "USD" ? this.currency = "$" : this.currency = "€";
-            });
-
-        });
-    }
-
     previewInvoice = (event) => {
-        var number = event.target.closest("tr").children[0].children[0].children[0].children[0].textContent.split("#");
+        const number = event.target.closest("tr").querySelector("#invoiceNumber").textContent.split("#");
         window.open("http://18.216.223.81:3000/invoice-preview?&" + number[1], '_blank');
     }
 
     invoiceContract = (event) => {
-        var number = event.target.closest("tr").children[0].children[0].children[0].children[0].textContent.split("#");
+        const number = event.target.closest("tr").querySelector("#invoiceNumber").textContent.split("#");
         window.open("http://18.216.223.81:3000/invoiceContract?&" + number[1], '_blank');
     }
 
     invoiceDecOfPay = (event) => {
-        var number = event.target.closest("tr").children[0].children[0].children[0].children[0].textContent.split("#");
+        const number = event.target.closest("tr").querySelector("#invoiceNumber").textContent.split("#");
         window.open("http://18.216.223.81:3000/invoiceDecOfPay?&" + number[1], '_blank');
     }
 
     invoicePreviewBankVersion = (event) => {
-        var number = event.target.closest("tr").children[0].children[0].children[0].children[0].textContent.split("#");
+        const number = event.target.closest("tr").querySelector("#invoiceNumber").textContent.split("#");
         window.open("http://18.216.223.81:3000/invoicePreviewBankVersion?&" + number[1], '_blank');
     }
 
-    filtersData = () => {
-        var merchList = [];
-        var bankList = [];
-        this.ArrayBanks.forEach((bank) => bankList.push(bank.name));
-        this.ArrayMerchants.forEach((merchant) => merchList.push(merchant.name));
-        
-        for (let i = 0; i < bankList.length; i++) {
-            this.renderOption(this.bankFilter, bankList[i]);
-        }
-        for (let m = 0; m < merchList.length; m++) {
-            this.renderOption(this.merchFilter, merchList[m]);
-        }
-    }
+    
 
     renderOption = (filter, name) => {
         this.option = document.createElement("option");
@@ -1651,44 +1668,42 @@ class invoiceList {
     }
 
     searchFunction = async () => {
-        // Loading GIF appear
-        this.loadingGif.style.display = "flex";
+        if (this.inputSearch.value.trim()) {
+            
+            // Loading GIF appear
+            this.loadingGif.style.display = "flex";
+            document.body.classList.add("modal-open");
+            // 
+            // Set PERMISSION
+            this.filter = {};
+            Object.assign(this.filter, this.permissionFilter);
+            // 
+            // Join filter with search request
+            const searchFilter = { $text: { $search: this.inputSearch.value } };
+            Object.assign(this.filter, searchFilter);
 
-        var check = this.inputSearch.value;
-
-        const filter = { $text: { $search: check } };
-
-          if(check){
-            const lengthInvoice = await this.getNumberOfinvoices(filter);
-            const filterList = await this.getInvoices(0, filter);
+            const data = {
+                skip: 0,
+                limit: 10,
+                filter: this.filter
+            };
+            const res = await this.getInvoicesPartly(data);
 
             // Очищаємо таблицю
             this.container = document.getElementById("table-list");
             this.container.innerHTML = "";
             this.containerPages.innerHTML = "";
 
-            this.countNextPage(filterList, lengthInvoice.numbers);
+            this.countNextPage(res.invoices, res.count);
 
             // Loading GIF off
             this.loadingGif.style.display = "none";
-          }
-
+            document.body.classList.remove("modal-open");
+        }
+        console.log(this.filter);
     }
 
     saveXls = () => {
-        // For hide not useless element XLS
-        let col12 = document.querySelectorAll(".column12");
-        col12.forEach((item) => item.style.display = "none");
-
-        let col11 = document.querySelectorAll(".colum11");
-        col11.forEach((item) => item.style.display = "none");
-
-        setTimeout(() => {
-            col12.forEach((item) => item.style.display = "table-cell");
-            col11.forEach((item) => item.style.display = "table-cell");
-        },10);
-        // For hide not useless element XLS
-
         var tbl = document.getElementById('table-invoices');
         var wb = XLSX.utils.table_to_book(tbl, {
             sheet: "Invoice list table",
@@ -1703,21 +1718,25 @@ class invoiceList {
             return buf;
         };
         saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), 'invoice_list.xlsx');
-        
     }
 
     clearFilter = () => {
+        this.filter = {};
+        Object.assign(this.filter, this.permissionFilter);
+
         this.creationDate.value = "";
         this.receiveDate.value = "";
-        this.searchInput = this.inputSearch.value = "";
+        this.inputSearch.value = "";
         this.selets = document.querySelectorAll("select");
         this.selets.forEach(item => item.value = "");
         this.container = document.getElementById("table-list");
         this.container.innerHTML = "";
         this.containerPages.innerHTML = "";
 
-        this.countNextPage(this.ArrayLIst, this.InvoiceNumbers[0]);
-        this.documentsStatus();
+        this.countNextPage(this.ArrayList, this.InvoiceNumbers);
+        this.documentsStatus(this.ArrayList);
+
+        console.log(this.filter);
     }
 
     checkIsEmptyObj = (obj) => {
@@ -1727,23 +1746,16 @@ class invoiceList {
         return true; // is epmty
     }
 
-    dateInRange = (data, first, end) => {
-        if (end === false) {
-            return +first === +data ? console.log(true) : console.log(false);
-        } else {
-            return +first <= +data && +data <= +end ? console.log(true) : console.log(false);
-        }
-        // this.dateInRange(new Date("9/19/2019"), new Date("9/17/2019") , new Date("9/25/2019"));
-        // this.dateInRange(new Date("9/19/2019"), new Date("9/17/2019") , false);
-    }
 
     filterList = async () => {
         // Loading GIF appear and scroll off
         this.loadingGif.style.display = "flex";
         document.body.classList.add("modal-open");
         //  
-
+        // Permission data
         this.filter = {};
+        Object.assign(this.filter, this.permissionFilter);
+
         this.status = document.querySelector("#filterStatus").value;
         this.bank = this.bankFilter.value;
         this.merchant = this.merchFilter.value;
@@ -1779,45 +1791,50 @@ class invoiceList {
         ]};
 
         // Перевірка на дату створення START.
-        this.firstCreat = "";
-        this.secondCreat = "";
 
-        if(this.creationDate.value.length > 20){
+        if (this.creationDate.value.length > 20) {
             var DATE = this.creationDate.value.split("—");
-            this.firstCreat = new Date(DATE[0].trim());
-            this.secondCreat = new Date(DATE[1].trim());
+            this.firstCrea = new Date(DATE[0].trim());
+            this.secondCrea = new Date(DATE[1].trim());
 
-        } else if(this.creationDate.value.length <= 12 && this.creationDate.value.length !== 0){
+        } else if (this.creationDate.value.length <= 12 && this.creationDate.value.length !== 0) {
             var DATE = this.creationDate.value;
-            this.firstCreat = new Date(DATE.trim());
-            this.secondCreat = false;
+            this.firstCrea = new Date(DATE.trim());
+            this.secondCrea = false;
         }
         // Перевірка на дату створення END.
 
-        this.firstRec = "";
-        this.secondRec = "";
 
         // Checking Received Date START.
-        if(this.receiveDate.value.length > 20){
+        if (this.receiveDate.value.length > 20) {
             var DATE = this.receiveDate.value.split("—");
             this.firstRec = new Date(DATE[0].trim());
             this.secondRec = new Date(DATE[1].trim());
 
-        } else if(this.receiveDate.value.length <= 12 && this.receiveDate.value.length !== 0){
+        } else if (this.receiveDate.value.length <= 12 && this.receiveDate.value.length !== 0) {
             var DATE = this.receiveDate.value;
             this.firstRec = new Date(DATE.trim());
             this.secondRec = false;
         }
         // Checking Received Date END.
 
-        if(this.documents !== ""){
+        if (this.documents !== "") {
             this.documents.trim() === "All verified" ? Object.assign(this.filter, Approved): "";
             this.documents.trim() === "Pending verification" ? Object.assign(this.filter, non_ver): "";
             this.documents.trim() === "Without documents" ? Object.assign(this.filter, empty): "";
         }
 
-        const lengthInvoice = await this.getNumberOfinvoices(this.filter, this.firstCreat, this.secondCreat, this.firstRec, this.secondRec);
-        const filterList = await this.getInvoices(0, this.filter, this.firstCreat, this.secondCreat, this.firstRec, this.secondRec);
+        const data = {
+            skip: 0,
+            limit: 10,
+            filter: this.filter,
+            firstCrea: this.firstCrea,
+            secondCrea: this.secondCrea,
+            firstRec: this.firstRec,
+            secondRec: this.secondRec
+        };
+        console.log(data);
+        const res = await this.getInvoicesPartly(data);
 
         // Loading GIF appear and scroll off
         this.loadingGif.style.display = "none";
@@ -1829,11 +1846,13 @@ class invoiceList {
         this.container.innerHTML = "";
         this.containerPages.innerHTML = "";
 
-        this.countNextPage(filterList, lengthInvoice.numbers);
+        this.countNextPage(res.invoices, res.count);
+
+        console.log(this.filter);
     }
 
-    documentsStatus = () => {
-        this.ArrayLIst.forEach((obj) => {
+    documentsStatus = (arr) => {
+        arr.forEach((obj) => {
             var ID = obj.documents.id;
             var Utility_bill = obj.documents.utility_bill;
             var Paymant_proof = obj.documents.payment_proof;
@@ -1972,7 +1991,19 @@ class invoiceList {
 
                 let listNumber = ((currentEvent*10)-10);
 
-                this.nextList = await this.getInvoices(listNumber, this.filter, this.firstCreat, this.secondCreat, this.firstRec, this.secondRec);
+                // Request for new Invoice Page
+                const data = {
+                    skip: listNumber,
+                    limit: 10,
+                    filter: this.filter,
+                    firstCrea: this.firstCrea,
+                    secondCrea: this.secondCrea,
+                    firstRec: this.firstRec,
+                    secondRec: this.secondRec
+                };
+                const nextList = await this.getInvoicesPartly(data);
+
+                console.log(this.filter);
 
                 // Loading GIF remove and scroll off
                 this.loadingGif.style.display = "none";
@@ -1982,7 +2013,7 @@ class invoiceList {
                 this.container = document.getElementById("table-list");
                 this.container.innerHTML = "";
 
-                this.loadInvoices(this.nextList);
+                this.loadInvoices(nextList.invoices);
 
                 if( +(btn.textContent) === lastPage && +(btn.textContent) > 1){
                     btn.closest("div").children[0].textContent = lastPage - 3;
@@ -2012,7 +2043,9 @@ class invoiceList {
                 this.checkClickedPages(currentEvent);
             });
         });
-        this.firstPage.style.display = "flex";
+
+        numbersOfpages > 10 ? this.firstPage.style.display = "flex" : null;
+        console.log(this.filter);
     }
 
     getMerchants = async () => {
@@ -2023,53 +2056,10 @@ class invoiceList {
         .catch(err => {
             console.log(err);
         });
-   }
-
-    saveLocakBanksAndMerchants = async () => {
-        this.arrayBanks = await this.getBanks();
-        this.arrayBanks.forEach((bank) => this.ArrayBanks.push(bank));
-
-        this.arrayMerch = await this.getMerchants();
-        this.arrayMerch.forEach((merchant) => this.ArrayMerchants.push(merchant));
-        this.filtersData();
     }
 
-    getBanks = async () => {
-         return  await fetch("http://18.216.223.81:3000/getBanks")
-         .then(res => {
-             return res.json();
-         }) 
-         .catch(err => {
-             console.log(err);
-         });
-    }
-
-    saveLocalInvoices = async () => {
-        // Отримуємо кількість інвойсів та записуємо їх в глобальну змінну. 
-        this.number = await this.getNumberOfinvoices();
-        this.InvoiceNumbers.push(this.number.numbers);
-
-        this.array = await this.getInvoices(0);
-        this.array.forEach((item) => {
-            this.ArrayLIst.push(item);
-        });
-        this.countNextPage(this.ArrayLIst, this.InvoiceNumbers[0]);
-        this.documentsStatus();
-    }
-
-    getInvoices = async (count, filter, firstCr, secondCr, firstRe, secondRe) => {
-        return  await fetch("http://18.216.223.81:3000/getPart-Invoices", {
-            method: "POST",
-            body: JSON.stringify({
-                numbers: count, 
-                filter,
-                firstCr: firstCr,
-                secondCr: secondCr,
-                firstRe: firstRe,
-                secondRe: secondRe
-            }),
-            headers:{'Content-Type': 'application/json'}
-        })
+   getBanks = async () => {
+        return  await fetch("http://18.216.223.81:3000/getBanks")
         .then(res => {
             return res.json();
         }) 
@@ -2078,16 +2068,131 @@ class invoiceList {
         });
     }
 
-    getNumberOfinvoices = async (filter, firstCr, secondCr, firstRe, secondRe) => {
-       return  await fetch("http://18.216.223.81:3000/getNumber-Invoices", {
+   saveLocalMerchant = async () => {
+        this.arrayMerch = await this.getMerchants();
+        this.arrayMerch.forEach((merchant) => this.ArrayMerchants.push(merchant));
+        var merchList = [];
+        this.ArrayMerchants.forEach((merchant) => merchList.push(merchant.name));
+        for (let m = 0; m < merchList.length; m++) {
+            this.renderOption(this.merchFilter, merchList[m]);
+        }
+    }
+
+
+    saveLocakBanks = async () => {
+        this.arrayBanks = await this.getBanks();
+        this.arrayBanks.forEach((bank) => this.ArrayBanks.push(bank));
+        var bankList = [];
+        this.ArrayBanks.forEach((bank) => bankList.push(bank.name));
+        for (let i = 0; i < bankList.length; i++) {
+            this.renderOption(this.bankFilter, bankList[i]);
+        }
+    }
+
+
+    viewInvoice = async () => {
+        this.tableTd = document.querySelectorAll(".view");
+        this.tableTd.forEach((td) => {
+            td.addEventListener("click", async () => {
+                // Loading GIF appear and scroll off
+                this.loadingGif.style.display = "flex";
+                document.body.classList.add("modal-open");
+                // Take current Tr for future changed
+                this.currentTr = td.parentElement;
+                // Remove all filters
+                this.filter = {};
+                Object.assign(this.filter, this.permissionFilter);
+                // Get number of invoice
+                this.number = td.parentElement.children[0].children[0].children[0].children[0].textContent.split("#")[1];
+                // Get invoice
+                const data = {
+                    skip: 0,
+                    limit: 10,
+                    filter: {"number": this.number}
+                };
+                this.currentInvoice = await this.getInvoicesPartly(data); 
+                this.currentInvoice = this.currentInvoice.invoices;
+                // Loading GIF hide
+                this.loadingGif.style.display = "none";
+                // Render popup window
+                this.renderViewInvoice(this.currentInvoice);
+                // Set currency of Current Invoice
+                this.currentInvoice[0].currency === "USD" ? this.currency = "$" : this.currency = "€";
+            });
+        });
+        console.log(this.filter);
+    }
+
+
+    permissionForMerchantInvManager = async () => {
+        const listOfMerchants = await this.getUserById(this.currentUserId.textContent.trim());
+        let arr = [];
+        listOfMerchants.forEach((elem) => arr.push(elem));
+        this.permissionFilter = {merchant: {$in: arr}};
+        Object.assign(this.filter, this.permissionFilter);
+
+        // Render Merchant name for Filters
+        arr.forEach(merchant => this.renderOption(this.merchFilter, merchant));
+        // Remove from DOM
+        document.querySelector("#received").remove()
+        document.querySelector("#approved").remove()
+        document.querySelector("#available").remove()
+        document.querySelector("#editBtn").remove()
+        document.querySelector("#declinedBtn").remove()
+        document.querySelector("#frozenBtn").remove()
+        document.querySelector("#recallBtn").remove()
+        document.querySelector(".merchManagerPermission").classList.add("hide");
+
+        console.log(this.filter);
+    }
+
+    
+    saveLocalInvoices = async () => {
+        const user = this.currentUserRole.textContent.trim();
+        if (user === "Merchant Manager" || user === "Solution Manager") {
+            await this.permissionForMerchantInvManager();
+            
+        } else {
+            await this.saveLocalMerchant();
+        }
+        
+        await this.saveLocakBanks();
+
+        // New Request for Invoices
+        const data = {
+            skip: 0,
+            limit: 10,
+            filter: this.filter,
+            firstCrea: this.firstCrea,
+            secondCrea: this.secondCrea,
+            firstRec: this.firstRec,
+            secondRec: this.secondRec
+        };
+        const res = await this.getInvoicesPartly(data);
+        this.InvoiceNumbers = res.count;
+        this.ArrayList = res.invoices;
+        // 
+        this.countNextPage(this.ArrayList, this.InvoiceNumbers);
+        this.documentsStatus(this.ArrayList);
+
+        console.log(this.filter);
+    }
+
+
+    getUserById = async (id) => {
+        return  await fetch(`http://18.216.223.81:3000/getUserById/${id}`)
+            .then(res => {
+                return res.json();
+            }) 
+            .catch(err => {
+                console.log(err);
+            });
+    }
+
+    getInvoicesPartly = async (data) => {
+        return  await fetch("http://18.216.223.81:3000/get-invoices-partly", {
             method: "POST",
-            body: JSON.stringify({
-                filter,
-                firstCr: firstCr,
-                secondCr: secondCr,
-                firstRe: firstRe,
-                secondRe: secondRe
-            }),
+            body: JSON.stringify(data),
             headers:{'Content-Type': 'application/json'}
         })
         .then(res => {
@@ -2131,7 +2236,7 @@ class invoiceList {
             this.userList.innerHTML =  `
                     <td class="column1 view">
                         <div class="createdTd">
-                            <p class="green"><b class="number">#${item.number}</b></p>
+                            <p class="green"><b id="invoiceNumber">#${item.number}</b></p>
                             <p class="smallBoldText">${this.checkDate(item.dates.creation_date)}</p>
                             <p>${moment(item.dates.creation_date).format("h:mm a")}</p>
                         </div>
@@ -2202,7 +2307,6 @@ class invoiceList {
 
     render(){
         this.saveLocalInvoices();
-        this.saveLocakBanksAndMerchants();
         this.showFilterBtn.addEventListener("click", this.filterList);
         this.clearFilterBtn.addEventListener("click", this.clearFilter);
         this.btnExel.addEventListener("click", this.saveXls);

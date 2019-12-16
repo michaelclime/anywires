@@ -106,6 +106,7 @@
 		<div id="wrapper">
 				<span id="currentUser"><%= currentUser.fullname %></span>
 				<span class="curentUserRole"><%= currentUser.role %></span>
+				<span class="currentUserId hide"><%= currentUser._id %></span>
 
 			<!--Header Page-->
 			<header> 
@@ -235,7 +236,7 @@
 					
 				<div class="invoiceNum-block">
 					<div>
-						<strong>Invoice #<span id="invoiceNumber"></span></strong>
+						<strong>Invoice #<span id="popUpinvoiceNumber"></span></strong>
 					</div>
 					<div id="invoiceMerchant">Invoice Merchant</div>
 				</div>
@@ -270,7 +271,7 @@
 							<table id="docsTable">
 								<thead>
 									<tr>
-										<th>Created by</th> <th>Type</th> <th>Status</th> <th>Confirmation</th> <th></th>
+										<th>Created by</th> <th>Type</th> <th>Status</th> <th class="merchManagerPermission">Confirmation</th> <th></th>
 									</tr>
 								</thead>
 								<tbody id="table-docs"></tbody>
