@@ -1476,7 +1476,7 @@ class invoiceList {
         // Off overflow for BODY
         document.body.classList.add("modal-open");
 
-        console.log(this.filter);
+        
     }
 
     getCurrentMerchant = async (number, filter) => {
@@ -1637,7 +1637,7 @@ class invoiceList {
                 console.log(err);
             });
     }
-    
+
 
     previewInvoice = (event) => {
         const number = event.target.closest("tr").querySelector("#invoiceNumber").textContent.split("#");
@@ -1701,7 +1701,7 @@ class invoiceList {
             this.loadingGif.style.display = "none";
             document.body.classList.remove("modal-open");
         }
-        console.log(this.filter);
+        
     }
 
     saveXls = () => {
@@ -1725,6 +1725,11 @@ class invoiceList {
         this.filter = {};
         Object.assign(this.filter, this.permissionFilter);
 
+        this.firstCrea = ""; 
+        this.secondCrea = false;
+        this.firstRec = "";
+        this.secondRec = false;
+
         this.creationDate.value = "";
         this.receiveDate.value = "";
         this.inputSearch.value = "";
@@ -1737,7 +1742,7 @@ class invoiceList {
         this.countNextPage(this.ArrayList, this.InvoiceNumbers);
         this.documentsStatus(this.ArrayList);
 
-        console.log(this.filter);
+        
     }
 
     checkIsEmptyObj = (obj) => {
@@ -1849,7 +1854,7 @@ class invoiceList {
 
         this.countNextPage(res.invoices, res.count);
 
-        console.log(this.filter);
+        
     }
 
     documentsStatus = (arr) => {
@@ -2004,7 +2009,7 @@ class invoiceList {
                 };
                 const nextList = await this.getInvoicesPartly(data);
 
-                console.log(this.filter);
+                
 
                 // Loading GIF remove and scroll off
                 this.loadingGif.style.display = "none";
@@ -2046,7 +2051,7 @@ class invoiceList {
         });
 
         numbersOfpages > 10 ? this.firstPage.style.display = "flex" : null;
-        console.log(this.filter);
+        
     }
 
     getMerchants = async () => {
@@ -2121,7 +2126,7 @@ class invoiceList {
                 this.currentInvoice[0].currency === "USD" ? this.currency = "$" : this.currency = "€";
             });
         });
-        console.log(this.filter);
+        
     }
 
 
@@ -2144,7 +2149,7 @@ class invoiceList {
         document.querySelector("#recallBtn").remove()
         document.querySelector(".merchManagerPermission").classList.add("hide");
 
-        console.log(this.filter);
+        
     }
 
     
@@ -2176,7 +2181,7 @@ class invoiceList {
         this.countNextPage(this.ArrayList, this.InvoiceNumbers);
         this.documentsStatus(this.ArrayList);
 
-        console.log(this.filter);
+        
     }
 
 
