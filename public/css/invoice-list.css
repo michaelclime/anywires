@@ -515,7 +515,7 @@
     .docTable-block {
         width: 70%;
         overflow: scroll;
-        overflow-x:hidden;
+        overflow-x: hidden;
         height: 165px; 
     }
     

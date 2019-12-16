@@ -1,5 +1,59 @@
-class Wallets {
+class WalletsRequest {
+    constructor(){}
+
+    getSettlemetsByWalletId = async id => {
+        return fetch(`/get-settlement-by-wallet/${id}`)
+        .then(res => {
+            return res.json();
+        }) 
+        .catch(err => {
+            console.log(err);
+        });
+    }
+
+    getAllMerchants = async () => {
+        return  await fetch("http://18.216.223.81:3000/getMerchants")
+        .then(res => {
+            return res.json();
+        }) 
+        .catch(err => {
+            console.log(err);
+        });
+   }
+
+   createMerchantRequest = async newWallet => {
+        return  await fetch("http://18.216.223.81:3000/createWallet", {
+                method: "POST",
+                body: JSON.stringify({newWallet}),
+                headers:{'Content-Type': 'application/json'}
+            })
+            .then(res => {
+                return res.text();
+            }) 
+            .catch(err => {
+                console.log(err);
+            });
+    }
+
+    editWalletRequest = async (walletId, editedWallet) => {
+        return  await fetch("http://18.216.223.81:3000/editWallet", {
+                method: "POST",
+                body: JSON.stringify({walletId, editedWallet}),
+                headers:{'Content-Type': 'application/json'}
+            })
+            .then(res => {
+                return res.text();
+            }) 
+            .catch(err => {
+                console.log(err);
+            });
+    }
+}
+
+
+class Wallets extends WalletsRequest {
     constructor(){
+        super();
         this.walletsArr = [];
         this.walletsNum = 0;
         this.currentWallet = [];
@@ -10,6 +64,76 @@ class Wallets {
         this.filterEditWallet = document.querySelector(".filter_editWallet");
         this.currentUser = document.querySelector(".userName");
         this.render();
+    }
+
+    renderTransactionTable = arr => {
+        const container = document.querySelector(".transaction__table--tbody");
+        arr.forEach(item => {
+            const commissionArr = item.commissionsList.filter(com => com.type.trim() === "Settlement Anywires Commission");
+            const commissionAmount = commissionArr.map(com => com.amount).reduce((acc, cur) => acc + cur, 0);
+            const currency = item.currency.trim() === 'USD' ? '$' : '€';
+            const userList = document.createElement("tr");
+            userList.innerHTML = `
+                <td class="transaction__column1">${this.checkDate(item.dates.creation_date)}</td> 
+                <td class="transaction__column2">${item.createdBy[0].fullname}</td> 
+                <td class="transaction__column3">
+                    ${
+                        item.status.trim() === 'Requested' ? item.amount.amount_requested : item.amount.amount_sent
+                    }
+                    ${currency}
+                </td> 
+                <td class="transaction__column4">${item.type}</td> 
+                <td class="transaction__column5">${item.status}</td> 
+                <td class="transaction__column6">${commissionAmount} ${currency}</td> 
+            `;
+            container.appendChild(userList);
+        });
+    }
+
+    transactionPopUp = () => {
+        var allTd = document.querySelectorAll(".transaction");
+        allTd.forEach((td) => {
+            td.addEventListener("click", async event => {
+                event.preventDefault();
+                // 
+                // Add Loading
+                this.loadingGif.style.display = "flex";
+                document.body.classList.add("modal-open");
+                // 
+                // Clean popUp Windo
+                document.querySelector(".transaction__table--tbody").innerHTML = '';
+                // 
+                // Event for Window closing
+                const filterTransaction = document.querySelector(".transaction__filter");
+                filterTransaction.style.display = 'flex'
+                filterTransaction.addEventListener("click", (event) => {
+                    if (event.target === filterTransaction){
+                        filterTransaction.style.display = "none";
+                        document.body.classList.remove("modal-open");
+                    }
+                });
+                // 
+                // Request for Settlements
+                const walletId = event.target.closest("tr").querySelector("#walletId").textContent.trim();
+                const settlements = await this.getSettlemetsByWalletId(walletId);
+                console.log(settlements.settlements);
+                // 
+                // Render popUp information
+                const merchantName = event.target.closest("tr").querySelector(".table_wallets--merchant-name").textContent.trim();
+                document.querySelector('.transaction__header--marchant-name').innerHTML = `${merchantName}`;
+                // 
+                const walletName = event.target.closest("tr").querySelector(".table_wallets--wallet-name").textContent.trim();
+                const walleBalance = event.target.closest("tr").querySelector(".table_wallets--wallet-balance").textContent.trim();
+                const walleCurrency = event.target.closest("tr").querySelector(".table_wallets--wallet-currency").textContent.trim();
+                document.querySelector('.transaction-wallet-name').innerHTML = `${walletName} - ${walleBalance}${walleCurrency === 'USD' ? '$' : '€'}`;
+                // 
+                // Render table transaction
+                this.renderTransactionTable(settlements.settlements);
+                // 
+                // Remove Loading
+                this.loadingGif.style.display = "none";
+            });
+        });
     }
 
     jsonToXls = async () => {
@@ -94,16 +218,6 @@ class Wallets {
         this.loadingGif.style.display = "none";
     }
 
-    getAllMerchants = async () => {
-        return  await fetch("http://18.216.223.81:3000/getMerchants")
-        .then(res => {
-            return res.json();
-        }) 
-        .catch(err => {
-            console.log(err);
-        });
-   }
-
     uniqueArr = (arr) => {
         var result = [];
         arr.forEach((item) => {
@@ -132,19 +246,7 @@ class Wallets {
         this.renderOption(document.querySelector("#merchant"), uniqueMerchantName);
     }
 
-    createMerchantRequest = async (newWallet) => {
-        return  await fetch("http://18.216.223.81:3000/createWallet", {
-                method: "POST",
-                body: JSON.stringify({newWallet}),
-                headers:{'Content-Type': 'application/json'}
-            })
-            .then(res => {
-                return res.text();
-            }) 
-            .catch(err => {
-                console.log(err);
-            });
-    }
+
 
     createMerchantCheckData = async () => {
         const createdBy = this.currentUser.textContent.trim();
@@ -213,20 +315,6 @@ class Wallets {
         // Event for button Edit inside PopUp
         document.querySelector("#editWallet_action").removeEventListener("click", this.editWalletCheckData);
         document.querySelector("#editWallet_action").addEventListener("click", this.createMerchantCheckData);
-    }
-
-    editWalletRequest = async (walletId, editedWallet) => {
-        return  await fetch("http://18.216.223.81:3000/editWallet", {
-                method: "POST",
-                body: JSON.stringify({walletId, editedWallet}),
-                headers:{'Content-Type': 'application/json'}
-            })
-            .then(res => {
-                return res.text();
-            }) 
-            .catch(err => {
-                console.log(err);
-            });
     }
 
     checkIfdataChanged = (data, newData) => {
@@ -540,19 +628,16 @@ class Wallets {
         arr.forEach((item) => {
             this.userList = document.createElement("tr");
             this.userList.innerHTML =  `
-                    <td class="column1">${this.checkDate(item.creation_date)}</td> 
-                    <td class="column2">${item.name}</td> 
-                    <td class="column3">${item.type}</td> 
-                    <td class="column4">${item.balance}</td> 
-                    <td class="column5">${item.currency}</td> 
-                    <td class="column6">
-                        ${item.merchant_name}
-                        
-                    </td> 
+                    <td class="column1 transaction">${this.checkDate(item.creation_date)}</td> 
+                    <td class="column2 transaction table_wallets--wallet-name">${item.name}</td> 
+                    <td class="column3 transaction">${item.type}</td> 
+                    <td class="column4 transaction table_wallets--wallet-balance">${item.balance}</td> 
+                    <td class="column5 transaction table_wallets--wallet-currency">${item.currency}</td> 
+                    <td class="column6 transaction table_wallets--merchant-name">${item.merchant_name}</td> 
                     <td class="column7">
                         <img class="editWallet_btn" src="./img/edit.png" alt="edit">
                     </td>
-                    <td class="hide">${item._id}</td>
+                    <td class="hide" id='walletId'>${item._id}</td>
                     `;
             this.container.appendChild(this.userList);
         });
@@ -563,6 +648,9 @@ class Wallets {
         // 
         // Edit Wallets Event
         document.querySelectorAll(".editWallet_btn").forEach(btn => btn.addEventListener("click", this.editWallet));
+        // 
+        // Events for every tr
+        this.transactionPopUp();
     }
 
     render(){

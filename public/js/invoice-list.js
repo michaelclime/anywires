@@ -2,6 +2,7 @@ class invoiceList {
     constructor(){
         this.filter = {};
         this.permissionFilter = {};
+
         this.firstCrea = ""; 
         this.secondCrea = false;
         this.firstRec = "";
@@ -1476,7 +1477,7 @@ class invoiceList {
         // Off overflow for BODY
         document.body.classList.add("modal-open");
 
-        console.log(this.filter);
+        
     }
 
     getCurrentMerchant = async (number, filter) => {
@@ -1638,6 +1639,7 @@ class invoiceList {
             });
     }
 
+
     previewInvoice = (event) => {
         const number = event.target.closest("tr").querySelector("#invoiceNumber").textContent.split("#");
         window.open("http://18.216.223.81:3000/invoice-preview?&" + number[1], '_blank');
@@ -1700,7 +1702,7 @@ class invoiceList {
             this.loadingGif.style.display = "none";
             document.body.classList.remove("modal-open");
         }
-        console.log(this.filter);
+        
     }
 
     saveXls = () => {
@@ -1724,6 +1726,11 @@ class invoiceList {
         this.filter = {};
         Object.assign(this.filter, this.permissionFilter);
 
+        this.firstCrea = ""; 
+        this.secondCrea = false;
+        this.firstRec = "";
+        this.secondRec = false;
+
         this.creationDate.value = "";
         this.receiveDate.value = "";
         this.inputSearch.value = "";
@@ -1736,7 +1743,7 @@ class invoiceList {
         this.countNextPage(this.ArrayList, this.InvoiceNumbers);
         this.documentsStatus(this.ArrayList);
 
-        console.log(this.filter);
+        
     }
 
     checkIsEmptyObj = (obj) => {
@@ -1754,6 +1761,10 @@ class invoiceList {
         //  
         // Permission data
         this.filter = {};
+        this.firstCrea = ""; 
+        this.secondCrea = false;
+        this.firstRec = "";
+        this.secondRec = false;
         Object.assign(this.filter, this.permissionFilter);
 
         this.status = document.querySelector("#filterStatus").value;
@@ -1833,7 +1844,6 @@ class invoiceList {
             firstRec: this.firstRec,
             secondRec: this.secondRec
         };
-        console.log(data);
         const res = await this.getInvoicesPartly(data);
 
         // Loading GIF appear and scroll off
@@ -1847,8 +1857,6 @@ class invoiceList {
         this.containerPages.innerHTML = "";
 
         this.countNextPage(res.invoices, res.count);
-
-        console.log(this.filter);
     }
 
     documentsStatus = (arr) => {
@@ -2003,7 +2011,7 @@ class invoiceList {
                 };
                 const nextList = await this.getInvoicesPartly(data);
 
-                console.log(this.filter);
+                
 
                 // Loading GIF remove and scroll off
                 this.loadingGif.style.display = "none";
@@ -2045,7 +2053,7 @@ class invoiceList {
         });
 
         numbersOfpages > 10 ? this.firstPage.style.display = "flex" : null;
-        console.log(this.filter);
+        
     }
 
     getMerchants = async () => {
@@ -2120,7 +2128,7 @@ class invoiceList {
                 this.currentInvoice[0].currency === "USD" ? this.currency = "$" : this.currency = "€";
             });
         });
-        console.log(this.filter);
+        
     }
 
 
@@ -2143,7 +2151,7 @@ class invoiceList {
         document.querySelector("#recallBtn").remove()
         document.querySelector(".merchManagerPermission").classList.add("hide");
 
-        console.log(this.filter);
+        
     }
 
     
@@ -2175,7 +2183,7 @@ class invoiceList {
         this.countNextPage(this.ArrayList, this.InvoiceNumbers);
         this.documentsStatus(this.ArrayList);
 
-        console.log(this.filter);
+        
     }
 
 
