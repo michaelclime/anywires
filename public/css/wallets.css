@@ -796,3 +796,187 @@ option {
   overflow: hidden;
 }
 /* PopUp Alert End */
+
+
+/* START */
+.transaction__filter {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.8);
+  position: fixed;
+  top: 0; bottom: 0; left: 0; right: 0;
+  z-index: 150;
+}
+
+.transaction__wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 800px;
+  background-color: white;
+  padding: 20px;
+  z-index: 160;
+  border-radius: 3px;
+}
+
+.transaction__header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.transaction__table--line {
+  width: 100%;
+  height: 2px;
+  background-color: #888;
+  margin: 7px 0;
+}
+
+.transaction__table-wrapper {
+  width: 100%;
+  overflow: scroll;
+  overflow-x: hidden;
+  max-height: 300px; 
+}
+
+/* END */
+
+
+/* Trancaction Table START */
+.transaction__table {
+  border-spacing: 1;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 3px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.transaction__table thead tr {
+  height: 30px;
+  background: #12C7B2;
+}
+
+.transaction__table tbody tr {
+  height: 35px;
+}
+
+.transaction__table tbody tr:last-child {
+  border: 0;
+}
+.transaction__table td, .transaction__table th {
+  text-align: left;
+}
+.transaction__table td.l, .transaction__table th.l {
+  text-align: right;
+}
+.transaction__table td.c, .transaction__table th.c {
+  text-align: center;
+}
+.transaction__table td.r, .transaction__table th.r {
+  text-align: center;
+}
+
+.transaction__table tbody tr:hover {
+  background-color: rgb(190, 233, 228);
+}
+
+.transaction__table tbody tr:nth-child(even) {
+  background-color: #f5f5f5;
+}
+
+.transaction__table tbody tr:nth-child(even):hover {
+  background-color: rgb(190, 233, 228);
+}
+
+.transaction__table--thead th {
+  font-size: 17px;
+  color: #fff;
+  line-height: 1.2;
+  font-weight: unset;
+}
+
+.transaction__column1 {
+  padding-left: 20px;
+}
+
+@media screen and (max-width: 1075px) {
+  .transaction__table  *{
+      position: relative;
+  }
+  .transaction__table {
+      display: block;
+  }
+  .transaction__table > *, .transaction__table tr, .transaction__table td, .transaction__table th {
+      display: block;
+  }
+  .transaction__table thead {
+      display: none;
+  }
+  .transaction__table tbody tr {
+      height: auto;
+      padding: 37px 0;
+  }
+  .transaction__table tbody tr td {
+      padding-left: 45% !important;
+      margin-bottom: 24px;
+  }
+  .transaction__table tbody tr td:last-child {
+      margin-bottom: 0;
+  }
+  .transaction__table tbody tr td:before {
+      
+      color: #999999;
+      line-height: 1.2;
+      font-weight: unset;
+      position: absolute;
+      width: 40%;
+      left: 30px;
+      top: 0;
+  }
+
+  .transaction__table tbody tr td:nth-child(1):before {
+      content: "Creation date";
+  }
+  .transaction__table tbody tr td:nth-child(2):before {
+      content: "Creation by";
+  }
+  .transaction__table tbody tr td:nth-child(3):before {
+      content: "Amount";
+  }
+  .transaction__table tbody tr td:nth-child(4):before {
+      content: "Type";
+  }
+  .transaction__table tbody tr td:nth-child(5):before {
+    content: "Status";
+  }
+  .transaction__table tbody tr td:nth-child(6):before {
+    content: "Commission";
+  }
+
+
+  .transaction__column6,
+  .transaction__column5,
+  .transaction__column4,
+  .transaction__column3,
+  .transaction__column2,
+  .transaction__column1 {
+      text-align: left;
+  }
+
+  .transaction__column6,
+  .transaction__column5,
+  .transaction__column4,
+  .transaction__column3,
+  .transaction__column2,
+  .transaction__column1 {
+      width: 100%;
+  }
+
+  .transaction__table tbody tr {
+      font-size: 13px;
+  }
+}
+/* Trancaction Table END */

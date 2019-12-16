@@ -4,6 +4,7 @@ const express = require('express'),
     objectId = require("mongodb").ObjectID,
     jsonParser = express.json(),
     Merchant = require("../modules/merchant"),
+    Settlement = require('../modules/settlement'),
     Wallet = require("../modules/wallet");
  
 
@@ -82,6 +83,56 @@ router.post("/createWallet", jsonParser, (req, res) => {
     })
     .then(() => {
         res.send("Wallet has been created successfully!");
+    });
+});
+
+
+// @route GET /get-settlement-by-wallet/:id
+// @desc Take one settlement
+router.get('/get-settlement-by-wallet/:id', async (req, res) => {
+    const walletId = new objectId(req.params.id);
+    const settlements = await Settlement.aggregate([
+        { $match : { wallets : walletId } },
+        {
+        $lookup: {
+            from: "wallets",
+            localField: "wallets",    // field in the settlements collection
+            foreignField: "_id",  // field in the wallets collection
+            as: "wallet"
+        }
+        }, {
+            $lookup: {
+                from: "documents",
+                localField: 'documents',    // field in the settlements collection
+                foreignField: "_id",  // field in the documents collection
+                as: "documentList"
+            }
+        }, {
+            $lookup: {
+                from: "commissions",
+                localField: 'commissions',    // field in the settlements collection
+                foreignField: "_id",  // field in the commissions  collection
+                as: "commissionsList"
+            }
+        }, {
+            $lookup: {
+                from: "merchants",
+                localField: 'merchant',    // field in the settlements collection
+                foreignField: "_id",  // field in the merchants  collection
+                as: "mercName"
+            }
+        },
+        {
+            $lookup: {
+                from: "users",
+                localField: 'created_by',    // field in the settlements collection
+                foreignField: "_id",  // field in the users collection
+                as: "createdBy"
+            }
+        }
+    ]).sort({_id:-1});
+    res.send({
+        settlements
     });
 });
 

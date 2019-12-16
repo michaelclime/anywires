@@ -232,7 +232,7 @@
 									<th class="column1">Creation date</th>
 									<th class="column2">Name</th>
 									<th class="column3">Type</th>
-									<th class="column4">Balance</th>
+									<th class="column4 table_wallets--balance">Balance</th>
 									<th class="column5">Currency</th>
 									<th class="column6">Merchant</th>
 									<th class="column7"></th>
@@ -340,6 +340,35 @@
 			</div>
 		</div>
 		<!-- Alert Window  END-->
+
+
+		<!-- Transaction Windwo START -->
+		<div class="transaction__filter">
+			<div class="transaction__wrapper">
+
+				<div class="transaction__header">
+					<div class="transaction-wallet-name">Wallet Name</div>
+					<div class="transaction__header--marchant-name">Merchant Name</div>
+				</div>
+
+				<h4>TRANSACTION LIST</h4>
+				<div class="transaction__table--line"></div>
+				<div class="transaction__table-wrapper">
+					<table class="transaction__table">
+						<thead class="transaction__table--thead">
+							<th class="transaction__column1">Creation date</th>
+							<th class="transaction__column2">Creation by</th>
+							<th class="transaction__column3">Amount</th>
+							<th class="transaction__column4">Type</th>
+							<th class="transaction__column5">Status</th>
+							<th class="transaction__column6">Commission</th>
+						</thead>
+						<tbody class="transaction__table--tbody"></tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<!-- Transaction Windwo END -->
 		
 		<script src="js/authorizationMenu.js"></script>
 		<script src="./js/wallets.js"></script>
