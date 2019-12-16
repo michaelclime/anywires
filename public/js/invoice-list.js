@@ -2,6 +2,7 @@ class invoiceList {
     constructor(){
         this.filter = {};
         this.permissionFilter = {};
+
         this.firstCrea = ""; 
         this.secondCrea = false;
         this.firstRec = "";
@@ -1760,6 +1761,10 @@ class invoiceList {
         //  
         // Permission data
         this.filter = {};
+        this.firstCrea = ""; 
+        this.secondCrea = false;
+        this.firstRec = "";
+        this.secondRec = false;
         Object.assign(this.filter, this.permissionFilter);
 
         this.status = document.querySelector("#filterStatus").value;
@@ -1839,7 +1844,6 @@ class invoiceList {
             firstRec: this.firstRec,
             secondRec: this.secondRec
         };
-        console.log(data);
         const res = await this.getInvoicesPartly(data);
 
         // Loading GIF appear and scroll off
@@ -1853,8 +1857,6 @@ class invoiceList {
         this.containerPages.innerHTML = "";
 
         this.countNextPage(res.invoices, res.count);
-
-        
     }
 
     documentsStatus = (arr) => {
