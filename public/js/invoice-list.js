@@ -1637,6 +1637,7 @@ class invoiceList {
                 console.log(err);
             });
     }
+    
 
     previewInvoice = (event) => {
         const number = event.target.closest("tr").querySelector("#invoiceNumber").textContent.split("#");
