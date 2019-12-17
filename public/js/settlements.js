@@ -868,15 +868,36 @@ const settlementsList1 = new SettlementsList();
 
             if (claim1 && claim2 && date ) {
                 newSettleList = SETTLEMENTS.filter( (i) => {
-                    return (i.status == claim1) && (i.merchant == claim2) && ( new Date(i.dates.creation_date) > new Date(date1) ) && ( new Date(i.dates.creation_date) < new Date(date2) )
+                    if (date2) {
+                        return (i.status == claim1) && (i.merchant == claim2) && ( new Date(i.dates.creation_date) > new Date(date1) ) && ( new Date(i.dates.creation_date) < new Date(date2) )
+                    } else {
+                        let d1 = new Date(i.dates.creation_date).getDate() + '/' + new Date(i.dates.creation_date).getMonth() + '/' + new Date(i.dates.creation_date).getFullYear();
+                        let d2 = new Date(date1).getDate() + '/' + new Date(date1).getMonth() + '/' + new Date(date1).getFullYear();
+                        return (i.status == claim1) && ( d1 === d2 ) 
+                    }
+                    
                 } );
             } else if (claim1 && date ) {
                 newSettleList = SETTLEMENTS.filter( (i) => {
-                    return (i.status == claim1) && ( new Date(i.dates.creation_date) > new Date(date1) ) && ( new Date(i.dates.creation_date) < new Date(date2) )
+                    if (date2) {
+                        return (i.status == claim1) && ( new Date(i.dates.creation_date) > new Date(date1) ) && ( new Date(i.dates.creation_date) < new Date(date2) );
+                    } else {
+                        let d1 = new Date(i.dates.creation_date).getDate() + '/' + new Date(i.dates.creation_date).getMonth() + '/' + new Date(i.dates.creation_date).getFullYear();
+                        let d2 = new Date(date1).getDate() + '/' + new Date(date1).getMonth() + '/' + new Date(date1).getFullYear();
+                        return (i.status == claim1) && ( d1 === d2 );
+                    }
+                    
                 } );
             } else if (claim2 && date ) {
                 newSettleList = SETTLEMENTS.filter( (i) => {
-                    return (i.merchant == claim2) && ( new Date(i.dates.creation_date) > new Date(date1) ) && ( new Date(i.dates.creation_date) < new Date(date2) )
+                    if (date2) {
+                        return (i.merchant == claim2) && ( new Date(i.dates.creation_date) > new Date(date1) ) && ( new Date(i.dates.creation_date) < new Date(date2) );
+                    } else {
+                        let d1 = new Date(i.dates.creation_date).getDate() + '/' + new Date(i.dates.creation_date).getMonth() + '/' + new Date(i.dates.creation_date).getFullYear();
+                        let d2 = new Date(date1).getDate() + '/' + new Date(date1).getMonth() + '/' + new Date(date1).getFullYear();
+                        return (i.merchant == claim2) && ( d1 === d2 );
+                    }
+                    
                 } );
             } else if ( claim1 && claim2 && !date ) {
                 newSettleList = SETTLEMENTS.filter( (i) => {
@@ -887,8 +908,16 @@ const settlementsList1 = new SettlementsList();
                     return claim1 ? (i.status == claim1) : (i.merchant == claim2);
                 } );
             } else if ( !claim1 && !claim2 && date ) {
+                
                 newSettleList = SETTLEMENTS.filter( (i) => {
-                    return ( new Date(i.dates.creation_date) > new Date(date1) ) && ( new Date(i.dates.creation_date) < new Date(date2) )
+                    if (date2) {
+                        return ( new Date(i.dates.creation_date) > new Date(date1) ) && ( new Date(i.dates.creation_date) < new Date(date2) )
+                    } else {
+                        let d1 = new Date(i.dates.creation_date).getDate() + '/' + new Date(i.dates.creation_date).getMonth() + '/' + new Date(i.dates.creation_date).getFullYear();
+                        let d2 = new Date(date1).getDate() + '/' + new Date(date1).getMonth() + '/' + new Date(date1).getFullYear();
+                        return d1 === d2
+                    }
+                    
                 } );
             }
         }

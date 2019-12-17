@@ -163,10 +163,12 @@ let sentAmountEuro = 0,
                 if (i.status == 'Received') { receivedInvCount += 1; }
                 if (i.currency == 'EUR') {
                     transactionsEUR += 1;
-                    sentAmountEuro += +i.amount.amount_sent,
-                    receivedAmountEuro += +i.amount.amount_received,
-                    approvedAmountEuro += +i.amount.amount_approved,
-                    settledAmountEuro += +i.amount.amount_settled;
+                    sentAmountEuro += +i.amount.amount_sent;
+                    receivedAmountEuro += +i.amount.amount_received;
+                    approvedAmountEuro += +i.amount.amount_approved;
+                    if (i.amount.amount_settled) {
+                        settledAmountEuro += +i.amount.amount_settled;
+                    }
                     amountListSentEUR.push(i.amount.amount_sent);
                     dateListSentEUR.push(i.dates.sent_date);
                     amountListReceivedEUR.push(i.amount.amount_received);
@@ -176,10 +178,12 @@ let sentAmountEuro = 0,
                 } else {
                     if (i.currency == 'USD') {
                         transactionsUSD += 1;
-                        sentAmountDollar += +i.amount.amount_sent,
-                        receivedAmountDollar += +i.amount.amount_received,
-                        approvedAmountDollar += +i.amount.amount_approved,
-                        settledAmountDollar += +i.amount.amount_settled;;
+                        sentAmountDollar += +i.amount.amount_sent;
+                        receivedAmountDollar += +i.amount.amount_received;
+                        approvedAmountDollar += +i.amount.amount_approved;
+                        if (i.amount.amount_settled) {
+                            settledAmountDollar += +i.amount.amount_settled;
+                        }
                         amountListSentUSD.push(i.amount.amount_sent);
                         dateListSentUSD.push(i.dates.sent_date);
                         amountListReceivedUSD.push(i.amount.amount_received);
@@ -218,10 +222,12 @@ let sentAmountEuro = 0,
                 if (i.status == 'Received') { receivedInvCount += 1; }
                 if (i.currency == 'EUR') {
                     transactionsEUR += 1;
-                    sentAmountEuro += +i.amount.amount_sent,
-                    receivedAmountEuro += +i.amount.amount_received,
-                    approvedAmountEuro += +i.amount.amount_approved,
-                    settledAmountEuro += +i.amount.amount_settled;
+                    sentAmountEuro += +i.amount.amount_sent;
+                    receivedAmountEuro += +i.amount.amount_received;
+                    approvedAmountEuro += +i.amount.amount_approved;
+                    if (i.amount.amount_settled) {
+                        settledAmountEuro += +i.amount.amount_settled;
+                    }
                     amountListSentEUR.push(i.amount.amount_sent);
                     dateListSentEUR.push(i.dates.sent_date);
                     amountListReceivedEUR.push(i.amount.amount_received);
@@ -231,10 +237,12 @@ let sentAmountEuro = 0,
                 } else {
                     if (i.currency == 'USD') {
                         transactionsUSD += 1;
-                        sentAmountDollar += +i.amount.amount_sent,
-                        receivedAmountDollar += +i.amount.amount_received,
-                        approvedAmountDollar += +i.amount.amount_approved,
-                        settledAmountDollar += +i.amount.amount_settled;
+                        sentAmountDollar += +i.amount.amount_sent;
+                        receivedAmountDollar += +i.amount.amount_received;
+                        approvedAmountDollar += +i.amount.amount_approved;
+                        if (i.amount.amount_settled) {
+                            settledAmountDollar += +i.amount.amount_settled;
+                        }
                         amountListSentUSD.push(i.amount.amount_sent);
                         dateListSentUSD.push(i.dates.sent_date);
                         amountListReceivedUSD.push(i.amount.amount_received);
@@ -274,10 +282,12 @@ let sentAmountEuro = 0,
                 if (i.status == 'Received') { receivedInvCount += 1; }
                 if (i.currency == 'EUR') {
                     transactionsEUR += 1;
-                    sentAmountEuro += +i.amount.amount_sent,
-                    receivedAmountEuro += +i.amount.amount_received,
-                    approvedAmountEuro += +i.amount.amount_approved,
-                    settledAmountEuro += +i.amount.amount_settled;
+                    sentAmountEuro += +i.amount.amount_sent;
+                    receivedAmountEuro += +i.amount.amount_received;
+                    approvedAmountEuro += +i.amount.amount_approved;
+                    if (i.amount.amount_settled) {
+                        settledAmountEuro += +i.amount.amount_settled;
+                    }
                     amountListSentEUR.push(i.amount.amount_sent);
                     dateListSentEUR.push(i.dates.sent_date);
                     amountListReceivedEUR.push(i.amount.amount_received);
@@ -287,10 +297,12 @@ let sentAmountEuro = 0,
                 } else {
                     if (i.currency == 'USD') {
                         transactionsUSD += 1;
-                        sentAmountDollar += +i.amount.amount_sent,
-                        receivedAmountDollar += +i.amount.amount_received,
-                        approvedAmountDollar += +i.amount.amount_approved,
-                        settledAmountDollar += +i.amount.amount_settled;
+                        sentAmountDollar += +i.amount.amount_sent;
+                        receivedAmountDollar += +i.amount.amount_received;
+                        approvedAmountDollar += +i.amount.amount_approved;
+                        if (i.amount.amount_settled) {
+                            settledAmountDollar += +i.amount.amount_settled;
+                        }
                         amountListSentUSD.push(i.amount.amount_sent);
                         dateListSentUSD.push(i.dates.sent_date);
                         amountListReceivedUSD.push(i.amount.amount_received);
@@ -375,10 +387,12 @@ const weekAmount = () => {
                 if (i.status == 'Received') { receivedInvCount += 1; }
                 if (i.currency == 'EUR') {
                     transactionsEUR += 1;
-                    sentAmountEuro += +i.amount.amount_sent,
-                    receivedAmountEuro += +i.amount.amount_received,
-                    approvedAmountEuro += +i.amount.amount_approved,
-                    settledAmountEuro += +i.amount.amount_settled;
+                    sentAmountEuro += +i.amount.amount_sent;
+                    receivedAmountEuro += +i.amount.amount_received;
+                    approvedAmountEuro += +i.amount.amount_approved;
+                    if (i.amount.amount_settled) {
+                        settledAmountEuro += +i.amount.amount_settled;
+                    }
                     amountListSentEUR.push(i.amount.amount_sent);
                     dateListSentEUR.push(i.dates.sent_date);
                     amountListReceivedEUR.push(i.amount.amount_received);
@@ -388,10 +402,12 @@ const weekAmount = () => {
                 } else {
                     if (i.currency == 'USD') {
                         transactionsUSD += 1;
-                        sentAmountDollar += +i.amount.amount_sent,
-                        receivedAmountDollar += +i.amount.amount_received,
-                        approvedAmountDollar += +i.amount.amount_approved,
-                        settledAmountDollar += +i.amount.amount_settled;
+                        sentAmountDollar += +i.amount.amount_sent;
+                        receivedAmountDollar += +i.amount.amount_received;
+                        approvedAmountDollar += +i.amount.amount_approved;
+                        if (i.amount.amount_settled) {
+                            settledAmountDollar += +i.amount.amount_settled;
+                        }
                         amountListSentUSD.push(i.amount.amount_sent);
                         dateListSentUSD.push(i.dates.sent_date);
                         amountListReceivedUSD.push(i.amount.amount_received);
@@ -432,10 +448,12 @@ const weekAmount = () => {
                 if (i.status == 'Received') { receivedInvCount += 1; }
                 if (i.currency == 'EUR') {
                     transactionsEUR += 1;
-                    sentAmountEuro += +i.amount.amount_sent,
-                    receivedAmountEuro += +i.amount.amount_received,
-                    approvedAmountEuro += +i.amount.amount_approved,
-                    settledAmountEuro += +i.amount.amount_settled;
+                    sentAmountEuro += +i.amount.amount_sent;
+                    receivedAmountEuro += +i.amount.amount_received;
+                    approvedAmountEuro += +i.amount.amount_approved;
+                    if (i.amount.amount_settled) {
+                        settledAmountEuro += +i.amount.amount_settled;
+                    }
                     amountListSentEUR.push(i.amount.amount_sent);
                     dateListSentEUR.push(i.dates.sent_date);
                     amountListReceivedEUR.push(i.amount.amount_received);
@@ -445,10 +463,12 @@ const weekAmount = () => {
                 } else {
                     if (i.currency == 'USD') {
                         transactionsUSD += 1;
-                        sentAmountDollar += +i.amount.amount_sent,
-                        receivedAmountDollar += +i.amount.amount_received,
-                        approvedAmountDollar += +i.amount.amount_approved,
-                        settledAmountDollar += +i.amount.amount_settled;
+                        sentAmountDollar += +i.amount.amount_sent;
+                        receivedAmountDollar += +i.amount.amount_received;
+                        approvedAmountDollar += +i.amount.amount_approved;
+                        if (i.amount.amount_settled) {
+                            settledAmountDollar += +i.amount.amount_settled;
+                        }
                         amountListSentUSD.push(i.amount.amount_sent);
                         dateListSentUSD.push(i.dates.sent_date);
                         amountListReceivedUSD.push(i.amount.amount_received);
@@ -490,10 +510,12 @@ const weekAmount = () => {
                 if (i.status == 'Received') { receivedInvCount += 1; }
                 if (i.currency == 'EUR') {
                     transactionsEUR += 1;
-                    sentAmountEuro += +i.amount.amount_sent,
-                    receivedAmountEuro += +i.amount.amount_received,
-                    approvedAmountEuro += +i.amount.amount_approved,
-                    settledAmountEuro += +i.amount.amount_settled;
+                    sentAmountEuro += +i.amount.amount_sent;
+                    receivedAmountEuro += +i.amount.amount_received;
+                    approvedAmountEuro += +i.amount.amount_approved;
+                    if (i.amount.amount_settled) {
+                        settledAmountEuro += +i.amount.amount_settled;
+                    }
                     amountListSentEUR.push(i.amount.amount_sent);
                     dateListSentEUR.push(i.dates.sent_date);
                     amountListReceivedEUR.push(i.amount.amount_received);
@@ -503,10 +525,12 @@ const weekAmount = () => {
                 } else {
                     if (i.currency == 'USD') {
                         transactionsUSD += 1;
-                        sentAmountDollar += +i.amount.amount_sent,
-                        receivedAmountDollar += +i.amount.amount_received,
-                        approvedAmountDollar += +i.amount.amount_approved,
-                        settledAmountDollar += +i.amount.amount_settled;
+                        sentAmountDollar += +i.amount.amount_sent;
+                        receivedAmountDollar += +i.amount.amount_received;
+                        approvedAmountDollar += +i.amount.amount_approved;
+                        if (i.amount.amount_settled) {
+                            settledAmountDollar += +i.amount.amount_settled;
+                        }
                         amountListSentUSD.push(i.amount.amount_sent);
                         dateListSentUSD.push(i.dates.sent_date);
                         amountListReceivedUSD.push(i.amount.amount_received);
@@ -594,10 +618,12 @@ const monthAmount = () => {
                 if (i.status == 'Received') { receivedInvCount += 1; }
                 if (i.currency == 'EUR') {
                     transactionsEUR += 1;
-                    sentAmountEuro += +i.amount.amount_sent,
-                    receivedAmountEuro += +i.amount.amount_received,
-                    approvedAmountEuro += +i.amount.amount_approved,
-                    settledAmountEuro += +i.amount.amount_settled;
+                    sentAmountEuro += +i.amount.amount_sent;
+                    receivedAmountEuro += +i.amount.amount_received;
+                    approvedAmountEuro += +i.amount.amount_approved;
+                    if (i.amount.amount_settled) {
+                        settledAmountEuro += +i.amount.amount_settled;
+                    }
                     amountListSentEUR.push(i.amount.amount_sent);
                     dateListSentEUR.push(i.dates.sent_date);
                     amountListReceivedEUR.push(i.amount.amount_received);
@@ -607,10 +633,12 @@ const monthAmount = () => {
                 } else {
                     if (i.currency == 'USD') {
                         transactionsUSD += 1;
-                        sentAmountDollar += +i.amount.amount_sent,
-                        receivedAmountDollar += +i.amount.amount_received,
-                        approvedAmountDollar += +i.amount.amount_approved,
-                        settledAmountDollar += +i.amount.amount_settled;
+                        sentAmountDollar += +i.amount.amount_sent;
+                        receivedAmountDollar += +i.amount.amount_received;
+                        approvedAmountDollar += +i.amount.amount_approved;
+                        if (i.amount.amount_settled) {
+                            settledAmountDollar += +i.amount.amount_settled;
+                        }
                         amountListSentUSD.push(i.amount.amount_sent);
                         dateListSentUSD.push(i.dates.sent_date);
                         amountListReceivedUSD.push(i.amount.amount_received);
@@ -649,10 +677,12 @@ const monthAmount = () => {
                 if (i.status == 'Received') { receivedInvCount += 1; }
                 if (i.currency == 'EUR') {
                     transactionsEUR += 1;
-                    sentAmountEuro += +i.amount.amount_sent,
-                    receivedAmountEuro += +i.amount.amount_received,
-                    approvedAmountEuro += +i.amount.amount_approved,
-                    settledAmountEuro += +i.amount.amount_settled;
+                    sentAmountEuro += +i.amount.amount_sent;
+                    receivedAmountEuro += +i.amount.amount_received;
+                    approvedAmountEuro += +i.amount.amount_approved;
+                    if (i.amount.amount_settled) {
+                        settledAmountEuro += +i.amount.amount_settled;
+                    }
                     amountListSentEUR.push(i.amount.amount_sent);
                     dateListSentEUR.push(i.dates.sent_date);
                     amountListReceivedEUR.push(i.amount.amount_received);
@@ -662,10 +692,12 @@ const monthAmount = () => {
                 } else {
                     if (i.currency == 'USD') {
                         transactionsUSD += 1;
-                        sentAmountDollar += +i.amount.amount_sent,
-                        receivedAmountDollar += +i.amount.amount_received,
-                        approvedAmountDollar += +i.amount.amount_approved,
-                        settledAmountDollar += +i.amount.amount_settled;
+                        sentAmountDollar += +i.amount.amount_sent;
+                        receivedAmountDollar += +i.amount.amount_received;
+                        approvedAmountDollar += +i.amount.amount_approved;
+                        if (i.amount.amount_settled) {
+                            settledAmountDollar += +i.amount.amount_settled;
+                        }
                         amountListSentUSD.push(i.amount.amount_sent);
                         dateListSentUSD.push(i.dates.sent_date);
                         amountListReceivedUSD.push(i.amount.amount_received);
@@ -705,10 +737,12 @@ const monthAmount = () => {
                 if (i.status == 'Received') { receivedInvCount += 1; }
                 if (i.currency == 'EUR') {
                     transactionsEUR += 1;
-                    sentAmountEuro += +i.amount.amount_sent,
-                    receivedAmountEuro += +i.amount.amount_received,
-                    approvedAmountEuro += +i.amount.amount_approved,
-                    settledAmountEuro += +i.amount.amount_settled;
+                    sentAmountEuro += +i.amount.amount_sent;
+                    receivedAmountEuro += +i.amount.amount_received;
+                    approvedAmountEuro += +i.amount.amount_approved;
+                    if (i.amount.amount_settled) {
+                        settledAmountEuro += +i.amount.amount_settled;
+                    }
                     amountListSentEUR.push(i.amount.amount_sent);
                     dateListSentEUR.push(i.dates.sent_date);
                     amountListReceivedEUR.push(i.amount.amount_received);
@@ -718,10 +752,12 @@ const monthAmount = () => {
                 } else {
                     if (i.currency == 'USD') {
                         transactionsUSD += 1;
-                        sentAmountDollar += +i.amount.amount_sent,
-                        receivedAmountDollar += +i.amount.amount_received,
-                        approvedAmountDollar += +i.amount.amount_approved,
-                        settledAmountDollar += +i.amount.amount_settled;
+                        sentAmountDollar += +i.amount.amount_sent;
+                        receivedAmountDollar += +i.amount.amount_received;
+                        approvedAmountDollar += +i.amount.amount_approved;
+                        if (i.amount.amount_settled) {
+                            settledAmountDollar += +i.amount.amount_settled;
+                        }
                         amountListSentUSD.push(i.amount.amount_sent);
                         dateListSentUSD.push(i.dates.sent_date);
                         amountListReceivedUSD.push(i.amount.amount_received);
