@@ -139,7 +139,7 @@ router.post("/get-invoices-partly", jsonParser, async (req, res) => {
     // Cheking one or two days Creation START.
     var firstCrea = req.body.firstCrea;
     var secondCrea = req.body.secondCrea;
-    if (firstCrea) {
+    if (firstCrea.trim()) {
         var creation = datesObj("dates.creation_date", firstCrea, secondCrea);
         Object.assign(filter, creation);
     } 
@@ -148,95 +148,98 @@ router.post("/get-invoices-partly", jsonParser, async (req, res) => {
     // Cheking one or two days Receive START.
     var firstRec = req.body.firstRec;
     var secondRec = req.body.secondRec;
-    if (firstRec) {
+    if (firstRec.trim()) {
         var receive = datesObj("dates.received_date", firstRec, secondRec);
         Object.assign(filter, receive);
     } 
     // Cheking one or two days Receive END.
 
-    // Get 10 Invoices
-    const invoices = await Invoice.find(filter).sort({_id:-1}).skip(skip).limit(limit);
-
-    // Get count of Invoices
-    const count = await Invoice.countDocuments(filter);
-
-    res.send({
-        invoices,
-        count
-    });
+    try {
+        // Get 10 Invoices
+        const invoices = await Invoice.find(filter).sort({_id:-1}).skip(skip).limit(limit);
+        // Get count of Invoices
+        const count = await Invoice.countDocuments(filter);
+        res.send({
+            invoices,
+            count
+        });
+    } catch (e) {
+        console.log("Error", e);
+        res.send("Error", e);
+    }
 });
 
 
 
-router.post("/getPart-Invoices", jsonParser, (req, res) => {
-    mongo.connect(url, (err, db) => {
-        var num = req.body.numbers;
-        var filter = req.body.filter;
-        filter === undefined ? filter = {} : "";
+// router.post("/getPart-Invoices", jsonParser, (req, res) => {
+//     mongo.connect(url, (err, db) => {
+//         var num = req.body.numbers;
+//         var filter = req.body.filter;
+//         filter === undefined ? filter = {} : "";
 
-        // Cheking one or two days Creation START.
-        var firstCrea = req.body.firstCr;
-        var secondCrea = req.body.secondCr;
-        if (firstCrea) {
-            var creation = datesObj("dates.creation_date", firstCrea, secondCrea);
-            Object.assign(filter, creation);
-        } 
-        // // Cheking one or two days Creation END.
+//         // Cheking one or two days Creation START.
+//         var firstCrea = req.body.firstCr;
+//         var secondCrea = req.body.secondCr;
+//         if (firstCrea) {
+//             var creation = datesObj("dates.creation_date", firstCrea, secondCrea);
+//             Object.assign(filter, creation);
+//         } 
+//         // // Cheking one or two days Creation END.
 
 
-        // Cheking one or two days Receive START.
-        var firstRec = req.body.firstRe;
-        var secondRec = req.body.secondRe;
-        if (firstRec) {
-            var receive = datesObj("dates.received_date", firstRec, secondRec);
-            Object.assign(filter, receive);
-        } 
-        // Cheking one or two days Receive END.
+//         // Cheking one or two days Receive START.
+//         var firstRec = req.body.firstRe;
+//         var secondRec = req.body.secondRe;
+//         if (firstRec) {
+//             var receive = datesObj("dates.received_date", firstRec, secondRec);
+//             Object.assign(filter, receive);
+//         } 
+//         // Cheking one or two days Receive END.
 
-        db.collection("invoices")
-        .find(filter)
-        .sort({_id:-1})
-        .skip(num)
-        .limit(10)
-        .toArray(function(err, invoices){
-            if(err) return console.log("Error with upload Get Part Invoices!", err);
-            db.close();
-            res.send(invoices);
-        })
-    });
-});
+//         db.collection("invoices")
+//         .find(filter)
+//         .sort({_id:-1})
+//         .skip(num)
+//         .limit(10)
+//         .toArray(function(err, invoices){
+//             if(err) return console.log("Error with upload Get Part Invoices!", err);
+//             db.close();
+//             res.send(invoices);
+//         })
+//     });
+// });
 
-router.post("/getNumber-Invoices", jsonParser, (req, res) => {
-    mongo.connect(url, (err, db) => {
-        var filter = req.body.filter;
-        filter === undefined ? filter = {} : "";
+// router.post("/getNumber-Invoices", jsonParser, (req, res) => {
+//     mongo.connect(url, (err, db) => {
+//         var filter = req.body.filter;
+//         filter === undefined ? filter = {} : "";
 
-        // Cheking one or two days Creation START.
-        var firstCrea = req.body.firstCr;
-        var secondCrea = req.body.secondCr;
-        if (firstCrea) {
-            var creationD = datesObj("dates.creation_date", firstCrea, secondCrea);
-            Object.assign(filter, creationD);
-        } 
-        // Cheking one or two days Creation END.
+//         // Cheking one or two days Creation START.
+//         var firstCrea = req.body.firstCr;
+//         var secondCrea = req.body.secondCr;
+//         if (firstCrea) {
+//             var creationD = datesObj("dates.creation_date", firstCrea, secondCrea);
+//             Object.assign(filter, creationD);
+//         } 
+//         // Cheking one or two days Creation END.
 
-        // Cheking one or two days Receive START.
-        var firstRec = req.body.firstRe;
-        var secondRec = req.body.secondRe;
-        if (firstRec) {
-            var receive = datesObj("dates.received_date", firstRec, secondRec);
-            Object.assign(filter, receive);
-        } 
-        // Cheking one or two days Receive END.
+//         // Cheking one or two days Receive START.
+//         var firstRec = req.body.firstRe;
+//         var secondRec = req.body.secondRe;
+//         if (firstRec) {
+//             var receive = datesObj("dates.received_date", firstRec, secondRec);
+//             Object.assign(filter, receive);
+//         } 
+//         // Cheking one or two days Receive END.
 
-        db.collection("invoices").find(filter).count(function(err, invoices){
-            if(err) return console.log("Error with upload Number of Invoices!", err);
+//         db.collection("invoices").find(filter).count(function(err, invoices){
+//             if(err) return console.log("Error with upload Number of Invoices!", err);
             
-            db.close();
-            res.send({"numbers": invoices});
-        })
-    });
-});
+//             db.close();
+//             res.send({"numbers": invoices});
+//         })
+//     });
+// });
 
 
 router.post("/getDocs", jsonParser, (req, res) => {
