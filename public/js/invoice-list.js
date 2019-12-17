@@ -1761,11 +1761,12 @@ class invoiceList {
         //  
         // Permission data
         this.filter = {};
+        Object.assign(this.filter, this.permissionFilter);
+
         this.firstCrea = ""; 
         this.secondCrea = false;
         this.firstRec = "";
         this.secondRec = false;
-        Object.assign(this.filter, this.permissionFilter);
 
         this.status = document.querySelector("#filterStatus").value;
         this.bank = this.bankFilter.value;
@@ -2011,8 +2012,6 @@ class invoiceList {
                 };
                 const nextList = await this.getInvoicesPartly(data);
 
-                
-
                 // Loading GIF remove and scroll off
                 this.loadingGif.style.display = "none";
                 document.body.classList.remove("modal-open");
@@ -2156,13 +2155,13 @@ class invoiceList {
 
     
     saveLocalInvoices = async () => {
-        const user = this.currentUserRole.textContent.trim();
-        if (user === "Merchant Manager" || user === "Solution Manager") {
-            await this.permissionForMerchantInvManager();
+        // const user = this.currentUserRole.textContent.trim();
+        // if (user === "Merchant Manager" || user === "Solution Manager") {
+        //     await this.permissionForMerchantInvManager();
             
-        } else {
+        // } else {
             await this.saveLocalMerchant();
-        }
+        // }
         
         await this.saveLocakBanks();
 
