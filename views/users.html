@@ -23,6 +23,8 @@
 		<script src="./js/datepicker.en.js"></script>
 	</head>
 	<body>
+		<span class="curentUserId hide"><%= currentUser.id %></span>
+		<span class="currentUserTypeClass hide"><%= currentUser.typeClass %></span>
 			<div id="burgerMenu">
 					<div class="menu">
 						<ul id="gn-menu" class="gn-menu-main">
@@ -250,7 +252,7 @@
 						</div>
 					</div>
 				</div>
-		<%} else  if (currentUser.typeClass !== 'client') { %>
+		<%} else { %>
 			<div class="popup">
 					<div class="popup-dialog">
 						<div class="popup-content">
@@ -286,59 +288,19 @@
 												<option value="Solution Manager">Solution manager</option>
 											</select>
 									</div>
+
+									<div class="inputSection">
+										<label for="merchant1">Merchant </label>
+										<span class="merchantChooseList"><i class="fas fa-sort-down"></i></span>
+										
+									</div>
+
 									<div class="merchList">
 										<span class="selectAllBox"></span>
 										<div class="merchListContainer">
 											<div class="leftBox"></div>
 											<div class="rightBox"></div>
 										</div>
-									</div>
-									
-									<input type="submit" class="creatUserBtn" value="Creat A New User">
-								</form>
-							</div>
-						</div>
-					</div>
-				</div>
-		<%} else  if (currentUser.typeClass == 'client') { %>
-			<div class="popup">
-					<div class="popup-dialog">
-						<div class="popup-content">
-							<img src="img/logocompany.png" alt="Anywires logo" class="logo">
-							
-							<div class="main-form popup-form">
-								<form  action="/register" class="popup-form" method="POST">
-									<div class="inputSection">
-										<label for="username">Email</label>
-										<input type="text" name="username" id="username" placeholder="Type here...">
-									</div>
-									<div class="inputSection">
-										<label for="fullname">Full Name</label>
-										<input type="text" name="fullname" id="fullname" placeholder="Type here...">
-									</div>
-									<div class="inputSection">
-										<label for="password">Password</label>
-										<input type="text" name="password" id="password" placeholder="Type here...">
-									</div>
-									<div class="inputSection hide">
-										<label for="typeClass">Type</label>
-										<select id="typeClass" class="selectMenu"  name="typeClass">
-											<option value="client">Client</option>
-										</select>
-									</div>
-									<div class="inputSection">
-										<label for="role">Role</label>
-										<select id="role" class="selectMenu" name="role">
-												<option value=""></option>
-												<option value="Merchant Manager">Merchant manager</option>
-												<option value="Invoice Manager">Invoice manager</option>
-												<option value="Affiliate">Affiliate</option>
-												<option value="Solution Manager">Solution manager</option>
-											</select>
-									</div>
-									<div class="inputSection hide">
-										<label for="merchant1">Merchant </label>
-										<button><i class="fas fa-sort-down"></i></button>
 									</div>
 									
 									<input type="submit" class="creatUserBtn" value="Creat A New User">
