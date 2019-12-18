@@ -690,8 +690,6 @@ router.get("/getMerchant/:id", jsonParser, async (req, res) => {
         res.status(400).send(err);
         console.log(err);
     })
-
-
 });
 
 router.post("/getSettlementById", jsonParser, async (req, res) => {

@@ -7,11 +7,8 @@ const periodTitle = document.querySelector('.periodTitle'),
     month = document.querySelector('.month'),
     allTime =  document.querySelector('.allTime');
 
-const merchantName = document.querySelector('.merchantName'),
-      merchant1 =  document.querySelector('.merchant1'),
-      merchant2 =  document.querySelector('.merchant2'),
-      merchant1Name = merchant1.textContent,
-      merchant2Name =  merchant2.textContent;
+const merchantName = document.querySelector('.merchantName');
+      merchant =  document.querySelector('.curentUserMerch').textContent.split(',');
 
 const receivedUSD = document.querySelector('.receivedUSD'),
       receivedEUR = document.querySelector('.receivedEUR'),
@@ -31,12 +28,90 @@ const  transactionsNumber = document.querySelector('.transactionsNumber'),
        
 
 // Merchant select
+const curentUserRole = document.querySelector('.curentUserRole').textContent;
+const curentUserId = document.querySelector('.curentUserId').textContent;
+
+ ( async () => {
+    if (merchantName.textContent !== 'Select period') {
+        let fetchPromise  = await fetch('http://18.216.223.81:3000/getMerchListNames/' + curentUserId);
+        let merchList = await fetchPromise.json();
+
+       if (merchant.length > 1) {
+        merchantName.innerHTML = `${merchList[0]}<i class="fas fa-sort-down"></i>`;
+       } else {
+        merchantName.innerHTML = `${merchList[0]}`;
+       }
+        let container = document.querySelector('.merchantSelec');
+        if (merchList.length > 1) {
+            merchList.forEach( (merchant) => {
+                let li = document.createElement('li');
+                li.className = 'merchant';
+                li.innerHTML = merchant;
+
+                li.addEventListener('click', () => {
+                    merchantName.innerHTML = `${merchant}<i class="fas fa-sort-down"></i>`;
+                        document.querySelector('.walletInfo').innerHTML = '';
+                        walletBalance();
+                        let currentPeriod = document.querySelector('.periodTitle').textContent;
+                        
+                        switch (currentPeriod) {
+                            case 'Today':
+                                todayAmount();
+                                break;
+                            case 'Week':
+                                weekAmount();
+                                break;
+                            case 'Month':
+                                monthAmount();
+                                break;
+                            case 'All Time':
+                                allTimeAmount();
+                            break;
+                            }
+                });
+
+                container.append(li);
+            });
+        }
+
+        // Wallets Balance
+
+        const walletBalance = () => {
+            let merchLink = document.querySelector('.merchantName'),
+                 walletInfo = document.querySelector('.walletInfo');
+          
+            let walletPromise = fetch(`http://18.216.223.81:3000/getWallet/${merchLink.textContent}`);
+            walletPromise.then(response => {
+                return response.json();
+            }).then( (wallets) => {
+                if (wallets.length) {
+                    wallets.forEach((i) => {
+                        let node = document.createElement("span");
+                        node.className = 'awWallet';
+                        let textNode =  document.createTextNode(`${i.name}: ${formatStr(i.balance)} ${i.currency}`);
+                        node.append(textNode);
+                        walletInfo.append(node);
+                    });
+                } else {
+                    let node = document.createElement("span");
+                        node.className = 'awWallet';
+                        let textNode =  document.createTextNode(`Wallet hasn'\t been created yet.`);
+                        node.append(textNode);
+                        walletInfo.append(node);
+                }
+            });
+        }
+        
+        if (document.querySelector('.walletInfo')) {
+            walletBalance();
+        }
+    }
+})();
+
+
 
 merchantName.onmouseenter = function() {
-    if (merchant1Name) {
-        document.querySelector('.merchantSelec').style.display = 'flex';
-    }
-    
+    document.querySelector('.merchantSelec').style.display = 'flex';  
 };
 
 document.querySelector('.merchantSelec').onmouseenter = function() {
@@ -49,50 +124,6 @@ document.querySelector('.merchantSelec').onmouseleave = function() {
 
 merchantName.onmouseleave = function() {
     document.querySelector('.merchantSelec').style.display = 'none';
-};
-
-merchant1.onclick = function() {
-    merchantName.innerHTML = `${merchant1Name}<i class="fas fa-sort-down"></i>`;
-    document.querySelector('.walletInfo').innerHTML = '';
-    walletBalance();
-    let currentPeriod = document.querySelector('.periodTitle').textContent;
-    
-    switch (currentPeriod) {
-        case 'Today':
-            todayAmount();
-          break;
-        case 'Week':
-            weekAmount();
-          break;
-        case 'Month':
-            monthAmount();
-          break;
-        case 'All Time':
-            allTimeAmount();
-        break;
-      }
-};
-
-merchant2.onclick = function() {
-    merchantName.innerHTML = `${merchant2Name}<i class="fas fa-sort-down"></i>`;
-    document.querySelector('.walletInfo').innerHTML = '';
-    walletBalance();
-    let currentPeriod = document.querySelector('.periodTitle').textContent;
-    
-    switch (currentPeriod) {
-        case 'Today':
-            todayAmount();
-          break;
-        case 'Week':
-            weekAmount();
-          break;
-        case 'Month':
-            monthAmount();
-          break;
-        case 'All Time':
-            allTimeAmount();
-        break;
-      }
 };
 
 // Period select
@@ -149,6 +180,10 @@ let sentAmountEuro = 0,
     dateListApprovedEUR = [],
     amountListApprovedUSD = [],
     amountListApprovedEUR = [],
+    dateListSettledUSD = [],
+    dateListSettledEUR = [],
+    amountListSettledUSD = [],
+    amountListSettledEUR = [],
     datesChart = [],
     amountsChart = [];
 
@@ -169,12 +204,44 @@ let sentAmountEuro = 0,
                     if (i.amount.amount_settled) {
                         settledAmountEuro += +i.amount.amount_settled;
                     }
-                    amountListSentEUR.push(i.amount.amount_sent);
-                    dateListSentEUR.push(i.dates.sent_date);
-                    amountListReceivedEUR.push(i.amount.amount_received);
-                    dateListReceivedEUR.push(i.dates.received_date);
-                    amountListApprovedEUR.push(+i.amount.amount_approved);
-                    dateListApprovedEUR.push(i.dates.approved_date);
+
+                    let dSU = new Date(i.dates.sent_date).getDate() + '/' + ( new Date(i.dates.sent_date).getMonth() + 1) + '/' + new Date(i.dates.sent_date).getFullYear();
+                    if (dateListSentEUR.includes(dSU)) {
+                        amountListSentEUR[amountListSentEUR.length-1] += +i.amount.amount_sent;
+                    } else {
+                        if (dSU !== "NaN/NaN/NaN" && dSU !== "1/1/1970") {
+                            amountListSentEUR.push(+i.amount.amount_sent);
+                            dateListSentEUR.push(dSU);
+                        } 
+                    }
+                    let dRU = new Date(i.dates.received_date).getDate() + '/' + ( new Date(i.dates.received_date).getMonth() + 1) + '/' + new Date(i.dates.received_date).getFullYear();
+                    if (dateListReceivedEUR.includes(dRU)) {
+                        amountListReceivedEUR[amountListReceivedEUR.length-1] += i.amount.amount_received;
+                    } else {
+                        if (dRU !== "NaN/NaN/NaN" && dRU !== "1/1/1970") {
+                            amountListReceivedEUR.push(i.amount.amount_received);
+                            dateListReceivedEUR.push(dRU);
+                        }
+                    }
+                    let dAU = new Date(i.dates.approved_date).getDate() + '/' + ( new Date(i.dates.approved_date).getMonth() + 1) + '/' + new Date(i.dates.approved_date).getFullYear();
+                    if (dateListApprovedEUR.includes(dAU)) {
+                        amountListApprovedEUR[amountListApprovedEUR.length-1] += i.amount.amount_approved;
+                    } else {
+                        if (dAU !== "NaN/NaN/NaN" && dAU !== "1/1/1970") {
+                            amountListApprovedEUR.push(i.amount.amount_approved);
+                            dateListApprovedEUR.push(dAU);
+                        }
+                    }
+                    let dSsU = new Date(i.dates.settled_date).getDate() + '/' + ( new Date(i.dates.settled_date).getMonth() + 1) + '/' + new Date(i.dates.settled_date).getFullYear();
+                    if (dateListSettledEUR.includes(dSsU)) {
+                        amountListSettledEUR[amountListSettledEUR.length-1] += i.amount.amount_settled;
+                    } else {
+                        if (dSsU !== "NaN/NaN/NaN" && dSsU !== "1/1/1970") {
+                            amountListSettledEUR.push(i.amount.amount_settled);
+                            dateListSettledEUR.push(dSsU);
+                        }
+                    }
+
                 } else {
                     if (i.currency == 'USD') {
                         transactionsUSD += 1;
@@ -184,12 +251,43 @@ let sentAmountEuro = 0,
                         if (i.amount.amount_settled) {
                             settledAmountDollar += +i.amount.amount_settled;
                         }
-                        amountListSentUSD.push(i.amount.amount_sent);
-                        dateListSentUSD.push(i.dates.sent_date);
-                        amountListReceivedUSD.push(i.amount.amount_received);
-                        dateListReceivedUSD.push(i.dates.received_date);
-                        amountListApprovedUSD.push(+i.amount.amount_approved);
-                        dateListApprovedUSD.push(i.dates.approved_date);
+
+                        let dSE = new Date(i.dates.sent_date).getDate() + '/' + ( new Date(i.dates.sent_date).getMonth() + 1) + '/' + new Date(i.dates.sent_date).getFullYear();
+                        if (dateListSentUSD.includes(dSE)) {
+                            amountListSentUSD[amountListSentUSD.length-1] += +i.amount.amount_sent;
+                        } else {
+                            if (dSE !== "NaN/NaN/NaN" && dSE !== "1/1/1970") {
+                                amountListSentUSD.push(+i.amount.amount_sent);
+                                dateListSentUSD.push(dSE);
+                            }
+                        }
+                        let dRE = new Date(i.dates.received_date).getDate() + '/' + ( new Date(i.dates.received_date).getMonth() + 1) + '/' + new Date(i.dates.received_date).getFullYear();
+                        if (dateListReceivedUSD.includes(dRE)) {
+                            amountListReceivedUSD[amountListReceivedUSD.length-1] += i.amount.amount_received;
+                        } else {
+                            if (dRE !== "NaN/NaN/NaN" && dRE !== "1/1/1970") {
+                                amountListReceivedUSD.push(i.amount.amount_received);
+                                dateListReceivedUSD.push(dRE);
+                            }
+                        }
+                        let dAE = new Date(i.dates.approved_date).getDate() + '/' + ( new Date(i.dates.approved_date).getMonth() + 1) + '/' + new Date(i.dates.approved_date).getFullYear();
+                        if (dateListApprovedUSD.includes(dAE)) {
+                            amountListApprovedUSD[amountListApprovedUSD.length-1] += i.amount.amount_approved;
+                        } else {
+                            if (dAE !== "NaN/NaN/NaN" && dAE !== "1/1/1970") {
+                                amountListApprovedUSD.push(i.amount.amount_approved);
+                                dateListApprovedUSD.push(dAE);
+                            }
+                        }
+                        let dSsE = new Date(i.dates.settled_date).getDate() + '/' + ( new Date(i.dates.settled_date).getMonth() + 1) + '/' + new Date(i.dates.settled_date).getFullYear();
+                        if (dateListSettledUSD.includes(dSsE)) {
+                            amountListSettledUSD[amountListSettledUSD.length-1] += i.amount.amount_settled;
+                        } else {
+                            if (dSsE !== "NaN/NaN/NaN" && dSsE !== "1/1/1970") {
+                                amountListSettledUSD.push(i.amount.amount_settled);
+                                dateListSettledUSD.push(dSsE);
+                            }
+                        }
                     }
                 }
             });
@@ -209,70 +307,11 @@ let sentAmountEuro = 0,
             avgTransactionUSD.innerHTML = `${formatStr(Math.round((receivedAmountDollar)/(transactionsUSD)))} <i class="fas fa-dollar-sign">`;
             avgTransactionEUR.innerHTML = `${formatStr(Math.round((receivedAmountEuro)/(transactionsEUR)))} <i class="fas fa-euro-sign">`;
         
-            datesChart.push(dateListSentUSD, dateListReceivedUSD, dateListApprovedUSD, dateListSentEUR, dateListReceivedEUR, dateListApprovedEUR);
-            amountsChart.push(amountListSentUSD, amountListReceivedUSD, amountListApprovedUSD, amountListSentEUR, amountListReceivedEUR, amountListApprovedEUR);
+            datesChart.push(dateListSentUSD, dateListReceivedUSD, dateListApprovedUSD, dateListSettledUSD, dateListSentEUR, dateListReceivedEUR, dateListApprovedEUR, dateListSettledEUR);
+            amountsChart.push(amountListSentUSD, amountListReceivedUSD, amountListApprovedUSD, amountListSettledUSD, amountListSentEUR, amountListReceivedEUR, amountListApprovedEUR, amountListSettledEUR);
             chartBox(datesChart, amountsChart);
         });
-     } else if (!merchant1.textContent) { 
-        let newFetchPromise  = fetch(`http://18.216.223.81:3000/getInvListToday/${merchantName.textContent}`);
-        newFetchPromise.then(response => {
-            return response.json();
-        }).then(inv => {   
-            inv.forEach( (i) => {
-                if (i.status == 'Received') { receivedInvCount += 1; }
-                if (i.currency == 'EUR') {
-                    transactionsEUR += 1;
-                    sentAmountEuro += +i.amount.amount_sent;
-                    receivedAmountEuro += +i.amount.amount_received;
-                    approvedAmountEuro += +i.amount.amount_approved;
-                    if (i.amount.amount_settled) {
-                        settledAmountEuro += +i.amount.amount_settled;
-                    }
-                    amountListSentEUR.push(i.amount.amount_sent);
-                    dateListSentEUR.push(i.dates.sent_date);
-                    amountListReceivedEUR.push(i.amount.amount_received);
-                    dateListReceivedEUR.push(i.dates.received_date);
-                    amountListApprovedEUR.push(+i.amount.amount_approved);
-                    dateListApprovedEUR.push(i.dates.approved_date);
-                } else {
-                    if (i.currency == 'USD') {
-                        transactionsUSD += 1;
-                        sentAmountDollar += +i.amount.amount_sent;
-                        receivedAmountDollar += +i.amount.amount_received;
-                        approvedAmountDollar += +i.amount.amount_approved;
-                        if (i.amount.amount_settled) {
-                            settledAmountDollar += +i.amount.amount_settled;
-                        }
-                        amountListSentUSD.push(i.amount.amount_sent);
-                        dateListSentUSD.push(i.dates.sent_date);
-                        amountListReceivedUSD.push(i.amount.amount_received);
-                        dateListReceivedUSD.push(i.dates.received_date);
-                        amountListApprovedUSD.push(+i.amount.amount_approved);
-                        dateListApprovedUSD.push(i.dates.approved_date);
-                    }
-                }
-            });
-            sentUSD.innerHTML = `<i class="fas fa-dollar-sign"> ${formatStr(Math.round(sentAmountDollar))}`;
-            sentEUR.innerHTML = `<i class="fas fa-euro-sign"> ${formatStr(Math.round(sentAmountEuro))}`;
-            receivedUSD.innerHTML = `<i class="fas fa-dollar-sign"> ${formatStr(Math.round(receivedAmountDollar))}`;
-            receivedEUR.innerHTML = `<i class="fas fa-euro-sign"> ${formatStr(Math.round(receivedAmountEuro))}`;
-            approvedUSD.innerHTML = `<i class="fas fa-dollar-sign"> ${formatStr(Math.round(approvedAmountDollar))}`;
-            approvedEUR.innerHTML = `<i class="fas fa-euro-sign"> ${formatStr(Math.round(approvedAmountEuro))}`;
-            settledUSD.innerHTML = `<i class="fas fa-dollar-sign"> ${formatStr(Math.round(settledAmountDollar))}`; 
-            settledEUR.innerHTML = `<i class="fas fa-euro-sign"> ${formatStr(Math.round(settledAmountEuro))}`; 
-        
-            if (!transactionsUSD) transactionsUSD += 1;
-            if (!transactionsEUR) transactionsEUR += 1;
-            transactionsNumber.innerHTML = receivedInvCount;
-            transPerDayNum.innerHTML = receivedInvCount;
-            avgTransactionUSD.innerHTML = `${formatStr(Math.round((receivedAmountDollar)/(transactionsUSD)))} <i class="fas fa-dollar-sign">`;
-            avgTransactionEUR.innerHTML = `${formatStr(Math.round((receivedAmountEuro)/(transactionsEUR)))} <i class="fas fa-euro-sign">`;
-        
-            datesChart.push(dateListSentUSD, dateListReceivedUSD, dateListApprovedUSD, dateListSentEUR, dateListReceivedEUR, dateListApprovedEUR);
-            amountsChart.push(amountListSentUSD, amountListReceivedUSD, amountListApprovedUSD, amountListSentEUR, amountListReceivedEUR, amountListApprovedEUR);
-            chartBox(datesChart, amountsChart);
-        });
-    } else {
+     } else {
         let merLink = document.querySelector('.merchantName');
         let newFetchPromise  = fetch(`http://18.216.223.81:3000/getInvListToday/${merLink.textContent}`);
         newFetchPromise.then(response => {
@@ -288,12 +327,44 @@ let sentAmountEuro = 0,
                     if (i.amount.amount_settled) {
                         settledAmountEuro += +i.amount.amount_settled;
                     }
-                    amountListSentEUR.push(i.amount.amount_sent);
-                    dateListSentEUR.push(i.dates.sent_date);
-                    amountListReceivedEUR.push(i.amount.amount_received);
-                    dateListReceivedEUR.push(i.dates.received_date);
-                    amountListApprovedEUR.push(+i.amount.amount_approved);
-                    dateListApprovedEUR.push(i.dates.approved_date);
+
+                    let dSU = new Date(i.dates.sent_date).getDate() + '/' + ( new Date(i.dates.sent_date).getMonth() + 1) + '/' + new Date(i.dates.sent_date).getFullYear();
+                    if (dateListSentEUR.includes(dSU)) {
+                        amountListSentEUR[amountListSentEUR.length-1] += +i.amount.amount_sent;
+                    } else {
+                        if (dSU !== "NaN/NaN/NaN" && dSU !== "1/1/1970") {
+                            amountListSentEUR.push(+i.amount.amount_sent);
+                            dateListSentEUR.push(dSU);
+                        } 
+                    }
+                    let dRU = new Date(i.dates.received_date).getDate() + '/' + ( new Date(i.dates.received_date).getMonth() + 1) + '/' + new Date(i.dates.received_date).getFullYear();
+                    if (dateListReceivedEUR.includes(dRU)) {
+                        amountListReceivedEUR[amountListReceivedEUR.length-1] += i.amount.amount_received;
+                    } else {
+                        if (dRU !== "NaN/NaN/NaN" && dRU !== "1/1/1970") {
+                            amountListReceivedEUR.push(i.amount.amount_received);
+                            dateListReceivedEUR.push(dRU);
+                        }
+                    }
+                    let dAU = new Date(i.dates.approved_date).getDate() + '/' + ( new Date(i.dates.approved_date).getMonth() + 1) + '/' + new Date(i.dates.approved_date).getFullYear();
+                    if (dateListApprovedEUR.includes(dAU)) {
+                        amountListApprovedEUR[amountListApprovedEUR.length-1] += i.amount.amount_approved;
+                    } else {
+                        if (dAU !== "NaN/NaN/NaN" && dAU !== "1/1/1970") {
+                            amountListApprovedEUR.push(i.amount.amount_approved);
+                            dateListApprovedEUR.push(dAU);
+                        }
+                    }
+                    let dSsU = new Date(i.dates.settled_date).getDate() + '/' + ( new Date(i.dates.settled_date).getMonth() + 1) + '/' + new Date(i.dates.settled_date).getFullYear();
+                    if (dateListSettledEUR.includes(dSsU)) {
+                        amountListSettledEUR[amountListSettledEUR.length-1] += i.amount.amount_settled;
+                    } else {
+                        if (dSsU !== "NaN/NaN/NaN" && dSsU !== "1/1/1970") {
+                            amountListSettledEUR.push(i.amount.amount_settled);
+                            dateListSettledEUR.push(dSsU);
+                        }
+                    }
+
                 } else {
                     if (i.currency == 'USD') {
                         transactionsUSD += 1;
@@ -303,12 +374,43 @@ let sentAmountEuro = 0,
                         if (i.amount.amount_settled) {
                             settledAmountDollar += +i.amount.amount_settled;
                         }
-                        amountListSentUSD.push(i.amount.amount_sent);
-                        dateListSentUSD.push(i.dates.sent_date);
-                        amountListReceivedUSD.push(i.amount.amount_received);
-                        dateListReceivedUSD.push(i.dates.received_date);
-                        amountListApprovedUSD.push(+i.amount.amount_approved);
-                        dateListApprovedUSD.push(i.dates.approved_date);
+
+                        let dSE = new Date(i.dates.sent_date).getDate() + '/' + ( new Date(i.dates.sent_date).getMonth() + 1) + '/' + new Date(i.dates.sent_date).getFullYear();
+                        if (dateListSentUSD.includes(dSE)) {
+                            amountListSentUSD[amountListSentUSD.length-1] += +i.amount.amount_sent;
+                        } else {
+                            if (dSE !== "NaN/NaN/NaN" && dSE !== "1/1/1970") {
+                                amountListSentUSD.push(+i.amount.amount_sent);
+                                dateListSentUSD.push(dSE);
+                            }
+                        }
+                        let dRE = new Date(i.dates.received_date).getDate() + '/' + ( new Date(i.dates.received_date).getMonth() + 1) + '/' + new Date(i.dates.received_date).getFullYear();
+                        if (dateListReceivedUSD.includes(dRE)) {
+                            amountListReceivedUSD[amountListReceivedUSD.length-1] += i.amount.amount_received;
+                        } else {
+                            if (dRE !== "NaN/NaN/NaN" && dRE !== "1/1/1970") {
+                                amountListReceivedUSD.push(i.amount.amount_received);
+                                dateListReceivedUSD.push(dRE);
+                            }
+                        }
+                        let dAE = new Date(i.dates.approved_date).getDate() + '/' + ( new Date(i.dates.approved_date).getMonth() + 1) + '/' + new Date(i.dates.approved_date).getFullYear();
+                        if (dateListApprovedUSD.includes(dAE)) {
+                            amountListApprovedUSD[amountListApprovedUSD.length-1] += i.amount.amount_approved;
+                        } else {
+                            if (dAE !== "NaN/NaN/NaN" && dAE !== "1/1/1970") {
+                                amountListApprovedUSD.push(i.amount.amount_approved);
+                                dateListApprovedUSD.push(dAE);
+                            }
+                        }
+                        let dSsE = new Date(i.dates.settled_date).getDate() + '/' + ( new Date(i.dates.settled_date).getMonth() + 1) + '/' + new Date(i.dates.settled_date).getFullYear();
+                        if (dateListSettledUSD.includes(dSsE)) {
+                            amountListSettledUSD[amountListSettledUSD.length-1] += i.amount.amount_settled;
+                        } else {
+                            if (dSsE !== "NaN/NaN/NaN" && dSsE !== "1/1/1970") {
+                                amountListSettledUSD.push(i.amount.amount_settled);
+                                dateListSettledUSD.push(dSsE);
+                            }
+                        }
                     }
                 }
             });
@@ -328,8 +430,8 @@ let sentAmountEuro = 0,
             avgTransactionUSD.innerHTML = `${formatStr(Math.round((receivedAmountDollar)/(transactionsUSD)))} <i class="fas fa-dollar-sign">`;
             avgTransactionEUR.innerHTML = `${formatStr(Math.round((receivedAmountEuro)/(transactionsEUR)))} <i class="fas fa-euro-sign">`;
         
-            datesChart.push(dateListSentUSD, dateListReceivedUSD, dateListApprovedUSD, dateListSentEUR, dateListReceivedEUR, dateListApprovedEUR);
-            amountsChart.push(amountListSentUSD, amountListReceivedUSD, amountListApprovedUSD, amountListSentEUR, amountListReceivedEUR, amountListApprovedEUR);
+            datesChart.push(dateListSentUSD, dateListReceivedUSD, dateListApprovedUSD, dateListSettledUSD, dateListSentEUR, dateListReceivedEUR, dateListApprovedEUR, dateListSettledEUR);
+            amountsChart.push(amountListSentUSD, amountListReceivedUSD, amountListApprovedUSD, amountListSettledUSD, amountListSentEUR, amountListReceivedEUR, amountListApprovedEUR, amountListSettledEUR);
             chartBox(datesChart, amountsChart);
         });
     }
@@ -373,6 +475,10 @@ const weekAmount = () => {
         dateListApprovedEUR = [],
         amountListApprovedUSD = [],
         amountListApprovedEUR = [],
+        dateListSettledUSD = [],
+        dateListSettledEUR = [],
+        amountListSettledUSD = [],
+        amountListSettledEUR = [],
         datesChart = [],
         amountsChart = [];
 
@@ -393,12 +499,44 @@ const weekAmount = () => {
                     if (i.amount.amount_settled) {
                         settledAmountEuro += +i.amount.amount_settled;
                     }
-                    amountListSentEUR.push(i.amount.amount_sent);
-                    dateListSentEUR.push(i.dates.sent_date);
-                    amountListReceivedEUR.push(i.amount.amount_received);
-                    dateListReceivedEUR.push(i.dates.received_date);
-                    amountListApprovedEUR.push(+i.amount.amount_approved);
-                    dateListApprovedEUR.push(i.dates.approved_date);
+
+                    let dSU = new Date(i.dates.sent_date).getDate() + '/' + ( new Date(i.dates.sent_date).getMonth() + 1) + '/' + new Date(i.dates.sent_date).getFullYear();
+                    if (dateListSentEUR.includes(dSU)) {
+                        amountListSentEUR[amountListSentEUR.length-1] += +i.amount.amount_sent;
+                    } else {
+                        if (dSU !== "NaN/NaN/NaN" && dSU !== "1/1/1970") {
+                            amountListSentEUR.push(+i.amount.amount_sent);
+                            dateListSentEUR.push(dSU);
+                        } 
+                    }
+                    let dRU = new Date(i.dates.received_date).getDate() + '/' + ( new Date(i.dates.received_date).getMonth() + 1) + '/' + new Date(i.dates.received_date).getFullYear();
+                    if (dateListReceivedEUR.includes(dRU)) {
+                        amountListReceivedEUR[amountListReceivedEUR.length-1] += i.amount.amount_received;
+                    } else {
+                        if (dRU !== "NaN/NaN/NaN" && dRU !== "1/1/1970") {
+                            amountListReceivedEUR.push(i.amount.amount_received);
+                            dateListReceivedEUR.push(dRU);
+                        }
+                    }
+                    let dAU = new Date(i.dates.approved_date).getDate() + '/' + ( new Date(i.dates.approved_date).getMonth() + 1) + '/' + new Date(i.dates.approved_date).getFullYear();
+                    if (dateListApprovedEUR.includes(dAU)) {
+                        amountListApprovedEUR[amountListApprovedEUR.length-1] += i.amount.amount_approved;
+                    } else {
+                        if (dAU !== "NaN/NaN/NaN" && dAU !== "1/1/1970") {
+                            amountListApprovedEUR.push(i.amount.amount_approved);
+                            dateListApprovedEUR.push(dAU);
+                        }
+                    }
+                    let dSsU = new Date(i.dates.settled_date).getDate() + '/' + ( new Date(i.dates.settled_date).getMonth() + 1) + '/' + new Date(i.dates.settled_date).getFullYear();
+                    if (dateListSettledEUR.includes(dSsU)) {
+                        amountListSettledEUR[amountListSettledEUR.length-1] += i.amount.amount_settled;
+                    } else {
+                        if (dSsU !== "NaN/NaN/NaN" && dSsU !== "1/1/1970") {
+                            amountListSettledEUR.push(i.amount.amount_settled);
+                            dateListSettledEUR.push(dSsU);
+                        }
+                    }
+
                 } else {
                     if (i.currency == 'USD') {
                         transactionsUSD += 1;
@@ -408,12 +546,43 @@ const weekAmount = () => {
                         if (i.amount.amount_settled) {
                             settledAmountDollar += +i.amount.amount_settled;
                         }
-                        amountListSentUSD.push(i.amount.amount_sent);
-                        dateListSentUSD.push(i.dates.sent_date);
-                        amountListReceivedUSD.push(i.amount.amount_received);
-                        dateListReceivedUSD.push(i.dates.received_date);
-                        amountListApprovedUSD.push(+i.amount.amount_approved);
-                        dateListApprovedUSD.push(i.dates.approved_date);
+
+                        let dSE = new Date(i.dates.sent_date).getDate() + '/' + ( new Date(i.dates.sent_date).getMonth() + 1) + '/' + new Date(i.dates.sent_date).getFullYear();
+                        if (dateListSentUSD.includes(dSE)) {
+                            amountListSentUSD[amountListSentUSD.length-1] += +i.amount.amount_sent;
+                        } else {
+                            if (dSE !== "NaN/NaN/NaN" && dSE !== "1/1/1970") {
+                                amountListSentUSD.push(+i.amount.amount_sent);
+                                dateListSentUSD.push(dSE);
+                            }
+                        }
+                        let dRE = new Date(i.dates.received_date).getDate() + '/' + ( new Date(i.dates.received_date).getMonth() + 1) + '/' + new Date(i.dates.received_date).getFullYear();
+                        if (dateListReceivedUSD.includes(dRE)) {
+                            amountListReceivedUSD[amountListReceivedUSD.length-1] += i.amount.amount_received;
+                        } else {
+                            if (dRE !== "NaN/NaN/NaN" && dRE !== "1/1/1970") {
+                                amountListReceivedUSD.push(i.amount.amount_received);
+                                dateListReceivedUSD.push(dRE);
+                            }
+                        }
+                        let dAE = new Date(i.dates.approved_date).getDate() + '/' + ( new Date(i.dates.approved_date).getMonth() + 1) + '/' + new Date(i.dates.approved_date).getFullYear();
+                        if (dateListApprovedUSD.includes(dAE)) {
+                            amountListApprovedUSD[amountListApprovedUSD.length-1] += i.amount.amount_approved;
+                        } else {
+                            if (dAE !== "NaN/NaN/NaN" && dAE !== "1/1/1970") {
+                                amountListApprovedUSD.push(i.amount.amount_approved);
+                                dateListApprovedUSD.push(dAE);
+                            }
+                        }
+                        let dSsE = new Date(i.dates.settled_date).getDate() + '/' + ( new Date(i.dates.settled_date).getMonth() + 1) + '/' + new Date(i.dates.settled_date).getFullYear();
+                        if (dateListSettledUSD.includes(dSsE)) {
+                            amountListSettledUSD[amountListSettledUSD.length-1] += i.amount.amount_settled;
+                        } else {
+                            if (dSsE !== "NaN/NaN/NaN" && dSsE !== "1/1/1970") {
+                                amountListSettledUSD.push(i.amount.amount_settled);
+                                dateListSettledUSD.push(dSsE);
+                            }
+                        }
                     }
                 }
             });
@@ -433,74 +602,11 @@ const weekAmount = () => {
             avgTransactionUSD.innerHTML = `${formatStr(Math.round((receivedAmountDollar)/(transactionsUSD)))} <i class="fas fa-dollar-sign">`;
             avgTransactionEUR.innerHTML = `${formatStr(Math.round((receivedAmountEuro)/(transactionsEUR)))} <i class="fas fa-euro-sign">`;
         
-            datesChart.push(dateListSentUSD, dateListReceivedUSD, dateListApprovedUSD, dateListSentEUR, dateListReceivedEUR, dateListApprovedEUR);
-            amountsChart.push(amountListSentUSD, amountListReceivedUSD, amountListApprovedUSD, amountListSentEUR, amountListReceivedEUR, amountListApprovedEUR);
-            // console.log(datesChart);
-            // console.log(amountsChart);
+            datesChart.push(dateListSentUSD, dateListReceivedUSD, dateListApprovedUSD, dateListSettledUSD, dateListSentEUR, dateListReceivedEUR, dateListApprovedEUR, dateListSettledEUR);
+            amountsChart.push(amountListSentUSD, amountListReceivedUSD, amountListApprovedUSD, amountListSettledUSD, amountListSentEUR, amountListReceivedEUR, amountListApprovedEUR, amountListSettledEUR);
             chartBox(datesChart, amountsChart);
         });
-        } else if (!merchant1.textContent) {
-        let newFetchPromise  = fetch(`http://18.216.223.81:3000/getInvListWeek/${merchantName.textContent}`);
-        newFetchPromise.then(response => {
-            return response.json();
-        }).then(inv => {   
-            inv.forEach( (i) => {
-                if (i.status == 'Received') { receivedInvCount += 1; }
-                if (i.currency == 'EUR') {
-                    transactionsEUR += 1;
-                    sentAmountEuro += +i.amount.amount_sent;
-                    receivedAmountEuro += +i.amount.amount_received;
-                    approvedAmountEuro += +i.amount.amount_approved;
-                    if (i.amount.amount_settled) {
-                        settledAmountEuro += +i.amount.amount_settled;
-                    }
-                    amountListSentEUR.push(i.amount.amount_sent);
-                    dateListSentEUR.push(i.dates.sent_date);
-                    amountListReceivedEUR.push(i.amount.amount_received);
-                    dateListReceivedEUR.push(i.dates.received_date);
-                    amountListApprovedEUR.push(+i.amount.amount_approved);
-                    dateListApprovedEUR.push(i.dates.approved_date);
-                } else {
-                    if (i.currency == 'USD') {
-                        transactionsUSD += 1;
-                        sentAmountDollar += +i.amount.amount_sent;
-                        receivedAmountDollar += +i.amount.amount_received;
-                        approvedAmountDollar += +i.amount.amount_approved;
-                        if (i.amount.amount_settled) {
-                            settledAmountDollar += +i.amount.amount_settled;
-                        }
-                        amountListSentUSD.push(i.amount.amount_sent);
-                        dateListSentUSD.push(i.dates.sent_date);
-                        amountListReceivedUSD.push(i.amount.amount_received);
-                        dateListReceivedUSD.push(i.dates.received_date);
-                        amountListApprovedUSD.push(+i.amount.amount_approved);
-                        dateListApprovedUSD.push(i.dates.approved_date);
-                    }
-                }
-            });
-            sentUSD.innerHTML = `<i class="fas fa-dollar-sign"> ${formatStr(Math.round(sentAmountDollar))}`;
-            sentEUR.innerHTML = `<i class="fas fa-euro-sign"> ${formatStr(Math.round(sentAmountEuro))}`;
-            receivedUSD.innerHTML = `<i class="fas fa-dollar-sign"> ${formatStr(Math.round(receivedAmountDollar))}`;
-            receivedEUR.innerHTML = `<i class="fas fa-euro-sign"> ${formatStr(Math.round(receivedAmountEuro))}`;
-            approvedUSD.innerHTML = `<i class="fas fa-dollar-sign"> ${formatStr(Math.round(approvedAmountDollar))}`;
-            approvedEUR.innerHTML = `<i class="fas fa-euro-sign"> ${formatStr(Math.round(approvedAmountEuro))}`;
-            settledUSD.innerHTML = `<i class="fas fa-dollar-sign"> ${formatStr(Math.round(settledAmountDollar))}`; 
-            settledEUR.innerHTML = `<i class="fas fa-euro-sign"> ${formatStr(Math.round(settledAmountEuro))}`; 
-        
-            if (!transactionsUSD) transactionsUSD += 1;
-            if (!transactionsEUR) transactionsEUR += 1;
-            transactionsNumber.innerHTML = receivedInvCount;
-            transPerDayNum.innerHTML = Math.ceil(receivedInvCount / 7);
-            avgTransactionUSD.innerHTML = `${formatStr(Math.round((receivedAmountDollar)/(transactionsUSD)))} <i class="fas fa-dollar-sign">`;
-            avgTransactionEUR.innerHTML = `${formatStr(Math.round((receivedAmountEuro)/(transactionsEUR)))} <i class="fas fa-euro-sign">`;
-        
-            datesChart.push(dateListSentUSD, dateListReceivedUSD, dateListApprovedUSD, dateListSentEUR, dateListReceivedEUR, dateListApprovedEUR);
-            amountsChart.push(amountListSentUSD, amountListReceivedUSD, amountListApprovedUSD, amountListSentEUR, amountListReceivedEUR, amountListApprovedEUR);
-            // console.log(datesChart);
-            // console.log(amountsChart);
-            chartBox(datesChart, amountsChart);
-        });
-    } else {
+        } else {
         let merLink = document.querySelector('.merchantName');
         let newFetchPromise  = fetch(`http://18.216.223.81:3000/getInvListWeek/${merLink.textContent}`);
         newFetchPromise.then(response => {
@@ -516,12 +622,44 @@ const weekAmount = () => {
                     if (i.amount.amount_settled) {
                         settledAmountEuro += +i.amount.amount_settled;
                     }
-                    amountListSentEUR.push(i.amount.amount_sent);
-                    dateListSentEUR.push(i.dates.sent_date);
-                    amountListReceivedEUR.push(i.amount.amount_received);
-                    dateListReceivedEUR.push(i.dates.received_date);
-                    amountListApprovedEUR.push(+i.amount.amount_approved);
-                    dateListApprovedEUR.push(i.dates.approved_date);
+
+                    let dSU = new Date(i.dates.sent_date).getDate() + '/' + ( new Date(i.dates.sent_date).getMonth() + 1) + '/' + new Date(i.dates.sent_date).getFullYear();
+                    if (dateListSentEUR.includes(dSU)) {
+                        amountListSentEUR[amountListSentEUR.length-1] += +i.amount.amount_sent;
+                    } else {
+                        if (dSU !== "NaN/NaN/NaN" && dSU !== "1/1/1970") {
+                            amountListSentEUR.push(+i.amount.amount_sent);
+                            dateListSentEUR.push(dSU);
+                        } 
+                    }
+                    let dRU = new Date(i.dates.received_date).getDate() + '/' + ( new Date(i.dates.received_date).getMonth() + 1) + '/' + new Date(i.dates.received_date).getFullYear();
+                    if (dateListReceivedEUR.includes(dRU)) {
+                        amountListReceivedEUR[amountListReceivedEUR.length-1] += i.amount.amount_received;
+                    } else {
+                        if (dRU !== "NaN/NaN/NaN" && dRU !== "1/1/1970") {
+                            amountListReceivedEUR.push(i.amount.amount_received);
+                            dateListReceivedEUR.push(dRU);
+                        }
+                    }
+                    let dAU = new Date(i.dates.approved_date).getDate() + '/' + ( new Date(i.dates.approved_date).getMonth() + 1) + '/' + new Date(i.dates.approved_date).getFullYear();
+                    if (dateListApprovedEUR.includes(dAU)) {
+                        amountListApprovedEUR[amountListApprovedEUR.length-1] += i.amount.amount_approved;
+                    } else {
+                        if (dAU !== "NaN/NaN/NaN" && dAU !== "1/1/1970") {
+                            amountListApprovedEUR.push(i.amount.amount_approved);
+                            dateListApprovedEUR.push(dAU);
+                        }
+                    }
+                    let dSsU = new Date(i.dates.settled_date).getDate() + '/' + ( new Date(i.dates.settled_date).getMonth() + 1) + '/' + new Date(i.dates.settled_date).getFullYear();
+                    if (dateListSettledEUR.includes(dSsU)) {
+                        amountListSettledEUR[amountListSettledEUR.length-1] += i.amount.amount_settled;
+                    } else {
+                        if (dSsU !== "NaN/NaN/NaN" && dSsU !== "1/1/1970") {
+                            amountListSettledEUR.push(i.amount.amount_settled);
+                            dateListSettledEUR.push(dSsU);
+                        }
+                    }
+
                 } else {
                     if (i.currency == 'USD') {
                         transactionsUSD += 1;
@@ -531,12 +669,43 @@ const weekAmount = () => {
                         if (i.amount.amount_settled) {
                             settledAmountDollar += +i.amount.amount_settled;
                         }
-                        amountListSentUSD.push(i.amount.amount_sent);
-                        dateListSentUSD.push(i.dates.sent_date);
-                        amountListReceivedUSD.push(i.amount.amount_received);
-                        dateListReceivedUSD.push(i.dates.received_date);
-                        amountListApprovedUSD.push(+i.amount.amount_approved);
-                        dateListApprovedUSD.push(i.dates.approved_date);
+
+                        let dSE = new Date(i.dates.sent_date).getDate() + '/' + ( new Date(i.dates.sent_date).getMonth() + 1) + '/' + new Date(i.dates.sent_date).getFullYear();
+                        if (dateListSentUSD.includes(dSE)) {
+                            amountListSentUSD[amountListSentUSD.length-1] += +i.amount.amount_sent;
+                        } else {
+                            if (dSE !== "NaN/NaN/NaN" && dSE !== "1/1/1970") {
+                                amountListSentUSD.push(+i.amount.amount_sent);
+                                dateListSentUSD.push(dSE);
+                            }
+                        }
+                        let dRE = new Date(i.dates.received_date).getDate() + '/' + ( new Date(i.dates.received_date).getMonth() + 1) + '/' + new Date(i.dates.received_date).getFullYear();
+                        if (dateListReceivedUSD.includes(dRE)) {
+                            amountListReceivedUSD[amountListReceivedUSD.length-1] += i.amount.amount_received;
+                        } else {
+                            if (dRE !== "NaN/NaN/NaN" && dRE !== "1/1/1970") {
+                                amountListReceivedUSD.push(i.amount.amount_received);
+                                dateListReceivedUSD.push(dRE);
+                            }
+                        }
+                        let dAE = new Date(i.dates.approved_date).getDate() + '/' + ( new Date(i.dates.approved_date).getMonth() + 1) + '/' + new Date(i.dates.approved_date).getFullYear();
+                        if (dateListApprovedUSD.includes(dAE)) {
+                            amountListApprovedUSD[amountListApprovedUSD.length-1] += i.amount.amount_approved;
+                        } else {
+                            if (dAE !== "NaN/NaN/NaN" && dAE !== "1/1/1970") {
+                                amountListApprovedUSD.push(i.amount.amount_approved);
+                                dateListApprovedUSD.push(dAE);
+                            }
+                        }
+                        let dSsE = new Date(i.dates.settled_date).getDate() + '/' + ( new Date(i.dates.settled_date).getMonth() + 1) + '/' + new Date(i.dates.settled_date).getFullYear();
+                        if (dateListSettledUSD.includes(dSsE)) {
+                            amountListSettledUSD[amountListSettledUSD.length-1] += i.amount.amount_settled;
+                        } else {
+                            if (dSsE !== "NaN/NaN/NaN" && dSsE !== "1/1/1970") {
+                                amountListSettledUSD.push(i.amount.amount_settled);
+                                dateListSettledUSD.push(dSsE);
+                            }
+                        }
                         
                     }
                 }
@@ -557,10 +726,8 @@ const weekAmount = () => {
             avgTransactionUSD.innerHTML = `${formatStr(Math.round((receivedAmountDollar)/(transactionsUSD)))} <i class="fas fa-dollar-sign">`;
             avgTransactionEUR.innerHTML = `${formatStr(Math.round((receivedAmountEuro)/(transactionsEUR)))} <i class="fas fa-euro-sign">`;
         
-            datesChart.push(dateListSentUSD, dateListReceivedUSD, dateListApprovedUSD, dateListSentEUR, dateListReceivedEUR, dateListApprovedEUR);
-            amountsChart.push(amountListSentUSD, amountListReceivedUSD, amountListApprovedUSD, amountListSentEUR, amountListReceivedEUR, amountListApprovedEUR);
-            // console.log(datesChart);
-            // console.log(amountsChart);
+            datesChart.push(dateListSentUSD, dateListReceivedUSD, dateListApprovedUSD, dateListSettledUSD, dateListSentEUR, dateListReceivedEUR, dateListApprovedEUR, dateListSettledEUR);
+            amountsChart.push(amountListSentUSD, amountListReceivedUSD, amountListApprovedUSD, amountListSettledUSD, amountListSentEUR, amountListReceivedEUR, amountListApprovedEUR, amountListSettledEUR);
             chartBox(datesChart, amountsChart);
         });
     }
@@ -604,6 +771,10 @@ const monthAmount = () => {
         dateListApprovedEUR = [],
         amountListApprovedUSD = [],
         amountListApprovedEUR = [],
+        dateListSettledUSD = [],
+        dateListSettledEUR = [],
+        amountListSettledUSD = [],
+        amountListSettledEUR = [],
         datesChart = [],
         amountsChart = [];
 
@@ -624,12 +795,44 @@ const monthAmount = () => {
                     if (i.amount.amount_settled) {
                         settledAmountEuro += +i.amount.amount_settled;
                     }
-                    amountListSentEUR.push(i.amount.amount_sent);
-                    dateListSentEUR.push(i.dates.sent_date);
-                    amountListReceivedEUR.push(i.amount.amount_received);
-                    dateListReceivedEUR.push(i.dates.received_date);
-                    amountListApprovedEUR.push(+i.amount.amount_approved);
-                    dateListApprovedEUR.push(i.dates.approved_date);
+
+                    let dSU = new Date(i.dates.sent_date).getDate() + '/' + ( new Date(i.dates.sent_date).getMonth() + 1) + '/' + new Date(i.dates.sent_date).getFullYear();
+                    if (dateListSentEUR.includes(dSU)) {
+                        amountListSentEUR[amountListSentEUR.length-1] += +i.amount.amount_sent;
+                    } else {
+                        if (dSU !== "NaN/NaN/NaN" && dSU !== "1/1/1970") {
+                            amountListSentEUR.push(+i.amount.amount_sent);
+                            dateListSentEUR.push(dSU);
+                        } 
+                    }
+                    let dRU = new Date(i.dates.received_date).getDate() + '/' + ( new Date(i.dates.received_date).getMonth() + 1) + '/' + new Date(i.dates.received_date).getFullYear();
+                    if (dateListReceivedEUR.includes(dRU)) {
+                        amountListReceivedEUR[amountListReceivedEUR.length-1] += i.amount.amount_received;
+                    } else {
+                        if (dRU !== "NaN/NaN/NaN" && dRU !== "1/1/1970") {
+                            amountListReceivedEUR.push(i.amount.amount_received);
+                            dateListReceivedEUR.push(dRU);
+                        }
+                    }
+                    let dAU = new Date(i.dates.approved_date).getDate() + '/' + ( new Date(i.dates.approved_date).getMonth() + 1) + '/' + new Date(i.dates.approved_date).getFullYear();
+                    if (dateListApprovedEUR.includes(dAU)) {
+                        amountListApprovedEUR[amountListApprovedEUR.length-1] += i.amount.amount_approved;
+                    } else {
+                        if (dAU !== "NaN/NaN/NaN" && dAU !== "1/1/1970") {
+                            amountListApprovedEUR.push(i.amount.amount_approved);
+                            dateListApprovedEUR.push(dAU);
+                        }
+                    }
+                    let dSsU = new Date(i.dates.settled_date).getDate() + '/' + ( new Date(i.dates.settled_date).getMonth() + 1) + '/' + new Date(i.dates.settled_date).getFullYear();
+                    if (dateListSettledEUR.includes(dSsU)) {
+                        amountListSettledEUR[amountListSettledEUR.length-1] += i.amount.amount_settled;
+                    } else {
+                        if (dSsU !== "NaN/NaN/NaN" && dSsU !== "1/1/1970") {
+                            amountListSettledEUR.push(i.amount.amount_settled);
+                            dateListSettledEUR.push(dSsU);
+                        }
+                    }
+
                 } else {
                     if (i.currency == 'USD') {
                         transactionsUSD += 1;
@@ -639,12 +842,43 @@ const monthAmount = () => {
                         if (i.amount.amount_settled) {
                             settledAmountDollar += +i.amount.amount_settled;
                         }
-                        amountListSentUSD.push(i.amount.amount_sent);
-                        dateListSentUSD.push(i.dates.sent_date);
-                        amountListReceivedUSD.push(i.amount.amount_received);
-                        dateListReceivedUSD.push(i.dates.received_date);
-                        amountListApprovedUSD.push(+i.amount.amount_approved);
-                        dateListApprovedUSD.push(i.dates.approved_date);
+
+                        let dSE = new Date(i.dates.sent_date).getDate() + '/' + ( new Date(i.dates.sent_date).getMonth() + 1) + '/' + new Date(i.dates.sent_date).getFullYear();
+                        if (dateListSentUSD.includes(dSE)) {
+                            amountListSentUSD[amountListSentUSD.length-1] += +i.amount.amount_sent;
+                        } else {
+                            if (dSE !== "NaN/NaN/NaN" && dSE !== "1/1/1970") {
+                                amountListSentUSD.push(+i.amount.amount_sent);
+                                dateListSentUSD.push(dSE);
+                            }
+                        }
+                        let dRE = new Date(i.dates.received_date).getDate() + '/' + ( new Date(i.dates.received_date).getMonth() + 1) + '/' + new Date(i.dates.received_date).getFullYear();
+                        if (dateListReceivedUSD.includes(dRE)) {
+                            amountListReceivedUSD[amountListReceivedUSD.length-1] += i.amount.amount_received;
+                        } else {
+                            if (dRE !== "NaN/NaN/NaN" && dRE !== "1/1/1970") {
+                                amountListReceivedUSD.push(i.amount.amount_received);
+                                dateListReceivedUSD.push(dRE);
+                            }
+                        }
+                        let dAE = new Date(i.dates.approved_date).getDate() + '/' + ( new Date(i.dates.approved_date).getMonth() + 1) + '/' + new Date(i.dates.approved_date).getFullYear();
+                        if (dateListApprovedUSD.includes(dAE)) {
+                            amountListApprovedUSD[amountListApprovedUSD.length-1] += i.amount.amount_approved;
+                        } else {
+                            if (dAE !== "NaN/NaN/NaN" && dAE !== "1/1/1970") {
+                                amountListApprovedUSD.push(i.amount.amount_approved);
+                                dateListApprovedUSD.push(dAE);
+                            }
+                        }
+                        let dSsE = new Date(i.dates.settled_date).getDate() + '/' + ( new Date(i.dates.settled_date).getMonth() + 1) + '/' + new Date(i.dates.settled_date).getFullYear();
+                        if (dateListSettledUSD.includes(dSsE)) {
+                            amountListSettledUSD[amountListSettledUSD.length-1] += i.amount.amount_settled;
+                        } else {
+                            if (dSsE !== "NaN/NaN/NaN" && dSsE !== "1/1/1970") {
+                                amountListSettledUSD.push(i.amount.amount_settled);
+                                dateListSettledUSD.push(dSsE);
+                            }
+                        }
                     }
                 }
             });
@@ -664,70 +898,11 @@ const monthAmount = () => {
             avgTransactionUSD.innerHTML = `${formatStr(Math.round((receivedAmountDollar)/(transactionsUSD)))} <i class="fas fa-dollar-sign">`;
             avgTransactionEUR.innerHTML = `${formatStr(Math.round((receivedAmountEuro)/(transactionsEUR)))} <i class="fas fa-euro-sign">`;
         
-            datesChart.push(dateListSentUSD, dateListReceivedUSD, dateListApprovedUSD, dateListSentEUR, dateListReceivedEUR, dateListApprovedEUR);
-            amountsChart.push(amountListSentUSD, amountListReceivedUSD, amountListApprovedUSD, amountListSentEUR, amountListReceivedEUR, amountListApprovedEUR);
+            datesChart.push(dateListSentUSD, dateListReceivedUSD, dateListApprovedUSD, dateListSettledUSD, dateListSentEUR, dateListReceivedEUR, dateListApprovedEUR, dateListSettledEUR);
+            amountsChart.push(amountListSentUSD, amountListReceivedUSD, amountListApprovedUSD, amountListSettledUSD, amountListSentEUR, amountListReceivedEUR, amountListApprovedEUR, amountListSettledEUR);
             chartBox(datesChart, amountsChart);
-        });
-        } else if (!merchant1.textContent) {
-        let newFetchPromise  = fetch(`http://18.216.223.81:3000/getInvListMonth/${merchantName.textContent}`); 
-        newFetchPromise.then(response => {
-            return response.json();
-        }).then(inv => {   
-            inv.forEach( (i) => {
-                if (i.status == 'Received') { receivedInvCount += 1; }
-                if (i.currency == 'EUR') {
-                    transactionsEUR += 1;
-                    sentAmountEuro += +i.amount.amount_sent;
-                    receivedAmountEuro += +i.amount.amount_received;
-                    approvedAmountEuro += +i.amount.amount_approved;
-                    if (i.amount.amount_settled) {
-                        settledAmountEuro += +i.amount.amount_settled;
-                    }
-                    amountListSentEUR.push(i.amount.amount_sent);
-                    dateListSentEUR.push(i.dates.sent_date);
-                    amountListReceivedEUR.push(i.amount.amount_received);
-                    dateListReceivedEUR.push(i.dates.received_date);
-                    amountListApprovedEUR.push(+i.amount.amount_approved);
-                    dateListApprovedEUR.push(i.dates.approved_date);
-                } else {
-                    if (i.currency == 'USD') {
-                        transactionsUSD += 1;
-                        sentAmountDollar += +i.amount.amount_sent;
-                        receivedAmountDollar += +i.amount.amount_received;
-                        approvedAmountDollar += +i.amount.amount_approved;
-                        if (i.amount.amount_settled) {
-                            settledAmountDollar += +i.amount.amount_settled;
-                        }
-                        amountListSentUSD.push(i.amount.amount_sent);
-                        dateListSentUSD.push(i.dates.sent_date);
-                        amountListReceivedUSD.push(i.amount.amount_received);
-                        dateListReceivedUSD.push(i.dates.received_date);
-                        amountListApprovedUSD.push(+i.amount.amount_approved);
-                        dateListApprovedUSD.push(i.dates.approved_date);
-                    }
-                }
-            });
-            sentUSD.innerHTML = `<i class="fas fa-dollar-sign"> ${formatStr(Math.round(sentAmountDollar))}`;
-            sentEUR.innerHTML = `<i class="fas fa-euro-sign"> ${formatStr(Math.round(sentAmountEuro))}`;
-            receivedUSD.innerHTML = `<i class="fas fa-dollar-sign"> ${formatStr(Math.round(receivedAmountDollar))}`;
-            receivedEUR.innerHTML = `<i class="fas fa-euro-sign"> ${formatStr(Math.round(receivedAmountEuro))}`;
-            approvedUSD.innerHTML = `<i class="fas fa-dollar-sign"> ${formatStr(Math.round(approvedAmountDollar))}`;
-            approvedEUR.innerHTML = `<i class="fas fa-euro-sign"> ${formatStr(Math.round(approvedAmountEuro))}`;
-            settledUSD.innerHTML = `<i class="fas fa-dollar-sign"> ${formatStr(Math.round(settledAmountDollar))}`; 
-            settledEUR.innerHTML = `<i class="fas fa-euro-sign"> ${formatStr(Math.round(settledAmountEuro))}`; 
-        
-            if (!transactionsUSD) transactionsUSD += 1;
-            if (!transactionsEUR) transactionsEUR += 1;
-            transactionsNumber.innerHTML = receivedInvCount;
-            transPerDayNum.innerHTML = Math.ceil(receivedInvCount / 30);
-            avgTransactionUSD.innerHTML = `${formatStr(Math.round((receivedAmountDollar)/(transactionsUSD)))} <i class="fas fa-dollar-sign">`;
-            avgTransactionEUR.innerHTML = `${formatStr(Math.round((receivedAmountEuro)/(transactionsEUR)))} <i class="fas fa-euro-sign">`;
-        
-            datesChart.push(dateListSentUSD, dateListReceivedUSD, dateListApprovedUSD, dateListSentEUR, dateListReceivedEUR, dateListApprovedEUR);
-            amountsChart.push(amountListSentUSD, amountListReceivedUSD, amountListApprovedUSD, amountListSentEUR, amountListReceivedEUR, amountListApprovedEUR);
-            chartBox(datesChart, amountsChart);
-        });
-    } else {
+        })
+        } else {
         let merLink = document.querySelector('.merchantName');
         let newFetchPromise  = fetch(`http://18.216.223.81:3000/getInvListMonth/${merLink.textContent}`);
         newFetchPromise.then(response => {
@@ -743,12 +918,44 @@ const monthAmount = () => {
                     if (i.amount.amount_settled) {
                         settledAmountEuro += +i.amount.amount_settled;
                     }
-                    amountListSentEUR.push(i.amount.amount_sent);
-                    dateListSentEUR.push(i.dates.sent_date);
-                    amountListReceivedEUR.push(i.amount.amount_received);
-                    dateListReceivedEUR.push(i.dates.received_date);
-                    amountListApprovedEUR.push(+i.amount.amount_approved);
-                    dateListApprovedEUR.push(i.dates.approved_date);
+
+                    let dSU = new Date(i.dates.sent_date).getDate() + '/' + ( new Date(i.dates.sent_date).getMonth() + 1) + '/' + new Date(i.dates.sent_date).getFullYear();
+                    if (dateListSentEUR.includes(dSU)) {
+                        amountListSentEUR[amountListSentEUR.length-1] += +i.amount.amount_sent;
+                    } else {
+                        if (dSU !== "NaN/NaN/NaN" && dSU !== "1/1/1970") {
+                            amountListSentEUR.push(+i.amount.amount_sent);
+                            dateListSentEUR.push(dSU);
+                        } 
+                    }
+                    let dRU = new Date(i.dates.received_date).getDate() + '/' + ( new Date(i.dates.received_date).getMonth() + 1) + '/' + new Date(i.dates.received_date).getFullYear();
+                    if (dateListReceivedEUR.includes(dRU)) {
+                        amountListReceivedEUR[amountListReceivedEUR.length-1] += i.amount.amount_received;
+                    } else {
+                        if (dRU !== "NaN/NaN/NaN" && dRU !== "1/1/1970") {
+                            amountListReceivedEUR.push(i.amount.amount_received);
+                            dateListReceivedEUR.push(dRU);
+                        }
+                    }
+                    let dAU = new Date(i.dates.approved_date).getDate() + '/' + ( new Date(i.dates.approved_date).getMonth() + 1) + '/' + new Date(i.dates.approved_date).getFullYear();
+                    if (dateListApprovedEUR.includes(dAU)) {
+                        amountListApprovedEUR[amountListApprovedEUR.length-1] += i.amount.amount_approved;
+                    } else {
+                        if (dAU !== "NaN/NaN/NaN" && dAU !== "1/1/1970") {
+                            amountListApprovedEUR.push(i.amount.amount_approved);
+                            dateListApprovedEUR.push(dAU);
+                        }
+                    }
+                    let dSsU = new Date(i.dates.settled_date).getDate() + '/' + ( new Date(i.dates.settled_date).getMonth() + 1) + '/' + new Date(i.dates.settled_date).getFullYear();
+                    if (dateListSettledEUR.includes(dSsU)) {
+                        amountListSettledEUR[amountListSettledEUR.length-1] += i.amount.amount_settled;
+                    } else {
+                        if (dSsU !== "NaN/NaN/NaN" && dSsU !== "1/1/1970") {
+                            amountListSettledEUR.push(i.amount.amount_settled);
+                            dateListSettledEUR.push(dSsU);
+                        }
+                    }
+
                 } else {
                     if (i.currency == 'USD') {
                         transactionsUSD += 1;
@@ -758,12 +965,43 @@ const monthAmount = () => {
                         if (i.amount.amount_settled) {
                             settledAmountDollar += +i.amount.amount_settled;
                         }
-                        amountListSentUSD.push(i.amount.amount_sent);
-                        dateListSentUSD.push(i.dates.sent_date);
-                        amountListReceivedUSD.push(i.amount.amount_received);
-                        dateListReceivedUSD.push(i.dates.received_date);
-                        amountListApprovedUSD.push(+i.amount.amount_approved);
-                        dateListApprovedUSD.push(i.dates.approved_date);
+
+                        let dSE = new Date(i.dates.sent_date).getDate() + '/' + ( new Date(i.dates.sent_date).getMonth() + 1) + '/' + new Date(i.dates.sent_date).getFullYear();
+                        if (dateListSentUSD.includes(dSE)) {
+                            amountListSentUSD[amountListSentUSD.length-1] += +i.amount.amount_sent;
+                        } else {
+                            if (dSE !== "NaN/NaN/NaN" && dSE !== "1/1/1970") {
+                                amountListSentUSD.push(+i.amount.amount_sent);
+                                dateListSentUSD.push(dSE);
+                            }
+                        }
+                        let dRE = new Date(i.dates.received_date).getDate() + '/' + ( new Date(i.dates.received_date).getMonth() + 1) + '/' + new Date(i.dates.received_date).getFullYear();
+                        if (dateListReceivedUSD.includes(dRE)) {
+                            amountListReceivedUSD[amountListReceivedUSD.length-1] += i.amount.amount_received;
+                        } else {
+                            if (dRE !== "NaN/NaN/NaN" && dRE !== "1/1/1970") {
+                                amountListReceivedUSD.push(i.amount.amount_received);
+                                dateListReceivedUSD.push(dRE);
+                            }
+                        }
+                        let dAE = new Date(i.dates.approved_date).getDate() + '/' + ( new Date(i.dates.approved_date).getMonth() + 1) + '/' + new Date(i.dates.approved_date).getFullYear();
+                        if (dateListApprovedUSD.includes(dAE)) {
+                            amountListApprovedUSD[amountListApprovedUSD.length-1] += i.amount.amount_approved;
+                        } else {
+                            if (dAE !== "NaN/NaN/NaN" && dAE !== "1/1/1970") {
+                                amountListApprovedUSD.push(i.amount.amount_approved);
+                                dateListApprovedUSD.push(dAE);
+                            }
+                        }
+                        let dSsE = new Date(i.dates.settled_date).getDate() + '/' + ( new Date(i.dates.settled_date).getMonth() + 1) + '/' + new Date(i.dates.settled_date).getFullYear();
+                        if (dateListSettledUSD.includes(dSsE)) {
+                            amountListSettledUSD[amountListSettledUSD.length-1] += i.amount.amount_settled;
+                        } else {
+                            if (dSsE !== "NaN/NaN/NaN" && dSsE !== "1/1/1970") {
+                                amountListSettledUSD.push(i.amount.amount_settled);
+                                dateListSettledUSD.push(dSsE);
+                            }
+                        }
                     }
                 }
             });
@@ -783,8 +1021,8 @@ const monthAmount = () => {
             avgTransactionUSD.innerHTML = `${formatStr(Math.round((receivedAmountDollar)/(transactionsUSD)))} <i class="fas fa-dollar-sign">`;
             avgTransactionEUR.innerHTML = `${formatStr(Math.round((receivedAmountEuro)/(transactionsEUR)))} <i class="fas fa-euro-sign">`;
         
-            datesChart.push(dateListSentUSD, dateListReceivedUSD, dateListApprovedUSD, dateListSentEUR, dateListReceivedEUR, dateListApprovedEUR);
-            amountsChart.push(amountListSentUSD, amountListReceivedUSD, amountListApprovedUSD, amountListSentEUR, amountListReceivedEUR, amountListApprovedEUR);
+            datesChart.push(dateListSentUSD, dateListReceivedUSD, dateListApprovedUSD, dateListSettledUSD, dateListSentEUR, dateListReceivedEUR, dateListApprovedEUR, dateListSettledEUR);
+            amountsChart.push(amountListSentUSD, amountListReceivedUSD, amountListApprovedUSD, amountListSettledUSD, amountListSentEUR, amountListReceivedEUR, amountListApprovedEUR, amountListSettledEUR);
             chartBox(datesChart, amountsChart);
         });
     }
@@ -827,6 +1065,10 @@ const allTimeAmount = () => {
         dateListApprovedEUR = [],
         amountListApprovedUSD = [],
         amountListApprovedEUR = [],
+        dateListSettledUSD = [],
+        dateListSettledEUR = [],
+        amountListSettledUSD = [],
+        amountListSettledEUR = [],
         datesChart = [],
         amountsChart = [];
     periodTitle.innerHTML = `All Time<i class="fas fa-sort-down"></i>`;
@@ -846,12 +1088,52 @@ const allTimeAmount = () => {
                     if (i.amount.amount_settled) {
                         settledAmountEuro += +i.amount.amount_settled;
                     }
-                    amountListSentEUR.push(i.amount.amount_sent);
-                    dateListSentEUR.push(i.dates.sent_date);
-                    amountListReceivedEUR.push(i.amount.amount_received);
-                    dateListReceivedEUR.push(i.dates.received_date);
-                    amountListApprovedEUR.push(+i.amount.amount_approved);
-                    dateListApprovedEUR.push(i.dates.approved_date);
+
+                    let dSU = new Date(i.dates.sent_date).getDate() + '/' + ( new Date(i.dates.sent_date).getMonth() + 1) + '/' + new Date(i.dates.sent_date).getFullYear();
+                    if (dateListSentEUR.includes(dSU)) {
+                        amountListSentEUR[amountListSentEUR.length-1] += +i.amount.amount_sent;
+                    } else {
+                        if (dSU !== "NaN/NaN/NaN" && dSU !== "1/1/1970") {
+                            amountListSentEUR.push(+i.amount.amount_sent);
+                            dateListSentEUR.push(dSU);
+                        } 
+                    }
+                    let dRU = new Date(i.dates.received_date).getDate() + '/' + ( new Date(i.dates.received_date).getMonth() + 1) + '/' + new Date(i.dates.received_date).getFullYear();
+                    if (dateListReceivedEUR.includes(dRU)) {
+                        amountListReceivedEUR[amountListReceivedEUR.length-1] += i.amount.amount_received;
+                    } else {
+                        if (dRU !== "NaN/NaN/NaN" && dRU !== "1/1/1970") {
+                            amountListReceivedEUR.push(i.amount.amount_received);
+                            dateListReceivedEUR.push(dRU);
+                        }
+                    }
+                    let dAU = new Date(i.dates.approved_date).getDate() + '/' + ( new Date(i.dates.approved_date).getMonth() + 1) + '/' + new Date(i.dates.approved_date).getFullYear();
+                    if (dateListApprovedEUR.includes(dAU)) {
+                        amountListApprovedEUR[amountListApprovedEUR.length-1] += i.amount.amount_approved;
+                    } else {
+                        if (dAU !== "NaN/NaN/NaN" && dAU !== "1/1/1970") {
+                            amountListApprovedEUR.push(i.amount.amount_approved);
+                            dateListApprovedEUR.push(dAU);
+                        }
+                    }
+                    let dSsU = new Date(i.dates.settled_date).getDate() + '/' + ( new Date(i.dates.settled_date).getMonth() + 1) + '/' + new Date(i.dates.settled_date).getFullYear();
+                    if (dateListSettledEUR.includes(dSsU)) {
+                        amountListSettledEUR[amountListSettledEUR.length-1] += i.amount.amount_settled;
+                    } else {
+                        if (dSsU !== "NaN/NaN/NaN" && dSsU !== "1/1/1970") {
+                            amountListSettledEUR.push(i.amount.amount_settled);
+                            dateListSettledEUR.push(dSsU);
+                        }
+                    }
+
+                    //amountListSentEUR.push(i.amount.amount_sent);
+                    //dateListSentEUR.push( new Date(i.dates.sent_date).getDate() + '/' + ( new Date(i.dates.sent_date).getMonth() + 1) + '/' + new Date(i.dates.sent_date).getFullYear());
+                    //amountListReceivedEUR.push(i.amount.amount_received);
+                    //dateListReceivedEUR.push( new Date(i.dates.received_date).getDate() + '/' + ( new Date(i.dates.received_date).getMonth() + 1) + '/' + new Date(i.dates.received_date).getFullYear());
+                    //amountListApprovedEUR.push(+i.amount.amount_approved);
+                    //dateListApprovedEUR.push( new Date(i.dates.approved_date).getDate() + '/' + ( new Date(i.dates.approved_date).getMonth() + 1) + '/' + new Date(i.dates.approved_date).getFullYear());
+                    //amountListSettledEUR.push(+i.amount.amount_settled);
+                    //dateListSettledEUR.push( new Date(i.dates.settled_date).getDate() + '/' + ( new Date(i.dates.settled_date).getMonth() + 1) + '/' + new Date(i.dates.settled_date).getFullYear());
                 } else {
                     if (i.currency == 'USD') {
                         transactionsUSD += 1;
@@ -861,12 +1143,52 @@ const allTimeAmount = () => {
                         if (i.amount.amount_settled) {
                             settledAmountDollar += +i.amount.amount_settled;
                         }
-                        amountListSentUSD.push(i.amount.amount_sent);
-                        dateListSentUSD.push(i.dates.sent_date);
-                        amountListReceivedUSD.push(i.amount.amount_received);
-                        dateListReceivedUSD.push(i.dates.received_date);
-                        amountListApprovedUSD.push(+i.amount.amount_approved);
-                        dateListApprovedUSD.push(i.dates.approved_date);
+
+                        let dSE = new Date(i.dates.sent_date).getDate() + '/' + ( new Date(i.dates.sent_date).getMonth() + 1) + '/' + new Date(i.dates.sent_date).getFullYear();
+                        if (dateListSentUSD.includes(dSE)) {
+                            amountListSentUSD[amountListSentUSD.length-1] += +i.amount.amount_sent;
+                        } else {
+                            if (dSE !== "NaN/NaN/NaN" && dSE !== "1/1/1970") {
+                                amountListSentUSD.push(+i.amount.amount_sent);
+                                dateListSentUSD.push(dSE);
+                            }
+                        }
+                        let dRE = new Date(i.dates.received_date).getDate() + '/' + ( new Date(i.dates.received_date).getMonth() + 1) + '/' + new Date(i.dates.received_date).getFullYear();
+                        if (dateListReceivedUSD.includes(dRE)) {
+                            amountListReceivedUSD[amountListReceivedUSD.length-1] += i.amount.amount_received;
+                        } else {
+                            if (dRE !== "NaN/NaN/NaN" && dRE !== "1/1/1970") {
+                                amountListReceivedUSD.push(i.amount.amount_received);
+                                dateListReceivedUSD.push(dRE);
+                            }
+                        }
+                        let dAE = new Date(i.dates.approved_date).getDate() + '/' + ( new Date(i.dates.approved_date).getMonth() + 1) + '/' + new Date(i.dates.approved_date).getFullYear();
+                        if (dateListApprovedUSD.includes(dAE)) {
+                            amountListApprovedUSD[amountListApprovedUSD.length-1] += i.amount.amount_approved;
+                        } else {
+                            if (dAE !== "NaN/NaN/NaN" && dAE !== "1/1/1970") {
+                                amountListApprovedUSD.push(i.amount.amount_approved);
+                                dateListApprovedUSD.push(dAE);
+                            }
+                        }
+                        let dSsE = new Date(i.dates.settled_date).getDate() + '/' + ( new Date(i.dates.settled_date).getMonth() + 1) + '/' + new Date(i.dates.settled_date).getFullYear();
+                        if (dateListSettledUSD.includes(dSsE)) {
+                            amountListSettledUSD[amountListSettledUSD.length-1] += i.amount.amount_settled;
+                        } else {
+                            if (dSsE !== "NaN/NaN/NaN" && dSsE !== "1/1/1970") {
+                                amountListSettledUSD.push(i.amount.amount_settled);
+                                dateListSettledUSD.push(dSsE);
+                            }
+                        }
+                       
+                        // amountListSentUSD.push(i.amount.amount_sent);
+                        // dateListSentUSD.push( new Date(i.dates.sent_date).getDate() + '/' + ( new Date(i.dates.sent_date).getMonth() + 1) + '/' + new Date(i.dates.sent_date).getFullYear());
+                        // amountListReceivedUSD.push(i.amount.amount_received);
+                        // dateListReceivedUSD.push( new Date(i.dates.received_date).getDate() + '/' + ( new Date(i.dates.received_date).getMonth() + 1) + '/' + new Date(i.dates.received_date).getFullYear());
+                        // amountListApprovedUSD.push(+i.amount.amount_approved);
+                        // dateListApprovedUSD.push(new Date(i.dates.approved_date).getDate() + '/' + ( new Date(i.dates.approved_date).getMonth() + 1) + '/' + new Date(i.dates.approved_date).getFullYear());
+                        // amountListSettledUSD.push(+i.amount.amount_settled);
+                        // dateListSettledUSD.push( new Date(i.dates.settled_date).getDate() + '/' + ( new Date(i.dates.settled_date).getMonth() + 1) + '/' + new Date(i.dates.settled_date).getFullYear());
                     }
                 }
             });
@@ -885,14 +1207,15 @@ const allTimeAmount = () => {
             transPerDayNum.innerHTML = Math.ceil(receivedInvCount / bigDate);
             avgTransactionUSD.innerHTML = `${formatStr(Math.round((receivedAmountDollar)/(transactionsUSD)))} <i class="fas fa-dollar-sign">`;
             avgTransactionEUR.innerHTML = `${formatStr(Math.round((receivedAmountEuro)/(transactionsEUR)))} <i class="fas fa-euro-sign">`;
-        
-            datesChart.push(dateListSentUSD, dateListReceivedUSD, dateListApprovedUSD, dateListSentEUR, dateListReceivedEUR, dateListApprovedEUR);
-            amountsChart.push(amountListSentUSD, amountListReceivedUSD, amountListApprovedUSD, amountListSentEUR, amountListReceivedEUR, amountListApprovedEUR);
+            
+            datesChart.push(dateListSentUSD, dateListReceivedUSD, dateListApprovedUSD, dateListSettledUSD, dateListSentEUR, dateListReceivedEUR, dateListApprovedEUR, dateListSettledEUR);
+            amountsChart.push(amountListSentUSD, amountListReceivedUSD, amountListApprovedUSD, amountListSettledUSD, amountListSentEUR, amountListReceivedEUR, amountListApprovedEUR, amountListSettledEUR);
             chartBox(datesChart, amountsChart);
         });
-     } else if (!merchant1.textContent) { 
-        let newFetchPromise  = fetch(`http://18.216.223.81:3000/getInvListAll/${merchantName.textContent}`);
-        newFetchPromise.then(response => {
+     } else {
+        let merLink = document.querySelector('.merchantName');
+        let newFetchPromiseA  = fetch(`http://18.216.223.81:3000/getInvListAll/${merLink.textContent}`);
+        newFetchPromiseA.then(response => {
             return response.json();
         }).then(inv => {   
             inv.forEach( (i) => {
@@ -905,12 +1228,44 @@ const allTimeAmount = () => {
                     if (i.amount.amount_settled) {
                         settledAmountEuro += +i.amount.amount_settled;
                     }
-                    amountListSentEUR.push(i.amount.amount_sent);
-                    dateListSentEUR.push(i.dates.sent_date);
-                    amountListReceivedEUR.push(i.amount.amount_received);
-                    dateListReceivedEUR.push(i.dates.received_date);
-                    amountListApprovedEUR.push(+i.amount.amount_approved);
-                    dateListApprovedEUR.push(i.dates.approved_date);
+
+                    let dSU = new Date(i.dates.sent_date).getDate() + '/' + ( new Date(i.dates.sent_date).getMonth() + 1) + '/' + new Date(i.dates.sent_date).getFullYear();
+                    if (dateListSentEUR.includes(dSU)) {
+                        amountListSentEUR[amountListSentEUR.length-1] += +i.amount.amount_sent;
+                    } else {
+                        if (dSU !== "NaN/NaN/NaN" && dSU !== "1/1/1970") {
+                            amountListSentEUR.push(+i.amount.amount_sent);
+                            dateListSentEUR.push(dSU);
+                        } 
+                    }
+                    let dRU = new Date(i.dates.received_date).getDate() + '/' + ( new Date(i.dates.received_date).getMonth() + 1) + '/' + new Date(i.dates.received_date).getFullYear();
+                    if (dateListReceivedEUR.includes(dRU)) {
+                        amountListReceivedEUR[amountListReceivedEUR.length-1] += i.amount.amount_received;
+                    } else {
+                        if (dRU !== "NaN/NaN/NaN" && dRU !== "1/1/1970") {
+                            amountListReceivedEUR.push(i.amount.amount_received);
+                            dateListReceivedEUR.push(dRU);
+                        }
+                    }
+                    let dAU = new Date(i.dates.approved_date).getDate() + '/' + ( new Date(i.dates.approved_date).getMonth() + 1) + '/' + new Date(i.dates.approved_date).getFullYear();
+                    if (dateListApprovedEUR.includes(dAU)) {
+                        amountListApprovedEUR[amountListApprovedEUR.length-1] += i.amount.amount_approved;
+                    } else {
+                        if (dAU !== "NaN/NaN/NaN" && dAU !== "1/1/1970") {
+                            amountListApprovedEUR.push(i.amount.amount_approved);
+                            dateListApprovedEUR.push(dAU);
+                        }
+                    }
+                    let dSsU = new Date(i.dates.settled_date).getDate() + '/' + ( new Date(i.dates.settled_date).getMonth() + 1) + '/' + new Date(i.dates.settled_date).getFullYear();
+                    if (dateListSettledEUR.includes(dSsU)) {
+                        amountListSettledEUR[amountListSettledEUR.length-1] += i.amount.amount_settled;
+                    } else {
+                        if (dSsU !== "NaN/NaN/NaN" && dSsU !== "1/1/1970") {
+                            amountListSettledEUR.push(i.amount.amount_settled);
+                            dateListSettledEUR.push(dSsU);
+                        }
+                    }
+
                 } else {
                     if (i.currency == 'USD') {
                         transactionsUSD += 1;
@@ -920,74 +1275,43 @@ const allTimeAmount = () => {
                         if (i.amount.amount_settled) {
                             settledAmountDollar += +i.amount.amount_settled;
                         }
-                        amountListSentUSD.push(i.amount.amount_sent);
-                        dateListSentUSD.push(i.dates.sent_date);
-                        amountListReceivedUSD.push(i.amount.amount_received);
-                        dateListReceivedUSD.push(i.dates.received_date);
-                        amountListApprovedUSD.push(+i.amount.amount_approved);
-                        dateListApprovedUSD.push(i.dates.approved_date);
-                    }
-                }
-            });
-            sentUSD.innerHTML = `<i class="fas fa-dollar-sign"> ${formatStr(Math.round(sentAmountDollar))}`;
-            sentEUR.innerHTML = `<i class="fas fa-euro-sign"> ${formatStr(Math.round(sentAmountEuro))}`;
-            receivedUSD.innerHTML = `<i class="fas fa-dollar-sign"> ${formatStr(Math.round(receivedAmountDollar))}`;
-            receivedEUR.innerHTML = `<i class="fas fa-euro-sign"> ${formatStr(Math.round(receivedAmountEuro))}`;
-            approvedUSD.innerHTML = `<i class="fas fa-dollar-sign"> ${formatStr(Math.round(approvedAmountDollar))}`;
-            approvedEUR.innerHTML = `<i class="fas fa-euro-sign"> ${formatStr(Math.round(approvedAmountEuro))}`;
-            settledUSD.innerHTML = `<i class="fas fa-dollar-sign"> ${formatStr(Math.round(settledAmountDollar))}`; 
-            settledEUR.innerHTML = `<i class="fas fa-euro-sign"> ${formatStr(Math.round(settledAmountEuro))}`; 
-        
-            if (!transactionsUSD) transactionsUSD += 1;
-            if (!transactionsEUR) transactionsEUR += 1;
-            let bigDate = Math.round( (new Date() - new Date("2019-04-09")) / 86400000);
-            transactionsNumber.innerHTML = receivedInvCount;
-            transPerDayNum.innerHTML = Math.ceil(receivedInvCount / bigDate);
-            avgTransactionUSD.innerHTML = `${formatStr(Math.round((receivedAmountDollar)/(transactionsUSD)))} <i class="fas fa-dollar-sign">`;
-            avgTransactionEUR.innerHTML = `${formatStr(Math.round((receivedAmountEuro)/(transactionsEUR)))} <i class="fas fa-euro-sign">`;
-        
-            datesChart.push(dateListSentUSD, dateListReceivedUSD, dateListApprovedUSD, dateListSentEUR, dateListReceivedEUR, dateListApprovedEUR);
-            amountsChart.push(amountListSentUSD, amountListReceivedUSD, amountListApprovedUSD, amountListSentEUR, amountListReceivedEUR, amountListApprovedEUR);
-            chartBox(datesChart, amountsChart);
-        });
-    } else {
-        let merLink = document.querySelector('.merchantName');
-        let newFetchPromiseA  = fetch(`http://18.216.223.81:3000/getInvListAll/${merLink.textContent}`);
-        newFetchPromiseA.then(response => {
-            return response.json();
-        }).then(inv => {   
-            inv.forEach( (i) => {
-                if (i.status == 'Received') { receivedInvCount += 1; }
-                if (i.currency == 'EUR') {
-                    transactionsEUR += 1;
-                    sentAmountEuro += +i.amount.amount_sent;
-                    receivedAmountEuro += +i.amount.amount_received,
-                    approvedAmountEuro += +i.amount.amount_approved;
-                    if (i.amount.amount_settled) {
-                        settledAmountEuro += +i.amount.amount_settled;
-                    }
-                    amountListSentEUR.push(i.amount.amount_sent);
-                    dateListSentEUR.push(i.dates.sent_date);
-                    amountListReceivedEUR.push(i.amount.amount_received);
-                    dateListReceivedEUR.push(i.dates.received_date);
-                    amountListApprovedEUR.push(+i.amount.amount_approved);
-                    dateListApprovedEUR.push(i.dates.approved_date);
-                    
-                } else {
-                    if (i.currency == 'USD') {
-                        transactionsUSD += 1;
-                        sentAmountDollar += +i.amount.amount_sent;
-                        receivedAmountDollar += +i.amount.amount_received;
-                        approvedAmountDollar += +i.amount.amount_approved;
-                        if (i.amount.amount_settled) {
-                            settledAmountDollar += +i.amount.amount_settled;
+
+                        let dSE = new Date(i.dates.sent_date).getDate() + '/' + ( new Date(i.dates.sent_date).getMonth() + 1) + '/' + new Date(i.dates.sent_date).getFullYear();
+                        if (dateListSentUSD.includes(dSE)) {
+                            amountListSentUSD[amountListSentUSD.length-1] += +i.amount.amount_sent;
+                        } else {
+                            if (dSE !== "NaN/NaN/NaN" && dSE !== "1/1/1970") {
+                                amountListSentUSD.push(+i.amount.amount_sent);
+                                dateListSentUSD.push(dSE);
+                            }
                         }
-                        amountListSentUSD.push(i.amount.amount_sent);
-                        dateListSentUSD.push(i.dates.sent_date);
-                        amountListReceivedUSD.push(i.amount.amount_received);
-                        dateListReceivedUSD.push(i.dates.received_date);
-                        amountListApprovedUSD.push(+i.amount.amount_approved);
-                        dateListApprovedUSD.push(i.dates.approved_date);
+                        let dRE = new Date(i.dates.received_date).getDate() + '/' + ( new Date(i.dates.received_date).getMonth() + 1) + '/' + new Date(i.dates.received_date).getFullYear();
+                        if (dateListReceivedUSD.includes(dRE)) {
+                            amountListReceivedUSD[amountListReceivedUSD.length-1] += i.amount.amount_received;
+                        } else {
+                            if (dRE !== "NaN/NaN/NaN" && dRE !== "1/1/1970") {
+                                amountListReceivedUSD.push(i.amount.amount_received);
+                                dateListReceivedUSD.push(dRE);
+                            }
+                        }
+                        let dAE = new Date(i.dates.approved_date).getDate() + '/' + ( new Date(i.dates.approved_date).getMonth() + 1) + '/' + new Date(i.dates.approved_date).getFullYear();
+                        if (dateListApprovedUSD.includes(dAE)) {
+                            amountListApprovedUSD[amountListApprovedUSD.length-1] += i.amount.amount_approved;
+                        } else {
+                            if (dAE !== "NaN/NaN/NaN" && dAE !== "1/1/1970") {
+                                amountListApprovedUSD.push(i.amount.amount_approved);
+                                dateListApprovedUSD.push(dAE);
+                            }
+                        }
+                        let dSsE = new Date(i.dates.settled_date).getDate() + '/' + ( new Date(i.dates.settled_date).getMonth() + 1) + '/' + new Date(i.dates.settled_date).getFullYear();
+                        if (dateListSettledUSD.includes(dSsE)) {
+                            amountListSettledUSD[amountListSettledUSD.length-1] += i.amount.amount_settled;
+                        } else {
+                            if (dSsE !== "NaN/NaN/NaN" && dSsE !== "1/1/1970") {
+                                amountListSettledUSD.push(i.amount.amount_settled);
+                                dateListSettledUSD.push(dSsE);
+                            }
+                        }
                     }
                 }
             });
@@ -1007,55 +1331,29 @@ const allTimeAmount = () => {
             transPerDayNum.innerHTML = Math.ceil(receivedInvCount / bigDate);
             avgTransactionUSD.innerHTML = `${formatStr(Math.round((receivedAmountDollar)/(transactionsUSD)))} <i class="fas fa-dollar-sign">`;
             avgTransactionEUR.innerHTML = `${formatStr(Math.round((receivedAmountEuro)/(transactionsEUR)))} <i class="fas fa-euro-sign">`;
-        
-            datesChart.push(dateListSentUSD, dateListReceivedUSD, dateListApprovedUSD, dateListSentEUR, dateListReceivedEUR, dateListApprovedEUR);
-            amountsChart.push(amountListSentUSD, amountListReceivedUSD, amountListApprovedUSD, amountListSentEUR, amountListReceivedEUR, amountListApprovedEUR);
+            
+            datesChart.push(dateListSentUSD, dateListReceivedUSD, dateListApprovedUSD, dateListSettledUSD, dateListSentEUR, dateListReceivedEUR, dateListApprovedEUR, dateListSettledEUR);
+            amountsChart.push(amountListSentUSD, amountListReceivedUSD, amountListApprovedUSD, amountListSettledUSD, amountListSentEUR, amountListReceivedEUR, amountListApprovedEUR, amountListSettledEUR);
             chartBox(datesChart, amountsChart);
         });
     }
 };
 allTime.onclick = allTimeAmount;
 
-// Wallets Balance
-
-const walletBalance = () => {
-    let merchLink = document.querySelector('.merchantName'),
-        walletInfo = document.querySelector('.walletInfo');
-        
-    let walletPromise = fetch(`http://18.216.223.81:3000/getWallet/${merchLink.textContent}`);
-    walletPromise.then(response => {
-        return response.json();
-    }).then( (wallets) => {
-        wallets.forEach((i) => {
-            let node = document.createElement("span");
-            node.className = 'awWallet';
-            let textNode =  document.createTextNode(`${i.name}: ${formatStr(i.balance)} ${i.currency}`);
-            node.append(textNode);
-            walletInfo.append(node);
-        });
-    });
-}
-
-if (document.querySelector('.walletInfo')) {
-    walletBalance();
-}
-
-
-
 // Chart box info
 
 const chartBox = (dates, amounts) => {
     const ctx = document.getElementById('dashboardChart').getContext('2d');
     ctx.innerHTML = '';
-    let [dateListSentUSD, dateListReceivedUSD, dateListApprovedUSD, dateListSentEUR, dateListReceivedEUR, dateListApprovedEUR] = dates;
-    let [amountListSentUSD, amountListReceivedUSD, amountListApprovedUSD, amountListSentEUR, amountListReceivedEUR, amountListApprovedEUR] = amounts;
+    let [dateListSentUSD, dateListReceivedUSD, dateListApprovedUSD, dateListSettledUSD, dateListSentEUR, dateListReceivedEUR, dateListApprovedEUR, dateListSettledEUR] = dates;
+    let [amountListSentUSD, amountListReceivedUSD, amountListApprovedUSD, amountListSettledUSD, amountListSentEUR, amountListReceivedEUR, amountListApprovedEUR, amountListSettledEUR] = amounts;
     const sentChartBtn = document.querySelector('.sentChartBtn'),
           receivedChartBtn = document.querySelector('.receivedChartBtn'),
           approvedChartBtn = document.querySelector('.approvedChartBtn'),
           settledChartBtn = document.querySelector('.settledChartBtn');
     
     var activeBtn = '';
-
+    
     let isActiveBtn = () => {
         
        if ( sentChartBtn.classList.contains('selectedBtn') ) {
@@ -1070,14 +1368,14 @@ const chartBox = (dates, amounts) => {
     };
     isActiveBtn();
 
-    let chartData = (dateUSD, dateEUR,amountUSD, amountEUR) => {
+    let chartData = (dateUSD, dateEUR, amountUSD, amountEUR) => {
         let date;
         if (dateUSD >= dateEUR) {
             date = dateUSD;
         } else {
             date = dateEUR;
         }
-
+       
         var data = {
             labels: date,
             datasets: [{
@@ -1137,7 +1435,7 @@ const chartBox = (dates, amounts) => {
             chartData(dateListApprovedUSD, dateListApprovedEUR, amountListApprovedUSD, amountListApprovedEUR);
           break;
         case 'settled':
-            chartData(0, 0, 0, 0);
+            chartData(dateListSettledUSD, dateListSettledEUR, amountListSettledUSD, amountListSettledEUR);
         break;
       }
     
@@ -1259,6 +1557,3 @@ function formatStr(num) {
         return str;
     }
 }
-
-
-

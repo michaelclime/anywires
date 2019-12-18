@@ -1,6 +1,10 @@
 const express = require('express'),
     router = new express.Router(),
     mongo = require('mongodb'),
+    jsonParser = express.json(),
+    User = require('../modules/user'),
+    Merchant = require('../modules/merchant'),
+    Wallet = require('../modules/wallet'),
     assert = require('assert');
 
 const url = 'mongodb://18.216.223.81:27017/anywires';
@@ -160,52 +164,41 @@ router.get('/getInvListAll/:merchant', function(req, res, next) {
     });
 });
 
-router.get('/getWallet/:merchant', function(req, res, next) {
-    let idWallets = [],
-        wallets = [];
+router.get('/getWallet/:merchant', async function(req, res, next) {
+    let wallets = [];
+    
+    let merchant = await Merchant.findOne({'name': req.params.merchant});
 
-    mongo.connect(url, function(err, db) {
+    for (let i = 0; i < merchant.wallets.length; i += 1) {
+        let wallet = await Wallet.findById(merchant.wallets[i]);
+        if (wallet) {
+            wallets.push(wallet);
+        }
+    }
 
-        let merch = db.collection('merchants');
-        merch.findOne({'name': req.params.merchant}).then( (item) => {
-            idWallets.push(item);
-            return idWallets;
-        }).then( (result) => {
-            if (result[0].wallets.length > 1) {
-                let [id1, id2] = result[0].wallets;
-            
-                mongo.connect(url, function(err, db) {
-                    db.collection('wallets').findOne({'_id': id1}).then( (item) => {
-                        //console.log(chalk.red.bold(item.name));
-                        wallets.push(item);
-                        return wallets;
-                    }).then( (wallets) => {
-                        mongo.connect(url, function(err, db) {
-                            db.collection('wallets').findOne({'_id': id2}).then( (item) => {
-                                //console.log(chalk.red.bold(item.name));
-                                wallets.push(item);
-                                //console.log(wallets);
-                                res.send(wallets);
-                            });
-                        });
-            
-                    });
-                });
-            } else {
-                let id = result[0].wallets[0];
-            
-                mongo.connect(url, function(err, db) {
-                    db.collection('wallets').findOne({'_id': id}).then( (item) => {
-                        //console.log(chalk.red.bold(item.name));
-                        wallets.push(item);
-                        //console.log(wallets);
-                        res.send(wallets);
-                    });
-                });
-            }
-        })
-            
-    });
+    res.status(200).send(wallets);
+});
+
+router.get("/getMerchListNames/:id", jsonParser, async (req, res) => {
+    let user = await User.findById(req.params.id);
+
+    const getList = async () => {
+        let merchants =[];
+
+        for (let i = 0; i < user.merchant.length; i += 1) {
+            let merchant = await Merchant.findById(  user.merchant[i] );
+            merchants.push(merchant.name);
+        }
+
+        return merchants;
+    };
+
+    getList().then( (result) => {
+        res.status(200).send(result);
+    }).catch((err) =>{
+        res.status(400).send(err);
+        console.log(err);
+    })
 });
 
 function isLoggedIn(req, res, next) {

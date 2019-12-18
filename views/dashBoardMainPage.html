@@ -20,6 +20,9 @@
 </head>
 
 <body>
+    <span class="curentUserRole hide"><%= currentUser.role %></span>
+    <span class="curentUserId hide"><%= currentUser.id %></span>
+    <span class="curentUserMerch hide"><%= currentUser.merchant %></span>
     <% if (currentUser.role == 'Invoice Manager') { %>
         <header>
                 <div class="menu">
@@ -126,11 +129,13 @@
                 <% if (currentUser.typeClass == 'admin') { %>
                     <h4 class="merchantName">Select period</h4>
                     <ul class="merchantSelec">
-                            <li class="merchant1"></li>
-                            <li class="merchant2" ></li>
+                            <li class="merchant"></li> 
                     </ul>
                 <% } else { %>
-
+                    <h4 class="merchantName"></h4>
+                    <ul class="merchantSelec">
+                            
+                    </ul>
                 <% } %>
                 <h3 class="periodTitle">Today<i class="fas fa-sort-down"></i></h3>
                 <ul class="period">
