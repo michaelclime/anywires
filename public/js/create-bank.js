@@ -259,16 +259,6 @@ class createBank{
         this.render();
     }
 
-    renderAllCountry = () => {
-        allCountry.sort().forEach((name) => {
-            var container = document.querySelector("#bankCountry");
-            var option = document.createElement("option");
-            option.value = name;
-            option.innerHTML = name;
-            container.appendChild(option);
-        });
-    }
-
     editBankRequest = async (bankName, newData) => {
         return  await fetch("http://18.216.223.81:3000/editBank", {
             method: "POST",
@@ -296,7 +286,6 @@ class createBank{
             // If All required fields not empty than
         } else if (empty === false) {
             // Checking SEPA, B2B and active
-            // Checking SEPA, B2B and active
             var sepa = false,
                 b2b = false,
                 active = false;
@@ -304,11 +293,15 @@ class createBank{
             document.querySelector("#b2b").checked ? b2b = true : b2b = false;
             document.querySelector("#active").checked ? active = true : active = false;
 
+            const selectedCountry = document.querySelectorAll(".multi-select__selected-label");
+            const selectedArr = [];
+            selectedCountry.forEach(item => selectedArr.push(item.textContent.trim()));
+
             var editedBank = {
                 "name" : document.querySelector("#bankName").value, 
                 "beneficiary_name" : document.querySelector("#benefName").value,  
                 "solution_name" : document.querySelector("#solName").value,  
-                "country" : document.querySelector("#bankCountry").value,
+                "country" : selectedArr,
                 "beneficiary address" : document.querySelector("#benefAddress").value,
                 "max_wire" : +(document.querySelector("#maxWire").value), 
                 "min_wire" : +(document.querySelector("#minWire").value),  
@@ -459,10 +452,46 @@ class createBank{
             this.switcherIphone();
             this.changeSwitcherStatus();
         }
+
+        // 1. Multiple select options START
+
+            // 1.1 Render List of Countries
+        const multiSelect = document.querySelector(".multi-select__label");
+        editedBank[0].country.forEach(elem => {
+            const span = document.createElement('span');
+            span.classList.add('multi-select__selected-label');
+            span.innerHTML = `${elem}<i class="fa fa-times" data-value=${elem} aria-hidden="true"></i>`;
+            multiSelect.append(span);
+        });
+
+        const listOfCountries = document.querySelectorAll('.multi-select__option');
+        listOfCountries.forEach(elem => {
+            editedBank[0].country.some(item => item === elem.textContent.trim())
+            ?
+            elem.classList.add('multi-select__option--selected')
+            :
+            null
+        });
+
+        document.querySelectorAll('.fa-times').forEach(item => item.addEventListener('click', (event) => {
+            event.preventDefault();
+            const elem = event.target.closest('span');
+            listOfCountries.forEach(country => {
+                country.textContent.trim() === elem
+                ?
+                country.classList.remove('multi-select__option--selected')
+                :
+                null
+            });
+            elem.remove();
+        }));
+        // Multiple select options END
+        
+
         var bankName =  document.querySelector("#bankName").value = editedBank[0].name;
         var benefName =  document.querySelector("#benefName").value = editedBank[0].beneficiary_name;
         var solName =  document.querySelector("#solName").value = editedBank[0].solution_name;
-        var bankCountry =  document.querySelector("#bankCountry").value = editedBank[0].country;
+        // var bankCountry =  document.querySelector("#bankCountry").value = editedBank[0].country;
         var benefAddress =  document.querySelector("#benefAddress").value = editedBank[0].beneficiary_address;
         var maxWire =  document.querySelector("#maxWire").value = editedBank[0].max_wire;
         var minWire =  document.querySelector("#minWire").value = editedBank[0].min_wire;
@@ -609,18 +638,22 @@ class createBank{
             // If All required fields not empty than
         } else if (empty === false) {
             // Checking SEPA, B2B and active
-            var sepa = false,
-            b2b = false,
-            active = false;
+            let sepa = false,
+                b2b = false,
+                active = false;
             document.querySelector("#sepa").checked ? sepa = true : sepa = false;
             document.querySelector("#b2b").checked ? b2b = true : b2b = false;
             document.querySelector("#active").checked ? active = true : active = false;
+
+            const selectedCountry = document.querySelectorAll(".multi-select__selected-label");
+            const selectedArr = [];
+            selectedCountry.forEach(item => selectedArr.push(item.textContent.trim()));
 
             var bank = {
                 "name" : document.querySelector("#bankName").value, 
                 "beneficiary_name" : document.querySelector("#benefName").value,  
                 "solution_name" : document.querySelector("#solName").value,  
-                "country" : document.querySelector("#bankCountry").value,
+                "country" : selectedArr,
                 "currency": ["EUR", "USD"],
                 "beneficiary_address" : document.querySelector("#benefAddress").value,
                 "max_wire" : +(document.querySelector("#maxWire").value), 
@@ -741,7 +774,7 @@ class createBank{
                     }
                 }
             };
-
+            
             // Loading GIF On
             this.loadingGIF.style.display = "flex";
 
@@ -768,7 +801,7 @@ class createBank{
 
     render(){
         this.editOrCreateBank();
-        this.renderAllCountry();
+        // this.renderAllCountry();
         this.switch.addEventListener("click", this.changeSwitcherStatus);
     }
 }

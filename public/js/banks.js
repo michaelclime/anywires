@@ -680,7 +680,7 @@ class UsersList {
             this.userList = document.createElement("tr");
             this.userList.innerHTML =  `
                     <td class="column1 edit">${item.name}</td> 
-                    <td class="column2 edit">${item.country}</td> 
+                    <td class="column2 edit">Country</td> 
 
                     <td class="column3 edit">
                         <div class="currency_wrapper">

@@ -118,6 +118,9 @@ var datesObj = (key, first, second) => {
         var year = new Date(first).getFullYear();
         second = (month+1) +"/"+ (day+1) +"/"+ year;
         second = new Date(second);
+        second.setHours(23);
+        second.setMinutes(59);
+        second.setSeconds(59);
     } 
     Obj[key] = {
         $gte: new Date(first),
@@ -155,6 +158,7 @@ router.post("/get-invoices-partly", jsonParser, async (req, res) => {
     // Cheking one or two days Receive END.
 
     try {
+        console.log(filter);
         // Get 10 Invoices
         const invoices = await Invoice.find(filter).sort({_id:-1}).skip(skip).limit(limit);
         // Get count of Invoices
