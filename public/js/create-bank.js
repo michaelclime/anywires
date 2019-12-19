@@ -247,7 +247,41 @@ const allCountry = [
     'Algeria',
     'Albania',
     'Aland Islands',
-    'Afghanistan'
+    'Afghanistan',
+    'Sepa',
+    'Select All'
+ ];
+
+ const Sepa = [
+     'Sepa',
+     'Austria',
+     'Belgium', 
+     'Bulgaria', 
+     'Croatia', 
+     'Cyprus', 
+     'Czech Republic', 
+     'Denmark', 
+     'Estonia', 
+     'Finland', 
+     'France', 
+     'Germany', 
+     'Greece', 
+     'Hungary', 
+     'Ireland', 
+     'Italy', 
+     'Latvia', 
+     'Lithuania', 
+     'Luxembourg', 
+     'Malta', 
+     'Netherlands', 
+     'Poland', 
+     'Portugal', 
+     'Romania', 
+     'Slovakia', 
+     'Slovenia', 
+     'Spain', 
+     'Sweden', 
+     'United Kingdom'
  ];
 
 class createBank{
@@ -293,15 +327,15 @@ class createBank{
             document.querySelector("#b2b").checked ? b2b = true : b2b = false;
             document.querySelector("#active").checked ? active = true : active = false;
 
-            const selectedCountry = document.querySelectorAll(".multi-select__selected-label");
-            const selectedArr = [];
-            selectedCountry.forEach(item => selectedArr.push(item.textContent.trim()));
+            // const selectedCountry = document.querySelectorAll(".multi-select__selected-label");
+            // const selectedArr = [];
+            // selectedCountry.forEach(item => selectedArr.push(item.textContent.trim()));
 
             var editedBank = {
                 "name" : document.querySelector("#bankName").value, 
                 "beneficiary_name" : document.querySelector("#benefName").value,  
                 "solution_name" : document.querySelector("#solName").value,  
-                "country" : selectedArr,
+                "country" : "", // selectedArr
                 "beneficiary address" : document.querySelector("#benefAddress").value,
                 "max_wire" : +(document.querySelector("#maxWire").value), 
                 "min_wire" : +(document.querySelector("#minWire").value),  
@@ -453,39 +487,39 @@ class createBank{
             this.changeSwitcherStatus();
         }
 
-        // 1. Multiple select options START
+        // // 1. Multiple select options START
 
-            // 1.1 Render List of Countries
-        const multiSelect = document.querySelector(".multi-select__label");
-        editedBank[0].country.forEach(elem => {
-            const span = document.createElement('span');
-            span.classList.add('multi-select__selected-label');
-            span.innerHTML = `${elem}<i class="fa fa-times" data-value=${elem} aria-hidden="true"></i>`;
-            multiSelect.append(span);
-        });
+        //     // 1.1 Render List of Countries
+        // const multiSelect = document.querySelector(".multi-select__label");
+        // editedBank[0].country.forEach(elem => {
+        //     const span = document.createElement('span');
+        //     span.classList.add('multi-select__selected-label');
+        //     span.innerHTML = `${elem}<i class="fa fa-times" data-value=${elem} aria-hidden="true"></i>`;
+        //     multiSelect.append(span);
+        // });
 
-        const listOfCountries = document.querySelectorAll('.multi-select__option');
-        listOfCountries.forEach(elem => {
-            editedBank[0].country.some(item => item === elem.textContent.trim())
-            ?
-            elem.classList.add('multi-select__option--selected')
-            :
-            null
-        });
+        // const listOfCountries = document.querySelectorAll('.multi-select__option');
+        // listOfCountries.forEach(elem => {
+        //     editedBank[0].country.some(item => item === elem.textContent.trim())
+        //     ?
+        //     elem.classList.add('multi-select__option--selected')
+        //     :
+        //     null
+        // });
 
-        document.querySelectorAll('.fa-times').forEach(item => item.addEventListener('click', (event) => {
-            event.preventDefault();
-            const elem = event.target.closest('span');
-            listOfCountries.forEach(country => {
-                country.textContent.trim() === elem
-                ?
-                country.classList.remove('multi-select__option--selected')
-                :
-                null
-            });
-            elem.remove();
-        }));
-        // Multiple select options END
+        // document.querySelectorAll('.fa-times').forEach(item => item.addEventListener('click', (event) => {
+        //     event.preventDefault();
+        //     const elem = event.target.closest('span');
+        //     listOfCountries.forEach(country => {
+        //         country.textContent.trim() === elem
+        //         ?
+        //         country.classList.remove('multi-select__option--selected')
+        //         :
+        //         null
+        //     });
+        //     elem.remove();
+        // }));
+        // // Multiple select options END
         
 
         var bankName =  document.querySelector("#bankName").value = editedBank[0].name;
@@ -625,7 +659,7 @@ class createBank{
     switcherIphone = (status) => {
         // Switcher like iphone
         var elem = document.querySelector('.js-switch');
-        var init = new Switchery(elem, {secondaryColor: '#DF4949', disable: status});
+        new Switchery(elem, {secondaryColor: '#DF4949', disable: status});
     }
 
     createBank = async () => {
@@ -645,15 +679,15 @@ class createBank{
             document.querySelector("#b2b").checked ? b2b = true : b2b = false;
             document.querySelector("#active").checked ? active = true : active = false;
 
-            const selectedCountry = document.querySelectorAll(".multi-select__selected-label");
-            const selectedArr = [];
-            selectedCountry.forEach(item => selectedArr.push(item.textContent.trim()));
+            // const selectedCountry = document.querySelectorAll(".multi-select__selected-label");
+            // const selectedArr = [];
+            // selectedCountry.forEach(item => selectedArr.push(item.textContent.trim()));
 
             var bank = {
                 "name" : document.querySelector("#bankName").value, 
                 "beneficiary_name" : document.querySelector("#benefName").value,  
                 "solution_name" : document.querySelector("#solName").value,  
-                "country" : selectedArr,
+                "country" : "", // selectedArr
                 "currency": ["EUR", "USD"],
                 "beneficiary_address" : document.querySelector("#benefAddress").value,
                 "max_wire" : +(document.querySelector("#maxWire").value), 
@@ -799,10 +833,167 @@ class createBank{
         } 
     }
 
+    renderBankCountries = () => { 
+        // Event for opening hiden select 
+        document.querySelector('.autocomplete-select').addEventListener('click', (event) => {
+            event.preventDefault();
+
+            document.querySelector('.multi-select__select').classList.add('multi-select__select--opened');
+
+            const filterSelect = document.querySelector('.filter_select');
+            filterSelect.style.display = 'flex';
+            filterSelect.addEventListener("click", (event) => {
+                if (event.target === filterSelect){
+                    // Hide Modal Window
+                    filterSelect.style.display = "none";
+                    document.querySelector('.multi-select__select').classList.remove('multi-select__select--opened');
+                }
+            });
+
+            this.setFocusForInput('.multi-select__autocomplete')
+        });
+
+
+        // Render List of Countries
+        allCountry.reverse().forEach(elem => {
+            const container = document.querySelector('.multi-select__options');
+            const option = document.createElement('div');
+            option.classList.add('multi-select__option');
+            option.setAttribute('data-value', elem);
+            elem.trim() === "Select All" || elem.trim() === "Sepa" ? option.style.fontWeight = 'bold' : null;
+            option.innerHTML = `${elem}`;
+            container.appendChild(option);
+        });
+
+        // Event for every Option is List
+        const optionsNode = document.querySelectorAll('.multi-select__option');
+        optionsNode.forEach(item => {
+            item.addEventListener('click', (event) => {
+                event.preventDefault();
+
+                const optionName = event.target.getAttribute('data-value');
+                const container = document.querySelector('.multi-select__label');
+
+                if (optionName.trim() === "Select All") {
+                    this.selectAllOptions();
+
+                } else if (optionName.trim() === "Sepa") {
+                    this.selectSepaOptions();
+
+                } else {
+                    const selectedOption = document.createElement('span');
+                    selectedOption.classList.add('multi-select__selected-label');
+                    selectedOption.setAttribute('data-value', optionName);
+                    selectedOption.innerHTML = `${optionName}<i class="fa fa-times" data-value="${optionName}"></i>`;
+                    container.appendChild(selectedOption);
+                    event.target.classList.add('multi-select__option--selected');
+                }
+
+                // Event for delete Coutries
+                document.querySelectorAll('.fa-times').forEach(elem => {
+                    elem.addEventListener('click', this.deleteElementFromAvailableBanks);
+                });
+
+                this.chengeOptionsHeight();
+
+            });
+        });
+    }
+
+    selectAllOptions = () => {
+        const optionsNode = document.querySelectorAll('.multi-select__option');
+        const container = document.querySelector('.multi-select__label');
+        optionsNode.forEach(item => {
+            const optionName = item.textContent.trim();
+            item.classList.add('multi-select__option--selected');
+            const selectedOption = document.createElement('span');
+            selectedOption.classList.add('multi-select__selected-label');
+            selectedOption.setAttribute('data-value', optionName);
+            selectedOption.innerHTML = `${optionName}<i class="fa fa-times" data-value="${optionName}"></i>`;
+            container.appendChild(selectedOption);
+        });
+    }
+
+    selectSepaOptions = () => {
+        const optionsNode = document.querySelectorAll('.multi-select__option');
+        const container = document.querySelector('.multi-select__label');
+        optionsNode.forEach(item => {
+            const optionName = item.textContent.trim();
+            if (Sepa.includes(optionName)) {
+                item.classList.add('multi-select__option--selected');
+                const selectedOption = document.createElement('span');
+                selectedOption.classList.add('multi-select__selected-label');
+                selectedOption.setAttribute('data-value', optionName);
+                selectedOption.innerHTML = `${optionName}<i class="fa fa-times" data-value="${optionName}"></i>`;
+                container.appendChild(selectedOption);
+            }
+        });
+    }
+
+    deleteElementFromAvailableBanks = (e) => {
+        e.preventDefault();
+        const elemName = e.target.getAttribute('data-value');
+        if (elemName.trim() === "Select All" || elemName.trim() === "Sepa") {
+            document.querySelector('.multi-select__label').innerHTML = '';
+            document.querySelectorAll('.multi-select__option').forEach(item => {
+                item.classList.remove('multi-select__option--selected')
+            });
+
+        } else {
+            document.querySelectorAll('.multi-select__option').forEach(item => {
+            
+                elemName === item.textContent.trim() 
+                ?
+                item.classList.remove('multi-select__option--selected')
+                :
+                null
+    
+            });
+            e.target.closest('span').remove();
+        }
+        
+        this.chengeOptionsHeight();
+    }
+    
+    chengeOptionsHeight = () => {
+        // Checking height of Block With elemtns
+        const heightWrapper = document.querySelector('.autocomplete-select').clientHeight;
+        document.querySelector('.multi-select__options').style.top = `${heightWrapper + 10}px`;
+    }
+
+    setFocusForInput = (input) => {
+        document.querySelector(input).focus();
+    }
+
+    eventForInput = () => {
+        document.querySelector('.multi-select__autocomplete').addEventListener('keyup', (event) => {
+            event.preventDefault()
+
+            const optionsNode = document.querySelectorAll('.multi-select__option');
+            optionsNode.forEach(item => {
+                if (event.target.value.trim()) {
+                    const firstArr = (item.textContent.trim().toLowerCase());
+                    const secondArr = (event.target.value.trim().toLowerCase());
+
+                    firstArr.includes(secondArr)
+                    ?
+                    item.classList.remove('multi-select__option--hidden')
+                    :
+                    item.classList.add('multi-select__option--hidden')
+                } else {
+                    item.classList.remove('multi-select__option--hidden');
+                }
+
+            });
+        });
+    }
+
     render(){
         this.editOrCreateBank();
         // this.renderAllCountry();
         this.switch.addEventListener("click", this.changeSwitcherStatus);
+        this.renderBankCountries()
+        this.eventForInput()
     }
 }
 

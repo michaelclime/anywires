@@ -517,6 +517,16 @@ main {
 
 
 /* Multiple Select START */
+.filter_select {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background-color: inherit;
+    position: fixed;
+    top: 0; bottom: 0; left: 0; right: 0;
+    z-index: 4;
+}
+
 .bankCountry-block {
     display: flex;
     justify-content: space-between;
@@ -552,6 +562,7 @@ main {
     border-bottom: 1.5px solid #20A5F7;
     background: transparent;
     color: #aaaaaa;
+    z-index: 5;
 }
 
 

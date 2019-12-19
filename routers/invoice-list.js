@@ -142,7 +142,7 @@ router.post("/get-invoices-partly", jsonParser, async (req, res) => {
     // Cheking one or two days Creation START.
     var firstCrea = req.body.firstCrea;
     var secondCrea = req.body.secondCrea;
-    if (firstCrea.trim()) {
+    if (firstCrea) {
         var creation = datesObj("dates.creation_date", firstCrea, secondCrea);
         Object.assign(filter, creation);
     } 
@@ -151,14 +151,13 @@ router.post("/get-invoices-partly", jsonParser, async (req, res) => {
     // Cheking one or two days Receive START.
     var firstRec = req.body.firstRec;
     var secondRec = req.body.secondRec;
-    if (firstRec.trim()) {
+    if (firstRec) {
         var receive = datesObj("dates.received_date", firstRec, secondRec);
         Object.assign(filter, receive);
     } 
     // Cheking one or two days Receive END.
 
     try {
-        console.log(filter);
         // Get 10 Invoices
         const invoices = await Invoice.find(filter).sort({_id:-1}).skip(skip).limit(limit);
         // Get count of Invoices

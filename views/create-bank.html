@@ -282,9 +282,17 @@
             
 						</div>
 
+						<div class="filter_select"></div>
 						<div class="bankCountry-block">
 							<label for="bankCountry-block">Available countries:</label>
-							<div class="autocomplete-select"></div>
+							<div class="autocomplete-select">
+								<div class="multi-select__select multi-select__select--multiple">
+									<span class="multi-select__label"></span>
+									<div class="multi-select__options"
+										><input class="multi-select__autocomplete" type="text" /> 
+									</div>
+								</div>
+							</div>
 						</div>
 						
 					</div>
@@ -517,7 +525,7 @@
 		</script>
 		<!-- Multiple Select -->
 		
-		<script src="js/multipleSelect/bundle.min.js"></script>
+		<!-- <script src="js/multipleSelect/bundle.min.js"></script>
 		<script>
 			
 			const multipleSelectValue = [];
@@ -531,6 +539,6 @@
 				icon: "fa fa-times",
 				onChange: value => {},
 			});
-		</script>
+		</script> -->
 	</body>
 </html>
