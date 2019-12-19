@@ -327,15 +327,16 @@ class createBank{
             document.querySelector("#b2b").checked ? b2b = true : b2b = false;
             document.querySelector("#active").checked ? active = true : active = false;
 
-            // const selectedCountry = document.querySelectorAll(".multi-select__selected-label");
-            // const selectedArr = [];
-            // selectedCountry.forEach(item => selectedArr.push(item.textContent.trim()));
+            const selectedCountry = document.querySelectorAll(".multi-select__selected-label");
+            const selectedArr = [];
+            selectedCountry.forEach(item => selectedArr.push(item.textContent.trim()));
+            const filteredArr = selectedArr.filter(item => item !== "Sepa" && item !== "Select All");
 
             var editedBank = {
                 "name" : document.querySelector("#bankName").value, 
                 "beneficiary_name" : document.querySelector("#benefName").value,  
                 "solution_name" : document.querySelector("#solName").value,  
-                "country" : "", // selectedArr
+                "country" : filteredArr,
                 "beneficiary address" : document.querySelector("#benefAddress").value,
                 "max_wire" : +(document.querySelector("#maxWire").value), 
                 "min_wire" : +(document.querySelector("#minWire").value),  
@@ -488,44 +489,33 @@ class createBank{
         }
 
         // // 1. Multiple select options START
+        const containerSelect = document.querySelector('.multi-select__label');
+        editedBank[0].country.forEach(item => {
+            const optionName = item.trim();
+            const selectedOption = document.createElement('span');
+            selectedOption.classList.add('multi-select__selected-label');
+            selectedOption.setAttribute('data-value', optionName);
+            selectedOption.innerHTML = `${optionName}<i class="fa fa-times" data-value="${optionName}"></i>`;
+            containerSelect.appendChild(selectedOption);
 
-        //     // 1.1 Render List of Countries
-        // const multiSelect = document.querySelector(".multi-select__label");
-        // editedBank[0].country.forEach(elem => {
-        //     const span = document.createElement('span');
-        //     span.classList.add('multi-select__selected-label');
-        //     span.innerHTML = `${elem}<i class="fa fa-times" data-value=${elem} aria-hidden="true"></i>`;
-        //     multiSelect.append(span);
-        // });
+            const optionsNode = document.querySelectorAll('.multi-select__option');
+            optionsNode.forEach(elem => {
+                elem.textContent.trim() === optionName ? elem.classList.add('multi-select__option--selected') : null;
+            });
+        });
+        
+        // Event for delete Coutries
+        document.querySelectorAll('.fa-times').forEach(elem => {
+            elem.addEventListener('click', this.deleteElementFromAvailableBanks);
+        });
 
-        // const listOfCountries = document.querySelectorAll('.multi-select__option');
-        // listOfCountries.forEach(elem => {
-        //     editedBank[0].country.some(item => item === elem.textContent.trim())
-        //     ?
-        //     elem.classList.add('multi-select__option--selected')
-        //     :
-        //     null
-        // });
-
-        // document.querySelectorAll('.fa-times').forEach(item => item.addEventListener('click', (event) => {
-        //     event.preventDefault();
-        //     const elem = event.target.closest('span');
-        //     listOfCountries.forEach(country => {
-        //         country.textContent.trim() === elem
-        //         ?
-        //         country.classList.remove('multi-select__option--selected')
-        //         :
-        //         null
-        //     });
-        //     elem.remove();
-        // }));
+        this.chengeOptionsHeight();
         // // Multiple select options END
         
 
         var bankName =  document.querySelector("#bankName").value = editedBank[0].name;
         var benefName =  document.querySelector("#benefName").value = editedBank[0].beneficiary_name;
         var solName =  document.querySelector("#solName").value = editedBank[0].solution_name;
-        // var bankCountry =  document.querySelector("#bankCountry").value = editedBank[0].country;
         var benefAddress =  document.querySelector("#benefAddress").value = editedBank[0].beneficiary_address;
         var maxWire =  document.querySelector("#maxWire").value = editedBank[0].max_wire;
         var minWire =  document.querySelector("#minWire").value = editedBank[0].min_wire;
@@ -679,15 +669,16 @@ class createBank{
             document.querySelector("#b2b").checked ? b2b = true : b2b = false;
             document.querySelector("#active").checked ? active = true : active = false;
 
-            // const selectedCountry = document.querySelectorAll(".multi-select__selected-label");
-            // const selectedArr = [];
-            // selectedCountry.forEach(item => selectedArr.push(item.textContent.trim()));
+            const selectedCountry = document.querySelectorAll(".multi-select__selected-label");
+            const selectedArr = [];
+            selectedCountry.forEach(item => selectedArr.push(item.textContent.trim()));
+            const filteredArr = selectedArr.filter(item => item !== "Sepa" && item !== "Select All");
 
             var bank = {
                 "name" : document.querySelector("#bankName").value, 
                 "beneficiary_name" : document.querySelector("#benefName").value,  
                 "solution_name" : document.querySelector("#solName").value,  
-                "country" : "", // selectedArr
+                "country" : filteredArr, 
                 "currency": ["EUR", "USD"],
                 "beneficiary_address" : document.querySelector("#benefAddress").value,
                 "max_wire" : +(document.querySelector("#maxWire").value), 
@@ -903,6 +894,7 @@ class createBank{
     selectAllOptions = () => {
         const optionsNode = document.querySelectorAll('.multi-select__option');
         const container = document.querySelector('.multi-select__label');
+        container.innerHTML = '';
         optionsNode.forEach(item => {
             const optionName = item.textContent.trim();
             item.classList.add('multi-select__option--selected');
@@ -917,6 +909,7 @@ class createBank{
     selectSepaOptions = () => {
         const optionsNode = document.querySelectorAll('.multi-select__option');
         const container = document.querySelector('.multi-select__label');
+        container.innerHTML = '';
         optionsNode.forEach(item => {
             const optionName = item.textContent.trim();
             if (Sepa.includes(optionName)) {
@@ -990,10 +983,9 @@ class createBank{
 
     render(){
         this.editOrCreateBank();
-        // this.renderAllCountry();
         this.switch.addEventListener("click", this.changeSwitcherStatus);
         this.renderBankCountries()
-        this.eventForInput()
+        this.eventForInput();
     }
 }
 
