@@ -248,15 +248,15 @@ const allCountry = [
     'Albania',
     'Aland Islands',
     'Afghanistan',
-    'Sepa',
-    'Select All'
  ];
 
  const Sepa = [
-     'Sepa',
+     'Aland Islands',
      'Austria',
+     'Azores',
      'Belgium', 
      'Bulgaria', 
+     'Canary Islands',
      'Croatia', 
      'Cyprus', 
      'Czech Republic', 
@@ -264,23 +264,42 @@ const allCountry = [
      'Estonia', 
      'Finland', 
      'France', 
+     'French Guiana',
      'Germany', 
+     'Gibraltar',
      'Greece', 
+     'Guadeloupe',
+     'Guernsey',
      'Hungary', 
+     'Iceland',
      'Ireland', 
+     'Isle of Man',
      'Italy', 
+     'Jersey',
      'Latvia', 
+     'Liechtenstein',
      'Lithuania', 
      'Luxembourg', 
+     'Madeira',
      'Malta', 
+     'Martinique',
+     'Mayotte',
+     'Monaco',
      'Netherlands', 
+     'Norway',
      'Poland', 
      'Portugal', 
+     'Réunion',
      'Romania', 
+     'Saint Barthelemy',
+     'Saint Martin (French part)',
+     'Saint Pierre and Miquelon',
+     'San Marino',
      'Slovakia', 
      'Slovenia', 
      'Spain', 
      'Sweden', 
+     'Switzerland',
      'United Kingdom'
  ];
 
@@ -841,17 +860,16 @@ class createBank{
                 }
             });
 
-            this.setFocusForInput('.multi-select__autocomplete')
+            // this.setFocusForInput('.multi-select__autocomplete');
         });
 
-
+        
         // Render List of Countries
         allCountry.reverse().forEach(elem => {
             const container = document.querySelector('.multi-select__options');
             const option = document.createElement('div');
             option.classList.add('multi-select__option');
             option.setAttribute('data-value', elem);
-            elem.trim() === "Select All" || elem.trim() === "Sepa" ? option.style.fontWeight = 'bold' : null;
             option.innerHTML = `${elem}`;
             container.appendChild(option);
         });
@@ -864,21 +882,13 @@ class createBank{
 
                 const optionName = event.target.getAttribute('data-value');
                 const container = document.querySelector('.multi-select__label');
-
-                if (optionName.trim() === "Select All") {
-                    this.selectAllOptions();
-
-                } else if (optionName.trim() === "Sepa") {
-                    this.selectSepaOptions();
-
-                } else {
-                    const selectedOption = document.createElement('span');
-                    selectedOption.classList.add('multi-select__selected-label');
-                    selectedOption.setAttribute('data-value', optionName);
-                    selectedOption.innerHTML = `${optionName}<i class="fa fa-times" data-value="${optionName}"></i>`;
-                    container.appendChild(selectedOption);
-                    event.target.classList.add('multi-select__option--selected');
-                }
+                
+                const selectedOption = document.createElement('span');
+                selectedOption.classList.add('multi-select__selected-label');
+                selectedOption.setAttribute('data-value', optionName);
+                selectedOption.innerHTML = `${optionName}<i class="fa fa-times" data-value="${optionName}"></i>`;
+                container.appendChild(selectedOption);
+                event.target.classList.add('multi-select__option--selected');
 
                 // Event for delete Coutries
                 document.querySelectorAll('.fa-times').forEach(elem => {
@@ -889,6 +899,12 @@ class createBank{
 
             });
         });
+    }
+
+    removeAllCountries = () => {
+        document.querySelector('.multi-select__label').innerHTML = '';
+        document.querySelectorAll('.multi-select__option').forEach(item => item.classList.remove('multi-select__option--selected'));
+        this.chengeOptionsHeight();
     }
 
     selectAllOptions = () => {
@@ -903,6 +919,11 @@ class createBank{
             selectedOption.setAttribute('data-value', optionName);
             selectedOption.innerHTML = `${optionName}<i class="fa fa-times" data-value="${optionName}"></i>`;
             container.appendChild(selectedOption);
+        });
+        this.chengeOptionsHeight();
+        // Event for delete Coutries
+        document.querySelectorAll('.fa-times').forEach(elem => {
+            elem.addEventListener('click', this.deleteElementFromAvailableBanks);
         });
     }
 
@@ -921,32 +942,32 @@ class createBank{
                 container.appendChild(selectedOption);
             }
         });
+        this.chengeOptionsHeight();
+        // Event for delete Coutries
+        document.querySelectorAll('.fa-times').forEach(elem => {
+            elem.addEventListener('click', this.deleteElementFromAvailableBanks);
+        });
     }
+
 
     deleteElementFromAvailableBanks = (e) => {
         e.preventDefault();
         const elemName = e.target.getAttribute('data-value');
-        if (elemName.trim() === "Select All" || elemName.trim() === "Sepa") {
-            document.querySelector('.multi-select__label').innerHTML = '';
-            document.querySelectorAll('.multi-select__option').forEach(item => {
-                item.classList.remove('multi-select__option--selected')
-            });
+        
+        document.querySelectorAll('.multi-select__option').forEach(item => {
+        
+            elemName === item.textContent.trim() 
+            ?
+            item.classList.remove('multi-select__option--selected')
+            :
+            null
 
-        } else {
-            document.querySelectorAll('.multi-select__option').forEach(item => {
-            
-                elemName === item.textContent.trim() 
-                ?
-                item.classList.remove('multi-select__option--selected')
-                :
-                null
-    
-            });
-            e.target.closest('span').remove();
-        }
+        });
+        e.target.closest('span').remove();
         
         this.chengeOptionsHeight();
     }
+
     
     chengeOptionsHeight = () => {
         // Checking height of Block With elemtns
@@ -954,9 +975,11 @@ class createBank{
         document.querySelector('.multi-select__options').style.top = `${heightWrapper + 10}px`;
     }
 
+
     setFocusForInput = (input) => {
         document.querySelector(input).focus();
     }
+
 
     eventForInput = () => {
         document.querySelector('.multi-select__autocomplete').addEventListener('keyup', (event) => {
@@ -986,6 +1009,9 @@ class createBank{
         this.switch.addEventListener("click", this.changeSwitcherStatus);
         this.renderBankCountries()
         this.eventForInput();
+        document.querySelector('#bankCountry__buttons--remove-all').addEventListener('click', this.removeAllCountries);
+        document.querySelector('#bankCountry__buttons--select-all').addEventListener('click', this.selectAllOptions);
+        document.querySelector('#bankCountry__buttons--sepa').addEventListener('click', this.selectSepaOptions);
     }
 }
 
