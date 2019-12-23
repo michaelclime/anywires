@@ -1,64 +1,14 @@
 const express = require('express'),
     router = new express.Router(),
-    mongo = require('mongodb'),
     jsonParser = express.json();
+    objectId = require("mongodb").ObjectID,
     User = require("../modules/user");
- 
-const url = 'mongodb://18.216.223.81:27017/anywires';
 
+    
 router.get('/users.html', isLoggedIn, function(req, res) {
     res.render("users.html");
 });
 
-router.post("/getPart-Users", jsonParser, (req, res) => {
-    mongo.connect(url, (err, db) => {
-        var number = req.body.number;
-        var filter = req.body.filter;
-
-        // Cheking one or two days Last Login
-        var startLog = req.body.startLog;
-        var endLog = req.body.endLog;
-        if (startLog) {
-            var login = datesObj("last_login_date", startLog, endLog);
-            Object.assign(filter, login);
-        } 
-        // // Cheking one or two days Last Login
-
-        db.collection("users")
-        .find(filter, { score: { $meta: "textScore" } })
-        .skip(number)
-        .limit(10)
-        .sort({ score: { $meta: "textScore" } })
-        .toArray(function(err, user){
-            if(err) return console.log("Error with upload Users Part!", err);
-            db.close();
-            res.send(user);
-        })
-    });
-});
-
-router.post("/getNumber-Users", jsonParser, (req, res) => {
-    mongo.connect(url, (err, db) => {
-        var filter = req.body.filter;
-        filter === undefined ? filter = {} : "";
-
-        // Cheking one or two days Creation START.
-        var startLog = req.body.startLog;
-        var endLog = req.body.endLog;
-        if (startLog) {
-            var login = datesObj("last_login_date", startLog, endLog);
-            Object.assign(filter, login);
-        } 
-        // // Cheking one or two days Creation END.
-
-        db.collection("users").find(filter).count(function(err, user){
-            if(err) return console.log("Error with upload Number of Users!", err);
-            
-            db.close();
-            res.send({"numbers": user});
-        })
-    });
-});
 
 // @route POST /getUserByFilter
 // @desc Create Merchant
@@ -69,6 +19,67 @@ router.post("/getUserByFilter", jsonParser, (req, res) => {
         res.send(users);
     });
 });
+
+
+// @route POST /get-user-partly
+// @desc Get users Partly
+router.post('/get-user-partly', jsonParser, async (req, res) => {
+    const filter = req.body.filter;
+    const skip = req.body.skip;
+    const limit = req.body.limit;
+
+    // Cheking one or two days Creation START.
+    const firstCrea = req.body.firstCrea;
+    const secondCrea = req.body.secondCrea;
+    if (firstCrea) {
+        const creation = datesObj("dateCreation", firstCrea, secondCrea);
+        Object.assign(filter, creation);
+    } 
+    //
+
+    // If there is merchant filter we need to find filed wit Object ID
+    filter.merchant ? filter.merchant = new objectId(filter.merchant) : null;
+    // 
+
+    const count = await User.countDocuments(filter);
+    const users = await User.aggregate([
+        { $match : filter },
+        { 
+            $lookup: { 
+                from: 'merchants',
+                localField: 'merchant',
+                foreignField: '_id',
+                as: 'merchantsList'
+            }
+        }
+    ]).sort({"fullname": 1}).skip(skip).limit(limit);
+    res.send({
+        users,
+        count
+    });
+});
+
+
+// Function for Dates Range START.
+var datesObj = (key, first, second) => {
+    var Obj = {};
+    if (second === false) {
+        var month = new Date(first).getMonth();
+        var day = new Date(first).getDate();
+        var year = new Date(first).getFullYear();
+        second = (month+1) +"/"+ (day+1) +"/"+ year;
+        second = new Date(second);
+        second.setHours(23);
+        second.setMinutes(59);
+        second.setSeconds(59);
+    } 
+    Obj[key] = {
+        $gte: new Date(first),
+        $lte: new Date(second),
+    };
+    return Obj;
+}; 
+// Function for Dates Range END.
 
 
 function isLoggedIn(req, res, next) {

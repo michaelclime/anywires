@@ -28,6 +28,14 @@ router.get("/getMerchants", jsonParser, (req, res) => {
     });
 });
 
+router.get("/get-all-merchants", jsonParser, async (req, res) => {
+    const filter = req.body.filter;
+    const merchants = await Merchant.find(filter).sort({"name": 1});
+    res.send({
+        merchants
+    })
+});
+
 
 router.post("/getPart-Merchants", jsonParser, (req, res) => {
     mongo.connect(url, (err, db) => {

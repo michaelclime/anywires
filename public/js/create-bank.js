@@ -313,7 +313,7 @@ class createBank{
     }
 
     editBankRequest = async (bankName, newData) => {
-        return  await fetch("http://18.216.223.81:3000/editBank", {
+        return  await fetch("http://localhost:3000/editBank", {
             method: "POST",
             body: JSON.stringify({
                 bankName,
@@ -464,13 +464,13 @@ class createBank{
 
             await this.editBankRequest(this.bankName, editedBank);
 
-            document.location.replace("http://18.216.223.81:3000/banks.html");
+            document.location.replace("http://localhost:3000/banks.html");
 
         }
     }
 
     getBank = async (number, filter) => {
-        return  await fetch("http://18.216.223.81:3000/getPart-Banks", {
+        return  await fetch("http://localhost:3000/getPart-Banks", {
             method: "POST",
             body: JSON.stringify({
                 number, 
@@ -650,7 +650,7 @@ class createBank{
     };
 
     createBankRequest = async (newBank) => {
-        return  await fetch("http://18.216.223.81:3000/createBank", {
+        return  await fetch("http://localhost:3000/createBank", {
                 method: "POST",
                 body: JSON.stringify({
                     newBank
@@ -827,7 +827,7 @@ class createBank{
             // Loading GIF Off
             this.loadingGIF.style.display = "none";
             
-            document.location.replace("http://18.216.223.81:3000/banks.html");
+            document.location.replace("http://localhost:3000/banks.html");
         }
     }
 

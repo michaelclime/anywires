@@ -12,7 +12,6 @@
 		<link rel="stylesheet" type="text/css" href="css/users.css" />
 		<link rel="stylesheet" type="text/css" href="css/menu.css" />
 		<link rel="stylesheet" type="text/css" href="css/menu-comp.css" />
-		<link rel="stylesheet" type="text/css" href="css/users-table.css">
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 		<link href="https://fonts.googleapis.com/css?family=Frank+Ruhl+Libre&display=swap" rel="stylesheet">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
@@ -21,8 +20,10 @@
 		<link rel="stylesheet" href="./css/datepicker.min.css">
 		<script src="./js/datepicker.min.js"></script>
 		<script src="./js/datepicker.en.js"></script>
+		<!-- Moment JS -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
 	</head>
-	<body>
+	<body class="modal-open">
 		<span class="curentUserId hide"><%= currentUser.id %></span>
 		<span class="currentUserTypeClass hide"><%= currentUser.typeClass %></span>
 			<div id="burgerMenu">
@@ -83,6 +84,13 @@
 				
 		<div id="wrapper">
 
+			<!-- Loading GIF -->
+			<div id="loadingGif">
+				<img src="img/Gear-2.5s-200px.gif" alt="loading GIF"/>
+				<div>Loading...</div>
+			</div>
+			<!-- Loading GIF -->
+
 			<!--Header Page-->
 			<header> 
 				<img src="./img/group.png" alt="icon page" width="40px" height="40px"/>
@@ -106,7 +114,6 @@
 								<label for="filterMerchant-block">Mechant</label>
 								<select id="merchant" class="clear" type="text">
 										<option value="" selected></option>
-										<option value="Merchant 1">Merchant 1</option>
 								</select>
 							</div>
 	
@@ -115,13 +122,13 @@
 								<select class="clear" id="filterRole" type="text">
 									<option value="" selected></option>
 									<option value="Crm FinanceManager">CRM finance manager</option>
-									<option value="Crm InvoiceManager">CRM invoice manager</option>
-									<option value="Crm SuccessManager">CRM Success manager</option>
-									<option value="Crm Admin">CRM admin</option>
-									<option value="Merchant Manager">Merchant manager</option>
-									<option value="Invoice Manager">Invoice manager</option>
-									<option value="Affiliate">Affiliate</option>
-									<option value="Solution Manager">Solution manager</option>
+                                    <option value="Crm InvoiceManager">CRM invoice manager</option>
+                                    <option value="Crm SuccessManager">CRM Success manager</option>
+                                    <option value="Crm Admin">CRM admin</option>
+                                    <option value="Merchant Manager">Merchant manager</option>
+                                    <option value="Invoice Manager">Invoice manager</option>
+                                    <option value="Affiliate">Affiliate</option>
+                                    <option value="Solution Manager">Solution manager</option>
 								</select>
 							</div>
 						</div>
@@ -154,24 +161,10 @@
 						<table id="table-user">
 							<thead>
 								<tr class="table-head">
-									<th class="column1">Name
-														<span class="sortUp"><i class=" fas fa-sort-alpha-down-alt"></i></span>
-														<span class="sortDown"><i class="fas fa-sort-alpha-down"></i></span>
-									</th>
-									<th class="column2">Email
-														<span class="sortUp"><i class=" fas fa-sort-alpha-down-alt"></i></span>
-														<span class="sortDown"><i class="fas fa-sort-alpha-down"></i></span>
-														
-									</th>
-									<th class="column3">Merchant
-														<span class="sortUp"><i class=" fas fa-sort-alpha-down-alt"></i></span>
-														<span class="sortDown"><i class="fas fa-sort-alpha-down"></i></span>
-														
-									</th>
-									<th class="column4">Role
-														<span class="sortUp"><i class=" fas fa-sort-alpha-down-alt"></i></span>
-														<span class="sortDown"><i class="fas fa-sort-alpha-down"></i></span>
-									</th>
+									<th class="column1">Name</th>
+									<th class="column2">Email</th>
+									<th class="column3">Merchant</th>
+									<th class="column4">Role</th>
 									<th class="column5">Last login date</th>
 								</tr>
 							</thead>
