@@ -28,6 +28,14 @@ router.get("/getMerchants", jsonParser, (req, res) => {
     });
 });
 
+router.get("/get-all-merchants", jsonParser, async (req, res) => {
+    const filter = req.body.filter;
+    const merchants = await Merchant.find(filter).sort({"name": 1});
+    res.send({
+        merchants
+    })
+});
+
 
 router.post("/getPart-Merchants", jsonParser, (req, res) => {
     mongo.connect(url, (err, db) => {
@@ -110,9 +118,11 @@ router.post("/createMerchant", jsonParser, (req, res) => {
     }).then(() => res.send("Merchant has been created successfully!"));
 });
 
+
 // @route POST /editMerchant
 // @desc Edited one Merchant
 router.post("/editMerchant", jsonParser, (req, res) => {
+    console.log(req.body)
     const mechantName = req.body.mechantName;
     const newData = req.body.newData;
     Merchant.updateOne({"name": mechantName}, {$set: newData}, {returnOriginal: false}, (err, bank) => {
@@ -120,6 +130,21 @@ router.post("/editMerchant", jsonParser, (req, res) => {
         res.send("Merchant has been changed successfully!")
     });
 });
+
+// @route POST /editMerchant
+// @desc Edited one Merchant
+router.post("/edit-merchant", jsonParser, async (req, res) => {
+    const mechantName = req.body.mechantName;
+    const newData = req.body.newData;
+    try {
+        await Merchant.updateOne({"name": mechantName}, {$set: newData});
+        res.send("Merchant has been changed successfully!")
+    } catch (e) {
+        console.log('Error: ', e);
+        res.send(e); 
+    }
+});
+
 
 function isLoggedIn(req, res, next) {
     if(req.isAuthenticated()) {

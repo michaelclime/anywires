@@ -1,5 +1,3 @@
-// import { threadId } from "worker_threads";
-
 class CreateMerchant{
     constructor(){
         this.merchName = "";
@@ -12,7 +10,7 @@ class CreateMerchant{
     }
 
     getListOfAffilliate = async () => {
-        const Affilliate = await this.getListOfAffilliateReq({"role":"Affiliate"});
+        const Affilliate = await this.getListOfAffilliateReq({"role": "Affiliate"});
         const container = document.querySelector("#affiliate");
         Affilliate.forEach( aff => {
             const option = document.createElement("option");
@@ -37,9 +35,16 @@ class CreateMerchant{
     }
 
     editMerchantReq = async (mechantName, newData) => {
-        return  await fetch("http://18.216.223.81:3000/getMerchants")
+        return  await fetch("http://18.216.223.81:3000/edit-merchant", {
+            method: "POST",
+            body: JSON.stringify({
+                mechantName,
+                newData
+            }),
+            headers: {'Content-Type': 'application/json'}
+        })
         .then(res => {
-            return res.json();
+            return res.text();
         }) 
         .catch(err => {
             console.log(err);
@@ -79,9 +84,14 @@ class CreateMerchant{
 
             b2b.checked === true ? b2b = true : b2b = false;
 
+            const selectedBanks = document.querySelectorAll(".multi-select__selected-label");
+            const selectedArr = [];
+            selectedBanks.forEach(item => selectedArr.push(item.textContent.trim()));
+
             var editedMerch = {
                 "name": document.querySelector("#merchName").value,
                 "b2b": b2b,
+                "available_banks": selectedArr,
                 "fees.in_c2b.percent": +(document.querySelector("#in_c2b_per").value),
                 "fees.in_c2b.flat": +(document.querySelector("#in_c2b_flat").value),
 
@@ -160,7 +170,6 @@ class CreateMerchant{
 
             await this.editMerchantReq(this.merchName, editedMerch);
             document.location.replace("http://18.216.223.81:3000/merchants.html");
-
         }
     }
 
@@ -171,80 +180,104 @@ class CreateMerchant{
         var b2b = document.querySelector("#b2b");
         this.currentMerchant[0].b2b === true ? b2b.checked = true : b2b.checked = false;
 
-        var merchName = document.querySelector("#merchName").value = this.currentMerchant[0].name;
-        var promoCode = document.querySelector("#promoCode").value = this.currentMerchant[0].promo_code;
-        var affiliate = document.querySelector("#affiliate").value = this.currentMerchant[0].users.affiliate;
-        var merchEmail = document.querySelector("#merchEmail").value = this.currentMerchant[0].support_email;
-        var tagline = document.querySelector("#tagline").value = this.currentMerchant[0].specifications.tagline;
-        var backColor = document.querySelector("#backColor").value = this.currentMerchant[0].specifications.background;
-        var firstColor = document.querySelector("#firstColor").value = this.currentMerchant[0].specifications.first_color;
-        var secondColor = document.querySelector("#secondColor").value = this.currentMerchant[0].specifications.second_color;
+        // // 1. Multiple select options START
+        const containerSelect = document.querySelector('.multi-select__label');
+        this.currentMerchant[0].available_banks.forEach(item => {
+            const optionName = item.trim();
+            const selectedOption = document.createElement('span');
+            selectedOption.classList.add('multi-select__selected-label');
+            selectedOption.setAttribute('data-value', optionName);
+            selectedOption.innerHTML = `${optionName}<i class="fa fa-times" data-value="${optionName}"></i>`;
+            containerSelect.appendChild(selectedOption);
+
+            const optionsNode = document.querySelectorAll('.multi-select__option');
+            optionsNode.forEach(elem => {
+                elem.textContent.trim() === optionName ? elem.classList.add('multi-select__option--selected') : null;
+            });
+        });
+        
+        // Event for delete Coutries
+        document.querySelectorAll('.fa-times').forEach(elem => {
+            elem.addEventListener('click', this.deleteElementFromAvailableBanks);
+        });
+
+        this.chengeOptionsHeight();
+        // // Multiple select options END
+
+        document.querySelector("#merchName").value = this.currentMerchant[0].name;
+        document.querySelector("#promoCode").value = this.currentMerchant[0].promo_code;
+        document.querySelector("#affiliate").value = this.currentMerchant[0].users.affiliate;
+        document.querySelector("#merchEmail").value = this.currentMerchant[0].support_email;
+        document.querySelector("#tagline").value = this.currentMerchant[0].specifications.tagline;
+        document.querySelector("#backColor").value = this.currentMerchant[0].specifications.background;
+        document.querySelector("#firstColor").value = this.currentMerchant[0].specifications.first_color;
+        document.querySelector("#secondColor").value = this.currentMerchant[0].specifications.second_color;
         if (b2b.checked === true) {
             document.querySelector(".b2b_true_block").style.display = "flex";
-            var bankAddress = document.querySelector("#bankAddress").value = this.currentMerchant[0].specifications_b2b.bank_address;
-            var IBAN = document.querySelector("#IBAN").value = this.currentMerchant[0].specifications_b2b.iban;
-            var SWIFT = document.querySelector("#SWIFT").value = this.currentMerchant[0].specifications_b2b.swift;
-            var benefName = document.querySelector("#benefName").value = this.currentMerchant[0].specifications_b2b.beneficiary_name;
-            var benefAddress = document.querySelector("#benefAddress").value = this.currentMerchant[0].specifications_b2b.beneficiary_address;
-            var bankName = document.querySelector("#bankName").value = this.currentMerchant[0].specifications_b2b.bank_name;
+            document.querySelector("#bankAddress").value = this.currentMerchant[0].specifications_b2b.bank_address;
+            document.querySelector("#IBAN").value = this.currentMerchant[0].specifications_b2b.iban;
+            document.querySelector("#SWIFT").value = this.currentMerchant[0].specifications_b2b.swift;
+            document.querySelector("#benefName").value = this.currentMerchant[0].specifications_b2b.beneficiary_name;
+            document.querySelector("#benefAddress").value = this.currentMerchant[0].specifications_b2b.beneficiary_address;
+            document.querySelector("#bankName").value = this.currentMerchant[0].specifications_b2b.bank_name;
         }
 
         // Commissions Render
-        var inc2b_per = document.querySelector("#in_c2b_per").value = this.currentMerchant[0].fees.in_c2b.percent;
-        var in_c2b_flat = document.querySelector("#in_c2b_flat").value = this.currentMerchant[0].fees.in_c2b.flat;
+        document.querySelector("#in_c2b_per").value = this.currentMerchant[0].fees.in_c2b.percent;
+        document.querySelector("#in_c2b_flat").value = this.currentMerchant[0].fees.in_c2b.flat;
         // 
-        var inb2b_per = document.querySelector("#in_b2b_per").value = this.currentMerchant[0].fees.in_b2b.percent;
-        var inb2b_flat = document.querySelector("#in_b2b_flat").value = this.currentMerchant[0].fees.in_b2b.flat;
+        document.querySelector("#in_b2b_per").value = this.currentMerchant[0].fees.in_b2b.percent;
+        document.querySelector("#in_b2b_flat").value = this.currentMerchant[0].fees.in_b2b.flat;
         // 
-        var feeAccSetup_flat = document.querySelector("#feeAccSetup_flat").value = this.currentMerchant[0].fees.fee_account_setup.flat;
+        document.querySelector("#feeAccSetup_flat").value = this.currentMerchant[0].fees.fee_account_setup.flat;
         // 
-        var feeAccMonthly_flat = document.querySelector("#feeAccMonthly_flat").value = this.currentMerchant[0].fees.fee_account_mounthly.flat;
+        document.querySelector("#feeAccMonthly_flat").value = this.currentMerchant[0].fees.fee_account_mounthly.flat;
         // 
-        var feeAccAdd_flat = document.querySelector("#feeAccAdd_flat").value = this.currentMerchant[0].fees.fee_account_additional.flat;
+        document.querySelector("#feeAccAdd_flat").value = this.currentMerchant[0].fees.fee_account_additional.flat;
         // 
-        var feeAccDed_flat = document.querySelector("#feeAccDed_flat").value = this.currentMerchant[0].fees.fee_account_dedicated.flat;
+        document.querySelector("#feeAccDed_flat").value = this.currentMerchant[0].fees.fee_account_dedicated.flat;
         // 
-        var fineRecall_per = document.querySelector("#fineRecall_per").value = this.currentMerchant[0].fees.fine_recall.percent;
-        var fineRecall_flat = document.querySelector("#fineRecall_flat").value = this.currentMerchant[0].fees.fine_recall.flat;
+        document.querySelector("#fineRecall_per").value = this.currentMerchant[0].fees.fine_recall.percent;
+        document.querySelector("#fineRecall_flat").value = this.currentMerchant[0].fees.fine_recall.flat;
         // 
-        var fineAttIncPp_per = document.querySelector("#fineAttIncPp_per").value = this.currentMerchant[0].fees.fine_attitude_incorrect_payment_purpose.percent;
-        var fineAttIncPp_flat = document.querySelector("#fineAttIncPp_flat").value = this.currentMerchant[0].fees.fine_attitude_incorrect_payment_purpose.flat;
+        document.querySelector("#fineAttIncPp_per").value = this.currentMerchant[0].fees.fine_attitude_incorrect_payment_purpose.percent;
+        document.querySelector("#fineAttIncPp_flat").value = this.currentMerchant[0].fees.fine_attitude_incorrect_payment_purpose.flat;
         // 
-        var fineAttWrongAm_per = document.querySelector("#fineAttWrongAm_per").value = this.currentMerchant[0].fees.fine_attitude_wrong_amount.percent;
-        var fineAttWrongAm_flat = document.querySelector("#fineAttWrongAm_flat").value = this.currentMerchant[0].fees.fine_attitude_wrong_amount.flat;
+        document.querySelector("#fineAttWrongAm_per").value = this.currentMerchant[0].fees.fine_attitude_wrong_amount.percent;
+        document.querySelector("#fineAttWrongAm_flat").value = this.currentMerchant[0].fees.fine_attitude_wrong_amount.flat;
         // 
-        var fineAttMoreThen1Pay_per = document.querySelector("#fineAttMoreThen1Pay_per").value = this.currentMerchant[0].fees.fine_attitude_more_then_1_payment.percent;
-        var fineAttMoreThen1Pay_flat = document.querySelector("#fineAttMoreThen1Pay_flat").value = this.currentMerchant[0].fees.fine_attitude_more_then_1_payment.flat;
+        document.querySelector("#fineAttMoreThen1Pay_per").value = this.currentMerchant[0].fees.fine_attitude_more_then_1_payment.percent;
+        document.querySelector("#fineAttMoreThen1Pay_flat").value = this.currentMerchant[0].fees.fine_attitude_more_then_1_payment.flat;
         // 
-        var fineAttPayWithInv_per = document.querySelector("#fineAttPayWithInv_per").value = this.currentMerchant[0].fees.fine_attitude_payment_without_invoice.percent;
-        var fineAttPayWithInv_flat = document.querySelector("#fineAttPayWithInv_flat").value = this.currentMerchant[0].fees.fine_attitude_payment_without_invoice.flat;
+        document.querySelector("#fineAttPayWithInv_per").value = this.currentMerchant[0].fees.fine_attitude_payment_without_invoice.percent;
+        document.querySelector("#fineAttPayWithInv_flat").value = this.currentMerchant[0].fees.fine_attitude_payment_without_invoice.flat;
         // 
-        var fineAttPayFromBlo_per = document.querySelector("#fineAttPayFromBlo_per").value = this.currentMerchant[0].fees.fine_attitude_payment_from_blocked.percent;
-        var fineAttPayFromBlo_flat = document.querySelector("#fineAttPayFromBlo_flat").value = this.currentMerchant[0].fees.fine_attitude_payment_from_blocked.flat;
+        document.querySelector("#fineAttPayFromBlo_per").value = this.currentMerchant[0].fees.fine_attitude_payment_from_blocked.percent;
+        document.querySelector("#fineAttPayFromBlo_flat").value = this.currentMerchant[0].fees.fine_attitude_payment_from_blocked.flat;
         // 
-        var fineAttMoreThen1perRecalls_per = document.querySelector("#fineAttMoreThen1perRecalls_per").value = this.currentMerchant[0].fees.fine_attitude_more_then_1percent_recalls.percent;
-        var fineAttMoreThen1perRecalls_flat = document.querySelector("#fineAttMoreThen1perRecalls_flat").value = this.currentMerchant[0].fees.fine_attitude_more_then_1percent_recalls.flat;
+        document.querySelector("#fineAttMoreThen1perRecalls_per").value = this.currentMerchant[0].fees.fine_attitude_more_then_1percent_recalls.percent;
+        document.querySelector("#fineAttMoreThen1perRecalls_flat").value = this.currentMerchant[0].fees.fine_attitude_more_then_1percent_recalls.flat;
         // 
-        var settBTC_per = document.querySelector("#settBTC_per").value = this.currentMerchant[0].fees.settlement_btc.percent;
-        var settBTC_flat = document.querySelector("#settBTC_flat").value = this.currentMerchant[0].fees.settlement_btc.flat;
+        document.querySelector("#settBTC_per").value = this.currentMerchant[0].fees.settlement_btc.percent;
+        document.querySelector("#settBTC_flat").value = this.currentMerchant[0].fees.settlement_btc.flat;
         // 
-        var settATM_per = document.querySelector("#settATM_per").value = this.currentMerchant[0].fees.settlement_atm.percent;
-        var settATM_flat = document.querySelector("#settATM_flat").value = this.currentMerchant[0].fees.settlement_atm.flat;
+        document.querySelector("#settATM_per").value = this.currentMerchant[0].fees.settlement_atm.percent;
+        document.querySelector("#settATM_flat").value = this.currentMerchant[0].fees.settlement_atm.flat;
         // 
-        var settC2Bwire_per = document.querySelector("#settC2Bwire_per").value = this.currentMerchant[0].fees.settlement_c2b_wire.percent;
-        var settC2Bwire_flat = document.querySelector("#settC2Bwire_flat").value = this.currentMerchant[0].fees.settlement_c2b_wire.flat;
+        document.querySelector("#settC2Bwire_per").value = this.currentMerchant[0].fees.settlement_c2b_wire.percent;
+        document.querySelector("#settC2Bwire_flat").value = this.currentMerchant[0].fees.settlement_c2b_wire.flat;
         // 
-        var settB2Bwire_per = document.querySelector("#settB2Bwire_per").value = this.currentMerchant[0].fees.settlement_b2b_wire.percent;
-        var settB2Bwire_flat = document.querySelector("#settB2Bwire_flat").value = this.currentMerchant[0].fees.settlement_b2b_wire.flat;
+        document.querySelector("#settB2Bwire_per").value = this.currentMerchant[0].fees.settlement_b2b_wire.percent;
+        document.querySelector("#settB2Bwire_flat").value = this.currentMerchant[0].fees.settlement_b2b_wire.flat;
         // 
-        var settRecall_per = document.querySelector("#settRecall_per").value = this.currentMerchant[0].fees.settlement_recall.percent;
-        var settRecall_flat = document.querySelector("#settRecall_flat").value = this.currentMerchant[0].fees.settlement_recall.flat;
+        document.querySelector("#settRecall_per").value = this.currentMerchant[0].fees.settlement_recall.percent;
+        document.querySelector("#settRecall_flat").value = this.currentMerchant[0].fees.settlement_recall.flat;
         // 
-        var settRefund_per = document.querySelector("#settRefund_per").value = this.currentMerchant[0].fees.settlement_refund.percent;
-        var settRefund_flat = document.querySelector("#settRefund_flat").value = this.currentMerchant[0].fees.settlement_refund.flat;
+        document.querySelector("#settRefund_per").value = this.currentMerchant[0].fees.settlement_refund.percent;
+        document.querySelector("#settRefund_flat").value = this.currentMerchant[0].fees.settlement_refund.flat;
         // 
-        var settB2C_per = document.querySelector("#settB2C_per").value = this.currentMerchant[0].fees.settlement_b2c.percent;
-        var settB2C_flat = document.querySelector("#settB2C_flat").value = this.currentMerchant[0].fees.settlement_b2c.flat;
+        document.querySelector("#settB2C_per").value = this.currentMerchant[0].fees.settlement_b2c.percent;
+        document.querySelector("#settB2C_flat").value = this.currentMerchant[0].fees.settlement_b2c.flat;
 
         // Loading GIF On
         this.loadingGIF.style.display = "none";
@@ -324,6 +357,11 @@ class CreateMerchant{
             var b2b = false;
             document.querySelector("#b2b").checked ? b2b = true : b2b = false;
             var createdBy = this.currentUser.textContent.trim();
+
+            const selectedBanks = document.querySelectorAll(".multi-select__selected-label");
+            const selectedArr = [];
+            selectedBanks.forEach(item => selectedArr.push(item.textContent.trim()));
+
             var newMerchant = {
                 "name": document.querySelector("#merchName").value,
                 "b2b": b2b,
@@ -440,7 +478,7 @@ class CreateMerchant{
                     "affiliate": document.querySelector("#affiliate").value,
                 },
                 "wallets": [],
-                "available_banks": [],
+                "available_banks": selectedArr,
                 "specifications_b2b": {
                     "beneficiary_name": document.querySelector("#benefName").value,
                     "beneficiary_address": document.querySelector("#benefAddress").value,
@@ -463,14 +501,15 @@ class CreateMerchant{
                     "balance_frozen": 0
                 }
             };
+            
             await this.createMerchantReq(newMerchant);
-            console.log(newMerchant);
             // Loading GIF OFF
             this.loadingGIF.style.display = "none";
 
             document.location.replace("http://18.216.223.81:3000/merchants.html");
         } 
     }
+
 
     createOrEdit = () => {
         var score = decodeURIComponent(location.search.substr(1)).split('&');
@@ -492,6 +531,7 @@ class CreateMerchant{
         }
     }
 
+
     render(){
         this.createOrEdit();
         // 
@@ -502,4 +542,197 @@ class CreateMerchant{
     }
 }
 
-const merchant = new CreateMerchant();
+
+class BankList extends CreateMerchant {
+    constructor(){
+        super();
+        this.renderBanks();
+        this.activeBanks = [];
+    }
+
+    getAllBanks = async () => {
+        return  await fetch("http://18.216.223.81:3000/get-all-banks")
+        .then(res => {
+            return res.json();
+        }) 
+        .catch(err => {
+            console.log(err);
+        });
+    }
+    
+    renderBankList = async () => { 
+        // Get List of Banks
+        const allBanks = await this.getAllBanks();
+        this.activeBanks = allBanks.banks.filter(bank => bank.active === true).map(elem => elem.name);
+        const bankList = allBanks.banks.map(bank => bank.name);
+        // 
+
+        // Event for opening hiden select 
+        document.querySelector('.autocomplete-select').addEventListener('click', (event) => {
+            event.preventDefault();
+
+            document.querySelector('.multi-select__select').classList.add('multi-select__select--opened');
+
+            const filterSelect = document.querySelector('.filter_select');
+            filterSelect.style.display = 'flex';
+            filterSelect.addEventListener("click", (event) => {
+                if (event.target === filterSelect){
+                    // Hide Modal Window
+                    filterSelect.style.display = "none";
+                    document.querySelector('.multi-select__select').classList.remove('multi-select__select--opened');
+                }
+            });
+
+            // this.setFocusForInput('.multi-select__autocomplete');
+        });
+
+        
+        // Render List of Countries
+        bankList.reverse().forEach(elem => {
+            const container = document.querySelector('.multi-select__options');
+            const option = document.createElement('div');
+            option.classList.add('multi-select__option');
+            option.setAttribute('data-value', elem);
+            option.innerHTML = `${elem}`;
+            container.appendChild(option);
+        });
+
+        // Event for every Option is List
+        const optionsNode = document.querySelectorAll('.multi-select__option');
+        optionsNode.forEach(item => {
+            item.addEventListener('click', (event) => {
+                event.preventDefault();
+
+                const optionName = event.target.getAttribute('data-value');
+                const container = document.querySelector('.multi-select__label');
+                
+                const selectedOption = document.createElement('span');
+                selectedOption.classList.add('multi-select__selected-label');
+                selectedOption.setAttribute('data-value', optionName);
+                selectedOption.innerHTML = `${optionName}<i class="fa fa-times" data-value="${optionName}"></i>`;
+                container.appendChild(selectedOption);
+                event.target.classList.add('multi-select__option--selected');
+
+                // Event for delete Coutries
+                document.querySelectorAll('.fa-times').forEach(elem => {
+                    elem.addEventListener('click', this.deleteElementFromAvailableBanks);
+                });
+
+                this.chengeOptionsHeight();
+
+            });
+        });
+    }
+
+
+    removeAllCountries = () => {
+        document.querySelector('.multi-select__label').innerHTML = '';
+        document.querySelectorAll('.multi-select__option').forEach(item => item.classList.remove('multi-select__option--selected'));
+        this.chengeOptionsHeight();
+    }
+
+
+    selectAllOptions = () => {
+        const optionsNode = document.querySelectorAll('.multi-select__option');
+        const container = document.querySelector('.multi-select__label');
+        container.innerHTML = '';
+        optionsNode.forEach(item => {
+            const optionName = item.textContent.trim();
+            item.classList.add('multi-select__option--selected');
+            const selectedOption = document.createElement('span');
+            selectedOption.classList.add('multi-select__selected-label');
+            selectedOption.setAttribute('data-value', optionName);
+            selectedOption.innerHTML = `${optionName}<i class="fa fa-times" data-value="${optionName}"></i>`;
+            container.appendChild(selectedOption);
+        });
+        this.chengeOptionsHeight();
+        // Event for delete Coutries
+        document.querySelectorAll('.fa-times').forEach(elem => {
+            elem.addEventListener('click', this.deleteElementFromAvailableBanks);
+        });
+    }
+
+
+    selectActiveOptions = () => {
+        const optionsNode = document.querySelectorAll('.multi-select__option');
+        const container = document.querySelector('.multi-select__label');
+        container.innerHTML = '';
+        optionsNode.forEach(item => {
+            const optionName = item.textContent.trim();
+            if (this.activeBanks.includes(optionName)) {
+                item.classList.add('multi-select__option--selected');
+                const selectedOption = document.createElement('span');
+                selectedOption.classList.add('multi-select__selected-label');
+                selectedOption.setAttribute('data-value', optionName);
+                selectedOption.innerHTML = `${optionName}<i class="fa fa-times" data-value="${optionName}"></i>`;
+                container.appendChild(selectedOption);
+            }
+        });
+        this.chengeOptionsHeight();
+        // Event for delete Coutries
+        document.querySelectorAll('.fa-times').forEach(elem => {
+            elem.addEventListener('click', this.deleteElementFromAvailableBanks);
+        });
+    }
+
+
+    deleteElementFromAvailableBanks = (e) => {
+        e.preventDefault();
+        const elemName = e.target.getAttribute('data-value');
+        
+        document.querySelectorAll('.multi-select__option').forEach(item => {
+        
+            elemName === item.textContent.trim() 
+            ?
+            item.classList.remove('multi-select__option--selected')
+            :
+            null
+
+        });
+        e.target.closest('span').remove();
+        
+        this.chengeOptionsHeight();
+    }
+
+    
+    chengeOptionsHeight = () => {
+        // Checking height of Block With elemtns
+        const heightWrapper = document.querySelector('.autocomplete-select').clientHeight;
+        document.querySelector('.multi-select__options').style.top = `${heightWrapper + 10}px`;
+    }
+
+
+    eventForInput = () => {
+        document.querySelector('.multi-select__autocomplete').addEventListener('keyup', (event) => {
+            event.preventDefault()
+
+            const optionsNode = document.querySelectorAll('.multi-select__option');
+            optionsNode.forEach(item => {
+                if (event.target.value.trim()) {
+                    const firstArr = (item.textContent.trim().toLowerCase());
+                    const secondArr = (event.target.value.trim().toLowerCase());
+
+                    firstArr.includes(secondArr)
+                    ?
+                    item.classList.remove('multi-select__option--hidden')
+                    :
+                    item.classList.add('multi-select__option--hidden')
+                } else {
+                    item.classList.remove('multi-select__option--hidden');
+                }
+
+            });
+        });
+    }
+
+    renderBanks(){
+        // Render Bank List
+        this.renderBankList();
+        this.eventForInput();
+        document.querySelector('#bankList__buttons--remove-all').addEventListener('click', this.removeAllCountries);
+        document.querySelector('#bankList__buttons--select-all').addEventListener('click', this.selectAllOptions);
+        document.querySelector('#bankList__buttons--active').addEventListener('click', this.selectActiveOptions);
+    }
+}
+
+const merchant = new BankList();

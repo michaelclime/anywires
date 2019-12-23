@@ -199,7 +199,7 @@
             
                                 <div class="modal_item">
                                     <label for="affiliate">Affiliate:</label>
-                                    <select id="affiliate" class="required">
+                                    <select id="affiliate" >
 										<option value="" selected></option>
 									</select>
                                 </div>
@@ -287,7 +287,29 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- b2b end -->
+						<!-- b2b end -->
+						
+						<!-- Banks List -->
+						<div class="filter_select"></div>
+						<div class="bankList-block">
+							<label for="bankList-block">Available banks:</label>
+							<div class="autocomplete-select">
+								<div class="multi-select__select multi-select__select--multiple">
+									<span class="multi-select__label"></span>
+									<div class="multi-select__options"
+										><input class="multi-select__autocomplete" type="text" /> 
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="bankList__buttons--block">
+							<button id="bankList__buttons--active">Active</button>
+							<button id="bankList__buttons--select-all">Select All</button>
+							<button id="bankList__buttons--remove-all">Remove All</button>
+						</div>
+						<!-- Banks List end -->
+
 					</div>
 					
 					<h2>Commissions</h2>
@@ -476,21 +498,21 @@
 					<button id="create_merch">Create</button>
 			</main>
 			
-			<!-- Alert Window -->
-			<div class="alert_filter">
-				<div class="alert_wrapper bounceIn">
-					<div class="alert_head">
-						<img id="alert_image" src="../img/alert_img.png" alt="Alert image">
-					</div>
-					<div class="alert_body">
-						<h2>Oops...</h2>
-						<p id="alert_body_text">You can't do that!</p>
-					</div>
-					<div class="alert_footer">
-						<button id="alert_button">OK</button>
-					</div>
+		<!-- Alert Window -->
+		<div class="alert_filter">
+			<div class="alert_wrapper bounceIn">
+				<div class="alert_head">
+					<img id="alert_image" src="../img/alert_img.png" alt="Alert image">
+				</div>
+				<div class="alert_body">
+					<h2>Oops...</h2>
+					<p id="alert_body_text">You can't do that!</p>
+				</div>
+				<div class="alert_footer">
+					<button id="alert_button">OK</button>
 				</div>
 			</div>
+		</div>
 
 		<script src="js/create-merchant.js"></script>
 		<script src="js/authorizationMenu.js"></script>

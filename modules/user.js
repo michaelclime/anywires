@@ -10,6 +10,7 @@ let UserSchema = new mongoose.Schema({
     role: String,
     merchant: Array,
     dateCreation: Date,
+    lastLoginDate: Date,
     resetPasswordToken: String,
     resetPasswordExpires: Date
 }, {

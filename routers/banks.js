@@ -25,6 +25,16 @@ router.get("/getBanks", (req, res) => {
     });
 });
 
+
+router.get("/get-all-banks", jsonParser, async (req, res) => {
+    const filter = req.body.filter;
+    const banks = await Bank.find(filter).sort({"name": 1});
+    res.send({
+        banks
+    })
+});
+
+
 router.post("/getPart-Banks", jsonParser, (req, res) => {
     mongo.connect(url, (err, db) => {
         var number = req.body.number;
