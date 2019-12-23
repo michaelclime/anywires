@@ -5,7 +5,7 @@ let BankSchema = new mongoose.Schema({
     name: String,
     beneficiary_name: String,
     solution_name: String,
-    country: String,
+    country: Array,
     currency: Array,
     beneficiary_address: String,
     max_wire: Number,

@@ -118,6 +118,9 @@ var datesObj = (key, first, second) => {
         var year = new Date(first).getFullYear();
         second = (month+1) +"/"+ (day+1) +"/"+ year;
         second = new Date(second);
+        second.setHours(23);
+        second.setMinutes(59);
+        second.setSeconds(59);
     } 
     Obj[key] = {
         $gte: new Date(first),
@@ -139,7 +142,7 @@ router.post("/get-invoices-partly", jsonParser, async (req, res) => {
     // Cheking one or two days Creation START.
     var firstCrea = req.body.firstCrea;
     var secondCrea = req.body.secondCrea;
-    if (firstCrea.trim()) {
+    if (firstCrea) {
         var creation = datesObj("dates.creation_date", firstCrea, secondCrea);
         Object.assign(filter, creation);
     } 
@@ -148,7 +151,7 @@ router.post("/get-invoices-partly", jsonParser, async (req, res) => {
     // Cheking one or two days Receive START.
     var firstRec = req.body.firstRec;
     var secondRec = req.body.secondRec;
-    if (firstRec.trim()) {
+    if (firstRec) {
         var receive = datesObj("dates.received_date", firstRec, secondRec);
         Object.assign(filter, receive);
     } 

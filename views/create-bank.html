@@ -20,6 +20,7 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js"></script>
 		<script src="https://kit.fontawesome.com/5355902e87.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+		
 	</head>
 	<body>
 			<% if (currentUser.role == 'Invoice Manager') { %>
@@ -203,13 +204,6 @@
                                     <input id="solName" class="required" type="text" placeholder="Solution name">
                                 </div>
             
-                                <div class="bankCountry-block">
-                                    <label for="bankCountry-block">Bank country:</label>
-                                    <select id="bankCountry" class="required" type="text">
-										<option value="" selected></option>
-									</select>
-                                </div>
-            
                                 <div class="benefAdress-block">
                                     <label for="benefAdress-block">Beneficiary address:</label>
                                     <input id="benefAddress" class="required" type="text" placeholder="Beneficiary address">
@@ -286,7 +280,27 @@
                                 </div>
                             </div>
             
-                        </div>
+						</div>
+
+						<div class="filter_select"></div>
+						<div class="bankCountry-block">
+							<label for="bankCountry-block">Available countries:</label>
+							<div class="autocomplete-select">
+								<div class="multi-select__select multi-select__select--multiple">
+									<span class="multi-select__label"></span>
+									<div class="multi-select__options"
+										><input class="multi-select__autocomplete" type="text" /> 
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="bankCountry__buttons--block">
+							<button id="bankCountry__buttons--select-all">Select All</button>
+							<button id="bankCountry__buttons--sepa">Sepa</button>
+							<button id="bankCountry__buttons--remove-all">Remove All</button>
+						</div>
+						
 					</div>
 					
 					<h2>Commissions</h2>

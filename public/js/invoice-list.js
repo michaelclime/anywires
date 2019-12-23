@@ -60,8 +60,8 @@ class invoiceList {
     reCallStatus = async () => {
         const checkStatus = ["Received", "Approved", "Available"].some((item) => item === this.currentInvoice[0].status);
         if (checkStatus) {
-            // // Loading GIF On
-            // this.loadingGif.style.display = "flex";
+            // Loading GIF On
+            this.loadingGif.style.display = "flex";
 
             const createdBy = this.currentUser.textContent.trim();
             const currentAmount = `amount_${this.currentInvoice[0].status.toLowerCase()}`;
@@ -115,8 +115,8 @@ class invoiceList {
     }
 
     reCallStatusInit = async () => {
-        // Loading GIF On
-        this.loadingGif.style.display = "flex";
+        // // Loading GIF On
+        // this.loadingGif.style.display = "flex";
 
         this.filterRecall.style.display = "flex";
         this.filterRecall.addEventListener("click", (event) => {
@@ -1547,7 +1547,6 @@ class invoiceList {
             // Post new comment
             await this.postCommet(this.currentInvoice[0].number, data, created_by);
 
-            // this.currentInvoice = await this.getInvoices(0, {"number": this.currentInvoice[0].number});
             const dataReq = {
                 skip: 0,
                 limit: 10,
@@ -2155,13 +2154,13 @@ class invoiceList {
 
     
     saveLocalInvoices = async () => {
-        // const user = this.currentUserRole.textContent.trim();
-        // if (user === "Merchant Manager" || user === "Solution Manager") {
-        //     await this.permissionForMerchantInvManager();
+        const user = this.currentUserRole.textContent.trim();
+        if (user === "Merchant Manager" || user === "Solution Manager") {
+            await this.permissionForMerchantInvManager();
             
-        // } else {
+        } else {
             await this.saveLocalMerchant();
-        // }
+        }
         
         await this.saveLocakBanks();
 
