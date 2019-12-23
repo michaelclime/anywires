@@ -1,5 +1,6 @@
 const express = require('express'),
     router = new express.Router(),
+    objectId = require("mongodb").ObjectID, 
     passport = require('passport'),
     User = require('../modules/user'),
     crypto = require('crypto'),
@@ -20,13 +21,15 @@ router.get('/successfullRegister', function(req, res) {
 });
 
 router.post('/register', function(req, res){
+    const merchId = req.body.merchant.map( i => objectId(i));
+
     let newUser = new User({
         username: req.body.username,
         email: req.body.username,
         fullname: req.body.fullname,
         typeClass: req.body.typeClass,
         role: req.body.role,
-        merchant: req.body.merchant,
+        merchant: merchId,
         dateCreation: new Date()
     });
     User.register(newUser, req.body.password, function(err, user) {
