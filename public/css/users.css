@@ -277,6 +277,7 @@ label {
     align-items: center;
     justify-content: space-between;
     padding: 5px 0;
+    position: relative;
 }
 
 .table-arrows img {
@@ -740,3 +741,53 @@ label {
     }
   }
   /* Table User END */
+
+
+  
+/* XLS TIP START */
+.xlsTip {
+    width: 120px;
+    height: 35px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    background: #4D4D4D;
+    color: white;
+    right: 30px;
+    bottom: 10px;
+    border-radius: 3px;
+    font-size: 13px;
+    z-index: 50;
+  }
+  .xlsTip::after {
+    content: "";
+    position: absolute;
+    left: 119px; bottom: 8px;
+    border: 7px solid transparent; border-left: 7px solid #4D4D4D;
+  }
+
+  @keyframes fadeInUp {
+    from {
+        opacity: .3;
+        -webkit-transform: translate3d(-20%, 0, 0);
+        transform: translate3d(-20%, 0, 0);
+      }
+    
+      to {
+        opacity: 1;
+        -webkit-transform: translate3d(0, 0, 0);
+        transform: translate3d(0, 0, 0);
+      }
+  }
+  
+  .fadeInUp {
+    animation: .3s fadeInUp ease-in 1;
+  }
+  /* XLS TIP END */
+
+
+  /* Hiden table XLS */
+  #table__xls {
+      display: none;
+  }

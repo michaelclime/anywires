@@ -9,6 +9,86 @@ class UsersList {
         this.render();
     }
 
+
+    saveXls = async () => {
+        // Loading ON
+        this.loadingGif.style.display = "flex";
+        document.body.classList.add("modal-open");
+        // 
+
+        const data = {
+            filter: this.filter,
+            skip: 0,
+            limit: 1000000
+        };
+        const res = await this.getUserPartly(data);
+
+        // Render hiden table
+        
+        const tbodyXLS = document.querySelector('#table__xls--tbody');
+        res.users.forEach(item => {
+            const trXLS = document.createElement('tr');
+            trXLS.innerHTML = `
+                <td>${moment(item.dateCreation).format("DD-MM-YYYY")}</td>
+                <td>${item.fullname}</td>
+                <td>${item.email}</td>
+                <td>
+                    ${
+                        item.merchantsList.length
+                        ?
+                        item.merchantsList.map(elem => {
+                            return ` 
+                            <div>
+                                ${elem.name}, 
+                            </div>
+                            `
+                        }).join(" ").split(',')
+                        :
+                        ""
+                    }
+                </td>
+                <td>${item.role}</td>
+                <td>${'25-12-1994'}</td>
+            `;
+            tbodyXLS.appendChild(trXLS);
+        });
+        // 
+
+        const tbl = document.getElementById('table__xls');
+        const wb = XLSX.utils.table_to_book(tbl, {
+            sheet: "Users",
+            display: true
+        });
+        const wbout = XLSX.write(wb, {bookType: "xlsx", bookSST: true, type: "binary"});
+        function s2ab(s) {
+            let buf = new ArrayBuffer(s.length);
+            let view = new Uint8Array(buf);
+            for (let i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+            return buf;
+        };
+
+        const date = moment(new Date()).format("DD-MM-YYYY")
+        saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), `users-${date}.xlsx`);
+
+        // Loading OFF
+        this.loadingGif.style.display = "none";
+        document.body.classList.remove("modal-open");
+        // 
+    }
+
+    
+    hoverXLS = () => {
+        document.querySelector(".table-arrows").addEventListener("mouseover", (event) => {
+            event.preventDefault();
+            document.querySelector(".xlsTip").style.display = "flex";
+        });
+        document.querySelector(".table-arrows").addEventListener("mouseout", (event) => {
+            event.preventDefault();
+            document.querySelector(".xlsTip").style.display = "none";
+        });
+    }
+
+
     clearFilters = () => {
         this.filter = {};
         const areas = document.querySelectorAll(".clear");
@@ -17,6 +97,7 @@ class UsersList {
         this.containerPages.innerHTML = "";
         this.countNextPage(this.usersArr, this.usersNum);
     }
+
 
     filterList = async () => {
         // Loading ON
@@ -302,9 +383,11 @@ class UsersList {
 
     render(){
         this.saveLocalUsers();
+        this.hoverXLS();
         document.querySelector("#showBtn").addEventListener("click", this.filterList);
         document.getElementById("search-button").addEventListener("click", this.searchFunction);
         document.querySelector("#clearFilterBtn").addEventListener("click", this.clearFilters);
+        document.querySelector('#dowloadXLS').addEventListener('click', this.saveXls);
     }
 };
 
