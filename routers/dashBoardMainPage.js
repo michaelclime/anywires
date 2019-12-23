@@ -9,7 +9,7 @@ const express = require('express'),
 
 const url = 'mongodb://18.216.223.81:27017/anywires';
 
-router.get('/dashBoardMainPage.html', isLoggedIn, function(req, res) {
+router.get('/dashBoardMainPage.html', visibilityApproval, isLoggedIn, function(req, res) {
     res.render("dashBoardMainPage.html");
 });
 
@@ -206,6 +206,16 @@ function isLoggedIn(req, res, next) {
         return next()
     }
     req.flash('error', 'You need to be logged in to do that');
+    res.redirect('/');
+}
+
+function visibilityApproval(req, res, next) {
+    if( req.user.role === 'Crm Admin' ||  req.user.role === 'Crm FinanceManager' 
+        ||  req.user.role === 'Crm InvoiceManager' ||  req.user.role === 'Crm SuccessManager'
+        ||  req.user.role === "Merchant Manager" || req.user.role === "Invoice Manager") {
+        return next()
+    }
+    req.flash('error', 'Sorry, you don\'t have permission to see this page.');
     res.redirect('/');
 }
    

@@ -37,7 +37,7 @@
 			</div>
         <% } %>
         
-    <a class="backToMain" href='/dashBoardMainPage.html'><span>
+    <a class="backToMain" href='/personal-area.html'><span>
         <i class="fas fa-arrow-left"></i>Back</span></a>
     <div class="invoiceGenerationPage">
         <div class="logo">
@@ -59,10 +59,7 @@
                         <option value="USD">USD</option>
                     </select>
                 </div>
-                <div class="SEPA">
-                    <input type="checkbox" name="sepa">
-                    <span>SEPA</span>
-                </div>
+               
                 <input class='invoiceBtn' type="submit" value='Make an Invoice' >
                 <% if (currentUser.typeClass === 'admin') { %>
                     <div class="merchChoose">

@@ -21,7 +21,10 @@ router.get('/successfullRegister', function(req, res) {
 });
 
 router.post('/register', function(req, res){
-    const merchId = req.body.merchant.map( i => objectId(i));
+    let merchId = [];
+    if (req.body.merchant && req.body.merchant !== null) {
+        merchId = req.body.merchant.map( i => objectId(i));
+    }
 
     let newUser = new User({
         username: req.body.username,

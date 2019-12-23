@@ -407,12 +407,12 @@ const curentUserRole = document.querySelector('.curentUserRole').textContent;
 const curentUserId = document.querySelector('.curentUserId').textContent;
 const currentUserMerchant =  document.querySelector('.currentUserMerchant').textContent.split(',');
 
-if (curentUserRole === 'admin') {
-    let fetchPromise  = fetch('http://18.216.223.81:3000/getMerchants');
+if (curentUserRole === 'Crm Admin') {
+    let fetchPromise  = fetch('http://18.216.223.81:3000/getMerchantsForInv');
     fetchPromise.then(response => {
         return response.json();
         }).then(merchants => {
-
+            
             class MerchantOptoinList {
                 constructor(){
                     this.list = merchants;

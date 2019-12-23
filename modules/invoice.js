@@ -15,7 +15,6 @@ let InvoiceSchema = new mongoose.Schema({
         amount_available: Number
     },
     currency: String,
-    sepa: Boolean,
     merchant: String,
     bank: String,
     dates: {

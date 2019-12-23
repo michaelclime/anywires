@@ -256,11 +256,15 @@
                         <button id="sent">Sent</button>
                         <button id="received">Received</button>
                         <button id="declined">Declined</button> 
-                        <% } else { %>
+                        <% } else if (currentUser.role === "Merchant Manager") { %>
+                            <button id="sent">Sent</button>
+                            <button id="received" class="hide">Received</button>
+                            <button id="declined" class="hide">Declined</button> 
+                        <% } else { %> 
                             <button id="sent" class="hide">Sent</button>
-                            <button id="received"  class="hide">Received</button>
-                            <button id="declined"  class="hide">Declined</button> 
-                        <% } %> 
+                            <button id="received" class="hide">Received</button>
+                            <button id="declined" class="hide">Declined</button> 
+                        <% } %>
                     </div>
                     <div  id="prevSettleBtn">
                         <button class="settlePrevBtn">Preview settlement</button>

@@ -249,15 +249,17 @@
 	
 				</div>
 
-				<div class="main-content-blocks last-item">
-	
-					<div class="info-blocks">
-						<p class="person-info preson-info-merchants">You're working with Merchants:</p>
-						<div class="profile_line"></div>
-						<div class="merList"></div>
+				<% if (currentUser.typeClass !== 'admin') { %>
+					<div class="main-content-blocks last-item">
+		
+						<div class="info-blocks">
+							<p class="person-info preson-info-merchants">You're working with Merchants:</p>
+							<div class="profile_line"></div>
+							<div class="merList"></div>
 
+						</div>
 					</div>
-				</div>
+				<% } %>
 			</main>
 	
 			<footer>
