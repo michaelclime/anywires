@@ -15,7 +15,7 @@ class MerchantList {
         allTd.forEach((td) => {
             td.addEventListener("click", () => {
                 var merchantName = td.parentElement.children[0].textContent;
-                document.location.href = "http://localhost:3000/create-merchant?&" + merchantName;
+                document.location.href = "http://18.216.223.81:3000/create-merchant?&" + merchantName;
             });
         });
     }
@@ -25,7 +25,7 @@ class MerchantList {
         // Loading GIF ON
         this.loadingGif.style.display = "flex";
         document.body.classList.add("modal-open");
-        document.location.href = "http://localhost:3000/create-merchant";
+        document.location.href = "http://18.216.223.81:3000/create-merchant";
     }
 
 
@@ -185,7 +185,7 @@ class MerchantList {
     }
 
     getMerchants = async (number, filter) => {
-        return  await fetch("http://localhost:3000/getPart-Merchants", {
+        return  await fetch("http://18.216.223.81:3000/getPart-Merchants", {
             method: "POST",
             body: JSON.stringify({
                 number, 
@@ -202,7 +202,7 @@ class MerchantList {
     }
 
     getNumber_Merchants = async (filter) => {
-        return  await fetch("http://localhost:3000/getNumber-Merchants", {
+        return  await fetch("http://18.216.223.81:3000/getNumber-Merchants", {
             method: "POST",
             body: JSON.stringify({
                 filter
