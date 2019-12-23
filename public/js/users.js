@@ -218,7 +218,7 @@ class UsersList {
 
 
     getMerchants = async () => {
-        return  await fetch("http://localhost:3000/get-all-merchants")
+        return  await fetch("http://18.216.223.81:3000/get-all-merchants")
         .then(res => {
             return res.json();
         }) 
@@ -251,7 +251,7 @@ class UsersList {
 
 
     getUserPartly = async (data) => {
-        return  await fetch("http://localhost:3000/get-user-partly", {
+        return  await fetch("http://18.216.223.81:3000/get-user-partly", {
             method: "POST",
             body: JSON.stringify(data),
             headers:{'Content-Type': 'application/json'}
