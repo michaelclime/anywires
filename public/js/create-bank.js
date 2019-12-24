@@ -333,16 +333,23 @@ class createBank{
         var requiredFields = document.querySelectorAll(".required");
         var empty = this.checkedEmptyArray(requiredFields);
 
-        if (empty === true) {
+        // Validation for Company Site Field
+        const companySite = (document.querySelector("#bankComSite").value).trim();
+        const validateURL = this.validateHTTPS(companySite);  
+        !validateURL ? this.tipForValidate('.companySite-block__tip', 'Wrong format! Correct - https://site.com/') : null;
+        // 
+
+        if (empty) {
             this.alertWindow("Please fill out all fields!");
             
-            // If All required fields not empty than
-        } else if (empty === false) {
+        } else if(!empty && !validateURL) {
+            this.alertWindow("Wrong company site format! </br> Correct format - https://site.com/");
+
+        // If All required fields not empty than    
+        } else if (!empty && validateURL) {
             // Checking SEPA, B2B and active
-            var sepa = false,
-                b2b = false,
+            var b2b = false,
                 active = false;
-            document.querySelector("#sepa").checked ? sepa = true : sepa = false;
             document.querySelector("#b2b").checked ? b2b = true : b2b = false;
             document.querySelector("#active").checked ? active = true : active = false;
 
@@ -366,7 +373,6 @@ class createBank{
                 "company_site" : document.querySelector("#bankComSite").value,
                 "stop_limit" : +(document.querySelector("#stopLimit").value),
                 "registration_number": document.querySelector("#regNum").value,
-                "sepa" : sepa, 
                 "b2b" : b2b, 
                 "company_logo" : "", 
                 "active" : active, 
@@ -492,11 +498,10 @@ class createBank{
 
         // Bank Info Render
         document.querySelector("#create_bank").innerHTML = "Change";
-        var SEPA = document.querySelector("#sepa"),
-            B2B = document.querySelector("#b2b"),
+        var B2B = document.querySelector("#b2b"),
             active = document.querySelector(".js-switch");
-        editedBank[0].sepa === true ? SEPA.checked = true : SEPA.checked = false;
         editedBank[0].b2b === true ? B2B.checked = true : B2B.checked = false;
+
         if (editedBank[0].active === true){
             active.setAttribute("checked", "checked");
             this.switcherIphone();
@@ -532,84 +537,84 @@ class createBank{
         // // Multiple select options END
         
 
-        var bankName =  document.querySelector("#bankName").value = editedBank[0].name;
-        var benefName =  document.querySelector("#benefName").value = editedBank[0].beneficiary_name;
-        var solName =  document.querySelector("#solName").value = editedBank[0].solution_name;
-        var benefAddress =  document.querySelector("#benefAddress").value = editedBank[0].beneficiary_address;
-        var maxWire =  document.querySelector("#maxWire").value = editedBank[0].max_wire;
-        var minWire =  document.querySelector("#minWire").value = editedBank[0].min_wire;
-        var IBAN_EUR =  document.querySelector("#IBAN_EUR").value = editedBank[0].iban_EUR;
-        var IBAN_USD =  document.querySelector("#IBAN_USD").value = editedBank[0].iban_USD;
-        var SWIFT =  document.querySelector("#SWIFT").value = editedBank[0].swift_bic;
-        var bankAddress =  document.querySelector("#bankAddress").value = editedBank[0].bank_address;
-        var bankComSite =  document.querySelector("#bankComSite").value = editedBank[0].company_site;
-        var stopLimit =  document.querySelector("#stopLimit").value = editedBank[0].stop_limit;
-        var regNum =  document.querySelector("#regNum").value = editedBank[0].registration_number;
-        var description =  document.querySelector("#description").value = editedBank[0].description;
+        document.querySelector("#bankName").value = editedBank[0].name;
+        document.querySelector("#benefName").value = editedBank[0].beneficiary_name;
+        document.querySelector("#solName").value = editedBank[0].solution_name;
+        document.querySelector("#benefAddress").value = editedBank[0].beneficiary_address;
+        document.querySelector("#maxWire").value = editedBank[0].max_wire;
+        document.querySelector("#minWire").value = editedBank[0].min_wire;
+        document.querySelector("#IBAN_EUR").value = editedBank[0].iban_EUR;
+        document.querySelector("#IBAN_USD").value = editedBank[0].iban_USD;
+        document.querySelector("#SWIFT").value = editedBank[0].swift_bic;
+        document.querySelector("#bankAddress").value = editedBank[0].bank_address;
+        document.querySelector("#bankComSite").value = editedBank[0].company_site;
+        document.querySelector("#stopLimit").value = editedBank[0].stop_limit;
+        document.querySelector("#regNum").value = editedBank[0].registration_number;
+        document.querySelector("#description").value = editedBank[0].description;
 
         // Commissions Render
-        var inc2b_per = document.querySelector("#in_c2b_per").value = editedBank[0].solution_fees.in_c2b.percent;
-        var in_c2b_flat = document.querySelector("#in_c2b_flat").value = editedBank[0].solution_fees.in_c2b.flat;
+        document.querySelector("#in_c2b_per").value = editedBank[0].solution_fees.in_c2b.percent;
+        document.querySelector("#in_c2b_flat").value = editedBank[0].solution_fees.in_c2b.flat;
         // 
-        var inb2b_per = document.querySelector("#in_b2b_per").value = editedBank[0].solution_fees.in_b2b.percent;
-        var inb2b_flat = document.querySelector("#in_b2b_flat").value = editedBank[0].solution_fees.in_b2b.flat;
+        document.querySelector("#in_b2b_per").value = editedBank[0].solution_fees.in_b2b.percent;
+        document.querySelector("#in_b2b_flat").value = editedBank[0].solution_fees.in_b2b.flat;
         // 
-        var transfer_per = document.querySelector("#transfer_per").value = editedBank[0].solution_fees.transfer.percent;
-        var transfer_flat = document.querySelector("#transfer_flat").value = editedBank[0].solution_fees.transfer.flat;
+        document.querySelector("#transfer_per").value = editedBank[0].solution_fees.transfer.percent;
+        document.querySelector("#transfer_flat").value = editedBank[0].solution_fees.transfer.flat;
         // 
-        var feeAccSetup_per = document.querySelector("#feeAccSetup_per").value = editedBank[0].solution_fees.fee_account_setup.percent;
-        var feeAccSetup_flat = document.querySelector("#feeAccSetup_flat").value = editedBank[0].solution_fees.fee_account_setup.flat;
+        document.querySelector("#feeAccSetup_per").value = editedBank[0].solution_fees.fee_account_setup.percent;
+        document.querySelector("#feeAccSetup_flat").value = editedBank[0].solution_fees.fee_account_setup.flat;
         // 
-        var feeAccMonthly_per = document.querySelector("#feeAccMonthly_per").value = editedBank[0].solution_fees.fee_account_monthly.percent;
-        var feeAccMonthly_flat = document.querySelector("#feeAccMonthly_flat").value = editedBank[0].solution_fees.fee_account_monthly.flat;
+        document.querySelector("#feeAccMonthly_per").value = editedBank[0].solution_fees.fee_account_monthly.percent;
+        document.querySelector("#feeAccMonthly_flat").value = editedBank[0].solution_fees.fee_account_monthly.flat;
         // 
-        var feeAccAdd_per = document.querySelector("#feeAccAdd_per").value = editedBank[0].solution_fees.fee_account_additional.percent;
-        var feeAccAdd_flat = document.querySelector("#feeAccAdd_flat").value = editedBank[0].solution_fees.fee_account_additional.flat;
+        document.querySelector("#feeAccAdd_per").value = editedBank[0].solution_fees.fee_account_additional.percent;
+        document.querySelector("#feeAccAdd_flat").value = editedBank[0].solution_fees.fee_account_additional.flat;
         // 
-        var feeAccDed_per = document.querySelector("#feeAccDed_per").value = editedBank[0].solution_fees.fee_account_dedicated.percent;
-        var feeAccDed_flat = document.querySelector("#feeAccDed_flat").value = editedBank[0].solution_fees.fee_account_dedicated.flat;
+        document.querySelector("#feeAccDed_per").value = editedBank[0].solution_fees.fee_account_dedicated.percent;
+        document.querySelector("#feeAccDed_flat").value = editedBank[0].solution_fees.fee_account_dedicated.flat;
         // 
-        var fineRecall_per = document.querySelector("#fineRecall_per").value = editedBank[0].solution_fees.fine_recall.percent;
-        var fineRecall_flat = document.querySelector("#fineRecall_flat").value = editedBank[0].solution_fees.fine_recall.flat;
+        document.querySelector("#fineRecall_per").value = editedBank[0].solution_fees.fine_recall.percent;
+        document.querySelector("#fineRecall_flat").value = editedBank[0].solution_fees.fine_recall.flat;
         // 
-        var fineAttIncPp_per = document.querySelector("#fineAttIncPp_per").value = editedBank[0].solution_fees.fine_attitude_incorrect_payment_purpose.percent;
-        var fineAttIncPp_flat = document.querySelector("#fineAttIncPp_flat").value = editedBank[0].solution_fees.fine_attitude_incorrect_payment_purpose.flat;
+        document.querySelector("#fineAttIncPp_per").value = editedBank[0].solution_fees.fine_attitude_incorrect_payment_purpose.percent;
+        document.querySelector("#fineAttIncPp_flat").value = editedBank[0].solution_fees.fine_attitude_incorrect_payment_purpose.flat;
         // 
-        var fineAttWrongAm_per = document.querySelector("#fineAttWrongAm_per").value = editedBank[0].solution_fees.fine_attitude_wrong_amount.percent;
-        var fineAttWrongAm_flat = document.querySelector("#fineAttWrongAm_flat").value = editedBank[0].solution_fees.fine_attitude_wrong_amount.flat;
+        document.querySelector("#fineAttWrongAm_per").value = editedBank[0].solution_fees.fine_attitude_wrong_amount.percent;
+        document.querySelector("#fineAttWrongAm_flat").value = editedBank[0].solution_fees.fine_attitude_wrong_amount.flat;
         // 
-        var fineAttMoreThen1Pay_per = document.querySelector("#fineAttMoreThen1Pay_per").value = editedBank[0].solution_fees.fine_attitude_more_then_1_payment.percent;
-        var fineAttMoreThen1Pay_flat = document.querySelector("#fineAttMoreThen1Pay_flat").value = editedBank[0].solution_fees.fine_attitude_more_then_1_payment.flat;
+        document.querySelector("#fineAttMoreThen1Pay_per").value = editedBank[0].solution_fees.fine_attitude_more_then_1_payment.percent;
+        document.querySelector("#fineAttMoreThen1Pay_flat").value = editedBank[0].solution_fees.fine_attitude_more_then_1_payment.flat;
         // 
-        var fineAttPayWithInv_per = document.querySelector("#fineAttPayWithInv_per").value = editedBank[0].solution_fees.fine_attitude_payment_without_invoice.percent;
-        var fineAttPayWithInv_flat = document.querySelector("#fineAttPayWithInv_flat").value = editedBank[0].solution_fees.fine_attitude_payment_without_invoice.flat;
+        document.querySelector("#fineAttPayWithInv_per").value = editedBank[0].solution_fees.fine_attitude_payment_without_invoice.percent;
+        document.querySelector("#fineAttPayWithInv_flat").value = editedBank[0].solution_fees.fine_attitude_payment_without_invoice.flat;
         // 
-        var fineAttPayFromBlo_per = document.querySelector("#fineAttPayFromBlo_per").value = editedBank[0].solution_fees.fine_attitude_payment_from_blocked.percent;
-        var fineAttPayFromBlo_flat = document.querySelector("#fineAttPayFromBlo_flat").value = editedBank[0].solution_fees.fine_attitude_payment_from_blocked.flat;
+        document.querySelector("#fineAttPayFromBlo_per").value = editedBank[0].solution_fees.fine_attitude_payment_from_blocked.percent;
+        document.querySelector("#fineAttPayFromBlo_flat").value = editedBank[0].solution_fees.fine_attitude_payment_from_blocked.flat;
         // 
-        var fineAttMoreThen1perRecalls_per = document.querySelector("#fineAttMoreThen1perRecalls_per").value = editedBank[0].solution_fees.fine_attitude_more_then_1percent_recalls.percent;
-        var fineAttMoreThen1perRecalls_flat = document.querySelector("#fineAttMoreThen1perRecalls_flat").value = editedBank[0].solution_fees.fine_attitude_more_then_1percent_recalls.flat;
+        document.querySelector("#fineAttMoreThen1perRecalls_per").value = editedBank[0].solution_fees.fine_attitude_more_then_1percent_recalls.percent;
+        document.querySelector("#fineAttMoreThen1perRecalls_flat").value = editedBank[0].solution_fees.fine_attitude_more_then_1percent_recalls.flat;
         // 
-        var settBTC_per = document.querySelector("#settBTC_per").value = editedBank[0].solution_fees.settlement_btc.percent;
-        var settBTC_flat = document.querySelector("#settBTC_flat").value = editedBank[0].solution_fees.settlement_btc.flat;
+        document.querySelector("#settBTC_per").value = editedBank[0].solution_fees.settlement_btc.percent;
+        document.querySelector("#settBTC_flat").value = editedBank[0].solution_fees.settlement_btc.flat;
         // 
-        var settATM_per = document.querySelector("#settATM_per").value = editedBank[0].solution_fees.settlement_atm.percent;
-        var settATM_flat = document.querySelector("#settATM_flat").value = editedBank[0].solution_fees.settlement_atm.flat;
+        document.querySelector("#settATM_per").value = editedBank[0].solution_fees.settlement_atm.percent;
+        document.querySelector("#settATM_flat").value = editedBank[0].solution_fees.settlement_atm.flat;
         // 
-        var settC2Bwire_per = document.querySelector("#settC2Bwire_per").value = editedBank[0].solution_fees.settlement_c2b_wire.percent;
-        var settC2Bwire_flat = document.querySelector("#settC2Bwire_flat").value = editedBank[0].solution_fees.settlement_c2b_wire.flat;
+        document.querySelector("#settC2Bwire_per").value = editedBank[0].solution_fees.settlement_c2b_wire.percent;
+        document.querySelector("#settC2Bwire_flat").value = editedBank[0].solution_fees.settlement_c2b_wire.flat;
         // 
-        var settB2Bwire_per = document.querySelector("#settB2Bwire_per").value = editedBank[0].solution_fees.settlement_b2b_wire.percent;
-        var settB2Bwire_flat = document.querySelector("#settB2Bwire_flat").value = editedBank[0].solution_fees.settlement_b2b_wire.flat;
+        document.querySelector("#settB2Bwire_per").value = editedBank[0].solution_fees.settlement_b2b_wire.percent;
+        document.querySelector("#settB2Bwire_flat").value = editedBank[0].solution_fees.settlement_b2b_wire.flat;
         // 
-        var settRecall_per = document.querySelector("#settRecall_per").value = editedBank[0].solution_fees.settlement_recall.percent;
-        var settRecall_flat = document.querySelector("#settRecall_flat").value = editedBank[0].solution_fees.settlement_recall.flat;
+        document.querySelector("#settRecall_per").value = editedBank[0].solution_fees.settlement_recall.percent;
+        document.querySelector("#settRecall_flat").value = editedBank[0].solution_fees.settlement_recall.flat;
         // 
-        var settRefund_per = document.querySelector("#settRefund_per").value = editedBank[0].solution_fees.settlement_refund.percent;
-        var settRefund_flat = document.querySelector("#settRefund_flat").value = editedBank[0].solution_fees.settlement_refund.flat;
+        document.querySelector("#settRefund_per").value = editedBank[0].solution_fees.settlement_refund.percent;
+        document.querySelector("#settRefund_flat").value = editedBank[0].solution_fees.settlement_refund.flat;
         // 
-        var settB2C_per = document.querySelector("#settB2C_per").value = editedBank[0].solution_fees.settlement_b2c.percent;
-        var settB2C_flat = document.querySelector("#settB2C_flat").value = editedBank[0].solution_fees.settlement_b2c.flat;
+        document.querySelector("#settB2C_per").value = editedBank[0].solution_fees.settlement_b2c.percent;
+        document.querySelector("#settB2C_flat").value = editedBank[0].solution_fees.settlement_b2c.flat;
 
         // Event for Button Create
         document.querySelector("#create_bank").addEventListener("click", this.editBankInitial);
@@ -671,20 +676,47 @@ class createBank{
         new Switchery(elem, {secondaryColor: '#DF4949', disable: status});
     }
 
+
+    tipForValidate = (block, message) => {
+        const container = document.querySelector(block);
+        container.innerHTML = message;
+    }
+
+
+    validateHTTPS = (url) => {
+        const expression = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/gi;
+        const regex = new RegExp(expression);
+        const t = url;
+
+        if (t.match(regex)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
     createBank = async () => {
         var requiredFields = document.querySelectorAll(".required");
         var empty = this.checkedEmptyArray(requiredFields);
+        
+        // Validation for Company Site Field
+        const companySite = (document.querySelector("#bankComSite").value).trim();
+        const validateURL = this.validateHTTPS(companySite);  
+        !validateURL ? this.tipForValidate('.companySite-block__tip', 'Wrong format! Correct - https://site.com/') : null;
+        // 
 
-        if (empty === true) {
+        if (empty) {
             this.alertWindow("Please fill out all fields!");
             
-            // If All required fields not empty than
-        } else if (empty === false) {
+        } else if (!empty && !validateURL){
+            this.alertWindow("Wrong company site format! </br> Correct format - https://site.com/");
+
+        // If All required fields not empty than
+        } else if (!empty && validateURL) {
             // Checking SEPA, B2B and active
-            let sepa = false,
-                b2b = false,
+            let b2b = false,
                 active = false;
-            document.querySelector("#sepa").checked ? sepa = true : sepa = false;
             document.querySelector("#b2b").checked ? b2b = true : b2b = false;
             document.querySelector("#active").checked ? active = true : active = false;
 
@@ -709,7 +741,6 @@ class createBank{
                 "company_site" : document.querySelector("#bankComSite").value,
                 "stop_limit" : +(document.querySelector("#stopLimit").value),
                 "registration_number": document.querySelector("#regNum").value,
-                "sepa" : sepa, 
                 "b2b" : b2b, 
                 "company_logo" : "", 
                 "balance_EUR": {
