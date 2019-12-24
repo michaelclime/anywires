@@ -204,19 +204,19 @@
 								<form  action="/register" class="popup-form" method="POST">
 									<div class="inputSection">
 										<label for="username">Email</label>
-										<input type="text" name="username" id="username" placeholder="Type here...">
+										<input type="email" name="username" id="username" placeholder="Type here..." required>
 									</div>
 									<div class="inputSection">
 										<label for="fullname">Full Name</label>
-										<input type="text" name="fullname" id="fullname" placeholder="Type here...">
+										<input type="text" name="fullname" id="fullname" placeholder="Type here..." required>
 									</div>
 									<div class="inputSection">
 										<label for="password">Password</label>
-										<input type="text" name="password" id="password" placeholder="Type here...">
+										<input type="password" name="password" id="password" placeholder="Type here..." required>
 									</div>
 									<div class="inputSection">
 										<label for="typeClass">Type</label>
-										<select id="typeClass" class="selectMenu"  name="typeClass">
+										<select id="typeClass" class="selectMenu"  name="typeClass" required>
 											<option value=""></option>
 											<option value="admin">Admin</option>
 											<option value="client">Client</option>
@@ -224,7 +224,7 @@
 									</div>
 									<div class="inputSection">
 										<label for="role">Role</label>
-										<select id="role" class="selectMenu" name="role">
+										<select id="role" class="selectMenu" name="role" required>
 												<option value=""></option>
 												<option value="Crm FinanceManager">CRM Finance manager</option>
 												<option value="Crm InvoiceManager">CRM Invoice manager</option>
@@ -266,15 +266,15 @@
 								<form  action="/register" class="popup-form" method="POST">
 									<div class="inputSection">
 										<label for="username">Email</label>
-										<input type="text" name="username" id="username" placeholder="Type here...">
+										<input type="email" name="username" id="username" placeholder="Type here..." required>
 									</div>
 									<div class="inputSection">
 										<label for="fullname">Full Name</label>
-										<input type="text" name="fullname" id="fullname" placeholder="Type here...">
+										<input type="text" name="fullname" id="fullname" placeholder="Type here..." required>
 									</div>
 									<div class="inputSection">
 										<label for="password">Password</label>
-										<input type="text" name="password" id="password" placeholder="Type here...">
+										<input type="text" name="password" id="password" placeholder="Type here..." required>
 									</div>
 									<div class="inputSection hide">
 										<label for="typeClass">Type</label>
@@ -284,7 +284,7 @@
 									</div>
 									<div class="inputSection">
 										<label for="role">Role</label>
-										<select id="role" class="selectMenu" name="role">
+										<select id="role" class="selectMenu" name="role" required>
 												<option value=""></option>
 												<option value="Merchant Manager">Merchant manager</option>
 												<option value="Invoice Manager">Invoice manager</option>
