@@ -1,6 +1,6 @@
-const userRole = document.querySelector('.userRole').textContent;
+const usertypeClass = document.querySelector('.usertypeClass').textContent;
 
-if (userRole === 'Crm Admin') {
+if (usertypeClass === 'admin') {
     selectMenuLoad();
 } else {
     const broughtTitle = document.querySelector('.broughtTitle');

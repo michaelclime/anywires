@@ -53,7 +53,9 @@ function isLoggedIn(req, res, next) {
 }
 
 function visibilityApproval(req, res, next) {
-    if( req.user.role === 'Affiliate' ||  req.user.role === 'Crm Admin' ) {
+    if( req.user.role === 'Crm Admin' ||  req.user.role === 'Crm FinanceManager' 
+        ||  req.user.role === 'Crm InvoiceManager' ||  req.user.role === 'Crm SuccessManager'
+        ||  req.user.role === "Affiliate") {
         return next()
     }
     req.flash('error', 'Sorry, you don\'t have permission to see this page.');

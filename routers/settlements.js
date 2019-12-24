@@ -316,7 +316,7 @@ router.get("/getSettlementsList/:id", async (req, res) => {
             if (err) throw err;
             let result = []
             for (let i = 0; i < settlements.length; i += 1 ) {
-                if (user.merchant.includes(settlements[i].merchant)) {
+                if (user.merchant.includes(settlements[i].merchant + '')) {
                     result.push(settlements[i]);
                 }
             }

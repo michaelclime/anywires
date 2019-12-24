@@ -144,3 +144,27 @@ const selectAll = (source) => {
       checkboxes[i].checked = source.checked;
     }       
 };
+
+// Email validation 
+
+function validateEmail(email) {
+    const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email);
+  }
+  
+  function validateE() {
+    const $result = $("#username");
+    const email = $("#username").val();
+    $result.text("");
+  
+    if (validateEmail(email)) {
+      $result.css("border", " 1px solid green");
+    } else {
+      $result.val('');
+      $result.css("border", " 1px solid red");
+      Swal.fire('Please, enter correct email!');
+    }
+    return false;
+  }
+  
+  $("#username").change(validateE);

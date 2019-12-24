@@ -105,7 +105,7 @@ router.post("/invoices/:fullname/:_id/:merchant", function(req, res, next) {
                             if(err){
                                 console.log(err);
                             } else {
-                                console.log('Item inserted');
+                                //console.log('Item inserted');
                                 if (req.body.currency == 'EUR') {
                                     await Bank.findOneAndUpdate({name: req.body.bank}, { $inc: { "balance_EUR.balance_requested": +req.body.amount }});
                                 } else if (req.body.currency == 'USD') {
@@ -134,7 +134,7 @@ router.post("/invoices/:fullname/:_id/:merchant", function(req, res, next) {
                         
                         if ( (item.country.includes(req.body.country)) && (+req.body.amount <= +item.max_wire) &&
                         (+req.body.amount >= +item.min_wire) && (item.active) ) {
-                            console.log( chalk.blue.inverse.bold(item.name) );
+                            //console.log( chalk.blue.inverse.bold(item.name) );
                            
                            
                             let coefficient = 1.1;
@@ -149,29 +149,51 @@ router.post("/invoices/:fullname/:_id/:merchant", function(req, res, next) {
                                     await Bank.findOneAndUpdate({name: item.name}, {active: false, stop_limit_reached: true});
                                 } 
                             } else {
-                                console.log('Available Bank: ---' + item.name)
+                                //console.log('Available Bank: ---' + item.name)
                                 availableBanks.push(item.name);
                             }
                         }
                     }, function() {
                         
-                        let availableBank = '';
+                        let availableBanksFinal = [];
                         mongo.connect(url, function(err, db) {
-                         
+                            //console.log( chalk.yellow.inverse.bold(availableBanks) );
                                 let merchantClient = db.collection('merchants');
                                 merchantClient.findOne({name: req.body.merch}).then(
-                                    (item) => {
+                                    async (item) => {
                                         for (let i = 0; i < item.available_banks.length; i += 1) {
-                                            if ( availableBanks.indexOf( item.available_banks[i] ) != -1) {
-                                                console.log( chalk.red.inverse.bold(item.available_banks[i]) );
-                                                availableBank = item.available_banks[i];
-                                                break;
+                                            //console.log( chalk.red.inverse.bold(item.available_banks[i]) );
+                                            if ( availableBanks.includes( item.available_banks[i] ) ) {
+                                                availableBanksFinal.push(item.available_banks[i]);
                                             }
                                         }
-                                        if (!availableBank) {
+                                        if (!availableBanksFinal.length) {
                                             req.flash('error', 'Sorry, something went wrong. Please, change your invoice options or contact our support team.');
                                             res.redirect('/InvoiceGeneration.html');
                                         } else {
+                                            let finalBank = availableBanksFinal[0];
+                                            let banksInfo = [];
+
+                                            if (availableBanksFinal.length > 1) {
+                                                for (let i = 0; i < availableBanksFinal.length; i += 1) {
+                                                    let bank = await Bank.find({name: availableBanksFinal[i]});
+                                                    banksInfo.push(bank);
+                                                }
+
+                                                let updatedBanksInfo = banksInfo.map( bank => {
+                                                    let coefficient = 1.1;
+                                                    let invoicesLimitSum = bank[0].balance_EUR.balance_requested * 0.25 + bank[0].balance_EUR.balance_sent * 0.8 +  bank[0].balance_EUR.balance_received +
+                                                    bank[0].balance_USD.balance_requested / coefficient * 0.25 + bank[0].balance_USD.balance_sent / coefficient * 0.8 +  bank[0].balance_USD.balance_received / coefficient;
+    
+                                                    bank.push(bank[0].stop_limit - invoicesLimitSum);
+                                                    return bank;
+                                                });
+
+                                                let sortedBanks = updatedBanksInfo.sort( (a, b) => b[1] - a[1]);
+
+                                                finalBank = sortedBanks[0][0].name;
+                                            }
+
                                             var newInvoice = {
                                                 number: count + 1,
                                                 client_details: {
@@ -194,7 +216,7 @@ router.post("/invoices/:fullname/:_id/:merchant", function(req, res, next) {
                                                 },
                                                 currency:  req.body.currency,
                                                 merchant:  req.body.merch,
-                                                bank:  availableBank,
+                                                bank:  finalBank,
                                                 dates: {
                                                     creation_date: new Date(),
                                                     sent_date: '',
@@ -229,12 +251,12 @@ router.post("/invoices/:fullname/:_id/:merchant", function(req, res, next) {
                                                 if(err){
                                                     console.log(err);
                                                 } else {
-                                                    console.log('Item inserted');
+                                                    //console.log('Item inserted');
                                                     req.flash('success', 'Invoice successfully created!');
                                                     if (req.body.currency == 'EUR') {
-                                                        await Bank.findOneAndUpdate({name: availableBank}, { $inc: { "balance_EUR.balance_requested": +req.body.amount }});
+                                                        await Bank.findOneAndUpdate({name: finalBank}, { $inc: { "balance_EUR.balance_requested": +req.body.amount }});
                                                     } else if (req.body.currency == 'USD') {
-                                                        await Bank.findOneAndUpdate({name: availableBank},  {$inc: { "balance_USD.balance_requested": +req.body.amount}});
+                                                        await Bank.findOneAndUpdate({name: finalBank},  {$inc: { "balance_USD.balance_requested": +req.body.amount}});
                                                     }
                                                     let userInfo = await User.findOne({ _id: req.params._id});
                                                    

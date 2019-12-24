@@ -124,8 +124,16 @@
                 <div class="buttonsBlock">
                     <button class="btn filterBtn">Show</button>
                     <button class="btn showAllBtn">Clear</button>
-                    <button class="btn payFromAwWalletBtn">Pay from AW Wallet</button>
-                    <button class="btn settleTransfBtn">Settle Transfers</button>
+                    <% if (currentUser.role === "Crm InvoiceManager") { %>
+                        <button class="btn payFromAwWalletBtn hide">Pay from AW Wallet</button>
+                        <button class="btn settleTransfBtn">Settle Transfers</button>
+                    <% } else if (currentUser.role !== "Crm SuccessManager") { %>
+                        <button class="btn payFromAwWalletBtn">Pay from AW Wallet</button>
+                        <button class="btn settleTransfBtn">Settle Transfers</button>
+                    <% } else { %>
+                        <button class="btn payFromAwWalletBtn hide">Pay from AW Wallet</button>
+                        <button class="btn settleTransfBtn hide">Settle Transfers</button>
+                    <% } %>
                 </div>
                 <div class="searchBlock">
                     <input class="input-search" type="search" placeholder="Search..."/>
