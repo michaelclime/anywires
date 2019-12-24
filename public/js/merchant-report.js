@@ -34,7 +34,7 @@ class merchantReport {
         // Request for data 
         var data = {
             number: 0, 
-            limit: "", 
+            limit: 100000000, 
             filter: this.filter, 
             dateFrom: this.dateFrom, 
             dateTill: this.dateTill
@@ -302,8 +302,9 @@ class merchantReport {
         });
     }
 
+
     getMerchantsReport = async (data) => {
-        return  await fetch("http://18.216.223.81:3000/getMerchantReportList", {
+        return  await fetch("http://18.216.223.81:3000/get-merchant-report", {
             method: "POST",
             body: JSON.stringify(data),
             headers:{'Content-Type': 'application/json'}
@@ -316,6 +317,7 @@ class merchantReport {
         });
     }
 
+
     saveLocalMerchantReport = async () => {
         var data = {
             number: 0, 
@@ -325,6 +327,7 @@ class merchantReport {
             // dateTill: new Date()
         };
         const res = await this.getMerchantsReport(data);
+       
         this.firstMerchantsArr = res.merchants;
         this.merchantsArrNum = res.count;
         this.countNextPage(this.firstMerchantsArr, this.merchantsArrNum);

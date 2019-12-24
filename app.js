@@ -19,6 +19,7 @@ const express = require("express"),
     wallets = require("./routers/wallets"),
     affiliateReportRouter = require('./routers/affiliateReport');
     commissionReportRouter = require("./routers/commission-report");
+    merchantReportRouter = require("./routers/merchant-report");
 
 const url = 'mongodb://18.216.223.81:27017/anywires';
 
@@ -67,6 +68,7 @@ app.use(invoiceListRouter);
 app.use(wallets);
 app.use(affiliateReportRouter);
 app.use(commissionReportRouter);
+app.use(merchantReportRouter);
 
 app.get('/personal-area.html', isLoggedIn, function(req, res) {
     res.render("personal-area.html");

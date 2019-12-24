@@ -53,6 +53,7 @@ router.post('/getCommissionsPart', jsonParser, async (req, res) => {
     .limit(limit);
 });
 
+// Function for Dates Range START.
 var datesObj = (key, first, second) => {
     var Obj = {};
     if (second === false) {
@@ -61,6 +62,9 @@ var datesObj = (key, first, second) => {
         var year = new Date(first).getFullYear();
         second = (month+1) +"/"+ (day+1) +"/"+ year;
         second = new Date(second);
+        second.setHours(23);
+        second.setMinutes(59);
+        second.setSeconds(59);
     } 
     Obj[key] = {
         $gte: new Date(first),
@@ -68,6 +72,7 @@ var datesObj = (key, first, second) => {
     };
     return Obj;
 }; 
+// Function for Dates Range END.
 
 function isLoggedIn(req, res, next) {
     if(req.isAuthenticated()) {
