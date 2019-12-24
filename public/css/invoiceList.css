@@ -12,6 +12,10 @@ h1 {
     text-align: center;
 }
 
+.hide {
+    display: none;
+}
+
 .tableInvoiceLIST {
     text-align: center;
     min-height: 600px;

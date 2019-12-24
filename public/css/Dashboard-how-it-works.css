@@ -8,6 +8,9 @@
 }
 
 /* Authorization Menu */
+.hide {
+    display: none;
+}
 
 header {
     display: flex;

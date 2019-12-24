@@ -7,13 +7,14 @@ const authorizationMenu = document.querySelector('.authorizationMenu'),
 //     document.location.href='dashBoardMainPage.html';
 // };
 
+const curentUserId = document.querySelector('.curentUserId').textContent;
+
 merchantButton.onclick = function() {
     document.location.href='merchants.html';
 };
 
 logOutButton.onclick = function() {
-    document.location.href='http://18.216.223.81:3000/logout';
-    //document.location.href='http://localhost:3000/logout';
+    document.location.href = 'http://18.216.223.81:3000/logout/' + curentUserId;
 };
 
 authorizationMenu.onmouseenter = function() {

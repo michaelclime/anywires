@@ -288,6 +288,10 @@
     color: white;
 }
 
+.hide {
+    display: none;
+}
+
 .modal-open {
     overflow: hidden;
 }

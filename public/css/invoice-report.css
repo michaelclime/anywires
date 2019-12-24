@@ -240,6 +240,9 @@ background-color: rgb(21, 73, 15);
     background-color: rgb(102, 102, 102);
 }
 
+.hide {
+    display: none;
+}
 
 /* Modal Window Create User */
 

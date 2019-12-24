@@ -18,6 +18,7 @@
         <script src="https://kit.fontawesome.com/5355902e87.js"></script>
 </head>
 <body>
+    <span class="curentUserId hide"><%= currentUser.id %></span>
         <% if (currentUser.role == 'Affiliate') { %>
             <header>
                     <div class="menu">
@@ -54,7 +55,7 @@
                             </li>
                             <li class="logOut">
                                 <span class="liLogo"><i class="fas fa-sign-out-alt"></i></span>
-                                <a href="/logout">LogOut</a>
+                                <a href="/logout/<%= currentUser.id %>">LogOut</a>
                             </li>
                         </ul>
                     </div>
@@ -96,7 +97,7 @@
                             </li>
                             <li class="logOut">
                                 <span class="liLogo"><i class="fas fa-sign-out-alt"></i></span>
-                                <a href="/logout">LogOut</a>
+                                <a href="/logout/<%= currentUser.id %>">LogOut</a>
                             </li>
                         </ul>
                     </div>
@@ -137,7 +138,7 @@
                     </li>
                     <li class="logOut">
                         <span class="liLogo"><i class="fas fa-sign-out-alt"></i></span>
-                        <a href="/logout">LogOut</a>
+                        <a href="/logout/<%= currentUser.id %>">LogOut</a>
                     </li>
                 </ul>
             </div>
@@ -194,7 +195,7 @@
                         </li>
                         <li class="logOut">
                             <span class="liLogo"><i class="fas fa-sign-out-alt"></i></span>
-                            <a href="/logout">LogOut</a>
+                            <a href="/logout/<%= currentUser.id %>">LogOut</a>
                         </li>
                     </ul>
                 </div>

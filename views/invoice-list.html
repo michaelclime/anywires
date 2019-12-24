@@ -33,6 +33,7 @@
 
 	</head>
 	<body class="modal-open">
+		<span class="curentUserId hide"><%= currentUser.id %></span>
 		<% if(success && success.length > 0) {%>
 			<div class="alert" role="alert">
 				<div class="alertContent">
@@ -90,7 +91,7 @@
 							</li>
 							<li class="logOut">
 								<span class="liLogo"><i class="fas fa-sign-out-alt"></i></span>
-								<a href="/logout">LogOut</a>
+								<a href="/logout/<%= currentUser.id %>">LogOut</a>
 							</li>
 						</ul>
 					</div>

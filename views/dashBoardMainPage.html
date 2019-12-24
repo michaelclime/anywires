@@ -59,7 +59,7 @@
                         </li>
                         <li class="logOut">
                             <span class="liLogo"><i class="fas fa-sign-out-alt"></i></span>
-                            <a href="/logout">LogOut</a>
+                            <a href="/logout/<%= currentUser.id %>">LogOut</a>
                         </li>
                     </ul>
                 </div>
@@ -115,7 +115,7 @@
                 </li>
                 <li class="logOut">
                     <span class="liLogo"><i class="fas fa-sign-out-alt"></i></span>
-                    <a href="/logout">LogOut</a>
+                    <a href="/logout/<%= currentUser.id %>">LogOut</a>
                 </li>
             </ul>
         </div>

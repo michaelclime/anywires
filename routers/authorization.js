@@ -55,14 +55,17 @@ router.post('/register', function(req, res){
 
 router.post('/login', passport.authenticate("local",
     {
-        successRedirect: '/personal-area.html',
         failureRedirect: '/',
         failureFlash: true 
-    }), function(req, res) {
+    }), async function(req, res) {
+        await User.findOneAndUpdate({username: req.body.username}, { $set: { updatedAt: new Date() }} );
+        res.redirect('/personal-area.html');
 });
 
 // LogOut process
-router.get('/logout', function(req, res) {
+router.get('/logout/:id', async function(req, res) {
+
+    await User.findOneAndUpdate({_id: req.params.id}, { $set: { updatedAt: new Date() }} );
     req.logOut();
     req.flash('success', 'Logged you out!');
     res.redirect('/');
