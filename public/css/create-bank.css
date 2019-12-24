@@ -131,6 +131,7 @@ label {
     margin-top: 20px;
     font-size: 20px;
     color: #555;
+    text-align: center;
 }
 
 .alert_footer {
@@ -330,15 +331,25 @@ main {
     width: 100%;
     display: flex;
     justify-content: space-between;
-    align-items: flex-end;
+    align-items: center;
     margin-bottom: 15px;
 }
 
-.sepaAvailable-block {
-    width: 100%;
+
+/* Tip Validate Blocks */
+.companySite-block__inside {
     display: flex;
-    margin-bottom: 15px;
+    flex-direction: column;
 }
+
+.companySite-block__tip {
+    color: red;
+    font-size: 13px;
+    padding-top: 5px;
+    text-align: center;
+}
+/* Tip Validate Blocks  END*/
+
 
 .B2B-block {
     width: 100%;
@@ -427,12 +438,6 @@ main {
     width: 240px;
     height: 40px;
     border-radius: 3px;
-}
-
-.sepaCheckbox {
-    width: 20px;
-    height: 20px;
-    margin-left: auto;
 }
 
 .b2bcheckbox {

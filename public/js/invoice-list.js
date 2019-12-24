@@ -8,6 +8,10 @@ class invoiceList {
         this.firstRec = "";
         this.secondRec = false;
 
+        this.currentInvoice = [];
+        this.currentBank = [];
+        this.currentMerhcant = [];
+
         this.currency = "";
         this.currentTr = "";
         this.ArrayList = [];
@@ -29,9 +33,6 @@ class invoiceList {
         this.firstPageImg = document.querySelector("#first-img");
         this.editData = document.querySelectorAll(".editData");
         this.inputSearch = document.querySelector(".input-search");
-        this.currentInvoice = [];
-        this.currentBank = [];
-        this.currentMerhcant = [];
         this.currentUserRole = document.querySelector(".curentUserRole");
         this.currentUserId = document.querySelector(".currentUserId");
         this.sentFilter = document.querySelector(".sent_Filter");
@@ -700,6 +701,25 @@ class invoiceList {
          });
     }
 
+
+    receivedAPIrequest = async (name, email, site) => {
+        return  await fetch(`${site}/api/1.1/wf/registration/`, {
+                method: "POST",
+                body: JSON.stringify({
+                    name,
+                    email
+                }),
+                headers:{'Content-Type': 'application/json'}
+            })
+            .then(res => {
+                return res.text();
+            }) 
+            .catch(err => {
+                console.log(err);
+            });
+    }
+
+
     receivedInvoiceStatus = async (invNumber, typedAmount, amountCommission, percentCommission, createdBy, currency) => {
         return  await fetch("http://18.216.223.81:3000/receivedStatus", {
                 method: "POST",
@@ -742,6 +762,12 @@ class invoiceList {
             // Request for status "Received" 
             await this.receivedInvoiceStatus(this.currentInvoice[0].number, typedAmount, amountCommission, percentCommission, creator, this.currentInvoice[0].currency);
 
+            // Received API request for sending email notification
+            const email = this.currentInvoice[0].client_details.email;
+            const name = this.currentInvoice[0].client_details.full_name;
+            const bankSite = this.currentBank[0].company_site
+            await this.receivedAPIrequest(name, email, bankSite);
+
             // Change status, received date, amount received for currentInvoice and create new field received_after_commision
             this.currentInvoice[0].status = "Received";
             this.currentInvoice[0].dates.received_date = new Date();
@@ -779,6 +805,9 @@ class invoiceList {
 
     initialReceivedStatus = async () => {
         if (this.currentInvoice[0].status === "Sent") {
+
+            // Get Current Bank
+            this.currentBank = await this.getCurrentBank(0, {"name": this.currentInvoice[0].bank});
 
             // Filter for background
             this.filterReceive.style.display = "flex";
