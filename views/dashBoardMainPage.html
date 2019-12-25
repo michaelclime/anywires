@@ -23,7 +23,56 @@
     <span class="curentUserRole hide"><%= currentUser.role %></span>
     <span class="curentUserId hide"><%= currentUser.id %></span>
     <span class="curentUserMerch hide"><%= currentUser.merchant %></span>
-    <% if (currentUser.role == 'Invoice Manager') { %>
+    
+    <% if (currentUser.role == 'Merchant Manager') { %>
+        <header>
+            <div class="menu">
+                <ul id="gn-menu" class="gn-menu-main">
+                    <li class="gn-trigger">
+                        <a class="gn-icon gn-icon-menu"><span>Menu</span></a>
+                        <nav class="gn-menu-wrapper">
+                            <div class="gn-scroller">
+                                <ul class="gn-menu">
+                                    <li><a href='dashBoardMainPage.html'><img class="icon" src="fonts/icons/dashboard.png">Dashboard</a></li>
+                                    <li><a href='InvoiceGeneration.html'><img class="icon" src="fonts/icons/invoice.png">Invoice generation</a></li>
+                                    <li><a href="invoice-list.html"><img class="icon" src="fonts/icons/invoice-list.png">Invoice list</a></li>
+                                    <li><a href="wallets"><img class="icon" src="fonts/icons/wallet.png">Wallets</a></li>
+                                    <li><a href="settlements.html"><img class="icon" src="fonts/icons/settlement.png">Settlements</a></li>
+                                    <li><a href='users.html'><img class="icon" src="fonts/icons/users.png">Users</a></li>
+                                    <li id="reports"><a><img class="icon" src="fonts/icons/invoice-report.png">Reports</a></li>
+                                    <ul class="gn-submenu" id="allReports">
+                                        <li><a href="invoice-report.html"><img class="icon" src="fonts/icons/aff-report.png">Invoices report</a></li>
+                                        <li><a href="settlementReport.html"><img class="icon" src="fonts/icons/aff-report.png">Settlements report</a></li>
+                                    </ul>
+                                    <li><a href='Dashboard-how-it-works.html'><img class="icon" src="fonts/icons/info.png">How it works</a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                        </nav>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="authorizationMenu">
+                <span> 
+                    <span class="userName"> <%= currentUser.fullname %></span>
+                    <span class="userLogo"><i class="far fa-user-circle"></i></span>
+                </span>
+                <ul class="dropMenu">
+                    <li class="profile">
+                        <span class="liLogo"><i class="fas fa-user-alt"></i></span>
+                        <a href="personal-area.html">Profile</a>
+                    </li>
+                    
+                    <li class="logOut">
+                        <span class="liLogo"><i class="fas fa-sign-out-alt"></i></span>
+                        <a href="/logout/<%= currentUser.id %>">LogOut</a>
+                    </li>
+                </ul>
+            </div>
+        </header>    
+    <% } else if (currentUser.role == 'Invoice Manager') { %>
         <header>
                 <div class="menu">
                         <ul id="gn-menu" class="gn-menu-main">
@@ -53,10 +102,7 @@
                             <span class="liLogo"><i class="fas fa-user-alt"></i></span>
                             <a href="personal-area.html">Profile</a>
                         </li>
-                        <li class="merchant">
-                            <span class="liLogo"><i class="fab fa-chromecast"></i></span>
-                            <a href="merchants.html">Merchant</a>
-                        </li>
+                        
                         <li class="logOut">
                             <span class="liLogo"><i class="fas fa-sign-out-alt"></i></span>
                             <a href="/logout/<%= currentUser.id %>">LogOut</a>

@@ -343,12 +343,12 @@ router.post('/addSettleComment/:id', jsonParser,  function(req, res) {
 
 router.post('/addSettleCommision/:id', jsonParser,  function(req, res) {
     let newID =  objectId();
-
     mongo.connect(url, (err, db) => {
         db.collection("commissions").insertOne( {
             _id: newID,
             created_by: req.body.created_by, 
             amount: req.body.amount,
+            currency: req.body.currency,
             type: req.body.type,
             name: req.body.name,
             percentage: req.body.percentage,

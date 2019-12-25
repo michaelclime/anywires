@@ -9,13 +9,15 @@ if (alertWindow) {
 
 const curentUserMerchantList = document.querySelector('.curentUserMerchantList').textContent;
 
-let getMerch = fetch('http://18.216.223.81:3000/getPersonalMerch/' + curentUserMerchantList);
+if (curentUserMerchantList && curentUserMerchantList !== 'null') {
+  let getMerch = fetch('http://18.216.223.81:3000/getPersonalMerch/' + curentUserMerchantList);
 
-getMerch.then( response => {
-  return response.json();
-  }).then( list => {
-  loadInvoice(list);
-});
+  getMerch.then( response => {
+    return response.json();
+    }).then( list => {
+    loadInvoice(list);
+  });
+}
 
 
 const loadInvoice = (list) => {
