@@ -1056,3 +1056,13 @@ if (alertWindow) {
       event.target === alertWindow ? alertWindow.style.display = "none" : "";
   });
 }
+
+
+
+// Remove menu items for permissions START
+
+if (curentUserRole.trim() === 'Crm InvoiceManager' || curentUserRole.trim()  === 'Crm SuccessManager'  || curentUserRole.trim() === 'Merchant Manager') {
+    document.querySelector('.gn-menu__banks').remove()
+} 
+
+// Remove menu items for permissions END

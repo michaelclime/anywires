@@ -130,7 +130,7 @@
 									<li><a href="settlements.html"><img class="icon" src="fonts/icons/settlement.png">Settlements</a></li>
 									<li><a href="merchants.html"><img class="icon" src="fonts/icons/merchant.png">Merchants</a></li>
 									<li><a href='users.html'><img class="icon" src="fonts/icons/users.png">Users</a></li>
-									<li><a href='banks.html'><img class="icon" src="fonts/icons/bank.png">Banks</a></li>
+									<li class="gn-menu__banks"><a href='banks.html'><img class="icon" src="fonts/icons/bank.png">Banks</a></li>
 									<li id="reports"><a><img class="icon" src="fonts/icons/invoice-report.png">Reports</a></li>
 									<ul class="gn-submenu" id="allReports">
 										<li><a href="invoice-report.html"><img class="icon" src="fonts/icons/aff-report.png">Invoices report</a></li>
@@ -150,6 +150,7 @@
 				<div class="authorizationMenu">
 					<span> 
 						<span class="userName"> <%= currentUser.fullname %></span>
+						<span class="curentUserRole hide"><%= currentUser.role %></span>
 						<span class="userLogo"><i class="far fa-user-circle"></i></span>
 					</span>
 					<ul class="dropMenu">

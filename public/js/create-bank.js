@@ -305,6 +305,7 @@ const allCountry = [
 
 class createBank{
     constructor(){
+        this.currentUserRole = '';
         this.buttonCreateBank  = document.querySelector("#create_bank");
         this.switch = document.querySelector(".switcher_block");
         this.loadingGIF = document.querySelector("#loadingGif");
@@ -361,7 +362,7 @@ class createBank{
             var editedBank = {
                 "name" : document.querySelector("#bankName").value, 
                 "beneficiary_name" : document.querySelector("#benefName").value,  
-                "solution_name" : document.querySelector("#solName").value,  
+                "solution_name" : this.currentUserId,  
                 "country" : filteredArr,
                 "beneficiary address" : document.querySelector("#benefAddress").value,
                 "max_wire" : +(document.querySelector("#maxWire").value), 
@@ -475,11 +476,10 @@ class createBank{
         }
     }
 
-    getBank = async (number, filter) => {
-        return  await fetch("http://18.216.223.81:3000/getPart-Banks", {
+    getBank = async (filter) => {
+        return  await fetch("http://18.216.223.81:3000/get-all-banks", {
             method: "POST",
             body: JSON.stringify({
-                number, 
                 filter
             }),
             headers:{'Content-Type': 'application/json'}
@@ -494,7 +494,8 @@ class createBank{
     }
 
     edtiBankRenderPage = async () => {
-        var editedBank = await this.getBank(0, {"name": this.bankName});
+        const getBank = await this.getBank({'name': this.bankName});
+        const editedBank = getBank.banks;
 
         // Bank Info Render
         document.querySelector("#create_bank").innerHTML = "Change";
@@ -536,10 +537,9 @@ class createBank{
         this.chengeOptionsHeight();
         // // Multiple select options END
         
-
+        document.querySelector(".solutionName-block").remove()
         document.querySelector("#bankName").value = editedBank[0].name;
         document.querySelector("#benefName").value = editedBank[0].beneficiary_name;
-        document.querySelector("#solName").value = editedBank[0].solution_name;
         document.querySelector("#benefAddress").value = editedBank[0].beneficiary_address;
         document.querySelector("#maxWire").value = editedBank[0].max_wire;
         document.querySelector("#minWire").value = editedBank[0].min_wire;
@@ -623,9 +623,13 @@ class createBank{
         this.loadingGIF.style.display = "none";
     }
 
+
     editOrCreateBank = async () => {
-        var score = decodeURIComponent(location.search.substr(1)).split('&');
+        const score = decodeURIComponent(location.search.substr(1)).split('&');
         this.bankName = score[1];
+        this.currentUserRole = document.querySelector('.userRole').textContent.trim();
+        this.currentUserId = document.querySelector('.curentUserId').textContent.trim();
+
         if (this.bankName){
             document.querySelector(".main_title").innerHTML = `Edit: ${this.bankName}`;
             document.title = `Edit bank`;
@@ -638,8 +642,47 @@ class createBank{
             document.querySelector(".main_title").innerHTML = `Create bank`;
             this.buttonCreateBank.addEventListener("click", this.createBank);
             this.switcherIphone();
+            this.renderSolutionName();
         }
     }
+
+
+    renderSolutionName = async () => {
+        // Get Solution Manager and render them in filter
+        if (this.currentUserRole !== 'Solution Manager') {
+            const solutions = await this.getSolutionUsers({'role': 'Solution Manager'});
+            solutions.forEach(item => this.renderSolutionInDOM(item.fullname, item._id));
+
+        } else if (this.currentUserRole === 'Solution Manager') {
+            document.querySelector('.solutionName-block').remove()
+        }
+    }
+
+
+    renderSolutionInDOM = (name, _id) => {
+        const container = document.querySelector("#solName");
+        const option = document.createElement("option");
+        option.value = _id;
+        option.innerHTML = name;
+        container.appendChild(option);
+    }
+
+
+    getSolutionUsers = async (filter) => {
+        return  await fetch("http://18.216.223.81:3000/getUserByFilter", {
+            method: "POST",
+            body: JSON.stringify({filter}),
+            headers:{'Content-Type': 'application/json'}
+        })
+        
+        .then(res => {
+            return res.json();
+        }) 
+        .catch(err => {
+            console.log(err);
+        });
+    }
+
 
     changeSwitcherStatus = () => {
         var label = document.querySelector(".switchLabel");
@@ -725,10 +768,18 @@ class createBank{
             selectedCountry.forEach(item => selectedArr.push(item.textContent.trim()));
             const filteredArr = selectedArr.filter(item => item !== "Sepa" && item !== "Select All");
 
+            // If user role Solution Manager
+            let solution_name = '';
+            if (this.currentUserRole === 'Solution Manager') {
+                solution_name = this.currentUserId;
+            } else {
+                solution_name = document.querySelector("#solName").value;
+            }
+
             var bank = {
                 "name" : document.querySelector("#bankName").value, 
                 "beneficiary_name" : document.querySelector("#benefName").value,  
-                "solution_name" : document.querySelector("#solName").value,  
+                "solution_name": solution_name,  
                 "country" : filteredArr, 
                 "currency": ["EUR", "USD"],
                 "beneficiary_address" : document.querySelector("#benefAddress").value,
@@ -849,6 +900,7 @@ class createBank{
                     }
                 }
             };
+            console.log(bank)
             
             // Loading GIF On
             this.loadingGIF.style.display = "flex";

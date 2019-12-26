@@ -143,6 +143,7 @@
 				<div class="authorizationMenu">
 					<span> 
 						<span class="userName"> <%= currentUser.fullname %></span>
+						<span class="userRole hide"> <%= currentUser.role %></span>
 						<span class="userLogo"><i class="far fa-user-circle"></i></span>
 					</span>
 					<ul class="dropMenu">
@@ -171,6 +172,8 @@
 			<!-- Loading GIF -->
 
 		<div id="wrapper">
+			<span class="userRole hide"> <%= currentUser.role %></span>
+			<span class="curentUserId hide"><%= currentUser._id %></span>
 
 			<!--Header Page-->
 			<header> 
@@ -199,8 +202,10 @@
                                 </div>
             
                                 <div class="solutionName-block">
-                                    <label for="solutionName-block">Solution name:</label>
-                                    <input id="solName" class="required" type="text" placeholder="Solution name">
+									<label for="solutionName-block">Solution name:</label>
+									<select id="solName">
+										<option value="" selected></option>
+									</select>
                                 </div>
             
                                 <div class="benefAdress-block">

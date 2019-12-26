@@ -1,10 +1,12 @@
 let mongoose = require("mongoose");
 let passportLocalMongoose = require('passport-local-mongoose');
+var Schema = mongoose.Schema,
+    ObjectId = Schema.ObjectId;
 
 let BankSchema = new mongoose.Schema({
     name: String,
     beneficiary_name: String,
-    solution_name: String,
+    solution_name: ObjectId,
     country: Array,
     currency: Array,
     beneficiary_address: String,

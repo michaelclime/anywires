@@ -539,4 +539,8 @@ label {
     background-color: #20A5F7;
     color: white;
 }
+
+.hide {
+    display: none;
+}
 /* Next Page Block END*/

@@ -63,7 +63,7 @@ tbody tr {
 }
 
 
-.column13 {
+.column11 {
   text-align: right;
   padding-right: 5px;
 }
@@ -128,41 +128,36 @@ tbody tr {
     content: "Name";
   }
   table tbody tr td:nth-child(2):before {
-    content: "Country";
-  }
-  table tbody tr td:nth-child(3):before {
     content: "Currency";
   }
-  table tbody tr td:nth-child(4):before {
+  table tbody tr td:nth-child(3):before {
     content: "Requested";
   }
-  table tbody tr td:nth-child(5):before {
+  table tbody tr td:nth-child(4):before {
     content: "Sent";
   }
-  table tbody tr td:nth-child(6):before {
+  table tbody tr td:nth-child(5):before {
     content: "Received";
   }
+  table tbody tr td:nth-child(6):before {
+    content: "Before limit";
+  }
   table tbody tr td:nth-child(7):before {
-    content: "Approved";
+    content: "Stop limit";
   }
   table tbody tr td:nth-child(8):before {
-    content: "Available";
-  }
-  table tbody tr td:nth-child(9):before {
     content: "Min Wire";
   }
-  table tbody tr td:nth-child(10):before {
+  table tbody tr td:nth-child(9):before {
     content: "Max Wire";
   }
-  table tbody tr td:nth-child(11):before {
-    content: "Sepa";
-  }
-  table tbody tr td:nth-child(12):before {
+  table tbody tr td:nth-child(10):before {
     content: "Enabled";
   }
+  table tbody tr td:nth-child(11):before {
+    content: "";
+  }
 
-  .column12,
-  .column11,
   .column10,
   .column9,
   .column8,
