@@ -21,6 +21,8 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
 	</head>
 	<body class="modal-open">
+		<span class="curentUserId hide"><%= currentUser.id %></span>
+		
 			<% if (currentUser.role == 'Invoice Manager') { %>
 				<div id="burgerMenu">
 						<div class="menu">
@@ -58,7 +60,7 @@
 									</li>
 									<li class="logOut">
 										<span class="liLogo"><i class="fas fa-sign-out-alt"></i></span>
-										<a href="/logout">LogOut</a>
+										<a href="/logout/<%= currentUser.id %>">LogOut</a>
 									</li>
 								</ul>
 							</div>
@@ -99,7 +101,7 @@
 									</li>
 									<li class="logOut">
 										<span class="liLogo"><i class="fas fa-sign-out-alt"></i></span>
-										<a href="/logout">LogOut</a>
+										<a href="/logout/<%= currentUser.id %>">LogOut</a>
 									</li>
 								</ul>
 							</div>
@@ -155,7 +157,7 @@
 						</li>
 						<li class="logOut">
 							<span class="liLogo"><i class="fas fa-sign-out-alt"></i></span>
-							<a href="/logout">LogOut</a>
+							<a href="/logout/<%= currentUser.id %>">LogOut</a>
 						</li>
 					</ul>
 				</div>

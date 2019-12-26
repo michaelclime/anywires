@@ -55,6 +55,9 @@
         background:  #FFF;
     }
     
+    .hide {
+        display: none;
+    }
     
     /* Autorization Menu START */
     .authorizationMenu {

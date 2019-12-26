@@ -29,6 +29,7 @@
 </head>
 
 <body>
+    <span class="curentUserId hide"><%= currentUser.id %></span>
     <span class="affiliateEmail hide"><%= currentUser.email %></span>
     <span class="usertypeClass hide"><%= currentUser.typeClass %></span>
      <!-- MENU -->
@@ -62,13 +63,9 @@
                         <span class="liLogo"><i class="fas fa-user-alt"></i></span>
                         <a href="personal-area.html">Profile</a>
                     </li>
-                    <li class="merchant">
-                        <span class="liLogo"><i class="fab fa-chromecast"></i></span>
-                        <a href="merchants.html">Merchant</a>
-                    </li>
                     <li class="logOut">
                         <span class="liLogo"><i class="fas fa-sign-out-alt"></i></span>
-                        <a href="/logout">LogOut</a>
+                        <a href="/logout/<%= currentUser.id %>">LogOut</a>
                     </li>
                 </ul>
             </div>
@@ -124,7 +121,7 @@
                         </li>
                         <li class="logOut">
                             <span class="liLogo"><i class="fas fa-sign-out-alt"></i></span>
-                            <a href="/logout">LogOut</a>
+                            <a href="/logout/<%= currentUser.id %>">LogOut</a>
                         </li>
                     </ul>
                 </div>

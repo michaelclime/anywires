@@ -28,7 +28,8 @@
     <span class="curentUserId hide"><%= currentUser.id %></span>
      <!-- MENU -->
     <header>
-        <div class="menu">
+        <% if (currentUser.role == 'Merchant Manager') { %>
+            <div class="menu">
                 <ul id="gn-menu" class="gn-menu-main">
                     <li class="gn-trigger">
                         <a class="gn-icon gn-icon-menu"><span>Menu</span></a>
@@ -40,16 +41,11 @@
                                     <li><a href="invoice-list.html"><img class="icon" src="fonts/icons/invoice-list.png">Invoice list</a></li>
                                     <li><a href="wallets"><img class="icon" src="fonts/icons/wallet.png">Wallets</a></li>
                                     <li><a href="settlements.html"><img class="icon" src="fonts/icons/settlement.png">Settlements</a></li>
-                                    <li><a href="merchants.html"><img class="icon" src="fonts/icons/merchant.png">Merchants</a></li>
                                     <li><a href='users.html'><img class="icon" src="fonts/icons/users.png">Users</a></li>
-                                    <li class="gn-menu__banks"><a href='banks.html'><img class="icon" src="fonts/icons/bank.png">Banks</a></li>
                                     <li id="reports"><a><img class="icon" src="fonts/icons/invoice-report.png">Reports</a></li>
                                     <ul class="gn-submenu" id="allReports">
 										<li><a href="invoice-report.html"><img class="icon" src="fonts/icons/aff-report.png">Invoices report</a></li>
                                         <li><a href="settlementReport.html"><img class="icon" src="fonts/icons/aff-report.png">Settlements report</a></li>
-                                        <li><a href="affiliateReport.html"><img class="icon" src="fonts/icons/aff-report.png">Affiliates report</a></li>
-                                        <li><a href="commission-report"><img class="icon" src="fonts/icons/aff-report.png">Commission report</a></li>
-                                        <li><a href="merchant-report"><img class="icon" src="fonts/icons/aff-report.png">Merchant report</a></li>
 									</ul>
                                     <li><a href='Dashboard-how-it-works.html'><img class="icon" src="fonts/icons/info.png">How it works</a></li>
                                         </ul>
@@ -60,6 +56,42 @@
                     </li>
                 </ul>
             </div>
+            <% } else { %>
+                <div class="menu">
+                    <ul id="gn-menu" class="gn-menu-main">
+                        <li class="gn-trigger">
+                            <a class="gn-icon gn-icon-menu"><span>Menu</span></a>
+                            <nav class="gn-menu-wrapper">
+                                <div class="gn-scroller">
+                                    <ul class="gn-menu">
+                                        <li><a href='dashBoardMainPage.html'><img class="icon" src="fonts/icons/dashboard.png">Dashboard</a></li>
+                                        <li><a href='InvoiceGeneration.html'><img class="icon" src="fonts/icons/invoice.png">Invoice generation</a></li>
+                                        <li><a href="invoice-list.html"><img class="icon" src="fonts/icons/invoice-list.png">Invoice list</a></li>
+                                        <li><a href="wallets"><img class="icon" src="fonts/icons/wallet.png">Wallets</a></li>
+                                        <li><a href="settlements.html"><img class="icon" src="fonts/icons/settlement.png">Settlements</a></li>
+                                        <li><a href="merchants.html"><img class="icon" src="fonts/icons/merchant.png">Merchants</a></li>
+                                        <li><a href='users.html'><img class="icon" src="fonts/icons/users.png">Users</a></li>
+                                        <li  class="gn-menu__banks"><a href='banks.html'><img class="icon" src="fonts/icons/bank.png">Banks</a></li>
+                                        <li id="reports"><a><img class="icon" src="fonts/icons/invoice-report.png">Reports</a></li>
+                                        <ul class="gn-submenu" id="allReports">
+                                            <li><a href="invoice-report.html"><img class="icon" src="fonts/icons/aff-report.png">Invoices report</a></li>
+                                            <li><a href="settlementReport.html"><img class="icon" src="fonts/icons/aff-report.png">Settlements report</a></li>
+                                            <li><a href="affiliateReport.html"><img class="icon" src="fonts/icons/aff-report.png">Affiliates report</a></li>
+                                            <li><a href="commission-report"><img class="icon" src="fonts/icons/aff-report.png">Commission report</a></li>
+                                            <li><a href="merchant-report"><img class="icon" src="fonts/icons/aff-report.png">Merchant report</a></li>
+                                        </ul>
+                                        <li><a href='Dashboard-how-it-works.html'><img class="icon" src="fonts/icons/info.png">How it works</a></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </nav>
+                        </li>
+                    </ul>
+                </div>
+            <% } %>   
+
+            <% if (currentUser.typeClass == 'admin') { %>
             <div class="authorizationMenu">
                 <span> 
                     <span class="userName"> <%= currentUser.fullname %></span>
@@ -76,10 +108,28 @@
                     </li>
                     <li class="logOut">
                         <span class="liLogo"><i class="fas fa-sign-out-alt"></i></span>
-                        <a href="/logout">LogOut</a>
+                        <a href="/logout/<%= currentUser.id %>">LogOut</a>
                     </li>
                 </ul>
             </div>
+            <% } else { %>
+                <div class="authorizationMenu">
+                    <span> 
+                        <span class="userName"> <%= currentUser.fullname %></span>
+                        <span class="userLogo"><i class="far fa-user-circle"></i></span>
+                    </span>
+                    <ul class="dropMenu">
+                        <li class="profile">
+                            <span class="liLogo"><i class="fas fa-user-alt"></i></span>
+                            <a href="personal-area.html">Profile</a>
+                        </li>
+                        <li class="logOut">
+                            <span class="liLogo"><i class="fas fa-sign-out-alt"></i></span>
+                            <a href="/logout/<%= currentUser.id %>">LogOut</a>
+                        </li>
+                    </ul>
+                </div>
+             <% } %>   
     </header>
     <!-- CONTENT -->
     <main>

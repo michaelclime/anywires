@@ -3,17 +3,19 @@ const authorizationMenu = document.querySelector('.authorizationMenu'),
         merchantButton = document.querySelector('.merchant'),
         logOutButton = document.querySelector('.logOut');
 
-// profileButton.onclick = function() {
-//     document.location.href='dashBoardMainPage.html';
-// };
-
-merchantButton.onclick = function() {
-    document.location.href='merchants.html';
+profileButton.onclick = function() {
+    document.location.href='/personal-area.html';
 };
 
+const curentUserId = document.querySelector('.curentUserId').textContent;
+
+if (merchantButton) {
+    merchantButton.onclick = function() {
+        document.location.href='merchants.html';
+    };    
+}
 logOutButton.onclick = function() {
-    document.location.href='http://18.216.223.81:3000/logout';
-    //document.location.href='http://localhost:3000/logout';
+    document.location.href = '/logout/' + curentUserId;
 };
 
 authorizationMenu.onmouseenter = function() {
