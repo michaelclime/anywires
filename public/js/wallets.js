@@ -63,11 +63,12 @@ class WalletsRequest {
 class Wallets extends WalletsRequest {
     constructor(){
         super();
+        this.filter = {};
+        this.permissionFilter = {};
         this.walletsArr = [];
         this.walletsNum = 0;
         this.currentWallet = [];
         this.currentTr = null;
-        this.filter = {};
         this.containerPages = document.querySelector(".nextPage-block");
         this.loadingGif = document.querySelector("#loadingGif");
         this.filterEditWallet = document.querySelector(".filter_editWallet");
@@ -125,7 +126,6 @@ class Wallets extends WalletsRequest {
                 // Request for Settlements
                 const walletId = event.target.closest("tr").querySelector("#walletId").textContent.trim();
                 const settlements = await this.getSettlemetsByWalletId(walletId);
-                console.log(settlements.settlements);
                 // 
                 // Render popUp information
                 const merchantName = event.target.closest("tr").querySelector(".table_wallets--merchant-name").textContent.trim();
@@ -156,7 +156,12 @@ class Wallets extends WalletsRequest {
         const xlsHeader = ["Name", "Type", "Balance", "Currency", "Created by", "Merchant", "Creation date"];
         
         // /* XLS Rows Data */
-        const res = await this.getWalletsPart(0, "", this.filter);
+        const data = {
+            filter: this.filter,
+            skip: 0,
+            limit: 1000000
+        };
+        const res = await this.getWalletsPart(data);
         const xlsRows = res.wallets;
         
         // Removing ID field and changing Date format
@@ -208,14 +213,22 @@ class Wallets extends WalletsRequest {
     }
 
     searchFunction = async () => {
+        this.filter = {};
         // Loading GIF On
         this.loadingGif.style.display = "flex";
 
         const phrase = document.getElementById('search-input').value;
+        // 
         this.filter = { $text: { $search: phrase } };
-
+        Object.assign(this.filter, this.permissionFilter);
+        // 
         if (phrase) {
-            const res = await this.getWalletsPart(0, 10, this.filter);
+            const data = {
+                filter: this.filter,
+                skip: 0,
+                limit: 10
+            };
+            const res = await this.getWalletsPart(data);
 
             this.container.innerHTML = "";
             this.containerPages.innerHTML = "";
@@ -226,35 +239,6 @@ class Wallets extends WalletsRequest {
         // Loading GIF Off
         this.loadingGif.style.display = "none";
     }
-
-    uniqueArr = (arr) => {
-        var result = [];
-        arr.forEach((item) => {
-            if (!result.includes(item)) {
-                result.push(item);
-            }
-        });
-        return result;
-    }
-
-    renderOption = (container, Arr) => {
-        Arr.forEach(item => {
-            let option = document.createElement("option");
-            option.value = item;
-            option.textContent = item;
-            container.appendChild(option);
-        });
-    }
-
-    listOfMerchantName = async () => {
-        const merchantArr = await this.getAllMerchants();
-        const merchantNames = merchantArr.map(item => item.name);
-        const uniqueMerchantName = this.uniqueArr(merchantNames);
-        const container = document.querySelector("#filterMerchant");
-        this.renderOption(container, uniqueMerchantName);
-        this.renderOption(document.querySelector("#merchant"), uniqueMerchantName);
-    }
-
 
 
     createMerchantCheckData = async () => {
@@ -287,7 +271,12 @@ class Wallets extends WalletsRequest {
             await this.createMerchantRequest(newWallet);
             //
              // Request for data 
-            const response = await this.getWalletsPart(0, 10);
+             const data = {
+                filter: this.filter,
+                skip: 0,
+                limit: 10
+            };
+            const response = await this.getWalletsPart(data);
             this.walletsArr = response.wallets;
             this.walletsNum = response.counts;
             // 
@@ -369,7 +358,12 @@ class Wallets extends WalletsRequest {
                 await this.editWalletRequest(this.currentWallet[0]._id, editedWallet);
                 //
                  // Request for data 
-                const response = await this.getWalletsPart(0, 10);
+                const data = {
+                    filter: this.filter,
+                    skip: 0,
+                    limit: 10
+                };
+                const response = await this.getWalletsPart(data);
                 this.walletsArr = response.wallets;
                 this.walletsNum = response.counts;
                 // 
@@ -422,15 +416,15 @@ class Wallets extends WalletsRequest {
         this.currentWallet = await this.getWalletById(id);
         // 
         // Render Wallet data to PopUp Window
-        let walletName = document.querySelector("#walletName").value = this.currentWallet[0].name;
-        let benefName = document.querySelector("#benefName").value = this.currentWallet[0].requisites.beneficiary_name;
-        let benefAddress = document.querySelector("#benefAddress").value = this.currentWallet[0].requisites.beneficiary_address;
-        let bankName = document.querySelector("#bankName").value = this.currentWallet[0].requisites.bank_name;
+        document.querySelector("#walletName").value = this.currentWallet[0].name;
+        document.querySelector("#benefName").value = this.currentWallet[0].requisites.beneficiary_name;
+        document.querySelector("#benefAddress").value = this.currentWallet[0].requisites.beneficiary_address;
+        document.querySelector("#bankName").value = this.currentWallet[0].requisites.bank_name;
 
-        let bankAddress = document.querySelector("#bankAddress").value = this.currentWallet[0].requisites.bank_address;
-        let accountNum = document.querySelector("#accountNum").value = this.currentWallet[0].requisites.account_number;
-        let IBAN = document.querySelector("#IBAN").value = this.currentWallet[0].requisites.iban;
-        let SWIFT = document.querySelector("#SWIFT").value = this.currentWallet[0].requisites.swift;
+        document.querySelector("#bankAddress").value = this.currentWallet[0].requisites.bank_address;
+        document.querySelector("#accountNum").value = this.currentWallet[0].requisites.account_number;
+        document.querySelector("#IBAN").value = this.currentWallet[0].requisites.iban;
+        document.querySelector("#SWIFT").value = this.currentWallet[0].requisites.swift;
         // 
         // Event for button Edit inside PopUp
         document.querySelector("#editWallet_action").removeEventListener("click", this.createMerchantCheckData);
@@ -470,6 +464,7 @@ class Wallets extends WalletsRequest {
 
     clearFilter = () => {
         this.filter = {};
+        Object.assign(this.filter, this.permissionFilter);
         document.querySelector("#search-input").value = "";
         document.querySelectorAll("select").forEach(item => item.value = "");
         this.container = document.getElementById("table-list");
@@ -484,6 +479,8 @@ class Wallets extends WalletsRequest {
         document.body.classList.add("modal-open");
         //
         this.filter = {};
+        Object.assign(this.filter, this.permissionFilter);
+        // 
         const merchantName = document.querySelector("#filterMerchant").value;
         const type = document.querySelector("#filterType").value;
         //
@@ -492,7 +489,12 @@ class Wallets extends WalletsRequest {
         type ? this.filter.type = type : null;
         // 
         // Request for data 
-        const response = await this.getWalletsPart(0, 10, this.filter);
+        const data = {
+            filter: this.filter,
+            skip: 0,
+            limit: 10
+        };
+        const response = await this.getWalletsPart(data);
         // Table cleaning
         this.container = document.getElementById("table-list");
         this.container.innerHTML = "";
@@ -516,24 +518,24 @@ class Wallets extends WalletsRequest {
     
     countNextPage = (arr, numbersOfpages) => {
         this.renderWallets(arr);
-        var lastPage = numbersOfpages / 10;
+        let lastPage = numbersOfpages / 10;
 
         if(lastPage > 3){
             lastPage !== parseInt(lastPage) ? lastPage = parseInt(lastPage) + 1 : "";
             for (let i = 1; i < 4; i++) {
                 this.renderNextPage([i]);
             }
-            this.dotts = document.createElement("span");
-            this.dotts.textContent = "...";
-            this.dotts.classList.add("dotts");
-            this.containerPages.appendChild(this.dotts);
+            const dotts = document.createElement("span");
+            dotts.textContent = "...";
+            dotts.classList.add("dotts");
+            this.containerPages.appendChild(dotts);
             this.renderNextPage(lastPage);
         } else {
             for (let i = 0; i <= lastPage; i++) {
                 this.renderNextPage([i+1]);
             }
         }
-        var buttonsPage = document.querySelectorAll(".nextPage-btn");
+        const buttonsPage = document.querySelectorAll(".nextPage-btn");
         buttonsPage[0].classList.add("highlight");
         buttonsPage.forEach((btn) => {
             btn.addEventListener("click", async (event) => {
@@ -541,10 +543,15 @@ class Wallets extends WalletsRequest {
                 this.loadingGif.style.display = "flex";
                 document.body.classList.add("modal-open");
 
-                var currentEvent = +(event.target.textContent);
-                var listNumber = ((currentEvent*10)-10);
+                const currentEvent = +(event.target.textContent);
+                const listNumber = ((currentEvent*10)-10);
 
-                var nextList = await this.getWalletsPart(listNumber, 10, this.filter);
+                const data = {
+                    filter: this.filter,
+                    skip: listNumber,
+                    limit: 10
+                };
+                const nextList = await this.getWalletsPart(data);
 
                 // Loading GIF appear and scroll off
                 this.loadingGif.style.display = "none";
@@ -554,7 +561,6 @@ class Wallets extends WalletsRequest {
                 this.container.innerHTML = "";
                 
                 this.renderWallets(nextList.wallets);
-                this.walletsArr = nextList.wallets;
 
                 if( +(btn.textContent) === lastPage && +(btn.textContent) > 1){
                     btn.closest("div").children[0].textContent = lastPage - 3;
@@ -586,19 +592,81 @@ class Wallets extends WalletsRequest {
         });
     }
 
+
     checkClickedPages = (event) => {
         this.buttonsPage = document.querySelectorAll(".nextPage-btn");
         this.buttonsPage.forEach((btn) => {
             event === +(btn.textContent) ? btn.classList.add("highlight") : btn.classList.remove("highlight");;
         });
     };
+
+
+    renderOption = (container, arr) => {
+        arr.forEach(item => {
+            let option = document.createElement("option");
+            option.value = item;
+            option.textContent = item;
+            container.appendChild(option);
+        });
+    }
+
+
+    listOfMerchantName = async () => {
+        const merchantArr = await this.getAllMerchants();
+        const merchantNames = merchantArr.map(item => item.name);
+        const container = document.querySelector("#filterMerchant");
+        this.renderOption(container, merchantNames);
+        this.renderOption(document.querySelector("#merchant"), merchantNames);
+    }
+
+
+    getUserByFilter = async (filter) => {
+        return  await fetch("http://18.216.223.81:3000/getUserByFilter", {
+            method: "POST",
+            body: JSON.stringify({filter}),
+            headers:{'Content-Type': 'application/json'}
+        })
+        
+        .then(res => {
+            return res.json();
+        }) 
+        .catch(err => {
+            console.log(err);
+        });
+    }
+
+
+    permissionMerchantManager = async () => {
+        const currentUser_id = document.querySelector('.curentUserID').textContent.trim()
+        const currentUserData = await this.getUserByFilter({'_id': currentUser_id})
+        const merchantsName = currentUserData.users[0].merchantList.map(item => item.name)
+        this.renderOption(document.querySelector('#filterMerchant'), merchantsName)
+        this.renderOption(document.querySelector("#merchant"), merchantsName);
+        this.permissionFilter = {'merchant_name': { $in: merchantsName }}
+        Object.assign(this.filter, this.permissionFilter)
+    }
     
+
     saveLocalWallets = async () => {
-        const response = await this.getWalletsPart(0, 10);
-        this.walletsArr = response.wallets;
-        this.walletsNum = response.counts;
+        // Permission access for Solution Manager
+        this.currentUserRole = document.querySelector('.curentUserRole').textContent.trim();
+        if (this.currentUserRole === 'Merchant Manager') {
+            await this.permissionMerchantManager();
+        } else {
+            // Get List of Merchant
+            this.listOfMerchantName();
+        }
+        const data = {
+            filter: this.filter,
+            skip: 0,
+            limit: 10
+        }
+        const res = await this.getWalletsPart(data);
+        this.walletsArr = res.wallets;
+        this.walletsNum = res.counts;
         this.countNextPage(this.walletsArr, this.walletsNum);
     }
+
 
     getWalletById = async (id) => {
         return  await fetch("http://18.216.223.81:3000/getWalletById", {
@@ -614,10 +682,11 @@ class Wallets extends WalletsRequest {
         });
     }
 
-    getWalletsPart = async (number, limit, filter) => {
+    
+    getWalletsPart = async (data) => {
         return  await fetch("http://18.216.223.81:3000/getWalletsPart", {
             method: "POST",
-            body: JSON.stringify({number, limit, filter}),
+            body: JSON.stringify(data),
             headers:{'Content-Type': 'application/json'}
         })
         .then(res => {
@@ -628,9 +697,11 @@ class Wallets extends WalletsRequest {
         });
     }
 
+
     checkDate = (data) => {
         return data === "" || !data ? data = "mm/dd/yyyy" : data = moment(data).format('ll');
     }
+
 
     renderWallets = arr => {
         this.container = document.getElementById("table-list");
@@ -665,9 +736,6 @@ class Wallets extends WalletsRequest {
     render(){
         // First page load
         this.saveLocalWallets();
-        // 
-        // Get List of Merchant
-        this.listOfMerchantName();
         // 
         // Show Filter Button
         document.querySelector("#showBtn").addEventListener("click", this.filterList);
