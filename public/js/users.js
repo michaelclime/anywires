@@ -10,6 +10,7 @@ if (userRole === 'Crm InvoiceManager' || userRole === 'Crm SuccessManager' || us
 class UsersList {
     constructor(){
         this.filter = {};
+        this.permissionFilter = {};
         this.usersArr = [];
         this.usersNum = [];
         this.containerPages = document.querySelector(".nextPage-block");
@@ -100,6 +101,8 @@ class UsersList {
 
     clearFilters = () => {
         this.filter = {};
+        Object.assign(this.filter, this.permissionFilter);
+        // 
         const areas = document.querySelectorAll(".clear");
         areas.forEach((item) => item.value = "");
         this.container.innerHTML = "";
@@ -115,6 +118,8 @@ class UsersList {
         // 
 
         this.filter = {};
+        Object.assign(this.filter, this.permissionFilter);
+        // 
         const lastLog = document.querySelector("#lastLog").value;
         const merchant = document.querySelector("#merchant").value;
         const role = document.querySelector("#filterRole").value;
@@ -175,6 +180,7 @@ class UsersList {
 
     searchFunction = async () => {
         this.filter = {};
+        // 
         const phrase = document.getElementById('search-input').value;
         if (phrase) {
             // Loading ON
@@ -183,6 +189,8 @@ class UsersList {
             // 
 
             this.filter = { $text: { $search: phrase } };
+            Object.assign(this.filter, this.permissionFilter);
+            // 
 
             // Request to Mongo DB
             const data = {
@@ -190,6 +198,7 @@ class UsersList {
                 skip: 0,
                 limit: 10
             };
+            
             const res =  await this.getUserPartly(data);
             // 
             const usersArr = res.users;
@@ -211,7 +220,7 @@ class UsersList {
         this.loadUsers(arr);
         const lastPage = numbersOfpages / 10;
 
-        if(lastPage > 3){
+        if (lastPage > 3) {
             lastPage !== parseInt(lastPage) ? lastPage = parseInt(lastPage) + 1 : "";
             for (let i = 1; i < 4; i++) {
                 this.renderNextPage([i]);
@@ -222,7 +231,7 @@ class UsersList {
             this.containerPages.appendChild(this.dotts);
             this.renderNextPage(lastPage);
         } else {
-            for (let i = 0; i <= lastPage; i++) {
+            for (let i = 0; i < lastPage; i++) {
                 this.renderNextPage([i+1]);
             }
         }
@@ -318,13 +327,48 @@ class UsersList {
     }
 
 
+    getUserByFilter = async (filter) => {
+        return  await fetch("http://18.216.223.81:3000/getUserByFilter", {
+            method: "POST",
+            body: JSON.stringify({filter}),
+            headers:{'Content-Type': 'application/json'}
+        })
+        
+        .then(res => {
+            return res.json();
+        }) 
+        .catch(err => {
+            console.log(err);
+        });
+    }
+
+
+    permissionMerchantManager = async () => {
+        const currentUser_id = document.querySelector('.curentUserId').textContent.trim()
+        const currentUserData = await this.getUserByFilter({'_id': currentUser_id})
+        currentUserData.users[0].merchantList.forEach(item => this.renderOption(document.querySelector('#merchant'), item.name, item._id))
+        const merchantArr = currentUserData.users[0].merchantList.map(item => item._id)
+        this.permissionFilter = {'merchant': { $in: merchantArr }}
+        Object.assign(this.filter, this.permissionFilter)
+
+        document.querySelector('.roleSol').remove()
+        document.querySelector('.roleAff').remove()
+    }
+
+
     saveLocalUsers = async () => {
-        // Render merchants name for filters
-        const merchantList = await this.getMerchants({});
-        merchantList.merchants.forEach(item => this.renderOption(document.querySelector('#merchant'), item.name, item._id) ); 
-        // 
+        // Permission access for Solution Manager
+        this.currentUserRole = document.querySelector('.curentUserRole').textContent.trim();
+        if (this.currentUserRole === 'Merchant Manager') {
+            await this.permissionMerchantManager();
+        } else {
+            // Render merchants name for filters
+            const merchantList = await this.getMerchants({});
+            merchantList.merchants.forEach(item => this.renderOption(document.querySelector('#merchant'), item.name, item._id) ); 
+        }
+        
         const data = {
-            filter: {},
+            filter: this.filter,
             skip: 0,
             limit: 10
         };

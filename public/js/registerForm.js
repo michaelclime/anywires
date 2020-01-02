@@ -16,7 +16,7 @@ $(document).ready(function(){
 
 // Merchant window
 
-const curentUserId = document.querySelector('.curentUserId').textContent;
+const curentUserID = document.querySelector('.curentUserId').textContent;
 const currentUserTypeClass = document.querySelector('.currentUserTypeClass').textContent;
 const merchantChooseBtn = document.querySelector('.merchantChooseList');
 let showIndicator = true;
@@ -26,7 +26,7 @@ if ( currentUserTypeClass === 'admin' ) {
     merchantChooseBtn.addEventListener('click', () => {
         document.querySelector('.selectAllBox').innerHTML = 'Loading...';
         if (showIndicator) {
-            let fetchPromise  = fetch('http://18.216.223.81:3000/getMerchants'); // in settlements.js route file
+            let fetchPromise  = fetch('http://localhost:3000/getMerchants'); // in settlements.js route file
             fetchPromise.then(response => {
                 return response.json();
                 }).then(merchants => {
@@ -84,11 +84,11 @@ if ( currentUserTypeClass === 'admin' ) {
 
         document.querySelector('.selectAllBox').innerHTML = 'Loading...';
         if (showIndicator) {
-            let fetchPromise  = fetch('http://18.216.223.81:3000/getMerchant/' + curentUserId); // in settlements.js route file
+            let fetchPromise  = fetch('http://localhost:3000/getMerchant/' + curentUserID); // in settlements.js route file
             fetchPromise.then(response => {
                 return response.json();
                 }).then(merchants => {
-                    console.log(merchants);
+                    
                     class MerchantOptoinList {
                         constructor(){
                             this.list = merchants;
