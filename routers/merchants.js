@@ -7,11 +7,11 @@ const express = require('express'),
  
 const url = 'mongodb://18.216.223.81:27017/anywires';
 
-router.get('/merchants.html', isLoggedIn, function(req, res) {
+router.get('/merchants.html', isLoggedIn, visibilityApproval, function(req, res) {
     res.render("merchants.html");
 });
 
-router.get('/create-merchant', isLoggedIn, function(req, res) {
+router.get('/create-merchant', isLoggedIn, visibilityApproval, function(req, res) {
     res.render("create-merchant.html");
 });
 
@@ -28,6 +28,9 @@ router.get("/getMerchants", jsonParser, (req, res) => {
     });
 });
 
+
+// @route GET /get-all-merchants
+// @desc Get ALL Merchant
 router.get("/get-all-merchants", jsonParser, async (req, res) => {
     const filter = req.body.filter;
     const merchants = await Merchant.find(filter).sort({"name": 1});
@@ -37,37 +40,22 @@ router.get("/get-all-merchants", jsonParser, async (req, res) => {
 });
 
 
-router.post("/getPart-Merchants", jsonParser, (req, res) => {
-    mongo.connect(url, (err, db) => {
-    var number = req.body.number;
-    var filter = req.body.filter;
+// @route POST /get-merchants-partly
+// @desc Get Merchant Partly
+router.post("/get-merchants-partly", jsonParser, async (req, res) => {
+    const filter = req.body.filter
+    const skip = req.body.skip
+    const limit = req.body.limit
 
-        db.collection("merchants")
-        .find(filter)
-        .sort({"name": 1})
-        .skip(number)
-        .limit(10)
-        .toArray(function(err, merchants){
-            if(err) return console.log("Error with upload Merchants!", err);
-            db.close();
-            res.send(merchants);
-        })
-    });
-});
+    const count = await Merchant.countDocuments(filter)
+    const merchants = await Merchant.find(filter).sort({'name': 1}).skip(skip).limit(limit)
 
-router.post("/getNumber-Merchants", jsonParser, (req, res) => {
-    mongo.connect(url, (err, db) => {
-        var filter = req.body.filter;
-        filter === undefined ? filter = {} : "";
+    res.send({
+        merchants,
+        count
+    })
+})
 
-        db.collection("merchants").find(filter).count(function(err, merchants){
-            if(err) return console.log("Error with upload Number of Invoices!", err);
-            
-            db.close();
-            res.send({"numbers": merchants});
-        })
-    });
-});
 
 // @route POST /createMerchant
 // @desc Create Merchant
@@ -131,6 +119,7 @@ router.post("/editMerchant", jsonParser, (req, res) => {
     });
 });
 
+
 // @route POST /editMerchant
 // @desc Edited one Merchant
 router.post("/edit-merchant", jsonParser, async (req, res) => {
@@ -152,6 +141,17 @@ function isLoggedIn(req, res, next) {
     }
     req.flash('error', 'You need to be logged in to do that');
     res.redirect('/');
+}
+
+
+function visibilityApproval(req, res, next) {
+    if ( req.user.role === 'Affiliate' || req.user.role === 'Solution Manager' ||  req.user.role === 'Merchant Manager' ||  req.user.role === 'Invoice Manager' ) {
+
+        req.flash('error', 'Sorry, You don\'t have permission to see this page');
+        res.redirect('/');
+    } else {
+        return next()
+    }
 }
 
 module.exports = router;
