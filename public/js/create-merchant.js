@@ -12,7 +12,7 @@ class CreateMerchant{
     getListOfAffilliate = async () => {
         const Affilliate = await this.getListOfAffilliateReq({"role": "Affiliate"});
         const container = document.querySelector("#affiliate");
-        Affilliate.forEach( aff => {
+        Affilliate.users.forEach( aff => {
             const option = document.createElement("option");
             option.value = aff.email;
             option.innerHTML = `${aff.username} '${aff.email}'`;
@@ -174,7 +174,13 @@ class CreateMerchant{
     }
 
     editMerchantRenderPage = async () => {
-        this.currentMerchant = await this.getMerchants(0, {"name": this.merchName});
+        const data = {
+            filter: { 'name': this.merchName} ,
+            skip: 0,
+            limit: 10
+        }
+        const res = await this.getMerchantsPartly(data)
+        this.currentMerchant = res.merchants;
 
         // Merchant info render
         var b2b = document.querySelector("#b2b");
@@ -283,13 +289,10 @@ class CreateMerchant{
         this.loadingGIF.style.display = "none";
     }
 
-    getMerchants = async (number, filter) => {
-        return  await fetch("http://18.216.223.81:3000/getPart-Merchants", {
+    getMerchantsPartly = async data => {
+        return  await fetch("http://18.216.223.81:3000/get-merchants-partly", {
             method: "POST",
-            body: JSON.stringify({
-                number, 
-                filter
-            }),
+            body: JSON.stringify(data),
             headers:{'Content-Type': 'application/json'}
         })
         .then(res => {
@@ -550,8 +553,12 @@ class BankList extends CreateMerchant {
         this.activeBanks = [];
     }
 
-    getAllBanks = async () => {
-        return  await fetch("http://18.216.223.81:3000/get-all-banks")
+    getAllBanks = async filter => {
+        return  await fetch("http://18.216.223.81:3000/get-all-banks", {
+            method: "POST",
+            body: JSON.stringify({filter}),
+            headers:{'Content-Type': 'application/json'}
+        })
         .then(res => {
             return res.json();
         }) 
@@ -562,7 +569,7 @@ class BankList extends CreateMerchant {
     
     renderBankList = async () => { 
         // Get List of Banks
-        const allBanks = await this.getAllBanks();
+        const allBanks = await this.getAllBanks({});
         this.activeBanks = allBanks.banks.filter(bank => bank.active === true).map(elem => elem.name);
         const bankList = allBanks.banks.map(bank => bank.name);
         // 
