@@ -512,6 +512,7 @@ if (alertWindow) {
 }
 
 // Open Invoice Preview
+
 let fetchPromise3  = fetch('http://18.216.223.81:3000/getInvNumber');
 
 fetchPromise3.then(response => {
