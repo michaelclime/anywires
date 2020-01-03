@@ -4,6 +4,14 @@ const userRole = document.querySelector('.curentUserRole').textContent.trim()
 if (userRole === 'Crm InvoiceManager' || userRole === 'Crm SuccessManager'  || userRole === 'Merchant Manager') {
     document.querySelector('.gn-menu__banks').remove()
 } 
+if (userRole === 'Invoice Manager') {
+    document.querySelector('.gn-menu__banks').remove()
+    document.querySelector('#reports').remove()
+    document.querySelector('.gn-menu__users').remove()
+    document.querySelector('.gn-menu__merchants').remove()
+    document.querySelector('.gn-menu__settlements').remove()
+    document.querySelector('.gn-menu__wallets').remove()
+} 
 
 // Remove menu items for permissions END
 
@@ -1456,7 +1464,7 @@ class invoiceList {
     renderViewInvoice = async (obj) => {
         // Events Listeners for PopUp View Invoice
         const user = this.currentUserRole.textContent.trim();
-        if (user === "Merchant Manager" || user === "Solution Manager") {
+        if (user === "Merchant Manager" || user === "Invoice Manager") {
             this.merchantInvoiceManagerFunctions();
         } else {
             this.crmPopUpFunctions();
@@ -1640,13 +1648,13 @@ class invoiceList {
                         <td id="docType">${doc.type}</td> 
                         <td id="docStatus">${doc.status}</td>
                         ${
-                            user === "Merchant Manager" || user === "Solution Manager"
+                            user === "Merchant Manager" || user === "Invoice Manager"
                             ? 
                             ""
                             :
                             `<td>
-                            <span id="docGood" onclick="userList.docsGood(event)"><i class="far fa-check-circle"></i></span>
-                            <span id="docBad" onclick="userList.docsBad(event)"><i class="far fa-times-circle"></i></span>
+                                <span id="docGood" onclick="userList.docsGood(event)"><i class="far fa-check-circle"></i></span>
+                                <span id="docBad" onclick="userList.docsBad(event)"><i class="far fa-times-circle"></i></span>
                             </td>`
                         }
                         <td class="hide" id="filename">${doc.filename}</td>
@@ -2186,14 +2194,12 @@ class invoiceList {
         document.querySelector("#frozenBtn").remove()
         document.querySelector("#recallBtn").remove()
         document.querySelector(".merchManagerPermission").classList.add("hide");
-
-        
     }
 
     
     saveLocalInvoices = async () => {
         const user = this.currentUserRole.textContent.trim();
-        if (user === "Merchant Manager" || user === "Solution Manager") {
+        if (user === "Merchant Manager" || user === "Invoice Manager") {
             await this.permissionForMerchantInvManager();
             
         } else {
