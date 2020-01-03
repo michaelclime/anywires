@@ -162,6 +162,10 @@
     header img {
         margin-right: 15px;
     }
+
+    .hide {
+        display: none;
+    }
     
     
     /* Main */

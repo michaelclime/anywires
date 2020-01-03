@@ -250,11 +250,14 @@ const allCountry = [
     'Afghanistan'
  ];
 
-class UsersList {
+class BankList {
     constructor(){
         this.filter = {};
+        this.permissionFilter = {};
+        this.currentUserRole = '';
+
         this.ArrayLIst = [];
-        this.banksNumber = [];
+        this.banksNumber = 0;
         this.USD = 1;
         this.solutionNames = [];
         this.container = document.getElementById("table-list");
@@ -264,16 +267,16 @@ class UsersList {
         this.buttonExel = document.querySelector("#dowloadPdf");
         this.containerPages = document.querySelector(".nextPage-block");
         this.openCreatePageBtn = document.querySelector("#createBank-button");
-        this.loadingGIF = document.querySelector("#loadingGif");
+        this.loadingGif = document.querySelector("#loadingGif");
         this.searchInput = document.querySelector("#search-input");
         this.render();
     }
 
     editBank = async () => {
-        var allTd = document.querySelectorAll(".edit");
+        const allTd = document.querySelectorAll(".edit");
         allTd.forEach((td) => {
             td.addEventListener("click", () => {
-                var bankName = td.parentElement.children[0].textContent;
+                const bankName = td.parentElement.children[0].textContent;
                 window.open("http://18.216.223.81:3000/create-bank?&" + bankName, '_blank');
             });
         });
@@ -281,7 +284,7 @@ class UsersList {
 
     openCreatePage = () => {
         // Loading GIF Off
-        this.loadingGIF.style.display = "flex";
+        this.loadingGif.style.display = "flex";
         document.body.classList.add("modal-open");
 
         document.location.href = "http://18.216.223.81:3000/create-bank";
@@ -289,6 +292,8 @@ class UsersList {
 
     clearFilters = () => {
         this.filter = {};
+        Object.assign(this.filter, this.permissionFilter);
+
         this.selets = document.querySelectorAll("select");
         this.selets.forEach(item => item.value = "");
         this.searchInput = document.querySelector("#search-input").value = "";
@@ -296,73 +301,72 @@ class UsersList {
         this.container.innerHTML = "";
         this.containerPages.innerHTML = "";
 
-        this.countNextPage(this.ArrayLIst,  this.banksNumber.numbers);
+        this.countNextPage(this.ArrayLIst,  this.banksNumber);
     }
 
     showFilters = async () => {
         // Loading GIF Off
-        this.loadingGIF.style.display = "flex";
+        this.loadingGif.style.display = "flex";
 
         this.filter = {};
-        this.filterArray = document.querySelectorAll(".filter");
-        this.filterMin = document.querySelector("#filterMin").value;
-        this.filterMax = document.querySelector("#filterMax").value;
-        this.filterSepa = document.querySelector("#filterSepa").value;
-        this.filterEnable = document.querySelector("#filterEnable").value;
-        this.filterSolution = document.querySelector("#filterSolution").value;
-        this.filterCountry = document.querySelector("#filterCountry").value;
+        Object.assign(this.filter, this.permissionFilter);
+        
+        const filterMin = document.querySelector("#filterMin").value;
+        const filterMax = document.querySelector("#filterMax").value;
+        let filterEnable = document.querySelector("#filterEnable").value;
+        const filterCountry = document.querySelector("#filterCountry").value;
+
+        // Solution Filter
+        if (this.currentUserRole !== 'Solution Manager') {
+            const filterSolution = document.querySelector("#filterSolution").value;
+            filterSolution !== "" ? this.filter.solution_name = filterSolution : ""; // ID
+        }
 
         // Min Wire Filter
-        if (this.filterMin !== ""){
+        if (filterMin !== ""){
             this.filter.min_wire = {
-                $gte: +(this.filterMin)
+                $gte: +(filterMin)
             };
         }
 
         // Max Wire Filter
-        if (this.filterMax !== ""){
+        if (filterMax !== ""){
             this.filter.max_wire = {
-                $lte: +(this.filterMax)
+                $lte: +(filterMax)
             };
         }
 
-        // Sepa Filter
-        if (this.filterSepa !== ""){
-            this.filterSepa === "yes" ? this.filterSepa = true : this.filterSepa = false;
-            this.filter.sepa = this.filterSepa;
-        }
-
         // Enable Filter
-        if (this.filterEnable !== ""){
-            this.filterEnable === "yes" ? this.filterEnable = true : this.filterEnable = false;
-            this.filter.active = this.filterEnable;
+        if (filterEnable !== ""){
+            filterEnable === "yes" ? filterEnable = true : filterEnable = false;
+            this.filter.active = filterEnable;
         }
-
-        // Solution Filter
-        this.filterSolution !== "" ? this.filter.solution_name = this.filterSolution : "";
 
         // Country Filter
-        this.filterCountry !== "" ? this.filter.country = this.filterCountry : "";
+        filterCountry !== "" ? this.filter.country = filterCountry : "";
 
         // If empty Filter
         var emptyObj = this.checkIsEmptyObj(this.filter);
         if (!emptyObj) {
-
-            this.lengthBanks = await this.getBanks_Number(this.filter);
-            this.arrBanks = await this.getBanks(0, this.filter);
+            const data = {
+                filter: this.filter,
+                skip: 0,
+                limit: 10
+            }
+            const res = await this.getBanksPartly(data)
             
             // Table cleaning
             this.container.innerHTML = "";
             this.containerPages.innerHTML = "";
 
             // If we got Empty Obj from Data Base. 
-            if (this.lengthBanks.numbers) {
-                this.countNextPage(this.arrBanks, this.lengthBanks.numbers);
+            if (res.count) {
+                this.countNextPage(res.banks, res.count);
             }
         }
 
         // Loading GIF Off
-        this.loadingGIF.style.display = "none";
+        this.loadingGif.style.display = "none";
     }
 
     checkIsEmptyObj = (obj) => {
@@ -390,81 +394,78 @@ class UsersList {
     }
 
     searchFunction = async () => {
+        this.filter = {};
+        Object.assign(this.filter, this.permissionFilter);
+        
         // Loading GIF On
-        this.loadingGIF.style.display = "flex";
+        this.loadingGif.style.display = "flex";
+        document.body.classList.add("modal-open");
 
-        this.phrase = document.getElementById('search-input').value;
-        this.filter = { $text: { $search: this.phrase } };
+        const phrase = document.getElementById('search-input').value;
+        this.filter = { $text: { $search: phrase } };
 
-        if(this.phrase){
-            this.length = await this.getBanks_Number(this.filter);
-            this.filterList = await this.getBanks(0, this.filter);
+        if (phrase) {
+            const data = {
+                filter: this.filter,
+                skip: 0,
+                limit: 10
+            };
+            const res = await this.getBanksPartly(data);
 
             this.container.innerHTML = "";
             this.containerPages.innerHTML = "";
 
-            this.countNextPage(this.filterList, this.length.numbers);
+            this.countNextPage(res.banks, res.count);
         }
 
         // Loading GIF Off
-        this.loadingGIF.style.display = "none";
+        this.loadingGif.style.display = "none";
+        document.body.classList.remove("modal-open");
     }
 
     methodPutEnable = (id, status) => {
         fetch("http://18.216.223.81:3000/putBank", {
-                    method: "PUT",
-                    body: JSON.stringify({
-                        id: id, //Must be id!
-                        active: status //Data which you want to change
-                    }),
-                    headers:{'Content-Type': 'application/json'}
-                    })
-                    .then(res => {
-                        res.text();
-                    }) 
-                    .catch(err => {
-                        console.log(err);
-                    });
+                method: "PUT",
+                body: JSON.stringify({
+                    id: id, //Must be id!
+                    active: status //Data which you want to change
+                }),
+                headers:{'Content-Type': 'application/json'}
+                })
+                .then(res => {
+                    res.text();
+                }) 
+                .catch(err => {
+                    console.log(err);
+                });
     }
 
+
     disableEnableCheck = () => {
-        let btnDisable = document.querySelectorAll(".btnDisable");
+        const btnDisable = document.querySelectorAll(".btnDisable");
         btnDisable.forEach((btn) => {
             btn.addEventListener("click", () => {
-                if(btn.textContent === "Disable"){
+                if (btn.textContent === "Disable") {
                     btn.textContent = "Enable";
                     btn.style.background = "#00C851";
-                    btn.closest("tr").children[11].innerHTML = "<strong>no</strong>";
-                    btn.closest("tr").children[11].style.color = "#FF4444";
-                    this.id = btn.closest("tr").children[13].innerHTML;
+                    btn.closest("tr").querySelector('.enableCheck').innerHTML = "<strong>no</strong>";
+                    btn.closest("tr").querySelector('.enableCheck').style.color = "#FF4444";
+                    const id = btn.closest("tr").querySelector('#bankID').textContent.trim();
 
-                    this.methodPutEnable(this.id, false);
+                    this.methodPutEnable(id, false);
 
-                } else if(btn.textContent === "Enable") {
+                } else if (btn.textContent === "Enable") {
                     btn.textContent = "Disable";
                     btn.style.background = "#FF4444";
-                    btn.closest("tr").children[11].innerHTML = "<strong>yes</strong>";
-                    btn.closest("tr").children[11].style.color = "#00A542";
-                    this.id = btn.closest("tr").children[13].innerHTML;
-                    
-                    this.methodPutEnable(this.id, true);
+                    btn.closest("tr").querySelector('.enableCheck').innerHTML = "<strong>yes</strong>";
+                    btn.closest("tr").querySelector('.enableCheck').style.color = "#00A542";
+                    const id = btn.closest("tr").querySelector('#bankID').textContent.trim();
+
+                    this.methodPutEnable(id, true);
                 }
             });
         });
     }
-
-    checkSepa = () => {
-        let itemsSepa = document.querySelectorAll(".statusCheck");
-        for (let i = 0; i < itemsSepa.length; i++) {
-            if(itemsSepa[i].textContent === "false"){
-                itemsSepa[i].style.color = "#FF4444";
-                itemsSepa[i].textContent = "no";
-            } else {
-                itemsSepa[i].style.color = "#00A542";
-                itemsSepa[i].textContent = "yes";
-            }
-        };
-    };
 
     checkEnable = () => {
         const itemEnables = document.querySelectorAll(".enableCheck");
@@ -472,13 +473,13 @@ class UsersList {
             if(item.textContent === "false") {
                 item.innerHTML = `<strong>no</strong>`;
                 item.style.color = "#FF4444";
-                item.closest("tr").children[12].childNodes[1].innerHTML = "Enable";
-                item.closest("tr").children[12].childNodes[1].style.backgroundColor = "#00C851";
+                item.closest("tr").querySelector('.btnDisable').innerHTML = "Enable";
+                item.closest("tr").querySelector('.btnDisable').style.backgroundColor = "#00C851";
             } else if(item.textContent === "true"){
                 item.innerHTML = `<strong>yes</strong>`;
                 item.style.color = "#00A542";
-                item.closest("tr").children[12].childNodes[1].innerHTML = "Disable";
-                item.closest("tr").children[12].childNodes[1].style.backgroundColor = "#FF4444";
+                item.closest("tr").querySelector('.btnDisable').innerHTML = "Disable";
+                item.closest("tr").querySelector('.btnDisable').style.backgroundColor = "#FF4444";
             }
         });
     }
@@ -493,37 +494,49 @@ class UsersList {
     
     countNextPage = (arr, numbersOfpages) => {
         this.loadBanks(arr);
-        var lastPage = numbersOfpages / 10;
+        const lastPage = numbersOfpages / 10;
 
         if(lastPage > 3){
             lastPage !== parseInt(lastPage) ? lastPage = parseInt(lastPage) + 1 : "";
             for (let i = 1; i < 4; i++) {
                 this.renderNextPage([i]);
             }
-            this.dotts = document.createElement("span");
-            this.dotts.textContent = "...";
-            this.dotts.classList.add("dotts");
+            const dotts = document.createElement("span");
+            dotts.textContent = "...";
+            dotts.classList.add("dotts");
             this.containerPages.appendChild(this.dotts);
             this.renderNextPage(lastPage);
         } else {
-            for (let i = 0; i < lastPage; i++) {
+            for (let i = 0; i <= lastPage; i++) {
                 this.renderNextPage([i+1]);
             }
         }
-        var buttonsPage = document.querySelectorAll(".nextPage-btn");
+        const buttonsPage = document.querySelectorAll(".nextPage-btn");
         buttonsPage[0].classList.add("highlight");
         buttonsPage.forEach((btn) => {
             btn.addEventListener("click", async (event) => {
+                // Loading GIF appear and scroll off
+                this.loadingGif.style.display = "flex";
+                document.body.classList.add("modal-open");
 
-                this.currentEvent = +(event.target.textContent);
-                this.listNumber = ((this.currentEvent*10)-10);
+                const currentEvent = +(event.target.textContent);
+                const listNumber = ((currentEvent*10)-10);
 
-                this.nextList = await this.getBanks(this.listNumber, this.filter);
+                const data = {
+                    filter: this.filter,
+                    skip: listNumber,
+                    limit: 10
+                };
+                const res = await this.getBanksPartly(data);
+
+                // Loading GIF appear and scroll off
+                this.loadingGif.style.display = "none";
+                document.body.classList.remove("modal-open");
 
                 this.container = document.getElementById("table-list");
                 this.container.innerHTML = "";
                 
-                this.loadBanks(this.nextList);
+                this.loadBanks(res.banks);
 
                 if( +(btn.textContent) === lastPage && +(btn.textContent) > 1){
                     btn.closest("div").children[0].textContent = lastPage - 3;
@@ -531,18 +544,18 @@ class UsersList {
                     btn.closest("div").children[2].textContent = lastPage - 1;
 
                 } else if (+(btn.textContent) !== 1 && +(btn.textContent) > +(btn.closest("div").children[1].innerHTML) && +(btn.textContent) < lastPage-1) {
-                    var first =  btn.closest("div").children[0].textContent;
-                    var second = btn.closest("div").children[1].textContent;
-                    var third = btn.closest("div").children[2].textContent;
+                    const first =  btn.closest("div").children[0].textContent;
+                    const second = btn.closest("div").children[1].textContent;
+                    const third = btn.closest("div").children[2].textContent;
 
                     btn.closest("div").children[0].textContent = Number(first)+ 1;
                     btn.closest("div").children[1].textContent = Number(second) + 1;
                     btn.closest("div").children[2].textContent = Number(third) + 1;
 
                 } else if ( +(btn.textContent) !== 1 && +(btn.textContent) < +(btn.closest("div").children[1].innerHTML) && +(btn.textContent) > 1) {
-                    var first =  btn.closest("div").children[0].textContent;
-                    var second = btn.closest("div").children[1].textContent;
-                    var third = btn.closest("div").children[2].textContent;
+                    const first =  btn.closest("div").children[0].textContent;
+                    const second = btn.closest("div").children[1].textContent;
+                    const third = btn.closest("div").children[2].textContent;
 
                     btn.closest("div").children[0].textContent = Number(first) - 1;
                     btn.closest("div").children[1].textContent = Number(second) - 1;
@@ -550,10 +563,11 @@ class UsersList {
 
                 } else if( +(btn.textContent) === 1 ){}
 
-                this.checkClickedPages(this.currentEvent);
+                this.checkClickedPages(currentEvent);
             });
         });
     }
+
 
     checkClickedPages = (event) => {
         this.buttonsPage = document.querySelectorAll(".nextPage-btn");
@@ -562,40 +576,6 @@ class UsersList {
         });
     };
 
-    getBanks = async (number, filter) => {
-        return  await fetch("http://18.216.223.81:3000/getPart-Banks", {
-            method: "POST",
-            body: JSON.stringify({
-                number, 
-                filter
-            }),
-            headers:{'Content-Type': 'application/json'}
-        })
-        
-        .then(res => {
-            return res.json();
-        }) 
-        .catch(err => {
-            console.log(err);
-        });
-    }
-
-    getBanks_Number = async (filter) => {
-        return  await fetch("http://18.216.223.81:3000/getNumber-Banks", {
-            method: "POST",
-            body: JSON.stringify({
-                filter
-            }),
-            headers:{'Content-Type': 'application/json'}
-        })
-        
-        .then(res => {
-            return res.json();
-        }) 
-        .catch(err => {
-            console.log(err);
-        });
-    }
 
     renderAllCountry = () => {
         allCountry.sort().forEach((name) => {
@@ -607,36 +587,90 @@ class UsersList {
         });
     }
 
-    renderSolution = () => {
-        var arr = this.uniqueArr(this.solutionNames);
-        arr.sort().forEach((item) => {
-            var container = document.querySelector("#filterSolution");
-            var option = document.createElement("option");
-            option.value = item;
-            option.innerHTML = item;
-            container.appendChild(option);
-        });
+    renderSolution = (name, _id) => {
+        const container = document.querySelector("#filterSolution");
+        const option = document.createElement("option");
+        option.value = _id;
+        option.innerHTML = name;
+        container.appendChild(option);
     }
 
-    saveLocalBanks = async (array) => {
-        // Get USD
-        var currencyInv = await this.getEURexchange("USD", "EUR");
-        this.USD = currencyInv.rates.EUR;
 
-        this.banksNumber = await this.getBanks_Number({});
-        array = await this.getBanks(0);
-        array.forEach((item) => {
-            this.ArrayLIst.push(item);
-        });
-        this.countNextPage(this.ArrayLIst, this.banksNumber.numbers);
-        this.renderAllCountry();
+    permissionSolution = () => {
+        const solution_ID = document.querySelector('.curentUserSolution').textContent.trim();
+        this.permissionFilter = {'solution_name': solution_ID};
+        Object.assign(this.filter, this.permissionFilter);
+
+        // Remove solution filter
+        document.querySelector('.filterSolution-block').remove()
+    }
+
+
+    saveLocalBanks = async () => {
+        // Permission access for Solution Manager
+        this.currentUserRole = document.querySelector('.curentUserRole').textContent.trim();
+        if (this.currentUserRole === 'Solution Manager') {
+            this.permissionSolution();
+        } 
+
+        // Get USD for Load Banks counting
+        var currencyInv = await this.getEURexchange("USD", "EUR")
+        this.USD = currencyInv.rates.EUR
+
+        // Get 10 banks
+        const data = {
+            filter: this.filter,
+            skip: 0,
+            limit: 10
+        }
+        const res = await this.getBanksPartly(data)
+
+        // Render bank page
+        this.banksNumber = res.count
+        this.ArrayLIst = res.banks
         
-        // Put solution name into variable
-        var allBanks = await this.getAllBanks();
-        allBanks.forEach((item) => this.solutionNames.push(item.solution_name));
-        var uniqueSoluName = this.uniqueArr(this.solutionNames);
-        this.renderSolution();
+        this.countNextPage(this.ArrayLIst, this.banksNumber)
+        this.renderAllCountry()
+        
+        // Get Solution Manager and render them in filter
+        if (this.currentUserRole !== 'Solution Manager') {
+            const solutions = await this.getSolutionUsers({'role': 'Solution Manager'})
+            solutions.users.forEach(item => this.renderSolution(item.fullname, item._id))
+        }
     }
+
+
+    getSolutionUsers = async (filter) => {
+        return  await fetch("http://18.216.223.81:3000/getUserByFilter", {
+            method: "POST",
+            body: JSON.stringify({filter}),
+            headers:{'Content-Type': 'application/json'}
+        })
+        
+        .then(res => {
+            return res.json();
+        }) 
+        .catch(err => {
+            console.log(err);
+        });
+    }
+
+
+    getBanksPartly = async (data) => {
+        return  await fetch("http://18.216.223.81:3000/get-banks-partly", {
+            method: "POST",
+            body: JSON.stringify(data),
+            headers:{'Content-Type': 'application/json'}
+        })
+        
+        .then(res => {
+            return res.json();
+        }) 
+        .catch(err => {
+            console.log(err);
+        });
+    }
+
 
     getEURexchange = async (base, symbols) => {
         return  await fetch(`https://api.exchangeratesapi.io/latest?base=${base}&symbols=${symbols}`)
@@ -648,90 +682,68 @@ class UsersList {
          });
     }
 
-    getAllBanks = async () => {
-        return  await fetch("http://18.216.223.81:3000/getBanks")
-         .then(res => {
-             return res.json();
-         }) 
-         .catch(err => {
-             console.log(err);
-         });
-    }
-
-    uniqueArr = (arr) => {
-        var result = [];
-        arr.forEach((item) => {
-            if (!result.includes(item)) {
-                result.push(item);
-            }
-        });
-        return result;
-    }
 
     loadBanks = (array) => {
         this.container = document.getElementById("table-list");
         array.forEach((item) => {
             // Counting Before Limit
-            var balance_Req = (item.balance_USD.balance_requested*this.USD) + item.balance_EUR.balance_requested;
-            var balance_Sent = (item.balance_USD.balance_sent*this.USD) + item.balance_EUR.balance_sent;
-            var balance_Received = (item.balance_USD.balance_received*this.USD) + item.balance_EUR.balance_received;
-            var beforeLimit = (balance_Req*25/100) + (balance_Sent*80/100) + balance_Received;
+            var balance_Req = (item.balance_USD.balance_requested * this.USD) + item.balance_EUR.balance_requested;
+            var balance_Sent = (item.balance_USD.balance_sent * this.USD) + item.balance_EUR.balance_sent;
+            var balance_Received = (item.balance_USD.balance_received * this.USD) + item.balance_EUR.balance_received;
+            var beforeLimit = (balance_Req * 25 / 100) + (balance_Sent * 80 / 100) + balance_Received;
             // 
             this.userList = document.createElement("tr");
             this.userList.innerHTML =  `
                     <td class="column1 edit">${item.name}</td> 
-                    <td class="column2 edit">Country</td> 
 
-                    <td class="column3 edit">
+                    <td class="column2 edit">
                         <div class="currency_wrapper">
                             <div class="currency_EUR">EUR</div> 
                             <div class="currency_USD">USD</div> 
                         </div>
                     </td>
 
-                    <td class="column4 edit">
+                    <td class="column3 edit">
                         <div class="currency_wrapper">
                             <div class="currency_EUR">€${item.balance_EUR.balance_requested}</div> 
                             <div class="currency_USD">$${item.balance_USD.balance_requested}</div> 
                         </div>
                     </td> 
 
-                    <td class="column5 edit">
+                    <td class="column4 edit">
                         <div class="currency_wrapper">
                             <div class="currency_EUR">€${item.balance_EUR.balance_sent}</div> 
                             <div class="currency_USD">$${item.balance_USD.balance_sent}</div> 
                         </div>
                     </td> 
 
-                    <td class="column6 edit">
+                    <td class="column5 edit">
                         <div class="currency_wrapper">
                             <div class="currency_EUR">€${item.balance_EUR.balance_received}</div> 
                             <div class="currency_USD">$${item.balance_USD.balance_received}</div> 
                         </div>
                     </td>
 
-                    <td class="column7 edit">${Math.round(beforeLimit)}</td>
+                    <td class="column6 edit">${Math.round(beforeLimit)}</td>
 
-                    <td class="column8 edit">${item.stop_limit}</td>
+                    <td class="column7 edit">${item.stop_limit}</td>
 
-                    <td class="column edit9">${item.min_wire}</td> 
-                    <td class="column10 edit">${item.max_wire}</td> 
-                    <td class="column11 statusCheck edit">${item.sepa}</td> 
-                    <td class="column12 enableCheck edit">${item.active}</td> 
-                    <td class="column13">
+                    <td class="column8 edit">${item.min_wire}</td> 
+                    <td class="column9 edit">${item.max_wire}</td> 
+                    <td class="column10 enableCheck edit">${item.active}</td> 
+                    <td class="column11">
                         <button class="btnDisable">Disable</button>
                     </td>
-                    <td class="hide">${item._id}</td>
+                    <td class="hide" id='bankID'>${item._id}</td>
             `;
             this.container.appendChild(this.userList);
         });
-        this.checkSepa();
         this.checkEnable();
         this.disableEnableCheck();
         this.editBank();
 
         // Loading GIF Off
-        this.loadingGIF.style.display = "none";
+        this.loadingGif.style.display = "none";
         document.body.classList.remove("modal-open");
     }
 
@@ -750,4 +762,4 @@ class UsersList {
     }
 };
 
-const userList = new UsersList();
+const banklist = new BankList();

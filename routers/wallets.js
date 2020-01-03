@@ -1,16 +1,13 @@
 const express = require('express'),
-    router = new express.Router(),
-    mongo = require('mongodb'),
-    objectId = require("mongodb").ObjectID,
-    jsonParser = express.json(),
-    Merchant = require("../modules/merchant"),
-    Settlement = require('../modules/settlement'),
-    Wallet = require("../modules/wallet");
+      router = new express.Router(),
+      objectId = require("mongodb").ObjectID,
+      jsonParser = express.json(),
+      Merchant = require("../modules/merchant"),
+      Settlement = require('../modules/settlement'),
+      Wallet = require("../modules/wallet");
  
 
-const url = 'mongodb://18.216.223.81:27017/anywires';
-
-router.get('/wallets', isLoggedIn, function(req, res) {
+router.get('/wallets', isLoggedIn, visibilityApproval, function(req, res) {
     res.render("wallets.html");
 });
 
@@ -18,35 +15,37 @@ router.get('/wallets', isLoggedIn, function(req, res) {
 // @route POST /getWalletsPart
 // @desc Get 10 Wallets and count them, also you can use filter
 router.post('/getWalletsPart', jsonParser, async (req, res) => {
-    const filter = req.body.filter;
-    const number = req.body.number;
-    const limit = req.body.limit;
-    let resObj = {};
+    const filter = req.body.filter
+    const skip = req.body.skip
+    const limit = req.body.limit
 
-    // Get 10 wallets
-    Wallet
-    .find(filter, async (err, wallets) => {
-        if (err) return res.send("Error with get part Wallets!");
-        resObj["wallets"] = wallets;
-        
+    try {
         // Get number of wallets
-        resObj["counts"] = await Wallet.countDocuments(filter);
-        res.send(resObj);
-    })
-    .sort({_id:-1})
-    .skip(number)
-    .limit(limit);
+        const counts = await Wallet.countDocuments(filter)
+        // Get 10 wallets
+        const wallets = await  Wallet.find(filter).sort({_id:-1}).skip(skip).limit(limit)
+        // Send DATA
+        res.send({
+            wallets,
+            counts
+        })
+    } catch (e) {
+        res.send(e)
+    }
 });
+
 
 // @route POST /getWalletById
 // @desc Get one Wallet by _id
-router.post("/getWalletById", jsonParser, (req, res) => {
-    Wallet
-    .find({"_id": new objectId(req.body.id)}, (err, wallet) => {
-        if (err) return res.send("Error with get wallet by id!");
-        res.send(wallet);
-    });
+router.post("/getWalletById", jsonParser, async (req, res) => {
+    try {
+        const wallet = await Wallet.find({"_id": new objectId(req.body.id)})
+        res.send(wallet)
+    } catch (e) {
+        res.send(e)
+    }
 });
+
 
 // @route POST /editWallet
 // @desc Edited one Wallet
@@ -60,14 +59,15 @@ router.post("/editWallet", jsonParser, (req, res) => {
     });
 });
 
+
 // @route POST /createWallet
 // @desc Insert New Wallet
-router.post("/createWallet", jsonParser, (req, res) => {
+router.post('/createWallet', jsonParser, (req, res) => {
     const newWallet = req.body.newWallet;
-    newWallet["creation_date"] = new Date();
+    newWallet['creation_date'] = new Date();
     new Wallet(newWallet).save()
     .then( async (newWallet) => {
-        if (newWallet.type === "AW Wallet") {
+        if (newWallet.type === "Anywires") {
             try {
                 await Merchant.updateOne({"name": newWallet.merchant_name}, {$push: {"inside_wallets": newWallet._id}});
             } catch (e) {
@@ -144,5 +144,14 @@ function isLoggedIn(req, res, next) {
     req.flash('error', 'You need to be logged in to do that');
     res.redirect('/');
 };
+
+function visibilityApproval (req, res, next) {
+    if ( req.user.role === 'Affiliate' ||  req.user.role === 'Invoice Manager' || req.user.role === 'Solution Manager' ) {
+        req.flash('error', 'Sorry, You don\'t have permission to see this page')
+        res.redirect('/')
+    } else {
+        return next()
+    }
+}
 
 module.exports = router;

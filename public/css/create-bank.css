@@ -33,6 +33,10 @@ label {
 }
 
 
+.hide {
+    display: none;
+}
+
 /* Autorization Menu START */
 .authorizationMenu {
     display: flex;
@@ -410,6 +414,15 @@ main {
 }
 
 .firstModal-block input {
+    border-bottom: 1.5px solid #20A5F7;
+    width: 260px;
+    height: 40px;
+    padding: 5px;
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: 15px;
+}
+
+#solName {
     border-bottom: 1.5px solid #20A5F7;
     width: 260px;
     height: 40px;

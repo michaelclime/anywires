@@ -8,7 +8,7 @@ const express = require('express'),
 
 const url = 'mongodb://18.216.223.81:27017/anywires';
 
-router.get('/banks.html', isLoggedIn, function(req, res) {
+router.get('/banks.html', isLoggedIn, visibilityApproval, function(req, res) {
     res.render("banks.html");
 });
 
@@ -26,7 +26,7 @@ router.get("/getBanks", (req, res) => {
 });
 
 
-router.get("/get-all-banks", jsonParser, async (req, res) => {
+router.post("/get-all-banks", jsonParser, async (req, res) => {
     const filter = req.body.filter;
     const banks = await Bank.find(filter).sort({"name": 1});
     res.send({
@@ -35,39 +35,39 @@ router.get("/get-all-banks", jsonParser, async (req, res) => {
 });
 
 
-router.post("/getPart-Banks", jsonParser, (req, res) => {
-    mongo.connect(url, (err, db) => {
-        var number = req.body.number;
-        var filter = req.body.filter;
+router.post("/get-banks-partly", jsonParser, async (req, res) => {
+    const filter = req.body.filter
+    const skip = req.body.skip;
+    const limit = req.body.limit;
 
-        db.collection("banks")
-        .find(filter)
-        .sort({"name": 1})
-        .skip(number)
-        .limit(10)
-        .toArray(function(err, bank){
-            if(err) return console.log("Error with upload Banks Part!", err);
-            res.send(bank);
-        })
-    });
-});
+    // If there is solution filter we need to find filed wit Object ID
+    filter.solution_name ? filter.solution_name = new objectId(filter.solution_name) : null;
+    // 
+    const count = await Bank.countDocuments(filter);
+    const banks = await Bank.aggregate([
+        { $match : filter },
+        {
+            $lookup: {
+                from: "users",
+                localField: "solution_name",    // field in the settlements collection
+                foreignField: "_id",  // field in the wallets collection
+                as: "solutionData"
+            }
+        }
+    ]).sort({'name': 1}).skip(skip).limit(limit)
 
-router.post("/getNumber-Banks", jsonParser, (req, res) => {
-    mongo.connect(url, (err, db) => {
-        var filter = req.body.filter;
-        filter === undefined ? filter = {} : "";
 
-        db.collection("banks").find(filter).count(function(err, bank){
-            if(err) return console.log("Error with upload Number of Banks!", err);
-            
-            res.send({"numbers": bank});
-        })
-    });
-});
+    res.send({
+        banks,
+        count
+    })
+})
+
 
 router.post("/createBank", jsonParser, (req, res) => {
     const newBank = req.body.newBank;
     newBank["creation_date"] = new Date();
+    newBank.solution_name = new objectId(newBank.solution_name);
     mongo.connect(url, (err, db) => {
         db.collection("banks").insertOne(newBank, function(err, result) {
             if(err) return console.log("Bad POST Banks request!", err);
@@ -111,5 +111,16 @@ function isLoggedIn(req, res, next) {
     req.flash('error', 'You need to be logged in to do that');
     res.redirect('/');
 };
+
+function visibilityApproval(req, res, next) {
+    if ( req.user.role === 'Affiliate' ||  req.user.role === 'Crm InvoiceManager' ||  
+        req.user.role === 'Crm SuccessManager' ||  req.user.role === 'Merchant Manager' ||  req.user.role === 'Invoice Manager' ) {
+
+        req.flash('error', 'Sorry, You don\'t have permission to see this page');
+        res.redirect('/');
+    } else {
+        return next()
+    }
+}
 
 module.exports = router;

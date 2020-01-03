@@ -162,6 +162,8 @@
 			</div>
 			<!-- Loading GIF -->
 		<div id="wrapper">
+			<span class="curentUserRole hide"><%= currentUser.role %></span>
+			<span class="curentUserSolution hide"><%= currentUser._id %></span>
 
 			<!--Header Page-->
 			<header> 
@@ -180,15 +182,6 @@
 						<div class="filterMax-block">
 							<label for="filterMax-block">Max Wire</label>
 							<input id="filterMax" type="text">
-						</div>
-
-						<div class="filterSepa-block">
-							<label for="filterSepa-block">Sepa</label>
-							<select id="filterSepa" type="text">
-									<option value="" selected></option>
-									<option value="yes">yes</option>
-									<option value="no">no</option>
-							</select>
 						</div>
 
 						<div class="filterEnable-block">
@@ -248,18 +241,16 @@
 							<thead>
 								<tr class="table-head">
 									<th class="column1">Name</th>
-									<th class="column2">Country</th>
-									<th class="column3">Currency</th>
-									<th class="column4">Requested</th>
-									<th class="column5">Sent</th>
-									<th class="column6">Received</th>
-									<th class="column7">Before limit</th>
-									<th class="column8">Stop Limit</th>
-									<th class="column9">Min Wire</th>
-									<th class="column10">Max Wire</th>
-									<th class="column11">Sepa</th>
-									<th class="column12">Enabled</th>
-									<th class="column13"></th>
+									<th class="column2">Currency</th>
+									<th class="column3">Requested</th>
+									<th class="column4">Sent</th>
+									<th class="column5">Received</th>
+									<th class="column6">Before limit</th>
+									<th class="column7">Stop Limit</th>
+									<th class="column8">Min Wire</th>
+									<th class="column9">Max Wire</th>
+									<th class="column10">Enabled</th>
+									<th class="column11"></th>
 								</tr>
 							</thead>
 							<tbody id="table-list"></tbody>

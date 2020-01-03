@@ -38,7 +38,7 @@
 											<li><a href="settlements.html"><img class="icon" src="fonts/icons/settlement.png">Settlements</a></li>
 											<li><a href="merchants.html"><img class="icon" src="fonts/icons/merchant.png">Merchants</a></li>
 											<li><a href='users.html'><img class="icon" src="fonts/icons/users.png">Users</a></li>
-											<li><a href='banks.html'><img class="icon" src="fonts/icons/bank.png">Banks</a></li>
+											<li class="gn-menu__banks"><a href='banks.html'><img class="icon" src="fonts/icons/bank.png">Banks</a></li>
 											<li id="reports"><a><img class="icon" src="fonts/icons/invoice-report.png">Reports</a></li>
 											<ul class="gn-submenu" id="allReports">
 												<li><a href="invoice-report.html"><img class="icon" src="fonts/icons/aff-report.png">Invoices report</a></li>
@@ -114,7 +114,7 @@
 					<div class="table-line "></div>
 
 					<div class="test">
-						<table id="main-table">
+						<table id="merchants-table">
 							<thead>
 								<tr class="table-head">
 									<th class="column1">Name</th>
@@ -131,18 +131,93 @@
 							<tbody id="table-list"></tbody>
 						</table>
 					</div>
-
 					<div class="nextPage-block"></div>
-						
-					
 				</div>
-
 			</main>
-			
-	
 		</div>
 
-		
+		<!-- Create Wallet START -->
+		<div class="createWallet__filter">
+			<div class="createWallet__body">
+				<h3 class="createWallet__title">CREATE WALLET</h3>
+				<h4 class="createWallet__merchant">Merchant</h4>
+				<div class="createWallet__main">
+					<div class="createWallet__main--block">
+						<div class="createWallet__main--block-item">
+							<label>Wallet name:</label>
+							<input class="createWallet__required createWallet__input" type="text" id="walletName" placeholder="Wallet name">
+						</div>
+						<div class="createWallet__main--block-item">
+							<label>Beneficiary name:</label>
+							<input class="createWallet__input" type="text" id="walletBenefName" placeholder="Beneficiary name">
+						</div>
+						<div class="createWallet__main--block-item">
+							<label>Beneficiary address:</label>
+							<input class="createWallet__input" type="text" id="walletBenefAddress" placeholder="Beneficiary address">
+						</div>
+						<div class="createWallet__main--block-item">
+							<label>Bank name:</label>
+							<input class="createWallet__input" type="text" id="walletBankName" placeholder="Bank name">
+						</div>
+						<div class="createWallet__main--block-item">
+							<label>Currency:</label>
+							<select class="createWallet__required createWallet__select" id="walletCurrency">
+								<option value="" selected></option>
+								<option value="USD">USD</option>
+								<option value="EUR">EUR</option>
+							</select>
+						</div>
+					</div>
+					<div class="createWallet__main--block">
+						<div class="createWallet__main--block-item">
+							<label>Bank address:</label>
+							<input class="createWallet__input" type="text" id="walletBankAddress" placeholder="Bank address">
+						</div>
+						<div class="createWallet__main--block-item">
+							<label>Account number:</label>
+							<input class="createWallet__input" type="text" id="walletAccountNum" placeholder="Account number">
+						</div>
+						<div class="createWallet__main--block-item">
+							<label>IBAN:</label>
+							<input class="createWallet__input" type="text" id="walletIBAN" placeholder="IBAN">
+						</div>
+						<div class="createWallet__main--block-item">
+							<label>SWIFT:</label>
+							<input class="createWallet__input" type="text" id="walletSWIFT" placeholder="SWIFT">
+						</div>
+						<div class="createWallet__main--block-item">
+							<label>Type:</label>
+							<select class="createWallet__required createWallet__select" id="walletType">
+								<option value="" selected></option>
+								<option value="Wire">Wire</option>
+								<option value="BTC">BTC</option>
+								<option value="Anywires">Anywires</option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<button class="createWallet__button-create">Create</button>
+			</div>
+		</div>
+		<!-- Create Wallet END -->
+
+		<!-- Alert Window -->
+		<div class="alert_filter">
+			<div class="alert_wrapper bounceIn">
+				<div class="alert_head">
+					<img id="alert_image" src="../img/alert_img.png" alt="Alert image">
+				</div>
+				<div class="alert_body">
+					<h2>Oops...</h2>
+					<p id="alert_body_text">You can't do that!</p>
+				</div>
+				<div class="alert_footer">
+					<button id="alert_button">OK</button>
+				</div>
+			</div>
+		</div>
+		<!-- Alert Window  END-->
+
 		<script src="js/authorizationMenu.js"></script>
 		<script src="./js/merchants.js"></script>
 		<script src="js/classie.js"></script>

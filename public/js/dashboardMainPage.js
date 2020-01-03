@@ -1,4 +1,3 @@
-
 let allInvoicesList = [];
 const periodTitle = document.querySelector('.periodTitle'),
     period =  document.querySelector('.period'),
@@ -1557,3 +1556,13 @@ function formatStr(num) {
         return str;
     }
 }
+
+
+// Remove menu items for permissions START
+
+const userRole = document.querySelector('.curentUserRole').textContent.trim()
+if (userRole === 'Crm InvoiceManager' || userRole === 'Crm SuccessManager' || userRole === 'Merchant Manager') {
+    document.querySelector('.gn-menu__banks').remove()
+} 
+
+// Remove menu items for permissions END

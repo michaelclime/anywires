@@ -1,266 +1,418 @@
 *{
-    margin:0;
-    padding:0;
-    border:0;
+margin:0;
+padding:0;
+border:0;
+}
+
+/* width */
+::-webkit-scrollbar {
+width: 10px;
+}
+/* Track */
+::-webkit-scrollbar-track {
+background: #f1f1f1;
+}
+/* Handle */
+::-webkit-scrollbar-thumb {
+background: #888;
+}
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+background: #555;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #F1F4F6;
+    font-family: 'Frank Ruhl Libre', serif;
+}
+
+body button {
+    cursor: pointer;
+    background-color: rgb(77, 77, 77);
+    border: none;
+    text-align: center;
+    color: rgb(255, 255, 255);
+    line-height: 1;
+    border-radius: 3px;
+    outline: none;
+    transition: .35s;
+    font-family: 'Frank Ruhl Libre', serif;
+}
+body button:hover {
+    background-color: rgb(143, 143, 143);
+}
+body button:active {
+    background-color: #12C7B2;
+}
+
+#burgerMenu {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    background:  #FFF;
+}
+
+.authorizationMenu {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-right: 50px; 
+    font-size: 20px;
+    color: #555;
+}
+
+.userLogo{
+    padding-left: 10px;
+    font-size: 30px;
+    color:  rgb(34, 218, 95);
+}
+
+.dropMenu {
+    display: none;
+    flex-direction: column;
+    position: fixed;
+    right: 50px;
+    top: 60px;
+    font-size: 20px;
+    background:  #FFF;
+    list-style-type: none;
+}
+
+.dropMenu li {
+    margin: 5px 0;
+}
+
+.dropMenu li:hover {
+    background:  #EEF3FA;
+}
+
+.dropMenu li a {
+    margin: 0 10px;
+    text-decoration: none;
+    color: #555;
+}
+
+.liLogo {
+    margin: 0 10px;
+    padding-left: 10px;
+    font-size: 28px;
+}
+
+/* Wrapper */
+#wrapper {
+    width: 100%;
+}
+
+.opacityWrapper {
+    opacity: .2;
+}
+
+
+/* Header */
+header {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    background-color: rgb(255, 255, 255);
+    padding: 30px 0 30px 70px;
+    margin-top: 2px;
+}
+header img {
+    margin-right: 15px;
+}
+
+
+/* Main */
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    min-height: 800px;
+    background-color: rgb(255, 255, 255);
+    padding: 30px 0 30px 30px;
+    margin-top: 2px;
+}
+
+/* Create Merchants and Search area */
+#create-block {
+    width: 80%;
+    display: flex;
+    justify-content:space-between;
+}
+
+#create-button {
+    width: 150px;
+    height: 45px;
+    font-size: 16px;    
+}
+
+#search-input {
+    width: 250px;
+    height: 45px;
+    background-color: #4D4D4D;
+    border-radius: 3px 0 0 3px;
+    font-size: 16px;
+    padding: 5px 15px;
+    transition: .3s;
+    outline: none;
+    border: none;
+    color: #FFF;
+    font-family: 'Frank Ruhl Libre', serif;
+}
+
+#search-input::placeholder{
+    color: rgb(224, 224, 224);
+}
+
+#search-input:focus {
+    box-shadow: 0px 0px 6px 0px rgba(68, 68, 68, 0.75);
+    background-color: rgb(110, 110, 110);
+}
+
+.search-block {
+    display: flex;
+    align-items: center;
+}
+
+#search-button {
+    width: 45px;
+    height: 45px;
+    padding: 15px;
+    background-color: rgb(54, 54, 54);
+    cursor: pointer;
+    border-radius: 0px 3px 3px 0px;
+}
+#search-button:hover {
+    background-color: rgb(0, 0, 0);
+}
+#search-button:active {
+    background-color: rgb(139, 139, 139);
+}
+
+/* Table, list of Merchants */
+#table-block {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding: 70px 0;
+}
+
+#dowloadXls {
+    cursor: pointer;
+}
+#dowloadXls:hover{
+    filter: invert(75%);
+}
+#dowloadXls:active{
+    filter: invert(95%);
+}
+
+.table-header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 0;
+}
+
+.table-arrows img {
+    margin-left: 20px;
+    cursor: pointer;
+}
+.table-arrows img:hover{
+    filter: invert(75%);
+}
+.table-arrows img:active{
+    filter: invert(95%);
+}
+
+.table-header h2 {
+    font-size: 20px;
+}
+
+.table-line {
+    margin: 10px 0;
+    width: 100%;
+    height: 2px;
+    background-color: rgb(102, 102, 102);
+}
+
+.button__addWallet {
+    width: 80px;
+    height: 45px;
+    background-color: #12C7B2;
+}
+
+#merchantButtons {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+}
+
+table input {
+    margin-right: 5px;
+}
+
+.currentUser, .curentUserRole {
+    display: none;
+}
+
+
+/* Table Merchnats  Start */
+
+#merchants-table {
+    border-spacing: 1;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 3px;
+    overflow: hidden;
+    width: 100%;
+}
+
+#merchants-table thead tr {
+    height: 60px;
+    background: #20a5f7;
+}
+#merchants-table tbody tr {
+    height: 70px;
+}
+#merchants-table tbody tr:last-child {
+    border: 0;
+}
+#merchants-table td, #merchants-table th {
+    text-align: left;
+}
+#merchants-table td.l, #merchants-table th.l {
+    text-align: right;
+}
+#merchants-table td.c, #merchants-table th.c {
+    text-align: center;
+}
+#merchants-table td.r, #merchants-table th.r {
+    text-align: center;
+}
+
+
+.table-head th {
+    font-size: 18px;
+    color: #fff;
+    line-height: 1.2;
+    font-weight: unset;
+}
+
+#merchants-table tbody tr:nth-child(even) {
+    background-color: #f5f5f5;
+}
+
+#merchants-table tbody tr {
+    font-size: 15px;
+    color: #808080;
+    line-height: 1.2;
+    font-weight: unset;
+    cursor: pointer;
+}
+
+#merchants-table tbody tr:hover {
+    background-color: rgb(197, 247, 241);
+}
+
+.column1 {
+    padding-left: 40px;
+}
+
+.col_wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.col_item {
+    margin-bottom: 10px;
+}
+
+
+@media screen and (max-width: 992px) {
+    #merchants-table   * {
+        position: relative;
     }
-    
-    /* width */
-    ::-webkit-scrollbar {
-    width: 10px;
+    #merchants-table  {
+        display: block;
     }
-    /* Track */
-    ::-webkit-scrollbar-track {
-    background: #f1f1f1;
+    #merchants-table > *, #merchants-table tr, #merchants-table td, #merchants-table th {
+        display: block;
     }
-    /* Handle */
-    ::-webkit-scrollbar-thumb {
-    background: #888;
-    }
-    /* Handle on hover */
-    ::-webkit-scrollbar-thumb:hover {
-    background: #555;
-    }
-    
-    body {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        background-color: #F1F4F6;
-        font-family: 'Frank Ruhl Libre', serif;
-    }
-    
-    body button {
-        cursor: pointer;
-        background-color: rgb(77, 77, 77);
-        border: none;
-        text-align: center;
-        color: rgb(255, 255, 255);
-        line-height: 1;
-        border-radius: 3px;
-        outline: none;
-        transition: .35s;
-        font-family: 'Frank Ruhl Libre', serif;
-    }
-    body button:hover {
-        background-color: rgb(143, 143, 143);
-    }
-    body button:active {
-        background-color: #20a5f7;
-    }
-    
-    #burgerMenu {
-        display: flex;
-        justify-content: space-between;
-        width: 100%;
-        background:  #FFF;
-    }
-    
-    .authorizationMenu {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        margin-right: 50px; 
-        font-size: 20px;
-        color: #555;
-    }
-    
-    .userLogo{
-        padding-left: 10px;
-        font-size: 30px;
-        color:  rgb(34, 218, 95);
-    }
-    
-    .dropMenu {
+    #merchants-table thead {
         display: none;
-        flex-direction: column;
-        position: fixed;
-        right: 50px;
-        top: 60px;
-        font-size: 20px;
-        background:  #FFF;
-        list-style-type: none;
     }
-    
-    .dropMenu li {
-        margin: 5px 0;
+    #merchants-table tbody tr {
+        height: auto;
+        padding: 37px 0;
     }
-    
-    .dropMenu li:hover {
-        background:  #EEF3FA;
+    #merchants-table tbody tr td {
+        padding-left: 45% !important;
+        margin-bottom: 24px;
     }
-    
-    .dropMenu li a {
-       margin: 0 10px;
-       text-decoration: none;
-       color: #555;
+    #merchants-table tbody tr td:last-child {
+        margin-bottom: 0;
     }
-    
-    .liLogo {
-        margin: 0 10px;
-        padding-left: 10px;
-        font-size: 28px;
+    #merchants-table tbody tr td:before {
+        color: #999999;
+        line-height: 1.2;
+        font-weight: unset;
+        position: absolute;
+        width: 40%;
+        left: 30px;
+        top: 0;
     }
-    
-    /* Wrapper */
-    #wrapper {
+
+    #merchants-table tbody tr td:nth-child(1):before {
+        content: "Name";
+    }
+    #merchants-table tbody tr td:nth-child(2):before {
+        content: "Created By";
+    }
+    #merchants-table tbody tr td:nth-child(3):before {
+        content: "Promo";
+    }
+    #merchants-table tbody tr td:nth-child(4):before {
+        content: "Aff";
+    }
+    #merchants-table tbody tr td:nth-child(5):before {
+        content: "In, %";
+    }
+    #merchants-table tbody tr td:nth-child(6):before {
+        content: "Turnover, month";
+    }
+
+    .column4,
+    .column5 {
+        text-align: left;
+    }
+
+    .column4,
+    .column5,
+    .column1,
+    .column2,
+    .column3,
+    .column6 {
         width: 100%;
     }
-    
-    .opacityWrapper {
-        opacity: .2;
+
+
+    #merchants-table tbody tr {
+        font-size: 13px;
     }
-    
-    
-    /* Header */
-    header {
-        display: flex;
-        width: 100%;
-        align-items: center;
-        background-color: rgb(255, 255, 255);
-        padding: 30px 0 30px 70px;
-        margin-top: 2px;
-    }
-    header img {
-        margin-right: 15px;
-    }
-    
-    
-    /* Main */
-    main {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        width: 100%;
-        min-height: 800px;
-        background-color: rgb(255, 255, 255);
-        padding: 30px 0 30px 30px;
-        margin-top: 2px;
-    }
-    
-    /* Create Merchants and Search area */
-    #create-block {
-        width: 80%;
-        display: flex;
-        justify-content:space-between;
-    }
-    
-    #create-button {
-        width: 150px;
-        height: 45px;
-        font-size: 16px;    
-    }
-    
-    #search-input {
-        width: 250px;
-        height: 45px;
-        background-color: #4D4D4D;
-        border-radius: 3px 0 0 3px;
-        font-size: 16px;
-        padding: 5px 15px;
-        transition: .3s;
-        outline: none;
-        border: none;
-        color: #FFF;
-        font-family: 'Frank Ruhl Libre', serif;
-    }
-    
-    #search-input::placeholder{
-        color: rgb(224, 224, 224);
-    }
-    
-    #search-input:focus {
-        box-shadow: 0px 0px 6px 0px rgba(68, 68, 68, 0.75);
-        background-color: rgb(110, 110, 110);
-    }
-    
-    .search-block {
-        display: flex;
-        align-items: center;
-    }
-    
-    #search-button {
-        width: 45px;
-        height: 45px;
-        padding: 15px;
-        background-color: rgb(54, 54, 54);
-        cursor: pointer;
-        border-radius: 0px 3px 3px 0px;
-    }
-    #search-button:hover {
-        background-color: rgb(0, 0, 0);
-    }
-    #search-button:active {
-        background-color: rgb(139, 139, 139);
-    }
-    
-    /* Table, list of Merchants */
-    #table-block {
-        width: 80%;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-around;
-        padding: 70px 0;
-    }
-    
-    
-    #dowloadXls {
-        cursor: pointer;
-    }
-    #dowloadXls:hover{
-        filter: invert(75%);
-    }
-    #dowloadXls:active{
-        filter: invert(95%);
-    }
-    
-    .table-header {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 5px 0;
-    }
-    
-    .table-arrows img {
-        margin-left: 20px;
-        cursor: pointer;
-    }
-    .table-arrows img:hover{
-        filter: invert(75%);
-    }
-    .table-arrows img:active{
-        filter: invert(95%);
-    }
-    
-    .table-header h2 {
-        font-size: 20px;
-    }
-    
-    .table-line {
-        margin: 10px 0;
-        width: 100%;
-        height: 2px;
-        background-color: rgb(102, 102, 102);
-    }
-    
-    .buttonAddSettle {
-        width: 80px;
-        height: 45px;
-    }
-    
+
     #merchantButtons {
-        width: 100%;
-        display: flex;
-        justify-content: flex-end;
+        padding-right: 5px;
     }
-    
-    table input {
-        margin-right: 5px;
-    }
-    
-    .currentUser, .curentUserRole {
-        display: none;
-    }
+}
+/* Table Merchnats  End */
+
 
 /* Loading GIF */
 #loadingGif {
@@ -376,3 +528,222 @@
     background-color: #20A5F7;
     color: white;
 }
+
+
+/* Create Wallet PopUp  Start */
+.createWallet__filter {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.6);
+    position: fixed;
+    top: 0; bottom: 0; left: 0; right: 0;
+    z-index: 50;
+}
+
+.createWallet__body {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 900px;
+    background-color: white;
+    border-radius: 3px;
+    padding: 20px;
+    z-index: 60;
+    box-shadow: 4px 4px 8px 0px rgba(0, 0, 0, 0.75);
+    opacity: 0;
+    transition: 1s;
+    animation: showBlock 1s 1;
+    animation-fill-mode: forwards;
+}
+
+.createWallet__merchant {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+}
+
+.createWallet__main {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 0;
+}
+
+.createWallet__main--block {
+    width: 45%;
+}
+
+.createWallet__main--block-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.createWallet__input, .createWallet__select {
+    border-bottom: 1.5px solid #20A5F7;
+    width: 220px;
+    height: 40px;
+    padding: 5px;
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: 15px;
+}
+
+.createWallet__button-create {
+    width: 140px;
+    height: 45px;
+    background-color: #12C7B2;
+    color: white;
+    cursor: pointer;
+    border: none;
+    text-align: center;
+    line-height: 1;
+    border-radius: 3px;
+    outline: none;
+    transition: .35s;
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: 18px;
+}
+
+@keyframes showBlock {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+/* Create Wallet PopUp  End */
+
+
+/* PopUp Alert START */
+.alert_filter {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.8);
+    position: fixed;
+    top: 0; bottom: 0; left: 0; right: 0;
+    z-index: 500;
+  }
+  
+  .alert_wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 550px;
+    background-color: white;
+    padding: 20px;
+    z-index: 510;
+    border-radius: 5px;;
+  }
+  
+  .alert_head {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+  }
+  
+  #alert_image {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .alert_body {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+  }
+  
+  #alert_body_text {
+    margin-top: 20px;
+    font-size: 20px;
+    color: #555;
+  }
+  
+  .alert_footer {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+  }
+  
+  #alert_button {
+    width: 100px;
+    height: 45px;
+    background-color: #12C7B2;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    border-radius: 3px;
+    line-height: 1;
+    outline: none;
+    transition: .35s;
+    font-family: 'Frank Ruhl Libre', serif;
+  }
+  
+  #alert_button:hover{
+    background-color: #4D4D4D;
+  
+  }
+  
+  @keyframes bounceIn{
+    from,
+    20%,
+    40%,
+    60%,
+    80%,
+    to {
+      -webkit-animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+      animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+    }
+  
+    0% {
+      opacity: 0;
+      -webkit-transform: scale3d(0.3, 0.3, 0.3);
+      transform: scale3d(0.3, 0.3, 0.3);
+    }
+  
+    20% {
+      -webkit-transform: scale3d(1.1, 1.1, 1.1);
+      transform: scale3d(1.1, 1.1, 1.1);
+    }
+  
+    40% {
+      -webkit-transform: scale3d(0.9, 0.9, 0.9);
+      transform: scale3d(0.9, 0.9, 0.9);
+    }
+  
+    60% {
+      opacity: 1;
+      -webkit-transform: scale3d(1.03, 1.03, 1.03);
+      transform: scale3d(1.03, 1.03, 1.03);
+    }
+  
+    80% {
+      -webkit-transform: scale3d(0.97, 0.97, 0.97);
+      transform: scale3d(0.97, 0.97, 0.97);
+    }
+  
+    to {
+      opacity: 1;
+      -webkit-transform: scale3d(1, 1, 1);
+      transform: scale3d(1, 1, 1);
+    }
+  }
+  
+  .bounceIn{
+    animation: .5s bounceIn ease-in-out 1;
+  }
+  
+  .modal-open {
+    overflow: hidden;
+  }
+  /* PopUp Alert End */
