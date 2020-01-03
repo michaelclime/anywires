@@ -62,12 +62,12 @@ router.post("/editWallet", jsonParser, (req, res) => {
 
 // @route POST /createWallet
 // @desc Insert New Wallet
-router.post("/createWallet", jsonParser, (req, res) => {
+router.post('/createWallet', jsonParser, (req, res) => {
     const newWallet = req.body.newWallet;
-    newWallet["creation_date"] = new Date();
+    newWallet['creation_date'] = new Date();
     new Wallet(newWallet).save()
     .then( async (newWallet) => {
-        if (newWallet.type === "AW Wallet") {
+        if (newWallet.type === "Anywires") {
             try {
                 await Merchant.updateOne({"name": newWallet.merchant_name}, {$push: {"inside_wallets": newWallet._id}});
             } catch (e) {
