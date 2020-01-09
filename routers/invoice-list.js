@@ -1364,7 +1364,7 @@ router.post("/get-invoiceByNumber", jsonParser, (req, res) => {
 router.post("/get-bankByName", jsonParser, (req, res) => {
     mongo.connect(url, (err, db) =>{
 
-        db.collection("banks").find({name: req.body.name}).toArray(function(err, bank){
+        db.collection("banks").find({"name": req.body.name}).toArray(function(err, bank){
             if(err) return console.log("Error with upload Bank!", err);
             db.close();
             res.send(bank);
@@ -1375,7 +1375,7 @@ router.post("/get-bankByName", jsonParser, (req, res) => {
 router.post("/get-merchantByName", jsonParser, (req, res) => {
     mongo.connect(url, (err, db) =>{
 
-        db.collection("merchants").find({name: req.body.name}).toArray(function(err, merchant){
+        db.collection("merchants").find({"name": req.body.name}).toArray(function(err, merchant){
             if(err) return console.log("Error with upload Invoice Merchant!", err);
             db.close();
             res.send(merchant);

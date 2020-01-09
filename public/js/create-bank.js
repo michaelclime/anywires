@@ -798,16 +798,12 @@ class createBank{
                     "balance_requested": 0,
                     "balance_sent": 0,
                     "balance_received": 0,
-                    "balance_approved": 0,
-                    "balance_available": 0,
                     "balance_settlement": 0
                 },
                 "balance_USD": {
                     "balance_requested": 0,
                     "balance_sent": 0,
                     "balance_received": 0,
-                    "balance_approved": 0,
-                    "balance_available": 0,
                     "balance_settlement": 0
                 },
                 "active" : active, 
