@@ -26,7 +26,7 @@ if ( currentUserTypeClass === 'admin' ) {
     merchantChooseBtn.addEventListener('click', () => {
         document.querySelector('.selectAllBox').innerHTML = 'Loading...';
         if (showIndicator) {
-            let fetchPromise  = fetch('http://localhost:3000/getMerchants'); // in settlements.js route file
+            let fetchPromise  = fetch('http://18.216.223.81:3000/getMerchants'); // in settlements.js route file
             fetchPromise.then(response => {
                 return response.json();
                 }).then(merchants => {
@@ -84,7 +84,7 @@ if ( currentUserTypeClass === 'admin' ) {
 
         document.querySelector('.selectAllBox').innerHTML = 'Loading...';
         if (showIndicator) {
-            let fetchPromise  = fetch('http://localhost:3000/getMerchant/' + curentUserID); // in settlements.js route file
+            let fetchPromise  = fetch('http://18.216.223.81:3000/getMerchant/' + curentUserID); // in settlements.js route file
             fetchPromise.then(response => {
                 return response.json();
                 }).then(merchants => {
