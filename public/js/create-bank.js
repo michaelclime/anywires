@@ -651,7 +651,7 @@ class createBank{
         // Get Solution Manager and render them in filter
         if (this.currentUserRole !== 'Solution Manager') {
             const solutions = await this.getSolutionUsers({'role': 'Solution Manager'});
-            solutions.forEach(item => this.renderSolutionInDOM(item.fullname, item._id));
+            solutions.users.forEach(item => this.renderSolutionInDOM(item.fullname, item._id));
 
         } else if (this.currentUserRole === 'Solution Manager') {
             document.querySelector('.solutionName-block').remove()
