@@ -900,7 +900,6 @@ class createBank{
                     }
                 }
             };
-            console.log(bank)
             
             // Loading GIF On
             this.loadingGIF.style.display = "flex";
