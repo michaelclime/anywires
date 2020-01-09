@@ -67,7 +67,7 @@ router.post("/get-banks-partly", jsonParser, async (req, res) => {
 router.post("/createBank", jsonParser, (req, res) => {
     const newBank = req.body.newBank;
     newBank["creation_date"] = new Date();
-    newBank.solution_name = new objectId(newBank.solution_name);
+    newBank.solution_name ? newBank.solution_name = new objectId(newBank.solution_name) : null;
     mongo.connect(url, (err, db) => {
         db.collection("banks").insertOne(newBank, function(err, result) {
             if(err) return console.log("Bad POST Banks request!", err);

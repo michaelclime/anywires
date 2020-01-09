@@ -1144,7 +1144,7 @@ class invoiceList {
         var emptyFile = this.checkIsEmptyObj(file);
         
         // If File exist and Type too than send req
-        if(!emptyFile && type){
+        if (!emptyFile && type) {
             // Loading GIF appear
             this.loadingGif.style.display = "flex";
 
@@ -1227,9 +1227,6 @@ class invoiceList {
         // Loading GIF appear
         this.loadingGif.style.display = "flex";
 
-        var sepa = false;
-        this.editData[6].checked ? sepa = true : sepa = false;
-
         var newInvoice = {
             "amount.amount_requested": +(this.editData[0].value),
             "amount.amount_sent": +(this.editData[1].value),
@@ -1237,13 +1234,12 @@ class invoiceList {
             "currency": this.editData[3].value,
             "bank": this.editData[4].value,
             "merchant": this.editData[5].value,
-            "sepa": sepa,
-            "client_details.full_name": this.editData[7].value,
-            "client_details.email": this.editData[8].value,
-            "client_details.phone": this.editData[9].value,
-            "client_details.country": this.editData[10].value,
-            "client_details.address": this.editData[11].value,
-            "client_details.id_number": this.editData[12].value
+            "client_details.full_name": this.editData[6].value,
+            "client_details.email": this.editData[7].value,
+            "client_details.phone": this.editData[8].value,
+            "client_details.country": this.editData[9].value,
+            "client_details.address": this.editData[10].value,
+            "client_details.id_number": this.editData[11].value
         };
 
         // Add comment about action - "save changes to Invoice".
@@ -1254,12 +1250,12 @@ class invoiceList {
         var currNew = this.checkChangesOfEditedInvoice(this.currentInvoice[0].currency, this.editData[3].value, "currency");
         var bankNew = this.checkChangesOfEditedInvoice(this.currentInvoice[0].bank, this.editData[4].value, "bank");
         var merchNew = this.checkChangesOfEditedInvoice(this.currentInvoice[0].merchant, this.editData[5].value, "merchant");
-        var nameNew = this.checkChangesOfEditedInvoice(this.currentInvoice[0].client_details.full_name, this.editData[7].value, "client's name");
-        var emailNew = this.checkChangesOfEditedInvoice(this.currentInvoice[0].client_details.email, this.editData[8].value, "client's email");
-        var phNew = this.checkChangesOfEditedInvoice(this.currentInvoice[0].client_details.phone, this.editData[9].value, "client's phone");
-        var countryNew = this.checkChangesOfEditedInvoice(this.currentInvoice[0].client_details.country, this.editData[10].value, "client's country");
-        var addrNew = this.checkChangesOfEditedInvoice(this.currentInvoice[0].client_details.address, this.editData[11].value, "client's address");
-        var idNew = this.checkChangesOfEditedInvoice(this.currentInvoice[0].client_details.id_number, this.editData[12].value, "client's id number");
+        var nameNew = this.checkChangesOfEditedInvoice(this.currentInvoice[0].client_details.full_name, this.editData[6].value, "client's name");
+        var emailNew = this.checkChangesOfEditedInvoice(this.currentInvoice[0].client_details.email, this.editData[7].value, "client's email");
+        var phNew = this.checkChangesOfEditedInvoice(this.currentInvoice[0].client_details.phone, this.editData[8].value, "client's phone");
+        var countryNew = this.checkChangesOfEditedInvoice(this.currentInvoice[0].client_details.country, this.editData[9].value, "client's country");
+        var addrNew = this.checkChangesOfEditedInvoice(this.currentInvoice[0].client_details.address, this.editData[10].value, "client's address");
+        var idNew = this.checkChangesOfEditedInvoice(this.currentInvoice[0].client_details.id_number, this.editData[11].value, "client's id number");
 
         comment = reqNew + sentNew + typeNew + currNew + bankNew + merchNew + nameNew + emailNew + phNew + countryNew + addrNew + idNew;
 
@@ -1279,7 +1275,7 @@ class invoiceList {
             // Update Modal Window View
             // this.currentInvoice = await this.getInvoices(0, {"number": this.currentInvoice[0].number} ); 
             const data = {
-                skip: listNumber,
+                skip: 0,
                 limit: 10,
                 filter: {"number": this.currentInvoice[0].number}
             };
@@ -1357,12 +1353,12 @@ class invoiceList {
         this.editData[0].value = this.currentInvoice[0].amount.amount_requested;
         this.editData[1].value = this.currentInvoice[0].amount.amount_sent;
         this.editData[2].value = this.currentInvoice[0].type;
-        this.editData[7].value = this.currentInvoice[0].client_details.full_name;
-        this.editData[8].value = this.currentInvoice[0].client_details.email;
-        this.editData[9].value = this.currentInvoice[0].client_details.phone;
-        this.editData[10].value = this.currentInvoice[0].client_details.country;
-        this.editData[11].value = this.currentInvoice[0].client_details.address;
-        this.editData[12].value = this.currentInvoice[0].client_details.id_number;
+        this.editData[6].value = this.currentInvoice[0].client_details.full_name;
+        this.editData[7].value = this.currentInvoice[0].client_details.email;
+        this.editData[8].value = this.currentInvoice[0].client_details.phone;
+        this.editData[9].value = this.currentInvoice[0].client_details.country;
+        this.editData[10].value = this.currentInvoice[0].client_details.address;
+        this.editData[11].value = this.currentInvoice[0].client_details.id_number;
 
         // Check currency
         this.editData[3].innerHTML = "";
@@ -1383,13 +1379,6 @@ class invoiceList {
         this.renderAndSelectOption(this.editData[5], this.currentInvoice[0].merchant);
         this.renderOptionFromArray(this.ArrayMerchants, "name", this.editData[5], this.currentInvoice[0].merchant);
 
-        // Check Sepa
-        if(this.currentInvoice[0].sepa){
-            this.editData[6].setAttribute("checked", "checked");
-        } else {
-            this.editData[6].removeAttribute("checked", "checked");
-        }
-
         // Checking Invoice Status 
         if (this.currentInvoice[0].status !== "Sent" && this.currentInvoice[0].status !== "Requested") {
             this.editData[0].setAttribute("disabled", "disabled");
@@ -1398,7 +1387,6 @@ class invoiceList {
             this.editData[3].setAttribute("disabled", "disabled");
             this.editData[4].setAttribute("disabled", "disabled");
             this.editData[5].setAttribute("disabled", "disabled");
-            this.editData[6].setAttribute("disabled", "disabled");
 
         } else if (this.currentInvoice[0].status === "Sent") {
             this.editData[0].setAttribute("disabled", "disabled");
@@ -1407,7 +1395,6 @@ class invoiceList {
             this.editData[3].removeAttribute("disabled", "disabled");
             this.editData[4].removeAttribute("disabled", "disabled");
             this.editData[5].removeAttribute("disabled", "disabled");
-            this.editData[6].removeAttribute("disabled", "disabled");
 
         } else if (this.currentInvoice[0].status === "Requested") {
             this.editData[1].setAttribute("disabled", "disabled");
@@ -1416,7 +1403,6 @@ class invoiceList {
             this.editData[3].removeAttribute("disabled", "disabled");
             this.editData[4].removeAttribute("disabled", "disabled");
             this.editData[5].removeAttribute("disabled", "disabled");
-            this.editData[6].removeAttribute("disabled", "disabled");
             
         } else {
             this.editData[0].removeAttribute("disabled", "disabled");
@@ -1425,7 +1411,6 @@ class invoiceList {
             this.editData[3].removeAttribute("disabled", "disabled");
             this.editData[4].removeAttribute("disabled", "disabled");
             this.editData[5].removeAttribute("disabled", "disabled");
-            this.editData[6].removeAttribute("disabled", "disabled");
         }
         
     }
