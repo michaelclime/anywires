@@ -25,7 +25,7 @@ router.post('/register', function(req, res){
     if (Array.isArray(req.body.merchant)) {
         merchId = req.body.merchant.map( i => objectId(i));
     } else  if (req.body.merchant && req.body.merchant !== 'null') {
-        merchId.push(req.body.merchant);
+        merchId.push(objectId(req.body.merchant));
     }
 
     let newUser = new User({
@@ -41,7 +41,8 @@ router.post('/register', function(req, res){
     User.register(newUser, req.body.password, function(err, user) {
         if(err) {
             console.log(err);
-            res.render('registerForm.html');
+            req.flash('error', 'Can\'t create user with such parameters!');
+            res.status(501).redirect("users.html");
         } else {
             req.flash('success', 'User successfully created!');
             res.status(201).redirect("users.html");
