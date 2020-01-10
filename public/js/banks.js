@@ -277,7 +277,7 @@ class BankList {
         allTd.forEach((td) => {
             td.addEventListener("click", () => {
                 const bankName = td.parentElement.children[0].textContent;
-                window.open("http://18.216.223.81:3000/create-bank?&" + bankName, '_blank');
+                window.open("http://localhost:3000/create-bank?&" + bankName, '_blank');
             });
         });
     }
@@ -287,7 +287,7 @@ class BankList {
         this.loadingGif.style.display = "flex";
         document.body.classList.add("modal-open");
 
-        document.location.href = "http://18.216.223.81:3000/create-bank";
+        document.location.href = "http://localhost:3000/create-bank";
     }
 
     clearFilters = () => {
@@ -369,7 +369,7 @@ class BankList {
         this.loadingGif.style.display = "none";
     }
 
-    checkIsEmptyObj = (obj) => {
+    checkIsEmptyObj = obj => {
         for (let key in obj) {
             return false; // wrong
         }
@@ -424,7 +424,7 @@ class BankList {
     }
 
     methodPutEnable = (id, status) => {
-        fetch("http://18.216.223.81:3000/putBank", {
+        fetch("http://localhost:3000/putBank", {
                 method: "PUT",
                 body: JSON.stringify({
                     id: id, //Must be id!
@@ -484,7 +484,7 @@ class BankList {
         });
     }
 
-    renderNextPage = (page) => {
+    renderNextPage = page => {
         this.buttonNext = document.createElement("button");
         this.buttonNext.textContent = page;
         this.buttonNext.classList.add("nextPage-btn");
@@ -569,7 +569,7 @@ class BankList {
     }
 
 
-    checkClickedPages = (event) => {
+    checkClickedPages = event => {
         this.buttonsPage = document.querySelectorAll(".nextPage-btn");
         this.buttonsPage.forEach((btn) => {
             event === +(btn.textContent) ? btn.classList.add("highlight") : btn.classList.remove("highlight");;
@@ -640,8 +640,8 @@ class BankList {
     }
 
 
-    getSolutionUsers = async (filter) => {
-        return  await fetch("http://18.216.223.81:3000/getUserByFilter", {
+    getSolutionUsers = async filter => {
+        return  await fetch("http://localhost:3000/getUserByFilter", {
             method: "POST",
             body: JSON.stringify({filter}),
             headers:{'Content-Type': 'application/json'}
@@ -656,8 +656,8 @@ class BankList {
     }
 
 
-    getBanksPartly = async (data) => {
-        return  await fetch("http://18.216.223.81:3000/get-banks-partly", {
+    getBanksPartly = async data => {
+        return  await fetch("http://localhost:3000/get-banks-partly", {
             method: "POST",
             body: JSON.stringify(data),
             headers:{'Content-Type': 'application/json'}
@@ -683,7 +683,7 @@ class BankList {
     }
 
 
-    loadBanks = (array) => {
+    loadBanks = array => {
         this.container = document.getElementById("table-list");
         array.forEach((item) => {
             // Counting Before Limit

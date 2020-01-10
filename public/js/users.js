@@ -170,7 +170,7 @@ class UsersList {
     }
 
 
-    checkIsEmptyObj = (obj) => {
+    checkIsEmptyObj = obj => {
         for (let key in obj) {
             return false; // wrong
         }
@@ -231,7 +231,7 @@ class UsersList {
             this.containerPages.appendChild(this.dotts);
             this.renderNextPage(lastPage);
         } else {
-            for (let i = 0; i < lastPage; i++) {
+            for (let i = 0; i <= lastPage; i++) {
                 this.renderNextPage([i+1]);
             }
         }
@@ -293,14 +293,14 @@ class UsersList {
     }
 
 
-    checkClickedPages = (event) => {
+    checkClickedPages = event => {
         this.buttonsPage = document.querySelectorAll(".nextPage-btn");
         this.buttonsPage.forEach((btn) => {
             event === +(btn.textContent) ? btn.classList.add("highlight") : btn.classList.remove("highlight");;
         });
     };
 
-    renderNextPage = (page) => {
+    renderNextPage = page => {
         this.buttonNext = document.createElement("button");
         this.buttonNext.textContent = page;
         this.buttonNext.classList.add("nextPage-btn");
@@ -327,7 +327,7 @@ class UsersList {
     }
 
 
-    getUserByFilter = async (filter) => {
+    getUserByFilter = async filter => {
         return  await fetch("http://18.216.223.81:3000/getUserByFilter", {
             method: "POST",
             body: JSON.stringify({filter}),
@@ -384,7 +384,7 @@ class UsersList {
     }
 
 
-    getUserPartly = async (data) => {
+    getUserPartly = async data => {
         return  await fetch("http://18.216.223.81:3000/get-user-partly", {
             method: "POST",
             body: JSON.stringify(data),
@@ -399,7 +399,7 @@ class UsersList {
     }
 
 
-    checkDate = (data) => {
+    checkDate = data => {
         return data === "" || !data ? data = "mm/dd/yyyy" : data = moment(data).format('ll');
     }
 
