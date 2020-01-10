@@ -94,7 +94,7 @@ async function loadPage(chosenDate, Data)  {
             Swal.fire('Something went wrong on server side');
         }
         const Data = await dataList.json();
-        console.log(Data);
+        //console.log(Data);
         loadData(date, Data);
     } else {
         loadData(date, Data);

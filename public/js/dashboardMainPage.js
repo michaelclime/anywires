@@ -1201,11 +1201,12 @@ const allTimeAmount = () => {
             settledUSD.innerHTML = `<i class="fas fa-dollar-sign"> ${formatStr(Math.round(settledAmountDollar))}`; 
             settledEUR.innerHTML = `<i class="fas fa-euro-sign"> ${formatStr(Math.round(settledAmountEuro))}`;
             
-            let bigDate = Math.round( (new Date() - new Date("2019-04-09")) / 86400000);
             if (!transactionsUSD) transactionsUSD += 1;
             if (!transactionsEUR) transactionsEUR += 1;
+            let bigDate = Math.round( (new Date() - new Date("2019-04-09")) / 86400000);
             transactionsNumber.innerHTML = receivedInvCount;
             transPerDayNum.innerHTML = Math.ceil(receivedInvCount / bigDate);
+            //console.log(receivedAmountDollar, transactionsUSD);
             avgTransactionUSD.innerHTML = `${formatStr(Math.round((receivedAmountDollar)/(transactionsUSD)))} <i class="fas fa-dollar-sign">`;
             avgTransactionEUR.innerHTML = `${formatStr(Math.round((receivedAmountEuro)/(transactionsEUR)))} <i class="fas fa-euro-sign">`;
             

@@ -45,7 +45,7 @@ router.get("/invoice-preview", async function (req, res) {
         const bankIBAN_EUR = bank[0].iban_EUR;
         const bankIBAN_USD = bank[0].iban_USD;
 
-        if (bankLogo === undefined && bankLogo === null && bankLogo === '') {
+        if (bankLogo === undefined || bankLogo === null || bankLogo === '') {
             bankLogo = "img/logocompany.png";
         }
     
@@ -83,7 +83,7 @@ router.get("/invoiceDecOfPay", async function (req, res) {
     const invAmount = invoice[0].amount.amount_sent;
     const invoiceCurrency = invoice[0].currency;
 
-    if (bankLogo === undefined && bankLogo === null && bankLogo === '') {
+    if (bankLogo === undefined || bankLogo === null || bankLogo === '') {
         bankLogo = "img/logocompany.png";
     }
 
@@ -113,7 +113,7 @@ router.get("/invoicePreviewBankVersion", async function (req, res) {
     const bankIBAN_EUR = bank[0].iban_EUR;
     const bankIBAN_USD = bank[0].iban_USD;
 
-    if (bankLogo === undefined && bankLogo === null && bankLogo === '') {
+    if (bankLogo === undefined || bankLogo === null || bankLogo === '') {
         bankLogo = "img/logocompany.png";
     }
 

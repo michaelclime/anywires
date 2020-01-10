@@ -2,7 +2,7 @@ const express = require('express'),
     router = new express.Router(),
     objectId = require("mongodb").ObjectID, 
     passport = require('passport'),
-    Merchant = require('./modules/merchant'),
+    Merchant = require('../modules/merchant'),
     User = require('../modules/user'),
     crypto = require('crypto'),
     nodemailer = require('nodemailer'),
@@ -39,7 +39,7 @@ router.post('/register', function(req, res){
         dateCreation: new Date()
     });
    
-    User.register(newUser, req.body.password, function(err, user) {
+    User.register(newUser, req.body.password, async function(err, user) {
         if(err) {
             console.log(err);
             req.flash('error', 'Can\'t create user with such parameters!');
