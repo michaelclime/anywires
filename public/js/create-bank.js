@@ -539,6 +539,7 @@ class createBank{
         
         document.querySelector(".solutionName-block").remove()
         document.querySelector("#bankName").value = editedBank[0].name;
+        document.querySelector("#bankName").setAttribute("disabled", true);  // NEED TO CHANGE
         document.querySelector("#benefName").value = editedBank[0].beneficiary_name;
         document.querySelector("#benefAddress").value = editedBank[0].beneficiary_address;
         document.querySelector("#maxWire").value = editedBank[0].max_wire;

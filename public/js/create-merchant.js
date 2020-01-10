@@ -211,6 +211,7 @@ class CreateMerchant{
         // // Multiple select options END
 
         document.querySelector("#merchName").value = this.currentMerchant[0].name;
+        document.querySelector("#merchName").setAttribute("disabled", true); // NEED TO CHANGE
         document.querySelector("#promoCode").value = this.currentMerchant[0].promo_code;
         document.querySelector("#affiliate").value = this.currentMerchant[0].users.affiliate;
         document.querySelector("#merchEmail").value = this.currentMerchant[0].support_email;
