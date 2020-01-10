@@ -539,6 +539,7 @@ class createBank{
         
         document.querySelector(".solutionName-block").remove()
         document.querySelector("#bankName").value = editedBank[0].name;
+        document.querySelector("#bankName").setAttribute("disabled", true);  // NEED TO CHANGE
         document.querySelector("#benefName").value = editedBank[0].beneficiary_name;
         document.querySelector("#benefAddress").value = editedBank[0].beneficiary_address;
         document.querySelector("#maxWire").value = editedBank[0].max_wire;
@@ -651,7 +652,7 @@ class createBank{
         // Get Solution Manager and render them in filter
         if (this.currentUserRole !== 'Solution Manager') {
             const solutions = await this.getSolutionUsers({'role': 'Solution Manager'});
-            solutions.forEach(item => this.renderSolutionInDOM(item.fullname, item._id));
+            solutions.users.forEach(item => this.renderSolutionInDOM(item.fullname, item._id));
 
         } else if (this.currentUserRole === 'Solution Manager') {
             document.querySelector('.solutionName-block').remove()
@@ -798,16 +799,12 @@ class createBank{
                     "balance_requested": 0,
                     "balance_sent": 0,
                     "balance_received": 0,
-                    "balance_approved": 0,
-                    "balance_available": 0,
                     "balance_settlement": 0
                 },
                 "balance_USD": {
                     "balance_requested": 0,
                     "balance_sent": 0,
                     "balance_received": 0,
-                    "balance_approved": 0,
-                    "balance_available": 0,
                     "balance_settlement": 0
                 },
                 "active" : active, 

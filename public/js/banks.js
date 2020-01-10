@@ -369,7 +369,7 @@ class BankList {
         this.loadingGif.style.display = "none";
     }
 
-    checkIsEmptyObj = (obj) => {
+    checkIsEmptyObj = obj => {
         for (let key in obj) {
             return false; // wrong
         }
@@ -484,7 +484,7 @@ class BankList {
         });
     }
 
-    renderNextPage = (page) => {
+    renderNextPage = page => {
         this.buttonNext = document.createElement("button");
         this.buttonNext.textContent = page;
         this.buttonNext.classList.add("nextPage-btn");
@@ -569,7 +569,7 @@ class BankList {
     }
 
 
-    checkClickedPages = (event) => {
+    checkClickedPages = event => {
         this.buttonsPage = document.querySelectorAll(".nextPage-btn");
         this.buttonsPage.forEach((btn) => {
             event === +(btn.textContent) ? btn.classList.add("highlight") : btn.classList.remove("highlight");;
@@ -640,7 +640,7 @@ class BankList {
     }
 
 
-    getSolutionUsers = async (filter) => {
+    getSolutionUsers = async filter => {
         return  await fetch("http://18.216.223.81:3000/getUserByFilter", {
             method: "POST",
             body: JSON.stringify({filter}),
@@ -656,7 +656,7 @@ class BankList {
     }
 
 
-    getBanksPartly = async (data) => {
+    getBanksPartly = async data => {
         return  await fetch("http://18.216.223.81:3000/get-banks-partly", {
             method: "POST",
             body: JSON.stringify(data),
@@ -683,7 +683,7 @@ class BankList {
     }
 
 
-    loadBanks = (array) => {
+    loadBanks = array => {
         this.container = document.getElementById("table-list");
         array.forEach((item) => {
             // Counting Before Limit

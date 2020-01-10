@@ -17,6 +17,7 @@ if (userRole === 'Invoice Manager') {
 
 class invoiceList {
     constructor(){
+        
         this.filter = {};
         this.permissionFilter = {};
 
@@ -117,8 +118,8 @@ class invoiceList {
             this.tableCommentsRender(this.currentInvoice[0].comments);
 
              // Change table info for current Invoice
-             this.currentTr.children[8].innerHTML = `<strong>Recall</strong>`;
-             this.currentTr.children[8].style.color = `#560795`;
+             this.currentTr.children[9].innerHTML = `<strong>Recall</strong>`;
+             this.currentTr.children[9].style.color = `#560795`;
              document.querySelector(".currentStatus").innerHTML = `Recall`;
              document.querySelector(".currentStatus").style.color = `#560795`;
              
@@ -142,7 +143,7 @@ class invoiceList {
         });
 
         // Get Current Merchant
-        this.currentMerhcant = await this.getCurrentMerchant(0, {"name": this.currentInvoice[0].merchant});
+        this.currentMerhcant = await this.getCurrentMerchant(this.currentInvoice[0].merchant);
         
         var fineFlat = this.currentMerhcant[0].fees.fine_recall.flat;
         var fineAdd = this.currentMerhcant[0].fees.fine_recall.additional;
@@ -216,8 +217,8 @@ class invoiceList {
             var color = "rgb(49, 117, 218)";
             this.currentInvoice[0].status === "Approved" ? color = "rgb(11, 158, 141)" : "";
             this.currentInvoice[0].status === "Available" ? color = "rgb(0, 200, 81)" : "";
-            this.currentTr.children[8].innerHTML = `<strong>${this.currentInvoice[0].status}</strong>`;
-            this.currentTr.children[8].style.color = `${color}`;
+            this.currentTr.children[9].innerHTML = `<strong>${this.currentInvoice[0].status}</strong>`;
+            this.currentTr.children[9].style.color = `${color}`;
             document.querySelector(".currentStatus").innerHTML = `${this.currentInvoice[0].status}`;
             document.querySelector(".currentStatus").style.color = `${color}`;
 
@@ -273,8 +274,8 @@ class invoiceList {
             this.currentInvoice[0].dates.frozen_date = new Date();
 
             // Change table info for current Invoice
-            this.currentTr.children[8].innerHTML = `<strong>Frozen</strong>`;
-            this.currentTr.children[8].style.color = "rgb(101, 152, 228)";
+            this.currentTr.children[9].innerHTML = `<strong>Frozen</strong>`;
+            this.currentTr.children[9].style.color = "rgb(101, 152, 228)";
             document.querySelector(".currentStatus").innerHTML = "Frozen";
             document.querySelector(".currentStatus").style.color = "rgb(101, 152, 228)";
 
@@ -345,8 +346,8 @@ class invoiceList {
             this.currentInvoice[0].settleSelectedStatus = true;
 
             // Change table info for current Invoice
-            this.currentTr.children[8].innerHTML = `<strong>Settled</strong>`;
-            this.currentTr.children[8].style.color = "black";
+            this.currentTr.children[9].innerHTML = `<strong>Settled</strong>`;
+            this.currentTr.children[9].style.color = "black";
             document.querySelector(".currentStatus").innerHTML = "Settled";
             document.querySelector(".currentStatus").style.color = "black";
 
@@ -404,8 +405,8 @@ class invoiceList {
             this.currentInvoice[0].dates.declined_date = new Date();
 
             // Change table info for current Invoice
-            this.currentTr.children[8].innerHTML = `<strong>Declined</strong>`;
-            this.currentTr.children[8].style.color = "red";
+            this.currentTr.children[9].innerHTML = `<strong>Declined</strong>`;
+            this.currentTr.children[9].style.color = "red";
             document.querySelector(".currentStatus").innerHTML = "Declined";
             document.querySelector(".currentStatus").style.color = "red";
 
@@ -565,8 +566,8 @@ class invoiceList {
             // Change Table info for current Invoice
             document.querySelector(".currentStatus").innerHTML = "Approved";
             document.querySelector(".currentStatus").style.color = "#0B9E8D";
-            this.currentTr.children[8].innerHTML = `<strong>Approved</strong>`;
-            this.currentTr.children[8].style.color = "#0B9E8D";
+            this.currentTr.children[9].innerHTML = `<strong>Approved</strong>`;
+            this.currentTr.children[9].style.color = "#0B9E8D";
 
             // Change this.currentInvoce Obj
             this.currentInvoice[0].status = "Approved";
@@ -624,9 +625,9 @@ class invoiceList {
             });
 
             // Get Current Merchant
-            this.currentMerhcant = await this.getCurrentMerchant(0, {"name": this.currentInvoice[0].merchant});
+            this.currentMerhcant = await this.getCurrentMerchant(this.currentInvoice[0].merchant);
             // Get Current Bank
-            this.currentBank = await this.getCurrentBank(0, {"name": this.currentInvoice[0].bank});
+            this.currentBank = await this.getCurrentBank(this.currentInvoice[0].bank);
 
             // Check type of Invoice c2b or b2b
             var anyFeePercent = this.currentMerhcant[0].fees.in_c2b.percent;
@@ -824,7 +825,7 @@ class invoiceList {
         if (this.currentInvoice[0].status === "Sent") {
 
             // Get Current Bank
-            this.currentBank = await this.getCurrentBank(0, {"name": this.currentInvoice[0].bank});
+            this.currentBank = await this.getCurrentBank(this.currentInvoice[0].bank);
 
             // Filter for background
             this.filterReceive.style.display = "flex";
@@ -984,8 +985,8 @@ class invoiceList {
             document.querySelector(".currentStatus").style.color = "black";
 
             // Change table info
-            this.currentTr.children[8].innerHTML = `<strong>Requested</strong>`;
-            this.currentTr.children[8].style.color = "rgb(104, 103, 103)";
+            this.currentTr.children[9].innerHTML = `<strong>Requested</strong>`;
+            this.currentTr.children[9].style.color = "rgb(104, 103, 103)";
             this.currentTr.children[3].children[0].children[0].textContent = `${this.currency}0`;
             this.currentTr.children[3].children[0].children[1].innerHTML = `mm/dd/yyyy`;
             
@@ -1040,7 +1041,7 @@ class invoiceList {
 
             const filename = event.target.closest("tr").querySelector("#filename").textContent.trim();
             const status = "Declined";
-            const type = event.target.closest("tr").querySelector("#docType").textContent.trim();
+            let type = event.target.closest("tr").querySelector("#docType").textContent.trim();
             const createdBy = this.currentUser.textContent.trim();
             const docId = event.target.closest("tr").querySelector("#fileId").textContent.trim();
             event.target.closest("tr").querySelector("#docStatus").innerHTML = status;
@@ -1084,7 +1085,7 @@ class invoiceList {
 
             const filename = event.target.closest("tr").querySelector("#filename").textContent.trim();
             const status = "Approved";
-            const type = event.target.closest("tr").querySelector("#docType").textContent.trim();
+            let type = event.target.closest("tr").querySelector("#docType").textContent.trim();
             const createdBy = this.currentUser.textContent.trim();
             const docId = event.target.closest("tr").querySelector("#fileId").textContent.trim();
             event.target.closest("tr").querySelector("#docStatus").innerHTML = status;
@@ -1511,13 +1512,10 @@ class invoiceList {
         
     }
 
-    getCurrentMerchant = async (number, filter) => {
-        return  await fetch("http://18.216.223.81:3000/getPart-Merchants", {
+    getCurrentMerchant = async name => {
+        return  await fetch("http://18.216.223.81:3000/get-merchantByName", {
                 method: "POST",
-                body: JSON.stringify({
-                    number,
-                    filter
-                }),
+                body: JSON.stringify({ name }),
                 headers:{'Content-Type': 'application/json'}
             })
             .then(res => {
@@ -1528,13 +1526,10 @@ class invoiceList {
             });
     }
 
-    getCurrentBank = async (number, filter) => {
-        return  await fetch("http://18.216.223.81:3000/getPart-Banks", {
+    getCurrentBank = async name => {
+        return  await fetch("http://18.216.223.81:3000/get-bankByName", {
                 method: "POST",
-                body: JSON.stringify({
-                    number,
-                    filter
-                }),
+                body: JSON.stringify({ name }),
                 headers:{'Content-Type': 'application/json'}
             })
             .then(res => {
