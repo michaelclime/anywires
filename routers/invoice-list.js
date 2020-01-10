@@ -27,7 +27,7 @@ router.get("/invoice-preview", async function (req, res) {
         const invoice = await Invoice.find({number: invoiceNumber});
         const bank = await Bank.find({name: invoice[0].bank});
         
-        const bankLogo = bank[0].company_logo;
+        let bankLogo = bank[0].company_logo;
         const bankBenefAddress = bank[0].beneficiary_address;
         const bankName = bank[0].name;
         const bankAddress = bank[0].bank_address;
@@ -44,6 +44,10 @@ router.get("/invoice-preview", async function (req, res) {
         const invClientPhone = invoice[0].client_details.phone;
         const bankIBAN_EUR = bank[0].iban_EUR;
         const bankIBAN_USD = bank[0].iban_USD;
+
+        if (bankLogo === undefined && bankLogo === null && bankLogo === '') {
+            bankLogo = "img/logocompany.png";
+        }
     
         res.render("invoice-preview.html", { invoiceNumber, bankLogo, bankBenefAddress, bankName, invClientPhone, bankIBAN_EUR, bankIBAN_USD,
                     bankAddress, bankSWIFT, bankSite, invBankBenefName, invoiceDate, invAmount, invoiceCurrency, invClientName, invClientEmail, invClientAdress, invClientID });
@@ -71,13 +75,17 @@ router.get("/invoiceDecOfPay", async function (req, res) {
     const invoice = await Invoice.find({number: invoiceNumber});
     const bank = await Bank.find({name: invoice[0].bank});
     
-    const bankLogo = bank[0].company_logo;
+    let bankLogo = bank[0].company_logo;
     const invClientCountry = invoice[0].client_details.country;
     const invClientID = invoice[0].client_details.id_number;
     const invBankBenefName = bank[0].beneficiary_name;
     const invoiceDate = invoice[0].dates.creation_date;
     const invAmount = invoice[0].amount.amount_sent;
     const invoiceCurrency = invoice[0].currency;
+
+    if (bankLogo === undefined && bankLogo === null && bankLogo === '') {
+        bankLogo = "img/logocompany.png";
+    }
 
     res.render("invoiceDecOfPay.html", {bankLogo, invClientCountry, invClientID, invBankBenefName, invoiceDate, invAmount, invoiceCurrency});
 });
@@ -87,7 +95,7 @@ router.get("/invoicePreviewBankVersion", async function (req, res) {
     const invoice = await Invoice.find({number: invoiceNumber});
     const bank = await Bank.find({name: invoice[0].bank});
     
-    const bankLogo = bank[0].company_logo;
+    let bankLogo = bank[0].company_logo;
     const bankBenefAddress = bank[0].beneficiary_address;
     const bankName = bank[0].name;
     const bankAddress = bank[0].bank_address;
@@ -104,6 +112,10 @@ router.get("/invoicePreviewBankVersion", async function (req, res) {
     const invClientPhone = invoice[0].client_details.phone;
     const bankIBAN_EUR = bank[0].iban_EUR;
     const bankIBAN_USD = bank[0].iban_USD;
+
+    if (bankLogo === undefined && bankLogo === null && bankLogo === '') {
+        bankLogo = "img/logocompany.png";
+    }
 
     res.render("invoicePreviewBankVersion.html", { invoiceNumber, bankLogo, bankBenefAddress, bankName, invClientPhone, bankIBAN_EUR, bankIBAN_USD,
                 bankAddress, bankSWIFT, bankSite, invBankBenefName, invoiceDate, invAmount, invoiceCurrency, invClientName, invClientEmail, invClientAdress, invClientID });

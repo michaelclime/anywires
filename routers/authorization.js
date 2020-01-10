@@ -2,6 +2,7 @@ const express = require('express'),
     router = new express.Router(),
     objectId = require("mongodb").ObjectID, 
     passport = require('passport'),
+    Merchant = require('./modules/merchant'),
     User = require('../modules/user'),
     crypto = require('crypto'),
     nodemailer = require('nodemailer'),
@@ -44,6 +45,27 @@ router.post('/register', function(req, res){
             req.flash('error', 'Can\'t create user with such parameters!');
             res.status(501).redirect("users.html");
         } else {
+            switch (req.body.role) {
+                case 'Affiliate':
+                    for (let i = 0; i < merchId.length; i += 1) {
+                        let merchant = await Merchant.findByIdAndUpdate(merchId[i], { 'users.affiliate': req.body.username });
+                    }
+                    break;
+
+                case 'Merchant Manager':
+                    for (let i = 0; i < merchId.length; i += 1) {
+                        let merchant = await Merchant.findByIdAndUpdate(merchId[i], { $push: { 'users.merchant_manager': req.body.username }});
+                    }
+                    break;
+
+                case 'Invoice Manager':
+                    for (let i = 0; i < merchId.length; i += 1) {
+                        let merchant = await Merchant.findByIdAndUpdate(merchId[i], { $push: { 'users.invoice_manager': req.body.username }});
+                    }
+                    break;
+                default:
+                    break;
+            }
             req.flash('success', 'User successfully created!');
             res.status(201).redirect("users.html");
             // passport.authenticate('local')(req, res, function() {

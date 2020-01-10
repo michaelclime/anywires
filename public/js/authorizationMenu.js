@@ -7,7 +7,7 @@ profileButton.onclick = function() {
     document.location.href='/personal-area.html';
 };
 
-const curentUserId = document.querySelector('.curentUserId').textContent;
+const curentUserIdd = document.querySelector('.curentUserId').textContent;
 
 if (merchantButton) {
     merchantButton.onclick = function() {
@@ -15,7 +15,7 @@ if (merchantButton) {
     };    
 }
 logOutButton.onclick = function() {
-    document.location.href = '/logout/' + curentUserId;
+    document.location.href = '/logout/' + curentUserIdd;
 };
 
 authorizationMenu.onmouseenter = function() {

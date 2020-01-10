@@ -94,6 +94,7 @@ async function loadPage(chosenDate, Data)  {
             Swal.fire('Something went wrong on server side');
         }
         const Data = await dataList.json();
+        console.log(Data);
         loadData(date, Data);
     } else {
         loadData(date, Data);
@@ -111,11 +112,13 @@ async function loadPage(chosenDate, Data)  {
             date = 'now';
         }
 
-        let merchantsNameList = Data.merchantsName,
-        invoicesList  = Data.invoices;
+        let merchantsNameList = [...Data.merchantsName],
+        invoicesList  = [...Data.invoices];
+        //console.log(merchantsNameList);
 
         // Creat array with all info about merchant
         let = merchantInfoList = [];
+        
         merchantsNameList.forEach( (name) => {
             let obj = { merchant: name};
             obj.invoices = [];
