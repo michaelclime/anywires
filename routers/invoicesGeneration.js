@@ -260,11 +260,8 @@ router.post("/invoiceGenerate/:fullname/:_id", function(req, res, next) {
                                                     }
                                                     let userInfo = await User.findOne({ _id: req.params._id});
                                                    
-                                                    if ( userInfo.role == 'Invoice Manager') {
-                                                            res.redirect('/personal-area.html');
-                                                    } else {
-                                                        res.redirect('/invoice-list.html');
-                                                    }
+                                                    res.redirect('/invoice-list.html');
+                                                    
                                                 }
                                             });
                                         }

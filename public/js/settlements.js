@@ -29,12 +29,13 @@ $(document).ready(function(){
                     this.container = document.querySelector(".ttableList");
                     this.container.innerHTML = '';
                     list.slice(0, list.length).forEach((item, i) => {
+                        
                         this.invsList = document.createElement("tr");
                         this.invsList.className = `tr${i}`;
                             this.invsList.innerHTML =  `
                             <td class="column column0">  <input class="check" type="checkbox" name='invoices' value=${item.amount.amount_approved + '/' + item.currency + '/' + item._id + '/' + merchantName}> ${item.client_details.full_name}</td> 
                             <td class="column column1"> ${formatStr(item.amount.amount_received)} ${item.currency}</td> 
-                            <td class="column column2">${formatStr(item.commissions)} ${item.currency}</td> 
+                            <td class="column column2">${formatStr(item.amount.amount_received - item.amount.amount_approved)} ${item.currency}</td> 
                             <td class="column column3">${formatStr(item.amount.amount_approved)} ${item.currency}</td> 
                         `;   
                     this.container.appendChild(this.invsList);
