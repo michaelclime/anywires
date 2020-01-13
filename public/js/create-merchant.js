@@ -15,7 +15,7 @@ class CreateMerchant{
         Affilliate.users.forEach( aff => {
             const option = document.createElement("option");
             option.value = aff.email;
-            option.innerHTML = `${aff.username} '${aff.email}'`;
+            option.innerHTML = `${aff.fullname} – '${aff.email}'`;
             container.appendChild(option);
         });
     }
