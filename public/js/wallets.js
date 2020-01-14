@@ -68,6 +68,7 @@ class Wallets extends WalletsRequest {
         this.walletsArr = [];
         this.walletsNum = 0;
         this.currentWallet = [];
+        this.currentWalletId = '';
         this.currentTr = null;
         this.containerPages = document.querySelector(".nextPage-block");
         this.loadingGif = document.querySelector("#loadingGif");
@@ -79,6 +80,10 @@ class Wallets extends WalletsRequest {
     renderTransactionTable = arr => {
         const container = document.querySelector(".transaction__table--tbody");
         arr.forEach(item => {
+            // Cheking wallets: Send or Received
+            let transactionSymbol = '+'
+            this.currentWalletId === item.walletFrom ? transactionSymbol = '-' : null
+            // 
             const commissionArr = item.commissionsList.filter(com => com.type.trim() === "Settlement Anywires Commission");
             const commissionAmount = commissionArr.map(com => com.amount).reduce((acc, cur) => acc + cur, 0);
             const currency = item.currency.trim() === 'USD' ? '$' : '€';
@@ -87,6 +92,7 @@ class Wallets extends WalletsRequest {
                 <td class="transaction__column1">${this.checkDate(item.dates.creation_date)}</td> 
                 <td class="transaction__column2">${item.createdBy[0].fullname}</td> 
                 <td class="transaction__column3">
+                    ${transactionSymbol}
                     ${
                         item.status.trim() === 'Requested' ? item.amount.amount_requested : item.amount.amount_sent
                     }
@@ -110,7 +116,7 @@ class Wallets extends WalletsRequest {
                 this.loadingGif.style.display = "flex";
                 document.body.classList.add("modal-open");
                 // 
-                // Clean popUp Windo
+                // Clean popUp Window
                 document.querySelector(".transaction__table--tbody").innerHTML = '';
                 // 
                 // Event for Window closing
@@ -125,6 +131,7 @@ class Wallets extends WalletsRequest {
                 // 
                 // Request for Settlements
                 const walletId = event.target.closest("tr").querySelector("#walletId").textContent.trim();
+                this.currentWalletId = walletId
                 const settlements = await this.getSettlemetsByWalletId(walletId);
                 // 
                 // Render popUp information
@@ -137,6 +144,7 @@ class Wallets extends WalletsRequest {
                 document.querySelector('.transaction-wallet-name').innerHTML = `${walletName} - ${walleBalance}${walleCurrency === 'USD' ? '$' : '€'}`;
                 // 
                 // Render table transaction
+                console.log(settlements.settlements)
                 this.renderTransactionTable(settlements.settlements);
                 // 
                 // Remove Loading
@@ -531,7 +539,7 @@ class Wallets extends WalletsRequest {
             this.containerPages.appendChild(dotts);
             this.renderNextPage(lastPage);
         } else {
-            for (let i = 0; i <= lastPage; i++) {
+            for (let i = 0; i < lastPage; i++) {
                 this.renderNextPage([i+1]);
             }
         }
@@ -698,7 +706,7 @@ class Wallets extends WalletsRequest {
     }
 
 
-    checkDate = (data) => {
+    checkDate = data => {
         return data === "" || !data ? data = "mm/dd/yyyy" : data = moment(data).format('ll');
     }
 
@@ -711,7 +719,11 @@ class Wallets extends WalletsRequest {
                     <td class="column1 transaction">${this.checkDate(item.creation_date)}</td> 
                     <td class="column2 transaction table_wallets--wallet-name">${item.name}</td> 
                     <td class="column3 transaction">${item.type}</td> 
-                    <td class="column4 transaction table_wallets--wallet-balance">${item.balance}</td> 
+                    <td class="column4 transaction table_wallets--wallet-balance">
+                        ${
+                            item.type === 'BTC' || item.type === 'Wire' ? '-' : item.balance
+                        }
+                    </td> 
                     <td class="column5 transaction table_wallets--wallet-currency">${item.currency}</td> 
                     <td class="column6 transaction table_wallets--merchant-name">${item.merchant_name}</td> 
                     <td class="column7">
