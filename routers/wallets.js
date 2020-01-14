@@ -92,7 +92,7 @@ router.post('/createWallet', jsonParser, (req, res) => {
 router.get('/get-settlement-by-wallet/:id', async (req, res) => {
     const walletId = new objectId(req.params.id);
     const settlements = await Settlement.aggregate([
-        { $match : { wallets : walletId } },
+        { $match : { $or: [{'walletTo': walletId}, {'walletFrom': walletId}] } },
         {
         $lookup: {
             from: "wallets",

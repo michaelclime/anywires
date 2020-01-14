@@ -1,9 +1,14 @@
 // Remove menu items for permissions START
 
 const userRole = document.querySelector('.curentUserRole').textContent.trim()
-if (userRole === 'Crm InvoiceManager' || userRole === 'Crm SuccessManager' || userRole === 'Merchant Manager') {
+if (userRole === 'Crm InvoiceManager' || userRole === 'Crm SuccessManager') {
     document.querySelector('.gn-menu__banks').remove()
-} 
+}
+if (userRole === 'Merchant Manager') {
+    document.querySelector('.gn-menu__banks').remove()
+    document.querySelector('.gn-menu__merchants').remove()
+    document.querySelector('.merchant').remove()
+}
 
 // Remove menu items for permissions END
 

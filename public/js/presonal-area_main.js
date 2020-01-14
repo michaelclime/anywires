@@ -36,7 +36,7 @@ const loadInvoice = (list) => {
 // Remove menu items for permissions START
 
 const userRole = document.querySelector('.curentUserRole').textContent.trim()
-if (userRole === 'Crm InvoiceManager') {
+if (userRole === 'Crm InvoiceManager' || userRole === 'Crm SuccessManager') {
     document.querySelector('.gn-menu__banks').remove()
 } 
 
