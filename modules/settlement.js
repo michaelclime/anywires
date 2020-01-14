@@ -1,5 +1,6 @@
 let mongoose = require("mongoose");
 let passportLocalMongoose = require('passport-local-mongoose');
+let ObjectId = mongoose.Schema.ObjectId;
 
 let SettlementSchema = new mongoose.Schema({
     number: Number,
@@ -19,6 +20,8 @@ let SettlementSchema = new mongoose.Schema({
     invoices: Array,
     comments: Array,
     wallets: Array,
+    walletTo: ObjectId,
+    walletFrom: ObjectId,
     commissions: Array,
     type: String,
     documents: Array,

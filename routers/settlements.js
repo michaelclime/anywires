@@ -583,7 +583,8 @@ router.post('/creatSettle/:id', async (req, res) => {
         created_by: objectId(req.params.id),
         wallets: [
             objectId(req.body.wallets)
-        ]
+        ],
+        walletTo: objectId(req.body.wallets)
     }
 
     const settlement = new Settlement(newSettle);
@@ -646,7 +647,9 @@ router.post('/creatSettleFromAwWallet/:id', async (req, res) => {
         created_by: objectId(req.params.id),
         wallets: [
             objectId(req.body.wallet)
-        ]
+        ],
+        walletFrom: objectId(req.body.AwWalletId),
+        walletTo: objectId(req.body.wallet)
     };
 
     const settlement = new Settlement(newSettle);
