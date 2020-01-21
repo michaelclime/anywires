@@ -61,44 +61,7 @@
 								</ul>
 							</div>
 						</div>
-			<% } else if (currentUser.role == 'Solution Manager') { %>
-				<div id="burgerMenu">
-						<div class="menu">
-							<ul id="gn-menu" class="gn-menu-main">
-								<li class="gn-trigger">
-									<a class="gn-icon gn-icon-menu"><span>Menu</span></a>
-									<nav class="gn-menu-wrapper">
-										<div class="gn-scroller">
-											<ul class="gn-menu">
-												<li><a href='personal-area.html'><img class="icon" src="fonts/icons/personal-area.png">Personal Area</a></li>
-												<li><a href='banks.html'><img class="icon" src="fonts/icons/bank.png">Banks</a></li>
-												<li><a href='Dashboard-how-it-works.html'><img class="icon" src="fonts/icons/info.png">How it works</a></li>
-													</ul>
-												</li>
-											</ul>
-										</div>
-									</nav>
-								</li>
-							</ul>
-				
-							<div class="authorizationMenu">
-								<span> 
-									<span class="userName"> <%= currentUser.fullname %></span>
-									<span class="userLogo"><i class="far fa-user-circle"></i></span>
-								</span>
-								<ul class="dropMenu">
-									<li class="profile">
-										<span class="liLogo"><i class="fas fa-user-alt"></i></span>
-										<a href="personal-area.html">Profile</a>
-									</li>
-									<li class="logOut">
-										<span class="liLogo"><i class="fas fa-sign-out-alt"></i></span>
-										<a href="/logout/<%= currentUser.id %>">LogOut</a>
-									</li>
-								</ul>
-							</div>
-						</div>
-			<% } else { %>
+			<% }  else { %>
 		<div id="burgerMenu">
 			<div class="menu">
 				<ul id="gn-menu" class="gn-menu-main">

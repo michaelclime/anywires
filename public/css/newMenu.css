@@ -1,0 +1,134 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat:100,100i,300,300i,400,400i,500,500i,700,700i,800,800i,900,900i&display=swap');
+
+::-webkit-scrollbar {
+    width: 2px;
+}
+ 
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+}
+ 
+::-webkit-scrollbar-thumb {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    box-shadow: 2px 0px 5px 0px rgba(0,0,0,0.2);
+    width: 60px;
+    background-color: #fff;
+    z-index: 100;
+    transition: .2s ease-in-out;
+    overflow-y: auto;
+}
+
+.menu__filter {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    z-index: 90;
+}
+
+.menu__burger {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 55px;
+    background-color: #12a79e;
+    cursor: pointer;
+}
+
+.menu__burger-symbols div {
+    width: 30px;
+    height: 3px;
+    background-color: white;
+    margin-bottom: 4px;
+}
+
+.menu__burger:hover {
+    background-color: #0f8573;
+}
+
+.menu__burger-close {
+    display: none;
+    width: 24px;
+    height: 24px;
+    margin-left: 15px;
+}
+
+
+/* Menu List */
+.menu__list {
+    display: none;
+    margin-top: 40px;
+    width: 100%;
+    transition: all 1s ease-in-out;
+    z-index: 95;
+    animation: fadeInLeft .2s;
+}
+
+.menu__list-item {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 55px;
+    cursor: pointer;
+}
+
+.menu__list-item:hover {
+    color: #12A79E;
+}
+
+.menu__list-item:hover .menu__list-logo {
+    filter: invert(42%) sepia(100%) saturate(348%) hue-rotate(127deg) brightness(103%) contrast(100%);
+}
+
+.menu__list-link {
+    text-decoration: none;
+    color: #3A3A3A;
+}
+
+.menu__list-logo {
+    margin-left: 15px;
+    margin-right: 16px;
+    width: 30px;
+    height: 30px;
+    user-select: none;
+}
+
+.menu__list-text {
+    display: none;
+    font-size: 15px;
+    user-select: none;
+}
+
+.menu__list-item-reports {
+    margin-left: 15px;
+    display: none;
+}
+
+/* Animations */
+
+@keyframes fadeInLeft {
+    from {
+      opacity: 0;
+      transform: translate3d(-100%, 0, 0);
+    }
+  
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+}

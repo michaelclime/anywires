@@ -50,7 +50,7 @@ body button:active {
     
 #burgerMenu {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     width: 100%;
     background:  #FFF;
 }
@@ -151,7 +151,6 @@ header {
     align-items: center;
     background-color: rgb(255, 255, 255);
     padding: 30px 0 30px 70px;
-    margin-top: 2px;
 }
 header img {
     margin-right: 15px;
@@ -167,7 +166,6 @@ main {
     min-height: 800px;
     background-color: rgb(255, 255, 255);
     padding: 30px 0 30px 0px;
-    margin-top: 2px;
 }
 
 
@@ -980,3 +978,9 @@ option {
   }
 }
 /* Trancaction Table END */
+
+
+
+/* Wallets MENU */
+
+/* Wallets MENU */
