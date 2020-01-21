@@ -353,7 +353,7 @@ class Commission {
                 <td class="column4">${Math.floor(commission.percentage)}%</td> 
                 <td class="column5">${commission.flat ? commission.flat : 0}€</td> 
                 <td class="column6">${commission.additional ? commission.additional : 0}€</td> 
-                <td class="column7">${commission.bank}</td> 
+                <td class="column7">${commission.bank ? commission.bank : '-'}</td> 
                 <td class="column8">${commission.merchant}</td> 
             `;
             container.appendChild(commissionsList);
