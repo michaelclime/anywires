@@ -52,6 +52,7 @@ body button:active {
     display: flex;
     justify-content: flex-end;
     width: 100%;
+    min-height: 60px;
     background:  #FFF;
 }
 

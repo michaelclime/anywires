@@ -50,9 +50,10 @@ body button:active {
     
 #burgerMenu {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     width: 100%;
     background:  #FFF;
+    min-height: 60px;
 }
 
 .authorizationMenu {
@@ -164,7 +165,6 @@ body button:active {
         align-items: center;
         background-color: rgb(255, 255, 255);
         padding: 30px 0 30px 70px;
-        margin-top: 2px;
     }
     header img {
         margin-right: 15px;
@@ -180,7 +180,6 @@ body button:active {
         min-height: 800px;
         background-color: rgb(255, 255, 255);
         padding: 30px 0 30px 30px;
-        margin-top: 2px;
     }
     
     /* MinMax-block */
@@ -301,8 +300,8 @@ body button:active {
     }
     
     #search-button {
-        width: 40px;
-        height: 40px;
+        width: 16px;
+        height: 16px;
         padding: 12px;
         background-color: rgb(54, 54, 54);
         cursor: pointer;
