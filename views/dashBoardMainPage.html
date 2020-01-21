@@ -55,9 +55,9 @@
             </div>
 
             <div class="authorizationMenu">
-                <span> 
+                <span class="containerSpan"> 
                     <span class="userName"> <%= currentUser.fullname %></span>
-                    <span class="userLogo"><i class="far fa-user-circle"></i></span>
+                    <span class="userLogo"><img src="img/User_Pic.svg" alt="User Logo"></span>
                 </span>
                 <ul class="dropMenu">
                     <li class="profile">
@@ -94,9 +94,9 @@
                         </ul>
                     </div>
                 <div class="authorizationMenu">
-                    <span> 
+                    <span class="containerSpan"> 
                         <span class="userName"> <%= currentUser.fullname %></span>
-                        <span class="userLogo"><i class="far fa-user-circle"></i></span>
+                        <span class="userLogo"><img src="img/User_Pic.svg" alt="User Logo"></span>
                     </span>
                     <ul class="dropMenu">
                         <li class="profile">
@@ -146,9 +146,9 @@
                 </ul>
             </div>
         <div class="authorizationMenu">
-            <span> 
+            <span class="containerSpan"> 
                 <span class="userName"> <%= currentUser.fullname %></span>
-                <span class="userLogo"><i class="far fa-user-circle"></i></span>
+               <img class="userLogo" src="img/User_Pic.svg" alt="User Logo">
             </span>
             <ul class="dropMenu">
                 <li class="profile">
@@ -170,7 +170,7 @@
     <main>
         
         <div class="choosePeriod">
-            <h1 class="mainTitle"><span class="dashboardLogo"><i class="fas fa-cogs"></i></span>Dashboard</h1> 
+            <h1 class="mainTitle">Dashboard</h1> 
             <div class="rightSideBoard">
                 <% if (currentUser.typeClass == 'admin') { %>
                     <h4 class="merchantName">Select period</h4>
@@ -183,7 +183,7 @@
                             
                     </ul>
                 <% } %>
-                <h3 class="periodTitle">Today<i class="fas fa-sort-down"></i></h3>
+                <h3 class="periodTitle">Today<i class="fas fa-chevron-down"></i></h3>
                 <ul class="period">
                     <li class="today">Today</li>
                     <li class="week" >Week</li>
@@ -196,10 +196,10 @@
         <div class="headerBlock">
             <div class="sentBox">
                 <div class="titleBlock">
-                    <h2 class="boxTitle">Sent</h2>
-                    <span class="contentBoxImg"><i class="fas fa-share-square"></i></span>
+                    <h2 class="boxTitle">SENT</h2>
                 </div>
                <div class="contentBox">
+                    <img class="boxImage" src="img/1_Sent.svg" alt="sent img">
                     <div class="amounts">
                         <span class="dollarAmount sentUSD"><i class="fas fa-dollar-sign"></i></span>
                         <span class="euroAmount sentEUR"><i class="fas fa-euro-sign"></i></span>
@@ -208,10 +208,10 @@
             </div>
             <div class="receivedBox">
                 <div class="titleBlock">
-                    <h2 class="boxTitle">Received</h2>
-                    <span class="contentBoxImg"><i class="fas fa-hand-holding-usd"></i></span>
+                    <h2 class="boxTitle">RECEIVED</h2>
                 </div>
                 <div class="contentBox">
+                    <img class="boxImage" src="img/2_Received.svg" alt="sent img">
                     <div class="amounts">
                         <span class="dollarAmount receivedUSD"><i class="fas fa-dollar-sign"></i></span>
                         <span class="euroAmount receivedEUR"><i class="fas fa-euro-sign"></i></span>
@@ -220,10 +220,10 @@
             </div>
             <div class="approvedBox">
                 <div class="titleBlock">
-                    <h2 class="boxTitle">Approved</h2>
-                    <span class="contentBoxImg"><i class="far fa-thumbs-up"></i></span>
+                    <h2 class="boxTitle">APPROVED</h2>
                 </div>
                 <div class="contentBox">
+                    <img class="boxImage" src="img/3_Approved.svg" alt="sent img">
                     <div class="amounts">
                         <span class="dollarAmount approvedUSD"><i class="fas fa-dollar-sign"></i></span>
                         <span class="euroAmount approvedEUR"><i class="fas fa-euro-sign"></i></span>
@@ -232,10 +232,10 @@
             </div>
             <div class="settledBox">
                 <div class="titleBlock">
-                    <h2 class="boxTitle">Settled</h2>
-                    <span class="contentBoxImg"><i class="fas fa-clipboard-check"></i></span>
+                    <h2 class="boxTitle">SETTLED</h2>
                 </div>
                 <div class="contentBox">
+                    <img class="boxImage" src="img/4_Settled.png" alt="sent img">
                     <div class="amounts">
                         <span class="dollarAmount settledUSD"><i class="fas fa-dollar-sign"></i></span>
                         <span class="euroAmount settledEUR"><i class="fas fa-euro-sign"></i></span>
@@ -243,57 +243,58 @@
                 </div>
             </div>
         </div>
-        <% if (currentUser.typeClass == 'admin') { %>
-            <div class="boxInfoAdmin">
-                <div class="invoiceInfo">
-                    <h2 class="infoTitle">Invoice - Received</h2>
-                    <div class="contentBox">
-                        <span class="invoiceImg"><i class="fas fa-file-invoice-dollar"></i></span>
-                        <div class="transactionInfo">
-                            <span class="transactions">Transactions: <span class="transactionsNumber"></span></span>
-                            <span class="transactionsPerDay">Transactions per day: <span class="transactionsPerDayNumber"></span></span>
-                            <span class="avgTransaction">Avg. transaction: <span class="avgTransactionUSD"></span></span>
-                            <span class="avgTransaction">Avg. transaction: <span class="avgTransactionEUR"></span></span>
+
+        <div class="info-block-container">
+            <div class="leftSide-info-block">
+                <% if (currentUser.typeClass == 'admin') { %>
+                    <div class="invoiceInfo">
+                        <h2 class="infoTitle">INVOICE - RECEIVED</h2>
+                        <div class="contentBox">
+                            <img class="invoiceImg" src="img/Big__Invoice.svg" alt="">
+                            <div class="transactionInfo">
+                                <span class="transactions">Transactions: <span class="transactionsNumber"></span></span>
+                                <span class="transactionsPerDay">Transactions per day: <span class="transactionsPerDayNumber"></span></span>
+                                <span class="avgTransaction">Avg. transaction: <span class="avgTransactionUSD"></span></span>
+                                <span class="avgTransaction">Avg. transaction: <span class="avgTransactionEUR"></span></span>
+                            </div>
                         </div>
                     </div>
-                </div>
+                <% } else { %>
+                    <div class="invoiceInfo">
+                        <h2 class="infoTitle">INVOICE - RECEIVED</h2>
+                        <div class="contentBox">
+                            <img class="invoiceImg" src="img/Big__Invoice.svg" alt="">
+                            <div class="transactionInfo">
+                                <span class="transactions">Transactions: <span class="transactionsNumber"></span></span>
+                                <span class="transactionsPerDay">Transactions per day: <span class="transactionsPerDayNumber"></span></span>
+                                <span class="avgTransaction">Avg. transaction: <span class="avgTransactionUSD"></span></span>
+                                <span class="avgTransaction">Avg. transaction: <span class="avgTransactionEUR"></span></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="walletBalance">
+                        <h2 class="infoTitle">WALLET BALANCE</h2>
+                        <div class="contentBox">
+                            <img class="walletImg" src="img/Big__Wallets.svg" alt="">
+                            <div class="walletInfo">
+                                
+                            </div>
+                        </div>
+                    </div>
+                <% } %> 
             </div>
-        <% } else { %>
-            <div class="boxInfo">
-                <div class="invoiceInfo">
-                    <h2 class="infoTitle">Invoice - Received</h2>
-                    <div class="contentBox">
-                        <span class="invoiceImg"><i class="fas fa-file-invoice-dollar"></i></span>
-                        <div class="transactionInfo">
-                            <span class="transactions">Transactions: <span class="transactionsNumber"></span></span>
-                            <span class="transactionsPerDay">Transactions per day: <span class="transactionsPerDayNumber"></span></span>
-                            <span class="avgTransaction">Avg. transaction: <span class="avgTransactionUSD"></span></span>
-                            <span class="avgTransaction">Avg. transaction: <span class="avgTransactionEUR"></span></span>
-                        </div>
-                    </div>
+
+            <div class="chartBox">
+                <div class="chartContainer">
+                    <button class="chartBoxBtn sentChartBtn selectedBtn"><span>SENT REPORT</span></button>
+                    <button class="chartBoxBtn receivedChartBtn">RECEIVED REPORT</button>
+                    <button class="chartBoxBtn approvedChartBtn">APPROVED REPORT</button>
+                    <button class="chartBoxBtn settledChartBtn">SETTLED REPORT</button>
                 </div>
-                <div class="walletBalance">
-                    <h2 class="infoTitle">Wallets Balance</h2>
-                    <div class="contentBox">
-                        <span class="walletImg"><i class="fas fa-wallet"></i></i></span>
-                        <div class="walletInfo">
-                            
-                        </div>
-                    </div>
-                </div>
-            </div>
-        <% } %> 
-       
-        <div class="chartBox">
-            <div class="chartContainer">
-                <button class="chartBoxBtn sentChartBtn selectedBtn"><span>Sent report</span></button>
-                <button class="chartBoxBtn receivedChartBtn">Received report</button>
-                <button class="chartBoxBtn approvedChartBtn">Approved report</button>
-                <button class="chartBoxBtn settledChartBtn">Settled report</button>
-                <hr class="horizontalLine">
                 <canvas id="dashboardChart"></canvas>
             </div>
         </div>
+    
     </main>
     <script src="js/dashBoardMainPage.js"></script>
     <script src="js/classie.js"></script>

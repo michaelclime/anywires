@@ -36,7 +36,7 @@ const curentUserId = document.querySelector('.curentUserId').textContent;
         let merchList = await fetchPromise.json();
 
        if (merchant.length > 1) {
-        merchantName.innerHTML = `${merchList[0]}<i class="fas fa-sort-down"></i>`;
+        merchantName.innerHTML = `${merchList[0]}<i class="fas fa-chevron-down"></i>`;
        } else {
         merchantName.innerHTML = `${merchList[0]}`;
        }
@@ -48,7 +48,7 @@ const curentUserId = document.querySelector('.curentUserId').textContent;
                 li.innerHTML = merchant;
 
                 li.addEventListener('click', () => {
-                    merchantName.innerHTML = `${merchant}<i class="fas fa-sort-down"></i>`;
+                    merchantName.innerHTML = `${merchant}<i class="fas fa-chevron-down"></i>`;
                         document.querySelector('.walletInfo').innerHTML = '';
                         walletBalance();
                         let currentPeriod = document.querySelector('.periodTitle').textContent;
@@ -110,7 +110,9 @@ const curentUserId = document.querySelector('.curentUserId').textContent;
 
 
 merchantName.onmouseenter = function() {
-    document.querySelector('.merchantSelec').style.display = 'flex';  
+    if (merchantName.textContent !== 'Select period') {
+        document.querySelector('.merchantSelec').style.display = 'flex';
+    }    
 };
 
 document.querySelector('.merchantSelec').onmouseenter = function() {
@@ -186,7 +188,7 @@ let sentAmountEuro = 0,
     datesChart = [],
     amountsChart = [];
 
-    periodTitle.innerHTML = `Today<i class="fas fa-sort-down"></i>`;
+    periodTitle.innerHTML = `Today<i class="fas fa-chevron-down"></i>`;
 
     if (merchantName.textContent == 'Select period') {
         let fetchPromise  = fetch('http://18.216.223.81:3000/getInvListToday');
@@ -481,7 +483,7 @@ const weekAmount = () => {
         datesChart = [],
         amountsChart = [];
 
-    periodTitle.innerHTML = `Week<i class="fas fa-sort-down"></i>`;
+    periodTitle.innerHTML = `Week<i class="fas fa-chevron-down"></i>`;
 
     if (merchantName.textContent == 'Select period') {
         let fetchPromise  = fetch('http://18.216.223.81:3000/getInvListWeek');
@@ -777,7 +779,7 @@ const monthAmount = () => {
         datesChart = [],
         amountsChart = [];
 
-    periodTitle.innerHTML = `Month<i class="fas fa-sort-down"></i>`;
+    periodTitle.innerHTML = `Month<i class="fas fa-chevron-down"></i>`;
 
     if (merchantName.textContent == 'Select period') {
         let fetchPromise  = fetch('http://18.216.223.81:3000/getInvListMonth');
@@ -1070,7 +1072,7 @@ const allTimeAmount = () => {
         amountListSettledEUR = [],
         datesChart = [],
         amountsChart = [];
-    periodTitle.innerHTML = `All Time<i class="fas fa-sort-down"></i>`;
+    periodTitle.innerHTML = `All Time<i class="fas fa-chevron-down"></i>`;
 
     if (merchantName.textContent == 'Select period') {
         let fetchPromise  = fetch('http://18.216.223.81:3000/getInvListAll');
