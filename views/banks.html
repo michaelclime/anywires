@@ -155,64 +155,65 @@
 
 			<!--Header Page-->
 			<header> 
-				<img src="./img/bank.png" alt="icon page" width="40px" height="40px"/>
-				<h1>Banks</h1>
+				<div class="header__title">
+					<img src="./img/bank.png" alt="icon page" width="40px" height="40px"/>
+					<h1>Banks</h1>
+				</div>
 			</header>
 			
 			<!--Main Page-->
 			<main>
-					<div class="minMax-block">
-						<div class="filterMin-block">
-							<label for="filterMin-block">Min Wire</label>
-							<input id="filterMin" type="text">
-						</div>
+				<div class="minMax-block">
+					<div class="filterMin-block">
+						<label for="filterMin-block">Min Wire</label>
+						<input id="filterMin" type="text">
+					</div>
 
-						<div class="filterMax-block">
-							<label for="filterMax-block">Max Wire</label>
-							<input id="filterMax" type="text">
-						</div>
+					<div class="filterMax-block">
+						<label for="filterMax-block">Max Wire</label>
+						<input id="filterMax" type="text">
+					</div>
 
-						<div class="filterEnable-block">
-							<label for="filterEnable-block">Enable</label>
-							<select id="filterEnable" type="text">
+					<div class="filterEnable-block">
+						<label for="filterEnable-block">Enable</label>
+						<select id="filterEnable">
+								<option value="" selected></option>
+								<option value="yes">yes</option>
+								<option value="no">no</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="containerBlock">
+					<div class="filterBlock-first">
+						<div class="filterSolution-block">
+							<label for="filterSolution-block">Solution</label>
+							<select id="filterSolution" >
 									<option value="" selected></option>
-									<option value="yes">yes</option>
-									<option value="no">no</option>
+							</select>
+						</div>
+
+						<div class="filterCountry-block">
+							<label for="filterCountry-block">Country</label>
+							<select id="filterCountry">
+									<option value="" selected></option>
 							</select>
 						</div>
 					</div>
-
-					<div class="containerBlock">
-						<div class="filterBlock-first">
-
-								<div class="filterSolution-block">
-									<label for="filterSolution-block">Solution</label>
-									<select id="filterSolution" type="text">
-											<option value="" selected></option>
-									</select>
-								</div>
-
-								<div class="filterCountry-block">
-										<label for="filterCountry-block">Country</label>
-										<select id="filterCountry" type="text">
-												<option value="" selected></option>
-										</select>
-									</div>
-							</div>
-					
-							<div class="search-block">
-								<input id="search-input" type="search" placeholder="Search..."/>
-								<img id="search-button" src="./img/magnifying-glass.png" alt="search button"/>
-							</div>
+			
+					<div class="search-block">
+						<input id="search-input" type="search" placeholder="Search..."/>
+						<img id="search-button" src="./img/magnifying-glass.png" alt="search button"/>
 					</div>
+				</div>
 
-					<div id="createUser-block">
-						<div>
-							<button id="showBtn">Show</button>
-							<button id="clearFilterBtn">Clear Filter</button>
-						</div>
-						<button id="createBank-button">Create Bank</button>
+				<div id="createUser-block">
+					<div>
+						<button id="showBtn">Show</button>
+						<button id="clearFilterBtn">Clear Filter</button>
 					</div>
+					<button id="createBank-button">Create Bank</button>
+				</div>
 
 				<div id="tableUser-block">
 					<div class="tableUser-header">

@@ -1,18 +1,5 @@
 // Remove menu items for permissions START
 
-const userRole = document.querySelector('.curentUserRole').textContent.trim()
-if (userRole === 'Crm InvoiceManager' || userRole === 'Crm SuccessManager'  || userRole === 'Merchant Manager') {
-    document.querySelector('.gn-menu__banks').remove()
-} 
-if (userRole === 'Invoice Manager') {
-    document.querySelector('.gn-menu__banks').remove()
-    document.querySelector('#reports').remove()
-    document.querySelector('.gn-menu__users').remove()
-    document.querySelector('.gn-menu__merchants').remove()
-    document.querySelector('.gn-menu__settlements').remove()
-    document.querySelector('.gn-menu__wallets').remove()
-} 
-
 // Remove menu items for permissions END
 
 class invoiceList {
@@ -1042,6 +1029,7 @@ class invoiceList {
             const filename = event.target.closest("tr").querySelector("#filename").textContent.trim();
             const status = "Declined";
             let type = event.target.closest("tr").querySelector("#docType").textContent.trim();
+            const typeForChangeDocImage = type
             const createdBy = this.currentUser.textContent.trim();
             const docId = event.target.closest("tr").querySelector("#fileId").textContent.trim();
             event.target.closest("tr").querySelector("#docStatus").innerHTML = status;
@@ -1066,6 +1054,9 @@ class invoiceList {
                 doc.id === docId ? doc.status = "Declined" : "";
             });
 
+            // Change doc image
+            this.changeDocsStatusAfterUploads(typeForChangeDocImage, currentObjType)
+
             // Loading GIF appear
             this.loadingGif.style.display = "none";
         }
@@ -1086,6 +1077,7 @@ class invoiceList {
             const filename = event.target.closest("tr").querySelector("#filename").textContent.trim();
             const status = "Approved";
             let type = event.target.closest("tr").querySelector("#docType").textContent.trim();
+            const typeForChangeDocImage = type
             const createdBy = this.currentUser.textContent.trim();
             const docId = event.target.closest("tr").querySelector("#fileId").textContent.trim();
             event.target.closest("tr").querySelector("#docStatus").innerHTML = status;
@@ -1110,9 +1102,12 @@ class invoiceList {
             });
             this.tableCommentsRender(this.currentInvoice[0].comments);
 
+            // Change doc image
+            this.changeDocsStatusAfterUploads(typeForChangeDocImage, currentObjType)
+
             // Loading GIF appear
             this.loadingGif.style.display = "none";
-            }
+        }
     }
 
     openDocsImage = (event) => {
@@ -1132,6 +1127,38 @@ class invoiceList {
         this.fileWrapper.style.color = "white";
         this.fileWrapper.style.fontWeight = "bold";
         this.fileWrapper.style.border = "none";
+    }
+
+    changeDocsStatusAfterUploads = (type, docArray) => {
+        // Action for container
+        let docType = type.split(' ')
+        docType.unshift('#doc_')
+        docType.length === 3 ? docType.splice(2, 0, '_') : null
+        docType = docType.join('').trim()
+        // 
+        // Checking All documents of current type
+        const res = docArray.map(item => {
+            if (item.status === 'Approved') {
+                return 'Approved'
+            } else if (item.status === 'Declined') {
+                return 'Declined'
+            } else {
+                return 'Non-Verified'
+            }
+        })
+        const approved = res.length ? res.some(el => el === 'Approved') : false
+        const declined = res.length ? res.every(el => el === 'Declined') : false
+        // 
+        // Change doc image
+        if (approved) {
+            this.currentTr.querySelector(docType).innerHTML = `<i class="far fa-check-circle"></i>`
+            
+        } else if (declined) {
+            this.currentTr.querySelector(docType).innerHTML = `<i class="far fa-times-circle"></i>`
+
+        } else {
+            this.currentTr.querySelector(docType).innerHTML = `<i class="far fa-question-circle"></i>`
+        }
     }
 
     initialUpload = async (event) => {
@@ -1191,12 +1218,16 @@ class invoiceList {
 
              // Loading GIF appear
             this.loadingGif.style.display = "none";
+
+            // Change docs image
+            this.changeDocsStatusAfterUploads(type, [])
+            
         } else {
             this.alertWindow("Please select the file first!");
         }
     }
 
-    postFile = async (fd) => {
+    postFile = async fd => {
         return  await fetch("http://18.216.223.81:3000/upload", {
                 method: "POST",
                 body: fd,
@@ -1508,8 +1539,6 @@ class invoiceList {
 
         // Off overflow for BODY
         document.body.classList.add("modal-open");
-
-        
     }
 
     getCurrentMerchant = async name => {
@@ -1885,7 +1914,7 @@ class invoiceList {
         this.countNextPage(res.invoices, res.count);
     }
 
-    documentsStatus = (arr) => {
+    documentsStatus = arr => {
         arr.forEach((obj) => {
             var ID = obj.documents.id;
             var Utility_bill = obj.documents.utility_bill;
@@ -2204,8 +2233,6 @@ class invoiceList {
         // 
         this.countNextPage(this.ArrayList, this.InvoiceNumbers);
         this.documentsStatus(this.ArrayList);
-
-        
     }
 
 
@@ -2305,10 +2332,18 @@ class invoiceList {
                     <td class="column9 ${color} view"><strong>${item.status}</strong></td>
                     <td class="column10">
                         <div class="documentsIcon">
-                            <div class="marginTop5">ID: ${docs === false ? emptyImg : this.checkDocuments(item.documents.id)}</div>
-                            <div>Utility Bill: ${docs === false ? emptyImg : this.checkDocuments(item.documents.utility_bill)}</div>
-                            <div>Payment proof: ${docs === false ? emptyImg : this.checkDocuments(item.documents.payment_proof)}</div>
-                            <div>Declaration: ${docs === false ? emptyImg : this.checkDocuments(item.documents.declaration)}</div>
+                            <div class="marginTop5">
+                                ID: <span id="doc_ID">${docs === false ? emptyImg : this.checkDocuments(item.documents.id)}</span>
+                            </div>
+                            <div>
+                                Utility Bill: <span id="doc_Utility_Bill">${docs === false ? emptyImg : this.checkDocuments(item.documents.utility_bill)}</span>
+                            </div>
+                            <div>
+                                Payment proof: <span id="doc_Payment_proof">${docs === false ? emptyImg : this.checkDocuments(item.documents.payment_proof)}</span>
+                            </div>
+                            <div>
+                                Declaration: <span id="doc_Declaration">${docs === false ? emptyImg : this.checkDocuments(item.documents.declaration)}</span>
+                            </div>
                         </div>
                     </td>
                     <td class="column11">
