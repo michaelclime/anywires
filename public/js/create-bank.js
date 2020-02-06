@@ -313,6 +313,14 @@ class createBank{
         this.render();
     }
 
+    changeUploadLogoText = () => {
+        const fileName = document.querySelector(".uploadLogo_text")
+        const clickToDownload = document.querySelector("#uploadBankLogo_file")
+
+        const fileText = clickToDownload.files[0]
+        fileName.innerHTML = fileText.name
+    }
+
     editBankRequest = async (bankName, newData) => {
         return  await fetch("http://18.216.223.81:3000/editBank", {
             method: "POST",
@@ -690,7 +698,7 @@ class createBank{
         document.querySelector("#active").checked ? label.innerHTML = "Enable:" : label.innerHTML = "Disable:"; 
     }
 
-    checkedEmptyArray = (arr) => {
+    checkedEmptyArray = arr => {
         var result = [];
         arr.forEach((item) => {
             item.value ? result.push(true) : result.push(false);
@@ -741,8 +749,9 @@ class createBank{
 
 
     createBank = async () => {
-        var requiredFields = document.querySelectorAll(".required");
-        var empty = this.checkedEmptyArray(requiredFields);
+        const requiredFields = document.querySelectorAll(".required");
+        const empty = this.checkedEmptyArray(requiredFields);
+        requiredFields.forEach(item => item.value.trim() ? item.style.borderBottom = '1.5px solid #20A5F7' :  item.style.borderBottom = '1.5px solid red')
         
         // Validation for Company Site Field
         const companySite = (document.querySelector("#bankComSite").value).trim();
@@ -915,7 +924,7 @@ class createBank{
         var filter =  document.querySelector(".alert_filter");
         filter.style.display = "flex";
         document.querySelector("#alert_body_text").innerHTML = text;
-        document.querySelector("#alert_button").onclick = (event) =>{
+        document.querySelector("#alert_button").onclick = (event) => {
             event.preventDefault();
             document.body.classList.remove("modal-open");
             filter.style.display = "none";
@@ -1091,6 +1100,7 @@ class createBank{
         document.querySelector('#bankCountry__buttons--remove-all').addEventListener('click', this.removeAllCountries);
         document.querySelector('#bankCountry__buttons--select-all').addEventListener('click', this.selectAllOptions);
         document.querySelector('#bankCountry__buttons--sepa').addEventListener('click', this.selectSepaOptions);
+        document.querySelector("#uploadBankLogo_file").addEventListener("input", this.changeUploadLogoText);
     }
 }
 

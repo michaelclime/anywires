@@ -22,13 +22,14 @@
 }
 
 label {
-    font-size: 18px;
+    font-size: 15px;
 }
     
 #burgerMenu {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     width: 100%;
+    min-height: 60px;
     background:  #FFF;
 }
 
@@ -277,11 +278,17 @@ header {
     width: 100%;
     align-items: center;
     background-color: rgb(255, 255, 255);
-    padding: 30px 0 30px 70px;
+    padding: 40px 0;
     margin-top: 2px;
 }
 header img {
     margin-right: 15px;
+}
+
+.header__title {
+    display: flex;
+    align-items: center;
+    margin-left: 70px;
 }
 /* Header  END*/
 
@@ -306,7 +313,7 @@ main {
     min-height: 800px;
     background-color: rgb(255, 255, 255);
     margin-top: 2px;
-    padding: 20px;
+    padding: 20px 0;
 }
 /* Main END*/
 
@@ -346,14 +353,17 @@ main {
 
 /* Tip Validate Blocks */
 .companySite-block__inside {
+    width: 250px;
     display: flex;
     flex-direction: column;
+    align-items: flex-end;
 }
 
 .companySite-block__tip {
     color: red;
-    font-size: 13px;
-    padding-top: 5px;
+    width: 100%;
+    font-size: 11px;
+    padding-top: 6px;
     text-align: center;
 }
 /* Tip Validate Blocks  END*/
@@ -398,11 +408,28 @@ main {
     outline: none;
     transition: .35s;
     font-family: 'Frank Ruhl Libre', serif;
+    font-size: 14px;
+    position: relative;
+    display: flex;
+    user-select: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 #uploadLogo-btn:hover{
     background-color: #888;
 }
+
+#uploadBankLogo_file {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    opacity: 0;
+    cursor: pointer;
+} 
 
 .description-block textarea {
     border: 1.5px solid #20A5F7;
@@ -424,7 +451,7 @@ main {
 
 #solName {
     border-bottom: 1.5px solid #20A5F7;
-    width: 260px;
+    width: 270px;
     height: 40px;
     padding: 5px;
     font-family: 'Frank Ruhl Libre', serif;
@@ -500,9 +527,8 @@ main {
     border-bottom: 1.5px solid #20A5F7;
     width: 100%;
     height: 40px;
-    padding: 5px;
     font-family: 'Frank Ruhl Libre', serif;
-    font-size: 15px;
+    font-size: 13px;
 }
 
 .comm_title {

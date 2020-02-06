@@ -45,8 +45,9 @@
     
     #burgerMenu {
         display: flex;
-        justify-content: space-between;
+        justify-content: flex-end;
         width: 100%;
+        min-height: 60px;
         background:  #FFF;
     }
     
@@ -113,14 +114,19 @@
         width: 100%;
         align-items: center;
         background-color: rgb(255, 255, 255);
-        padding: 30px 0 30px 0px;
-        padding-left: 35px;
-        margin-top: 2px;
+        padding: 30px 0;
     }
+
     header img {
         margin-right: 15px;
         width: 45px;
         height: 45px;
+    }
+
+    .header__title {
+        display: flex;
+        align-items: center;
+        margin-left: 40px;
     }
     
     
@@ -132,8 +138,7 @@
         width: 100%;
         min-height: 1000px;
         background-color: rgb(255, 255, 255);
-        padding-top: 30px;
-        margin-top: 2px;
+        padding: 30px 0;
     }
     
     
@@ -268,8 +273,8 @@
     }
     
     .search-btn {
-        width: 40px;
-        height: 40px;
+        width: 16px;
+        height: 16px;
         padding: 12px;
         background-color: rgb(54, 54, 54);
         cursor: pointer;

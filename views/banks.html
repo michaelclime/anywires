@@ -10,9 +10,8 @@
 		<meta name="author" content="Anywires" />
 		<link rel="shortcut icon" href="./img/AnyWiresFavicon.png" type="image/x-icon">
 		<link rel="stylesheet" type="text/css" href="css/banks.css" />
-		<link rel="stylesheet" type="text/css" href="css/menu.css" />
-		<link rel="stylesheet" type="text/css" href="css/menu-comp.css" />
 		<link rel="stylesheet" type="text/css" href="css/banks-table.css">
+		<link rel="stylesheet" href="css/newMenu.css">
 		<link href="https://fonts.googleapis.com/css?family=Frank+Ruhl+Libre&display=swap" rel="stylesheet">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 		<script src="js/modernizr.custom.js"></script>
@@ -23,208 +22,198 @@
 	</head>
 	<body class="modal-open">
 		<span class="curentUserId hide"><%= currentUser.id %></span>
-			<% if (currentUser.role == 'Invoice Manager') { %>
-				<div id="burgerMenu">
-						<div class="menu">
-							<ul id="gn-menu" class="gn-menu-main">
-								<li class="gn-trigger">
-									<a class="gn-icon gn-icon-menu"><span>Menu</span></a>
-									<nav class="gn-menu-wrapper">
-										<div class="gn-scroller">
-											<ul class="gn-menu">
-													<li><a href='personal-area.html'><img class="icon" src="fonts/icons/personal-area.png">Personal Area</a></li>
-													<li><a href="dashBoardMainPage.html"><img class="icon" src="fonts/icons/dashboard.png">Dashboard</a></li>
-													<li><a href='InvoiceGeneration.html'><img class="icon" src="fonts/icons/invoice.png">Invoice generation</a></li>
-													<li><a href='Dashboard-how-it-works.html'><img class="icon" src="fonts/icons/info.png">How it works</a></li>
-													</ul>
-												</li>
-											</ul>
-										</div>
-									</nav>
-								</li>
-							</ul>
-				
-							<div class="authorizationMenu">
-								<span> 
-									<span class="userName"> <%= currentUser.fullname %></span>
-									<span class="userLogo"><i class="far fa-user-circle"></i></span>
-								</span>
-								<ul class="dropMenu">
-									<li class="profile">
-										<span class="liLogo"><i class="fas fa-user-alt"></i></span>
-										<a href="personal-area.html">Profile</a>
-									</li>
-									<li class="logOut">
-										<span class="liLogo"><i class="fas fa-sign-out-alt"></i></span>
-										<a href="/logout/<%= currentUser.id %>">LogOut</a>
-									</li>
-								</ul>
-							</div>
-						</div>
-			<% } else if (currentUser.role == 'Solution Manager') { %>
-				<div id="burgerMenu">
-						<div class="menu">
-							<ul id="gn-menu" class="gn-menu-main">
-								<li class="gn-trigger">
-									<a class="gn-icon gn-icon-menu"><span>Menu</span></a>
-									<nav class="gn-menu-wrapper">
-										<div class="gn-scroller">
-											<ul class="gn-menu">
-												<li><a href='personal-area.html'><img class="icon" src="fonts/icons/personal-area.png">Personal Area</a></li>
-												<li><a href='banks.html'><img class="icon" src="fonts/icons/bank.png">Banks</a></li>
-												<li><a href='Dashboard-how-it-works.html'><img class="icon" src="fonts/icons/info.png">How it works</a></li>
-													</ul>
-												</li>
-											</ul>
-										</div>
-									</nav>
-								</li>
-							</ul>
-				
-							<div class="authorizationMenu">
-								<span> 
-									<span class="userName"> <%= currentUser.fullname %></span>
-									<span class="userLogo"><i class="far fa-user-circle"></i></span>
-								</span>
-								<ul class="dropMenu">
-									<li class="profile">
-										<span class="liLogo"><i class="fas fa-user-alt"></i></span>
-										<a href="personal-area.html">Profile</a>
-									</li>
-									<li class="logOut">
-										<span class="liLogo"><i class="fas fa-sign-out-alt"></i></span>
-										<a href="/logout/<%= currentUser.id %>">LogOut</a>
-									</li>
-								</ul>
-							</div>
-						</div>
-			<% } else { %>
 		<div id="burgerMenu">
 			<div class="menu">
-				<ul id="gn-menu" class="gn-menu-main">
-					<li class="gn-trigger">
-						<a class="gn-icon gn-icon-menu"><span>Menu</span></a>
-						<nav class="gn-menu-wrapper">
-							<div class="gn-scroller">
-								<ul class="gn-menu">
-									<li><a href="dashBoardMainPage.html"><img class="icon" src="fonts/icons/dashboard.png">Dashboard</a></li>
-									<li><a href='InvoiceGeneration.html'><img class="icon" src="fonts/icons/invoice.png">Invoice generation</a></li>
-									<li><a href="invoice-list.html"><img class="icon" src="fonts/icons/invoice-list.png">Invoice list</a></li>
-                                    <li><a href="wallets"><img class="icon" src="fonts/icons/wallet.png">Wallets</a></li>
-									<li><a href="settlements.html"><img class="icon" src="fonts/icons/settlement.png">Settlements</a></li>
-									<li><a href="merchants.html"><img class="icon" src="fonts/icons/merchant.png">Merchants</a></li>
-									<li><a href='users.html'><img class="icon" src="fonts/icons/users.png">Users</a></li>
-									<li><a href='banks.html'><img class="icon" src="fonts/icons/bank.png">Banks</a></li>
-									<li id="reports"><a><img class="icon" src="fonts/icons/invoice-report.png">Reports</a></li>
-									<ul class="gn-submenu" id="allReports">
-										<li><a href="invoice-report.html"><img class="icon" src="fonts/icons/aff-report.png">Invoices report</a></li>
-										<li><a href="settlementReport.html"><img class="icon" src="fonts/icons/aff-report.png">Settlements report</a></li>
-										<li><a href="affiliateReport.html"><img class="icon" src="fonts/icons/aff-report.png">Affiliates report</a></li>
-										<li><a href="commission-report"><img class="icon" src="fonts/icons/aff-report.png">Commission report</a></li>
-										<li><a href="merchant-report"><img class="icon" src="fonts/icons/aff-report.png">Merchant report</a></li>
-									</ul>
-									<li><a href='Dashboard-how-it-works.html'><img class="icon" src="fonts/icons/info.png">How it works</a></li>
-										</ul>
-									</li>
-								</ul>
-							</div>
-						</nav>
+				<div class="menu__burger">
+					<img class="menu__burger-close" src="img/menu/close.png" alt="list image">
+					<div class="menu__burger-symbols">
+						<div></div>
+						<div></div>
+						<div></div>
+					</div>
+				</div>
+		
+				<ul class="menu__list">
+					<a class="menu__list-link" href="dashBoardMainPage.html">
+						<li class="menu__list-item">
+							<img class="menu__list-logo" src="img/menu/1-Dashboard.png" alt="list image">
+							<span class="menu__list-text">Dashboard</span>
+						</li>
+					</a>
+					<a class="menu__list-link" href="InvoiceGeneration.html">
+						<li class="menu__list-item">
+							<img class="menu__list-logo" src="img/menu/2-Invoice.png" alt="list image">
+							<span class="menu__list-text">Invoice generation</span>
+						</li>
+					</a>
+					<a class="menu__list-link" href="invoice-list.html">
+						<li class="menu__list-item">
+							<img class="menu__list-logo" src="img/menu/3-Invoices.png" alt="list image">
+							<span class="menu__list-text">Invoice List</span>
+						</li>
+					</a>
+					<a class="menu__list-link" href="wallets">
+						<li class="menu__list-item">
+							<img class="menu__list-logo" src="img/menu/4-Wallet.png" alt="list image">
+							<span class="menu__list-text">Wallets</span>
+						</li>
+					</a>
+					<a class="menu__list-link" href="settlements.html">
+						<li class="menu__list-item">
+							<img class="menu__list-logo" src="img/menu/5-Settlement.png" alt="list image">
+							<span class="menu__list-text">Settlemets</span>
+						</li>
+					</a>
+					<a class="menu__list-link" href="merchants.html">
+						<li class="menu__list-item">
+							<img class="menu__list-logo" src="img/menu/6-Merchants.png" alt="list image">
+							<span class="menu__list-text">Merchants</span>
+						</li>
+					</a>
+					<a class="menu__list-link" href="users.html">
+						<li class="menu__list-item">
+							<img class="menu__list-logo" src="img/menu/7-Users.png" alt="list image">
+							<span class="menu__list-text">Users</span>
+						</li>
+					</a>
+					<li class="menu__list-item menu__reports">
+						<img class="menu__list-logo" src="img/menu/9-Reports.png" alt="list image">
+						<span class="menu__list-text">Reports</span>
+					</li>
+					<div class="menu__list-item-reports">
+						<a class="menu__list-link" href="invoice-report.html">
+							<li class="menu__list-item">
+								<img class="menu__list-logo" src="img/menu/9-Reports.png" alt="list image">
+								<span class="menu__list-text">Invoices report</span>
+							</li>
+						</a>
+						<a class="menu__list-link" href="settlementReport.html">
+							<li class="menu__list-item">
+								<img class="menu__list-logo" src="img/menu/9-Reports.png" alt="list image">
+								<span class="menu__list-text">Settlements report</span>
+							</li>
+						</a>
+						<a class="menu__list-link" href="affiliateReport.html">
+							<li class="menu__list-item">
+								<img class="menu__list-logo" src="img/menu/9-Reports.png" alt="list image">
+								<span class="menu__list-text">Affiliates report</span>
+							</li>
+						</a>
+						<a class="menu__list-link" href="commission-report">
+							<li class="menu__list-item">
+								<img class="menu__list-logo" src="img/menu/9-Reports.png" alt="list image">
+								<span class="menu__list-text">Commission report</span>
+							</li>
+						</a>
+						<a class="menu__list-link" href="merchant-report">
+							<li class="menu__list-item">
+								<img class="menu__list-logo" src="img/menu/9-Reports.png" alt="list image">
+								<span class="menu__list-text">Merchant report</span>
+							</li>
+						</a>
+					</div>
+					<a class="menu__list-link" href="Dashboard-how-it-works.html">
+						<li class="menu__list-item">
+							<img class="menu__list-logo" src="img/menu/10-How-it-works.png" alt="list image">
+							<span class="menu__list-text">How it works</span>
+						</li>
+					</a>
+				</ul>
+			</div>
+	
+			<div class="authorizationMenu">
+				<span> 
+					<span class="userName"> <%= currentUser.fullname %></span>
+					<span class="userLogo"><i class="far fa-user-circle"></i></span>
+				</span>
+				<ul class="dropMenu">
+					<li class="profile">
+						<span class="liLogo"><i class="fas fa-user-alt"></i></span>
+						<a href="personal-area.html">Profile</a>
+					</li>
+					<li class="merchant">
+						<span class="liLogo"><i class="fab fa-chromecast"></i></span>
+						<a href="merchants.html">Merchant</a>
+					</li>
+					<li class="logOut">
+						<span class="liLogo"><i class="fas fa-sign-out-alt"></i></span>
+						<a href="/logout/<%= currentUser.id %>">LogOut</a>
 					</li>
 				</ul>
-	
-				<div class="authorizationMenu">
-					<span> 
-						<span class="userName"> <%= currentUser.fullname %></span>
-						<span class="userLogo"><i class="far fa-user-circle"></i></span>
-					</span>
-					<ul class="dropMenu">
-						<li class="profile">
-							<span class="liLogo"><i class="fas fa-user-alt"></i></span>
-							<a href="personal-area.html">Profile</a>
-						</li>
-						<li class="merchant">
-							<span class="liLogo"><i class="fab fa-chromecast"></i></span>
-							<a href="merchants.html">Merchant</a>
-						</li>
-						<li class="logOut">
-							<span class="liLogo"><i class="fas fa-sign-out-alt"></i></span>
-							<a href="/logout/<%= currentUser.id %>">LogOut</a>
-						</li>
-					</ul>
-				</div>
-			</div><!-- /container -->
-			<% } %>
-
-			<!-- Loading GIF -->
-			<div id="loadingGif">
-				<img src="img/Gear-2.5s-200px.gif" alt="loading GIF"/>
-				<div>Loading...</div>
 			</div>
-			<!-- Loading GIF -->
+		</div>
+
+		<!-- Loading GIF -->
+		<div id="loadingGif">
+			<img src="img/Gear-2.5s-200px.gif" alt="loading GIF"/>
+			<div>Loading...</div>
+		</div>
+		<!-- Loading GIF -->
 		<div id="wrapper">
 			<span class="curentUserRole hide"><%= currentUser.role %></span>
 			<span class="curentUserSolution hide"><%= currentUser._id %></span>
 
 			<!--Header Page-->
 			<header> 
-				<img src="./img/bank.png" alt="icon page" width="40px" height="40px"/>
-				<h1>Banks</h1>
+				<div class="header__title">
+					<img src="./img/bank.png" alt="icon page" width="40px" height="40px"/>
+					<h1>Banks</h1>
+				</div>
 			</header>
 			
 			<!--Main Page-->
 			<main>
-					<div class="minMax-block">
-						<div class="filterMin-block">
-							<label for="filterMin-block">Min Wire</label>
-							<input id="filterMin" type="text">
-						</div>
+				<div class="minMax-block">
+					<div class="filterMin-block">
+						<label for="filterMin-block">Min Wire</label>
+						<input id="filterMin" type="text">
+					</div>
 
-						<div class="filterMax-block">
-							<label for="filterMax-block">Max Wire</label>
-							<input id="filterMax" type="text">
-						</div>
+					<div class="filterMax-block">
+						<label for="filterMax-block">Max Wire</label>
+						<input id="filterMax" type="text">
+					</div>
 
-						<div class="filterEnable-block">
-							<label for="filterEnable-block">Enable</label>
-							<select id="filterEnable" type="text">
+					<div class="filterEnable-block">
+						<label for="filterEnable-block">Enable</label>
+						<select id="filterEnable">
+								<option value="" selected></option>
+								<option value="yes">yes</option>
+								<option value="no">no</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="containerBlock">
+					<div class="filterBlock-first">
+						<div class="filterSolution-block">
+							<label for="filterSolution-block">Solution</label>
+							<select id="filterSolution" >
 									<option value="" selected></option>
-									<option value="yes">yes</option>
-									<option value="no">no</option>
+							</select>
+						</div>
+
+						<div class="filterCountry-block">
+							<label for="filterCountry-block">Country</label>
+							<select id="filterCountry">
+									<option value="" selected></option>
 							</select>
 						</div>
 					</div>
-
-					<div class="containerBlock">
-						<div class="filterBlock-first">
-
-								<div class="filterSolution-block">
-									<label for="filterSolution-block">Solution</label>
-									<select id="filterSolution" type="text">
-											<option value="" selected></option>
-									</select>
-								</div>
-
-								<div class="filterCountry-block">
-										<label for="filterCountry-block">Country</label>
-										<select id="filterCountry" type="text">
-												<option value="" selected></option>
-										</select>
-									</div>
-							</div>
-					
-							<div class="search-block">
-								<input id="search-input" type="search" placeholder="Search..."/>
-								<img id="search-button" src="./img/magnifying-glass.png" alt="search button"/>
-							</div>
+			
+					<div class="search-block">
+						<input id="search-input" type="search" placeholder="Search..."/>
+						<img id="search-button" src="./img/magnifying-glass.png" alt="search button"/>
 					</div>
+				</div>
 
-					<div id="createUser-block">
-						<div>
-							<button id="showBtn">Show</button>
-							<button id="clearFilterBtn">Clear Filter</button>
-						</div>
-						<button id="createBank-button">Create Bank</button>
+				<div id="createUser-block">
+					<div>
+						<button id="showBtn">Show</button>
+						<button id="clearFilterBtn">Clear Filter</button>
 					</div>
+					<button id="createBank-button">Create Bank</button>
+				</div>
 
 				<div id="tableUser-block">
 					<div class="tableUser-header">
@@ -263,11 +252,6 @@
 		
 		<script src="js/authorizationMenu.js"></script>
 		<script src="./js/banks.js"></script>
-		<script src="js/classie.js"></script>
-		<script src="js/gnmenu.js"></script>
-		<script src="js/menu.js"></script>
-		<script>
-			new gnMenu( document.getElementById( 'gn-menu' ) );
-		</script>
+		<script src="js/newMenu.js"></script>
 	</body>
 </html>
