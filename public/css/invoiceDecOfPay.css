@@ -88,6 +88,12 @@ th, td {
     height: 50px;
 }
 
+.bank-logo {
+    margin: 40px 0;
+    width: 400px;
+    height: 90px;
+}
+
 /* Loading GIF */
 .loadingGif {
     display: flex;

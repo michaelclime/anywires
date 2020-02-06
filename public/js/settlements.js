@@ -14,7 +14,7 @@ $(document).ready(function(){
       
         document.querySelector(".walletList").innerHTML = '<option value="">Wallet for Settlement:</option>';
        
-        let availableInvs  = fetch(`http://18.216.223.81:3000/availableInvs/${merchantName}`);
+        let availableInvs  = fetch(`http://localhost:3000/availableInvs/${merchantName}`);
         availableInvs.then(response => {
             return response.json();
         }).then(invoices => {
@@ -85,7 +85,7 @@ $(document).ready(function(){
             const a = new InvoicesList(invoices);
         });
 
-       let walletsList  = fetch(`http://18.216.223.81:3000/getWalletsList/${merchantName}`);
+       let walletsList  = fetch(`http://localhost:3000/getWalletsList/${merchantName}`);
         walletsList.then(response => {
             return response.json();
             }).then(wallets => {
@@ -133,7 +133,7 @@ $(document).ready(function(){
       $('.MerchantPayWindow').fadeIn();
       document.querySelector(".walletPayFrom").innerHTML = '<option value="">Choose your wallet:</option>';
       document.querySelector(".inside_wallet").innerHTML = '';
-       let walletsList  = fetch(`http://18.216.223.81:3000/getExternalWalletsList/${merchantName}`);
+       let walletsList  = fetch(`http://localhost:3000/getExternalWalletsList/${merchantName}`);
        walletsList.then(response => {
            return response.json();
            }).then(wallets => {
@@ -181,7 +181,7 @@ $(document).ready(function(){
        });
 
       
-       let inside_walletsList  = fetch(`http://18.216.223.81:3000/getInside_walletsList/${merchantName}`);
+       let inside_walletsList  = fetch(`http://localhost:3000/getInside_walletsList/${merchantName}`);
        inside_walletsList.then(response => {
            return response.json();
            }).then(wallets => {
@@ -252,7 +252,7 @@ document.querySelector('.amountPayment').addEventListener('focusout', (event) =>
 
 // Generate merchants list for selected menu
 if ( curentUserRole !== "Merchant Manager") {
-    let fetchPromise  = fetch('http://18.216.223.81:3000/getMerchants');
+    let fetchPromise  = fetch('http://localhost:3000/getMerchants');
     fetchPromise.then(response => {
         return response.json();
         }).then(merchants => {
@@ -290,7 +290,7 @@ if ( curentUserRole !== "Merchant Manager") {
         });
     });
 } else {
-    let fetchPromise  = fetch('http://18.216.223.81:3000/getMerchant/' + curentUserId);
+    let fetchPromise  = fetch('http://localhost:3000/getMerchant/' + curentUserId);
     fetchPromise.then(response => {
     return response.json();
     }).then(merchants => {
@@ -337,10 +337,10 @@ if ( curentUserRole !== "Merchant Manager") {
 async function loadSettleList()  {
     let SETTLEMENTS;
     if ( curentUserRole !== "Merchant Manager") {
-        let settleList = await  fetch('http://18.216.223.81:3000/getSettlementsList');
+        let settleList = await  fetch('http://localhost:3000/getSettlementsList');
         SETTLEMENTS = await settleList.json();
     } else {
-        let settleList = await  fetch('http://18.216.223.81:3000/getSettlementsList/' + curentUserId);
+        let settleList = await  fetch('http://localhost:3000/getSettlementsList/' + curentUserId);
         SETTLEMENTS = await settleList.json();
     }
     
@@ -398,7 +398,7 @@ async function loadSettleList()  {
                     const commissionsTable = document.querySelector('#tableTbody-commissions').firstChild;
 
                     const DocProof = async () => {
-                        let checkDocs = await fetch(`http://18.216.223.81:3000/isDocProof/${item._id}`);
+                        let checkDocs = await fetch(`http://localhost:3000/isDocProof/${item._id}`);
                         
                         if (checkDocs.status !== 200) {
                             return Swal.fire('Something went wrong on server side');
@@ -417,7 +417,7 @@ async function loadSettleList()  {
                      <strong>${new Date(item.dates.creation_date).getDate() + '/' + (new Date(item.dates.creation_date).getMonth()+ 1) + '/' +   new Date(item.dates.creation_date).getFullYear()}</strong> for <strong>${formatStr(item.amount.amount_requested)} ${item.currency}</strong> - <span class="currentStatus">Sent</span>`;
                      
                     (async () => {
-                        let changeSStatus = await fetch(`http://18.216.223.81:3000/changeSettleStatus/${item._id}`, {
+                        let changeSStatus = await fetch(`http://localhost:3000/changeSettleStatus/${item._id}`, {
                             method: "POST",
                             body: JSON.stringify({
                                 newStatus: 'Sent',
@@ -434,7 +434,7 @@ async function loadSettleList()  {
                      <strong>${new Date(item.dates.creation_date).getDate() + '/' + (new Date(item.dates.creation_date).getMonth()+ 1) + '/' +   new Date(item.dates.creation_date).getFullYear()}</strong> for <strong>${formatStr(item.amount.amount_requested)} ${item.currency}</strong> - <span class="currentStatus">Received</span>`;
                     
                     (async () => {
-                        let changeSStatus = await fetch(`http://18.216.223.81:3000/changeSettleStatus/${item._id}`, {
+                        let changeSStatus = await fetch(`http://localhost:3000/changeSettleStatus/${item._id}`, {
                             method: "POST",
                             body: JSON.stringify({
                                 newStatus: 'Received',
@@ -451,7 +451,7 @@ async function loadSettleList()  {
                      <strong>${new Date(item.dates.creation_date).getDate() + '/' + (new Date(item.dates.creation_date).getMonth()+ 1) + '/' +   new Date(item.dates.creation_date).getFullYear()}</strong> for <strong>${formatStr(item.amount.amount_requested)} ${item.currency}</strong> - <span class="currentStatus"> Declined</span>`;
                     
                      (async () => {
-                        let changeSStatus = await fetch(`http://18.216.223.81:3000/changeSettleStatus/${item._id}`, {
+                        let changeSStatus = await fetch(`http://localhost:3000/changeSettleStatus/${item._id}`, {
                             method: "POST",
                             body: JSON.stringify({
                                 newStatus: 'Declined',
@@ -588,7 +588,7 @@ async function loadSettleList()  {
                     }
                 
                     const postFile = async (fd) => {
-                    return  await fetch("http://18.216.223.81:3000/uploadSettleDoc", {
+                    return  await fetch("http://localhost:3000/uploadSettleDoc", {
                             method: "POST",
                             body: fd,
                             mode: "no-cors",
@@ -635,7 +635,7 @@ async function loadSettleList()  {
                     this.commentTable.appendChild(this.commentTr);
 
                     (async () => {
-                        let addComment = await fetch(`http://18.216.223.81:3000/addSettleComment/${item._id}`, {
+                        let addComment = await fetch(`http://localhost:3000/addSettleComment/${item._id}`, {
                             method: "POST",
                             body: JSON.stringify({
                                 created_by: userName,
@@ -739,7 +739,7 @@ async function loadSettleList()  {
                                 this.commisstTable.appendChild(this.commisTR);
                             if ( this.commisType === 'Settlement Anywires Commission') {
                                 (async () => {
-                                    let addCommision = await fetch(`http://18.216.223.81:3000/addSettleCommision/${item._id}`, {
+                                    let addCommision = await fetch(`http://localhost:3000/addSettleCommision/${item._id}`, {
                                         method: "POST",
                                         body: JSON.stringify({
                                             created_by: this.userName,
@@ -760,7 +760,7 @@ async function loadSettleList()  {
                                 })();
                             } else {
                                 (async () => {
-                                    let addCommision = await fetch(`http://18.216.223.81:3000/addSettleCommision/${item._id}`, {
+                                    let addCommision = await fetch(`http://localhost:3000/addSettleCommision/${item._id}`, {
                                         method: "POST",
                                         body: JSON.stringify({
                                             created_by: this.userName,
@@ -1002,7 +1002,7 @@ function checkIsEmptyObj (obj) {
 
 function openDocsImage (event) {
     var filename = event.target.closest("tr").children[5].textContent.trim();
-    window.open(`http://18.216.223.81:3000/upload/${filename}`, '_blank');
+    window.open(`http://localhost:3000/upload/${filename}`, '_blank');
 }
 
 // Document change status
@@ -1015,7 +1015,7 @@ async function docsGood(event) {
     
 
     (async () => {
-        let changeStatus = await fetch(`http://18.216.223.81:3000/changeDocStatus`, {
+        let changeStatus = await fetch(`http://localhost:3000/changeDocStatus`, {
             method: "POST",
             body: JSON.stringify({
                 id: event.target.closest("tr").children[6].textContent,
@@ -1037,7 +1037,7 @@ async function docsBad(event) {
     }
     
     (async () => {
-        let changeStatus = await fetch(`http://18.216.223.81:3000/changeDocStatus`, {
+        let changeStatus = await fetch(`http://localhost:3000/changeDocStatus`, {
             method: "POST",
             body: JSON.stringify({
                 id: event.target.closest("tr").children[6].textContent,

@@ -3,10 +3,10 @@ function SaveAsPdf() {
     document.querySelector('.loadingGif').classList.remove('hide');
 
     var api_endpoint = "https://selectpdf.com/api2/convert/";
-    var api_key = "cc21c1f1-502c-43a3-b6bc-83006301e204";
+    var api_key = "65ea0313-d7a7-4c39-8d72-0edc7ec7f8d2";
  
     var url = window.location.href; // current page
-    console.log();
+   
     var params = {
         key: api_key, 
         url: url,
@@ -55,7 +55,7 @@ function SaveAsPdf() {
             const dateNow = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
 
             var fileName = `Settlement №${Settlement[0].number}-${Settlement[0].client_details.full_name}-${Settlement[0].amount.amount_requested}-${dateNow}.pdf`;
- 
+    
             if (navigator.appVersion.toString().indexOf('.NET') > 0) {
                 // This is for IE browsers, as the alternative does not work
                 window.navigator.msSaveBlob(blob, fileName);

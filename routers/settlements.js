@@ -25,7 +25,7 @@ router.get('/settlementReport.html', isLoggedIn, visibilityApproval, function(re
     res.render("settlementReport.html");
 });
 
-router.get('/settlementPreview', isLoggedIn, visibilityApproval, async function(req, res) {
+router.get("/settlementPreview", async function(req, res) {
 
     setTimeout( async () => {
         const SettlementId = Object.keys(req.query)[0];
